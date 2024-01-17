@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{'Home' | trans}}
+{% endblock %}
+
+{% block body %}
+	<ion-header>
+		<ion-toolbar>
+			<ion-title>Le Rocher Academie</ion-title>
+			<ion-buttons slot="end">
+				<ion-button href="/login">
+					<ion-icon name="log-in-outline"></ion-icon>
+					{{'Sign in' | trans}}
+				</ion-button>
+				<ion-button href="/register">{{'Sign up' | trans}}</ion-button>
+			</ion-buttons>
+		</ion-toolbar>
+	</ion-header>
+	<ion-content class="ion-padding">
+		<ion-grid>
+			<ion-row class="ion-justify-content-center">
+				<ion-col>
+					<div class="ion-text-center container">
+						<ion-card>
+							<ion-card-header>
+								<ion-card-title></ion-card-title>
+							</ion-card-header>
+							<ion-card-content>
+								<img src="https://assets-global.website-files.com/603772106b5a5a4ae7f49603/6040caf9eb7dcd6696e3144e_Hero-image-min%20-%20Copie%20(3).jpg" alt="Le Rocher Académie Logo" style="max-width: 100%;">
+								<p>Welcome to Le Rocher Académie, your trusted online theological school. We offer a wide range of theological courses to help you deepen your understanding of faith and spirituality.</p>
+							</ion-card-content>
+						</ion-card>
+						<ion-button expand="full" href="/enroll" color="primary">{{'Enroll Now' | trans}}</ion-button>
+					</div>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</ion-content>
+	<ion-footer>
+		<ion-toolbar>
+			<ion-title>
+				{{'now' | date('Y')}}
+				&copy; Le Rocher Academie</ion-title>
+		</ion-toolbar>
+	</ion-footer>
+{% endblock %}

@@ -1,3 +1,9 @@
-body {
-    background-color: skyblue;
+.swiper {
+  width: 600px;
+  height: 300px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0px auto;
 }
