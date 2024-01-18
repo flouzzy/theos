@@ -13,7 +13,7 @@ class HomeController extends AbstractController
     {
         $template = 'landing';
         if ($this->getUser()) {
-            $template = 'home';
+            $template = 'index';
         }
         return $this->render('home/' . $template . '.html.twig', [
             'controller_name' => 'HomeController',

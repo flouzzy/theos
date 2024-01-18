@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<ion-header>
+		<ion-toolbar>
+			<ion-title>Le Rocher Academie</ion-title>
+			<ion-buttons slot="end">
+				<ion-button href="{{path('login')}}">
+					<ion-icon name="log-in-outline"></ion-icon>
+					{{'Sign in' | trans}}
+				</ion-button>
+				<ion-button href="{{path('register')}}" color="danger">
+					{{'Sign up' | trans}}
+				</ion-button>
+			</ion-buttons>
+		</ion-toolbar>
+	</ion-header>
+	<ion-content class="ion-padding">
+		{% block content %}{% endblock %}
+	</ion-content>
+	<ion-footer>
+		<ion-toolbar>
+			<ion-title>
+				{{'now' | date('Y')}}
+				&copy; Le Rocher Academie</ion-title>
+		</ion-toolbar>
+	</ion-footer>
+{% endblock %}
