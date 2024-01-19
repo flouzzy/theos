@@ -21,12 +21,10 @@ class ProfileController extends AbstractController
          */
         $user = $this->getUser();
 
-        $form = $this->createForm(UserType::class, $user, [
-            'action' => $this->generateUrl('profile_index'),
-            'method' => 'POST'
-        ]);
+        $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
+        // dd($form->isSubmitted(), $form->isValid());
 
         if ($form->isSubmitted() && $form->isValid()) {
 

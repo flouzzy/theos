@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -36,10 +37,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $isVerified = false;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank]
     private ?string $lastname = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    private ?string $fullname = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -49,9 +56,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $lastConnectionAt = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $fullname = null;
 
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
