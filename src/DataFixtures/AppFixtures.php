@@ -19,12 +19,15 @@ class AppFixtures extends Fixture
         // Admin User
         $adminUser = $this->userRepository->findOneByUsername('admin@test.fr');
         if (!$adminUser) {
-            $adminUser = $this->createUser([
-                'email' => 'admin@test.fr',
-                'firstname' => 'Charles',
-                'lastname' => 'EDOU NZE',
-                'fullname'
-            ]);
+            $adminUser = $this->createUser(
+                [
+                    'email' => 'admin@test.fr',
+                    'firstname' => 'Charles',
+                    'lastname' => 'EDOU NZE',
+                    'fullname'
+                ],
+                ['ROLE_ADMIN']
+            );
             $this->manager->persist($adminUser);
         }
 
@@ -50,7 +53,7 @@ class AppFixtures extends Fixture
         $user->setLastname($userData['lastname']);
         $user->setFullname($userData['firstname'] . ' ' . $userData['lastname']);
         if (count($role) > 0) {
-            $user->setRoles(['ROLE_ADMIN']);
+            $user->setRoles($role);
         }
         $user->setPassword($this->passwordHasher->hashPassword(
             $user,

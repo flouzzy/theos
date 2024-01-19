@@ -38,6 +38,7 @@ class Module
     {
         $this->courses = new ArrayCollection();
         $this->lessons = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

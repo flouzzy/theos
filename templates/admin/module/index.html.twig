@@ -1,0 +1,43 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'Modules' | trans}}
+{% endblock %}
+
+{% block content %}
+	<h1>Module index</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Title</th>
+				<th>Description</th>
+				<th>CreatedAt</th>
+				<th>UpdatedAt</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for module in modules %}
+				<tr>
+					<td>{{ module.id }}</td>
+					<td>{{ module.title }}</td>
+					<td>{{ module.description }}</td>
+					<td>{{ module.createdAt ? module.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ module.updatedAt ? module.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>
+						<a href="{{ path('admin_module_show', {'id': module.id}) }}">show</a>
+						<a href="{{ path('admin_module_edit', {'id': module.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="6">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_module_new') }}">Create new</a>
+{% endblock %}

@@ -38,6 +38,7 @@ class Course
     {
         $this->users = new ArrayCollection();
         $this->modules = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

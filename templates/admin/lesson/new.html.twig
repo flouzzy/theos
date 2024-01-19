@@ -1,0 +1,12 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}New Lesson
+{% endblock %}
+
+{% block content %}
+	<h1>Create new Lesson</h1>
+
+	{{ include('admin/lesson/_form.html.twig') }}
+
+	<a href="{{ path('admin_lesson_index') }}">back to list</a>
+{% endblock %}

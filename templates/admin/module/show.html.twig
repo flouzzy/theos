@@ -1,0 +1,40 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{module.title}}|{{'Modules' | trans}}
+{% endblock %}
+
+{% block content %}
+	<h1>Module</h1>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ module.id }}</td>
+			</tr>
+			<tr>
+				<th>Title</th>
+				<td>{{ module.title }}</td>
+			</tr>
+			<tr>
+				<th>Description</th>
+				<td>{{ module.description }}</td>
+			</tr>
+			<tr>
+				<th>CreatedAt</th>
+				<td>{{ module.createdAt ? module.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+			</tr>
+			<tr>
+				<th>UpdatedAt</th>
+				<td>{{ module.updatedAt ? module.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_module_index') }}">back to list</a>
+
+	<a href="{{ path('admin_module_edit', {'id': module.id}) }}">edit</a>
+
+	{{ include('admin/module/_delete_form.html.twig') }}
+{% endblock %}

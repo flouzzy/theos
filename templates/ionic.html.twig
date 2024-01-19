@@ -6,12 +6,21 @@
 			<ion-menu content-id="main">
 				<ion-header>
 					<ion-toolbar>
-						<ion-title>Le Rocher Academie</ion-title>
+						<ion-title>
+							{% block toolBarTitle %}
+								Le Rocher Academie
+							{% endblock %}
+						</ion-title>
 					</ion-toolbar>
 				</ion-header>
 				<ion-content class="ion-padding">
-					{% include "partials/_menu.html.twig" %}
+					{% block menu %}
+						{% include "partials/_menu.html.twig" %}
+					{% endblock %}
 				</ion-content>
+				<ionic-footer>
+					{% block menuFooter %}{% endblock %}
+				</ionic-footer>
 			</ion-menu>
 
 			<div class="ion-page" id="main">
@@ -22,7 +31,7 @@
 						</ion-buttons>
 						<ion-title>
 							{% block pageTitle %}
-								Le Rocher Academie
+								{{block('title')}}
 							{% endblock %}
 						</ion-title>
 					</ion-toolbar>

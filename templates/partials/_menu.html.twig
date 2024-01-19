@@ -1,19 +1,38 @@
+{% set 
+    menuItems = {
+         'home':{'title':'Home', 'icon':'home', 'path':'home'},
+		 'course':{'title':'Course', 'icon':'school', 'path':'course_index'}
+    } 
+%}
+
 <ion-list>
 	<ion-list-header>
 		{{'Main menu' | trans}}
 	</ion-list-header>
-	<ion-item href="{{path('home')}}">
-		<ion-icon slot="start" name="home-outline"></ion-icon>
-		<ion-label>
-			{{'Home' | trans}}
-		</ion-label>
-	</ion-item>
+	{% for menu in menuItems %}
+		<ion-item href="{{path(menu.path)}}">
+			<ion-icon slot="start" name="{{menu.icon}}-outline"></ion-icon>
+			<ion-label>
+				{{menu.title | trans}}
+			</ion-label>
+		</ion-item>
+	{% endfor %}
 </ion-list>
 
 <ion-list>
 	<ion-list-header>
 		{{'Account' | trans}}
 	</ion-list-header>
+
+	{% if is_granted('ROLE_ADMIN') %}
+		<ion-item button href="{{path('admin')}}">
+			<ion-icon slot="start" name="build-outline"></ion-icon>
+			<ion-label>
+				{{'Administration' | trans}}
+			</ion-label>
+		</ion-item>
+	{% endif %}
+
 	<ion-item button href="{{path('profile_index')}}">
 		<ion-icon slot="start" name="person-circle-outline"></ion-icon>
 		<ion-label>

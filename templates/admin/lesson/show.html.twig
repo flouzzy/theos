@@ -1,0 +1,39 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Lesson
+{% endblock %}
+
+{% block content %}
+	<h1>Lesson</h1>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ lesson.id }}</td>
+			</tr>
+			<tr>
+				<th>Title</th>
+				<td>{{ lesson.title }}</td>
+			</tr>
+			<tr>
+				<th>Content</th>
+				<td>{{ lesson.content }}</td>
+			</tr>
+			<tr>
+				<th>CreatedAt</th>
+				<td>{{ lesson.createdAt ? lesson.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+			</tr>
+			<tr>
+				<th>UpdatedAt</th>
+				<td>{{ lesson.updatedAt ? lesson.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_lesson_index') }}">back to list</a>
+
+	<a href="{{ path('admin_lesson_edit', {'id': lesson.id}) }}">edit</a>
+
+	{{ include('admin/lesson/_delete_form.html.twig') }}
+{% endblock %}

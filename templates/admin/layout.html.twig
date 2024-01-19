@@ -1,0 +1,19 @@
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{'Administration' | trans}}
+{% endblock %}
+
+{% block menu %}
+	{% include "admin/_menu.html.twig" %}
+{% endblock %}
+{% block menuFooter %}
+	<ion-list lines="none">
+		<ion-item button href="{{path('home')}}">
+			<ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+			<ion-label>
+				{{'Back to Front-office' | trans}}
+			</ion-label>
+		</ion-item>
+	</ion-list>
+{% endblock %}
