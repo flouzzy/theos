@@ -1,0 +1,52 @@
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{'Profile' | trans}}
+{% endblock %}
+
+
+{% block pageTitle %}
+	{{block('title')}}
+{% endblock %}
+
+{% block content %}
+	<ion-card>
+		<ion-card-header>
+			<ion-card-title>
+				{{'Hello' | trans}},
+				{{ app.user.fullname }}
+				👋
+			</ion-card-title>
+		</ion-card-header>
+
+		<ion-card-content>
+			{{'You can update your personal information by updating the form below' | trans}}
+		</ion-card-content>
+	</ion-card>
+
+	<ion-list>
+		<ion-list-header>
+			<ion-label>
+				<h2>{{'Profile update' | trans}}</h2>
+			</ion-label>
+		</ion-list-header>
+
+		{{ form_errors(profileForm) }}
+		{{ form_start(profileForm) }}
+
+		<ion-item>
+			{{ form_row(profileForm.firstname) }}
+		</ion-item>
+
+		<ion-item>
+			{{ form_row(profileForm.lastname) }}
+		</ion-item>
+
+		<ion-item>
+			<button type="submit" class="ion-button">
+				{{'Update' | trans}}
+			</button>
+		</ion-item>
+		{{ form_end(profileForm) }}
+	</ion-list>
+{% endblock %}

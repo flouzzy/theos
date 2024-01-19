@@ -7,10 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: '`user`')]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email', 'username'], message: 'There is already an account with this email or username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -51,10 +53,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $fullname = null;
 
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $username = null;
+
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function updateUserDetails(): void
+    {
+        if ($this->firstname || $this->lastname) {
+            $this->fullname = $this->firstname . ' ' . $this->lastname;
+        }
+    }
+
+    #[ORM\PrePersist]
+    public function setUserDetails(): void
+    {
+        $details = explode(' ', $this->fullname);
+        $this->firstname = $this->firstname ?? ($details[0] ?? '');
+        $this->lastname = $this->lastname ?? ($details[1] ?? '');
+        $this->fullname = $this->fullname ?? $this->firstname . ' ' . $this->lastname;
+
+        // Slug
+        $slugger = new AsciiSlugger();
+        $this->username = $slugger->slug($this->fullname)->lower();
     }
 
     public function getId(): ?int
@@ -207,6 +233,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFullname(string $fullname): static
     {
         $this->fullname = $fullname;
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
 
         return $this;
     }

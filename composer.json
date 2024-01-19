@@ -41,6 +41,7 @@
         "symfony/validator": "7.0.*",
         "symfony/web-link": "7.0.*",
         "symfony/yaml": "7.0.*",
+        "symfonycasts/reset-password-bundle": "^1.20",
         "symfonycasts/verify-email-bundle": "^1.16",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
@@ -56,13 +57,13 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/",
-            "Sysil\\SysilBundle\\": "src/"
+            "Sysil\\SysilBundle\\": "sysil/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "App\\Tests\\": "tests/",
-            "Sysil\\SysilBundle\\Tests\\": "tests/"
+            "Sysil\\SysilBundle\\Tests\\": "sysil/tests/"
         }
     },
     "replace": {
@@ -98,6 +99,7 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.5",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "7.0.*",
         "symfony/css-selector": "7.0.*",

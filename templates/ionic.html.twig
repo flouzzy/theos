@@ -21,7 +21,7 @@
 							<ion-menu-button></ion-menu-button>
 						</ion-buttons>
 						<ion-title>
-							{% block pageTitlte %}
+							{% block pageTitle %}
 								Le Rocher Academie
 							{% endblock %}
 						</ion-title>
@@ -35,7 +35,8 @@
 					<ion-toolbar>
 						<ion-title>
 							{{'now' | date('Y')}}
-							&copy; Le Rocher Academie
+							&copy; Le Rocher Academie.
+							{{'All rights reserved' | trans}}.
 						</ion-title>
 					</ion-toolbar>
 				</ion-footer>

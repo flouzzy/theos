@@ -2,6 +2,8 @@
 Welcome: Bienvenue
 Home: Accueil
 Main menu: Menu principal
+All rights reserved: Tous droits réservés
+Update: Sauvegarder
 
 # Account
 Sign in: Se connecter
@@ -18,3 +20,14 @@ Fullname: Nom complet
 Account: Compte
 Logout: Déconnexion
 Sign out: Se déconnecter
+Profile: Profil
+Please confirm your email address by clicking the following link: Veuillez confirmer votre adresse électronique en cliquant sur le lien suivant
+Please confirm your email: Veuillez confirmer votre adresse e-mail
+This link will expire in: Ce lien expirera dans
+Confirm my Email: Confirmer mon e-mail
+Thank you: Merci
+Your account has been updated: Votre compte a été mis à jour
+Please enter your email: Merci de saisir votre e-mail
+You can update your personal information by updating the form below: Vous pouvez mettre à jour vos informations personnelles en mettant à jour le formulaire ci-dessous
+Profile update: Mise à jour du profil
+There is already an account with this email or username: Il existe déjà un compte avec cet email ou nom d'utilisateur
