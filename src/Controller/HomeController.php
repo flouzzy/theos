@@ -15,6 +15,9 @@ class HomeController extends AbstractController
         if ($this->getUser()) {
             $template = 'index';
         }
+
+        $this->addFlash('success', 'Hello world');
+
         return $this->render('home/' . $template . '.html.twig', [
             'controller_name' => 'HomeController',
         ]);

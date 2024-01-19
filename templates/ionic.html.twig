@@ -2,8 +2,44 @@
 
 {% block body %}
 	<ion-app>
-		<ion-content class="ion-padding">
-			{% block content %}{% endblock %}
-		</ion-content>
+		<ion-split-pane when="md" content-id="main">
+			<ion-menu content-id="main">
+				<ion-header>
+					<ion-toolbar>
+						<ion-title>Le Rocher Academie</ion-title>
+					</ion-toolbar>
+				</ion-header>
+				<ion-content class="ion-padding">
+					{% include "partials/_menu.html.twig" %}
+				</ion-content>
+			</ion-menu>
+
+			<div class="ion-page" id="main">
+				<ion-header>
+					<ion-toolbar>
+						<ion-buttons slot="start">
+							<ion-menu-button></ion-menu-button>
+						</ion-buttons>
+						<ion-title>
+							{% block pageTitlte %}
+								Le Rocher Academie
+							{% endblock %}
+						</ion-title>
+					</ion-toolbar>
+				</ion-header>
+				<ion-content class="ion-padding">
+					{% include "partials/_flash.html.twig" %}
+					{% block content %}{% endblock %}
+				</ion-content>
+				<ion-footer>
+					<ion-toolbar>
+						<ion-title>
+							{{'now' | date('Y')}}
+							&copy; Le Rocher Academie
+						</ion-title>
+					</ion-toolbar>
+				</ion-footer>
+			</div>
+		</ion-split-pane>
 	</ion-app>
 {% endblock %}

@@ -4,11 +4,12 @@
 	{{'Home' | trans}}
 {% endblock %}
 
-{% block content %}
-	<div data-controller="app">
-		{% include "home/partials/_tutorial.html.twig" %}
-	</div>
+
+{% block pageTitlte %}
+	{{block('title')}}
 {% endblock %}
+
+{% block content %}{% endblock %}
 
 {% block stylesheets %}
 	{{parent()}}
