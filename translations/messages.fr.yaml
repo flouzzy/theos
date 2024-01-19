@@ -1,6 +1,7 @@
 # General
 Welcome: Bienvenue
 Home: Accueil
+Main menu: Menu principal
 
 # Account
 Sign in: Se connecter
@@ -14,3 +15,6 @@ Agree terms: Accepter les CGU
 Firstname: Prénom
 Lastname: Nom
 Fullname: Nom complet
+Account: Compte
+Logout: Déconnexion
+Sign out: Se déconnecter

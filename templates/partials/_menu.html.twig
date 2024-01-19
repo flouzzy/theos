@@ -1,0 +1,23 @@
+<ion-list>
+	<ion-list-header>
+		{{'Main menu' | trans}}
+	</ion-list-header>
+	<ion-item href="{{path('home')}}">
+		<ion-icon slot="start" name="home-outline"></ion-icon>
+		<ion-label>
+			{{'Home' | trans}}
+		</ion-label>
+	</ion-item>
+</ion-list>
+
+<ion-list>
+	<ion-list-header>
+		{{'Account' | trans}}
+	</ion-list-header>
+	<ion-item button href="{{path('_logout_main')}}">
+		<ion-icon slot="start" name="log-out-outline"></ion-icon>
+		<ion-label>
+			{{'Sign out' | trans}}
+		</ion-label>
+	</ion-item>
+</ion-list>

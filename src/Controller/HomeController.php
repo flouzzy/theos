@@ -16,8 +16,6 @@ class HomeController extends AbstractController
             $template = 'index';
         }
 
-        $this->addFlash('success', 'Hello world');
-
         return $this->render('home/' . $template . '.html.twig', [
             'controller_name' => 'HomeController',
         ]);
