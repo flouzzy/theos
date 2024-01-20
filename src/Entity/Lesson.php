@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\LessonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: LessonRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Lesson
 {
     #[ORM\Id]
@@ -30,9 +32,23 @@ class Lesson
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'lessons')]
+    private ?User $author = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    public function computeSlug(): void
+    {
+        // Slug
+        $slugger = new AsciiSlugger();
+        $this->slug = $slugger->slug(substr($this->title, 0, 20))->lower();
     }
 
     public function getId(): ?int
@@ -96,6 +112,30 @@ class Lesson
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

@@ -30,6 +30,9 @@ class CourseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Set course author
+            $course->setAuthor($this->getUser());
+
             $entityManager->persist($course);
             $entityManager->flush();
 

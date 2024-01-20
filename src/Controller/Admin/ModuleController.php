@@ -30,6 +30,9 @@ class ModuleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Set author
+            $module->setAuthor($this->getUser());
+
             $entityManager->persist($module);
             $entityManager->flush();
 

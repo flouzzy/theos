@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Course
 {
     #[ORM\Id]
@@ -34,11 +36,28 @@ class Course
     #[ORM\ManyToMany(targetEntity: Module::class, mappedBy: 'courses')]
     private Collection $modules;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = 'images/default-course.png';
+
+    #[ORM\ManyToOne]
+    private ?User $author = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->modules = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    public function computeSlug(): void
+    {
+        // Slug
+        $slugger = new AsciiSlugger();
+        $this->slug = $slugger->slug(substr($this->title, 0, 20))->lower();
     }
 
     public function getId(): ?int
@@ -141,6 +160,42 @@ class Course
         if ($this->modules->removeElement($module)) {
             $module->removeCourse($this);
         }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

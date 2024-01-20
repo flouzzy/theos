@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: ModuleRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Module
 {
     #[ORM\Id]
@@ -34,11 +36,25 @@ class Module
     #[ORM\OneToMany(mappedBy: 'module', targetEntity: Lesson::class, orphanRemoval: true)]
     private Collection $lessons;
 
+    #[ORM\ManyToOne(inversedBy: 'modules')]
+    private ?User $author = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
         $this->lessons = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    public function computeSlug(): void
+    {
+        // Slug
+        $slugger = new AsciiSlugger();
+        $this->slug = $slugger->slug(substr($this->title, 0, 20))->lower();
     }
 
     public function getId(): ?int
@@ -144,6 +160,30 @@ class Module
                 $lesson->setModule(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

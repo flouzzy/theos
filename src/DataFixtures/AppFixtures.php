@@ -11,15 +11,19 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    public const ADMIN_USER_REFERENCE = 'admin-user';
+    public const SIMPLE_USER_REFERENCE = 'user';
+    public const LOREM_IPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum';
+
     public function __construct(private EntityManagerInterface $manager, private UserRepository $userRepository, private UserPasswordHasherInterface $passwordHasher)
     {
     }
     public function load(ObjectManager $manager): void
     {
         // Admin User
-        $adminUser = $this->userRepository->findOneByUsername('admin@test.fr');
-        if (!$adminUser) {
-            $adminUser = $this->createUser(
+        $userAdmin = $this->userRepository->findOneByUsername('admin@test.fr');
+        if (!$userAdmin) {
+            $userAdmin = $this->createUser(
                 [
                     'email' => 'admin@test.fr',
                     'firstname' => 'Charles',
@@ -28,18 +32,30 @@ class AppFixtures extends Fixture
                 ],
                 ['ROLE_ADMIN']
             );
-            $this->manager->persist($adminUser);
+            $this->manager->persist($userAdmin);
         }
 
+        $this->addReference(self::ADMIN_USER_REFERENCE, $userAdmin);
+
         // 5 user accounts
-        for ($index = 0; $index < 4; $index++) {
-            $userID = 'user' . $index;
+        $roles = ['ROLE_CREATOR', 'ROLE_CREATOR_ADMIN', 'ROLE_ADMIN'];
+        for ($index = 0; $index < 10; $index++) {
+            $userRef = self::SIMPLE_USER_REFERENCE . $index;
             $newUser = $this->createUser([
-                'email' => $userID . '@test.fr',
-                'firstname' => $userID . ' FName',
-                'lastname' => $userID . ' LName',
+                'email' => $userRef . '@test.fr',
+                'firstname' => $userRef . ' FName',
+                'lastname' => $userRef . ' LName',
             ]);
+
+            // Set random role to user (default : ROLE_USER)
+            $randomeRoleIndex = random_int(0, 10);
+            if (isset($roles[$randomeRoleIndex])) {
+                $newUser->setRoles([$roles[$randomeRoleIndex]]);
+            }
+
             $this->manager->persist($newUser);
+
+            $this->addReference($userRef, $newUser);
         }
 
         $this->manager->flush();

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -65,11 +66,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Course::class, mappedBy: 'users')]
     private Collection $courses;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = 'images/default-user.png';
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Module::class)]
+    private Collection $modules;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Lesson::class)]
+    private Collection $lessons;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $bio = null;
+
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->courses = new ArrayCollection();
+        $this->modules = new ArrayCollection();
+        $this->lessons = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -282,6 +297,90 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->courses->removeElement($course)) {
             $course->removeUser($this);
         }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Module>
+     */
+    public function getModules(): Collection
+    {
+        return $this->modules;
+    }
+
+    public function addModule(Module $module): static
+    {
+        if (!$this->modules->contains($module)) {
+            $this->modules->add($module);
+            $module->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModule(Module $module): static
+    {
+        if ($this->modules->removeElement($module)) {
+            // set the owning side to null (unless already changed)
+            if ($module->getAuthor() === $this) {
+                $module->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lesson>
+     */
+    public function getLessons(): Collection
+    {
+        return $this->lessons;
+    }
+
+    public function addLesson(Lesson $lesson): static
+    {
+        if (!$this->lessons->contains($lesson)) {
+            $this->lessons->add($lesson);
+            $lesson->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLesson(Lesson $lesson): static
+    {
+        if ($this->lessons->removeElement($lesson)) {
+            // set the owning side to null (unless already changed)
+            if ($lesson->getAuthor() === $this) {
+                $lesson->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): static
+    {
+        $this->bio = $bio;
 
         return $this;
     }
