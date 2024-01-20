@@ -1,0 +1,20 @@
+<h2 class="ion-padding">{{'Course details' | trans}}</h2>
+{# Modules #}
+
+{% for module in course.modules %}
+	<ion-card>
+		<ion-card-header>
+			<ion-card-title>{{module.title}}</ion-card-title>
+		</ion-card-header>
+		<ion-card-content>
+			{{module.description}}
+			<ion-list>
+				{% for lesson in module.lessons %}
+					<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}">
+						<ion-label>{{lesson.title}}</ion-label>
+					</ion-item>
+				{% endfor %}
+			</ion-list>
+		</ion-card-content>
+	</ion-card>
+{% endfor %}

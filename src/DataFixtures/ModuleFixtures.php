@@ -19,7 +19,7 @@ class ModuleFixtures extends Fixture implements DependentFixtureInterface
     {
         for ($index = 0; $index < 10; $index++) {
             $module = new Module;
-            $module->setTitle('Lesson n°' . $index);
+            $module->setTitle('Module n°' . $index);
             $module->setDescription(AppFixtures::LOREM_IPSUM);
 
             /**
