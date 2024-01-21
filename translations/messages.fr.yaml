@@ -33,7 +33,7 @@ Please enter your firstname: Merci de saisir votre prénom
 You can update your personal information by updating the form below: Vous pouvez mettre à jour vos informations personnelles en mettant à jour le formulaire ci-dessous
 Profile update: Mise à jour du profil
 There is already an account with this email or username: Il existe déjà un compte avec cet email ou nom d'utilisateur
-
+Create a new account: Créer un nouveau compte
 # Admin
 Back to Front-office: Retour au front office
 
@@ -48,3 +48,5 @@ Course poster: Affiche de cours
 Your teacher: Votre professeur
 Sign up for this course: S'inscrire à ce cours
 Back to course: Revenir au cours
+Preview: Prévisualiser
+Start: Commencer

@@ -20,6 +20,7 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
         for ($index = 0; $index < 10; $index++) {
             $lesson = new Lesson;
             $lesson->setTitle('Lesson n°' . $index);
+            $lesson->setDescription(AppFixtures::LOREM_IPSUM);
             $lesson->setContent(AppFixtures::LOREM_IPSUM);
 
             /**

@@ -38,6 +38,9 @@ class Lesson
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -136,6 +139,18 @@ class Lesson
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

@@ -36,17 +36,30 @@
 		{# {{ form_start(profileForm, {'attr': {'novalidate': 'novalidate'}}) }} #}
 
 		<ion-item>
-			{{ form_row(profileForm.firstname) }}
+			<ion-label>
+				{{ form_label(profileForm.firstname) }}
+			</ion-label>
+			{{ form_widget(profileForm.firstname) }}
 		</ion-item>
 
 		<ion-item>
-			{{ form_row(profileForm.lastname) }}
+			<ion-label>
+				{{ form_label(profileForm.lastname) }}
+			</ion-label>
+			{{ form_widget(profileForm.lastname) }}
 		</ion-item>
 
 		<ion-item>
-			<button type="submit" class="ion-button">
+			<ion-label>
+				{{ form_label(profileForm.bio) }}
+			</ion-label>
+			{{ form_widget(profileForm.bio) }}
+		</ion-item>
+
+		<ion-item>
+			<ion-button type="submit" color="success">
 				{{'Update' | trans}}
-			</button>
+			</ion-button>
 		</ion-item>
 		{{ form_end(profileForm) }}
 	</ion-list>

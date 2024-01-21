@@ -68,6 +68,7 @@ class AppFixtures extends Fixture
         $user->setFirstname($userData['firstname']);
         $user->setLastname($userData['lastname']);
         $user->setFullname($userData['firstname'] . ' ' . $userData['lastname']);
+        $user->setBio(AppFixtures::LOREM_IPSUM);
         if (count($role) > 0) {
             $user->setRoles($role);
         }
