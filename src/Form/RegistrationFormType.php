@@ -32,7 +32,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Your password should be at least 6 characters',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
@@ -58,9 +58,7 @@ class RegistrationFormType extends AbstractType
             $user->setFirstname($user->getFirstname() ?? $fullnameArray[0] ?? '');
             $user->setLastname($user->getLastname() ?? $fullnameArray[1] ?? '');
 
-            // dd('POST_SUBMIT', $user);
-
-            // Maj des datas
+            // Update user datas
             $event->setData($user);
         });
     }
