@@ -108,6 +108,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->username = $slugger->slug($this->fullname)->lower();
     }
 
+    public function subscribeToCourse(Course $course): self
+    {
+        // Vérifiez si l'utilisateur n'est pas déjà abonné au cours
+        if (!$this->courses->contains($course)) {
+            $this->courses->add($course);
+            $course->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function unsubscribeFromCourse(Course $course): self
+    {
+        // Vérifiez si l'utilisateur est abonné au cours
+        if ($this->courses->contains($course)) {
+            $this->courses->removeElement($course);
+            $course->removeUser($this);
+        }
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

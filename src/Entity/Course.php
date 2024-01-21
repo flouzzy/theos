@@ -113,6 +113,11 @@ class Course
         return $this;
     }
 
+    public function isUserSubscribed(User $user): bool
+    {
+        return $this->users->contains($user);
+    }
+
     /**
      * @return Collection<int, User>
      */

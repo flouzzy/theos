@@ -10,7 +10,7 @@
 	</ion-item>
 
 	{% for lesson in module.lessons %}
-		<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" {% if currentLesson == lesson %} color="light" {% endif %}>
+		<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" {% if currentLesson == lesson %} color="medium" {% endif %}>
 			<ion-icon slot="start" name="ellipse-outline"></ion-icon>
 			<ion-label>{{lesson.title}}</ion-label>
 		</ion-item>

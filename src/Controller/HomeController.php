@@ -12,12 +12,22 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $template = 'landing';
-        if ($this->getUser()) {
+        $params = [];
+
+        /**
+         * @var \App\Entity\User $user
+         */
+        $user = $this->getUser();
+        if ($user) {
+            // Page d'accueil si on est connecté
             $template = 'index';
+
+            $params = [
+                // Cours de l'utilisateur courant
+                'courses' => $user->getCourses()
+            ];
         }
 
-        return $this->render('home/' . $template . '.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
+        return $this->render('home/' . $template . '.html.twig', $params);
     }
 }
