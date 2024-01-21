@@ -47,6 +47,9 @@ class Lesson
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $videoUrl = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $completed = false;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -181,6 +184,18 @@ class Lesson
     public function setVideoUrl(?string $videoUrl): static
     {
         $this->videoUrl = $videoUrl;
+
+        return $this;
+    }
+
+    public function isCompleted(): ?bool
+    {
+        return $this->completed;
+    }
+
+    public function setCompleted(?bool $completed): static
+    {
+        $this->completed = $completed;
 
         return $this;
     }

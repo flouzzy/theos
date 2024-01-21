@@ -19,7 +19,7 @@
 		<ion-grid>
 			<ion-row class="ion-justify-content-center">
 				<ion-col size="3">
-					<ion-button color="warning">{{'Complete and continue' | trans}}</ion-button>
+					<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id})}}" color="warning">{{'Complete and continue' | trans}}</ion-button>
 				</ion-col>
 			</ion-row>
 		</ion-grid>
