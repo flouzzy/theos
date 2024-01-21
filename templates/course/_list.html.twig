@@ -19,6 +19,13 @@
 					</ion-item>
 				</ion-card>
 			</ion-col>
+		{% else %}
+			<ion-col size="12" class="ion-text-center">
+				{{'You are not taking any courses' | trans}}
+			</ion-col>
+			<ion-col size="12" class="ion-text-center">
+				<ion-button color="success" href="{{path('course_index')}}">{{'Start now' | trans}}</ion-button>
+			</ion-col>
 		{% endfor %}
 	</ion-row>
 </ion-grid>

@@ -29,6 +29,7 @@ class LessonController extends AbstractController
             'course' => $course,
             'module' => $module,
             'currentLesson' => $lesson,
+            'isSubscribed' => $course->isUserSubscribed($this->getUser())
         ]);
     }
 
@@ -45,6 +46,16 @@ class LessonController extends AbstractController
     ): Response {
 
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        if (!$course->isUserSubscribed($this->getUser())) {
+            // Si on est pas inscrit au cours, impossible de valider une leçon
+            $this->addFlash('warning', 'You must first register for the course');
+
+            // Go to course page
+            return $this->redirectToRoute('course_show', [
+                'slug' => $course->getSlug()
+            ]);
+        }
 
         $lesson->setCompleted(true);
 
@@ -70,7 +81,7 @@ class LessonController extends AbstractController
             ]);
         } else {
             $this->addFlash('success', 'Module completed');
-            // Go to next lesson module
+            // Go to next module
             return $this->redirectToRoute('course_show', [
                 'slug' => $course->getSlug()
             ]);

@@ -23,7 +23,6 @@ class CourseController extends AbstractController
     #[Route('/{slug}', name: 'show')]
     public function show(Course $course): Response
     {
-        dump($course->isUserSubscribed($this->getUser()));
         return $this->render('course/show.html.twig', [
             'course' => $course,
             'isSubscribed' => $course->isUserSubscribed($this->getUser()),
