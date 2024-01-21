@@ -25,7 +25,7 @@ class CourseController extends AbstractController
     {
         return $this->render('course/show.html.twig', [
             'course' => $course,
-            'isSubscribed' => $course->isUserSubscribed($this->getUser()),
+            'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false
         ]);
     }
 

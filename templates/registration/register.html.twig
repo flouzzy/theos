@@ -6,62 +6,80 @@
 
 {% block content %}
 
-	<ion-row class="ion-justify-content-center">
-		<ion-col size="12" size-sm="6">
-			{% for flash_error in app.flashes('verify_email_error') %}
-				<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-			{% endfor %}
-			{{ form_errors(registrationForm) }}
-			{{ form_start(registrationForm) }}
-			<ion-list>
-				<ion-list-header>
-					<ion-label class="ion-text-center">
-						<h1>
-							{{block('title')}}
-						</h1>
-					</ion-label>
-				</ion-list-header>
+	<ion-grid>
+		<ion-row class="ion-justify-content-center">
+			<ion-col size="12" size-sm="6">
+				{{ form_start(registrationForm, {'attr' : {'novalidate':'novalidate'}}) }}
+				<ion-list>
+					<ion-list-header>
+						<ion-label class="ion-text-center">
+							<h1>
+								{{block('title')}}
+							</h1>
+						</ion-label>
+					</ion-list-header>
 
-				<ion-item>
-					<ion-label>
-						{{ form_label(registrationForm.email) }}
-					</ion-label>
-					{{ form_widget(registrationForm.email) }}
-				</ion-item>
+					<ion-item>
+						{% for flash_error in app.flashes('verify_email_error') %}
+							<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+						{% endfor %}
+					</ion-item>
 
-				<ion-item>
-					<ion-label>
-						{{ form_label(registrationForm.fullname) }}
-					</ion-label>
-					{{ form_widget(registrationForm.fullname) }}
-				</ion-item>
+					<ion-item>
+						<ion-label>
+							{{ form_label(registrationForm.email) }}
+						</ion-label>
+						{{ form_widget(registrationForm.email) }}
+						<ion-text color="danger">
+							{{ form_errors(registrationForm.email) }}
+						</ion-text>
+					</ion-item>
 
-				<ion-item>
-					<ion-label>
-						{{'Password' | trans}}
-					</ion-label>
-					{{ form_widget(registrationForm.plainPassword) }}
-				</ion-item>
+					<ion-item>
+						<ion-label>
+							{{ form_label(registrationForm.fullname) }}
+						</ion-label>
+						{{ form_widget(registrationForm.fullname) }}
+						<ion-text color="danger">
+							{{ form_errors(registrationForm.fullname) }}
+						</ion-text>
+					</ion-item>
 
-				<ion-item>
-					<ion-label>
-						{{ form_label(registrationForm.agreeTerms) }}
-					</ion-label>
-					{{ form_widget(registrationForm.agreeTerms) }}
-				</ion-item>
+					<ion-item>
+						<ion-label>
+							{{'Password' | trans}}
+						</ion-label>
+						{{ form_widget(registrationForm.plainPassword) }}
+						<ion-text color="danger">
+							{{ form_errors(registrationForm.plainPassword) }}
+						</ion-text>
+					</ion-item>
 
-			</ion-list>
-			{# {{ form_row(registrationForm.fullname) }}
-																									{{ form_row(registrationForm.plainPassword, {
-																									label: 'Password'
-																								}) }}
-																									{{ form_row(registrationForm.agreeTerms) }} #}
+					<ion-item>
+						<ion-label>
+							{{ form_label(registrationForm.agreeTerms) }}
+						</ion-label>
+						{{ form_widget(registrationForm.agreeTerms) }}
+						<ion-text color="danger">
+							{{ form_errors(registrationForm.agreeTerms) }}
+						</ion-text>
+					</ion-item>
 
-			<ion-button type="submit" color="success">
-				{{'Create a new account' | trans}}
-			</ion-button>
-			{{ form_end(registrationForm) }}
-		</ion-col>
-	</ion-row>
+				</ion-list>
 
+				<ion-button type="submit" color="success">
+					{{'Create a new account' | trans}}
+				</ion-button>
+				{{ form_end(registrationForm) }}
+			</ion-col>
+		</ion-row>
+		<ion-row class="ion-justify-content-center">
+			<ion-col class="ion-text-center">
+				<ion-text>
+					{{'Already have an account ?' | trans}}
+					<a href="{{path('login')}}">{{'Sign in' | trans}}</a>
+				</ion-text>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
 {% endblock %}

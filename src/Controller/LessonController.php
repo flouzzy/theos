@@ -29,7 +29,7 @@ class LessonController extends AbstractController
             'course' => $course,
             'module' => $module,
             'currentLesson' => $lesson,
-            'isSubscribed' => $course->isUserSubscribed($this->getUser())
+            'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false
         ]);
     }
 

@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
@@ -39,10 +41,28 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'You should agree to our terms.',
+                        'message' => 'You should agree to our terms',
                     ]),
                 ],
             ]);
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            /**
+             * @var \App\Entity\User $user
+             */
+            $user = $event->getData();
+
+
+            // Add firstname and lastname if necesary
+            $fullnameArray = explode(' ', $user->getFullname());
+            $user->setFirstname($user->getFirstname() ?? $fullnameArray[0] ?? '');
+            $user->setLastname($user->getLastname() ?? $fullnameArray[1] ?? '');
+
+            // dd('POST_SUBMIT', $user);
+
+            // Maj des datas
+            $event->setData($user);
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

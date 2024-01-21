@@ -35,8 +35,11 @@ Please enter your email: Merci de saisir votre e-mail
 Please enter your firstname: Merci de saisir votre prénom
 You can update your personal information by updating the form below: Vous pouvez mettre à jour vos informations personnelles en mettant à jour le formulaire ci-dessous
 Profile update: Mise à jour du profil
-There is already an account with this email or username: Il existe déjà un compte avec cet email ou nom d'utilisateur
+There is already an account with this email: Il existe déjà un compte avec cet email
 Create a new account: Créer un nouveau compte
+Already have an account ?: Vous avez déjà un compte ?
+Don't have an account yet ?: Vous n'avez pas encore de compte ?
+You should agree to our terms: Vous devez accepter nos CGU
 
 # Admin
 Back to Front-office: Retour au front office
