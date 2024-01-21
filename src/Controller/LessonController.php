@@ -24,11 +24,11 @@ class LessonController extends AbstractController
         Module $module
 
     ): Response {
-        dd('Hey', $course, $module, $lesson);
-        return $this->render('lesson/index.html.twig', [
+        dump('Hey', $course, $module, $lesson);
+        return $this->render('lesson/show.html.twig', [
             'course' => $course,
             'module' => $module,
-            'lesson' => $lesson,
+            'currentLesson' => $lesson,
         ]);
     }
 }

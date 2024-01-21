@@ -1,0 +1,27 @@
+{% extends 'lesson/layout.html.twig' %}
+
+{% block title %}
+	{{currentLesson.title}}
+	-
+	{{module.title}}
+{% endblock %}
+
+{% block content %}
+	<ion-card>
+		<ion-card-content>
+			{{currentLesson.description}}
+		</ion-card-content>
+	</ion-card>
+	<div class="ion-padding">
+		<div>
+			{{currentLesson.videoEmbeded | raw}}
+		</div>
+		<ion-grid>
+			<ion-row class="ion-justify-content-center">
+				<ion-col size="3">
+					<ion-button color="warning">{{'Complete and continue' | trans}}</ion-button>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</div>
+{% endblock %}

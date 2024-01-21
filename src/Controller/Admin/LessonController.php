@@ -33,8 +33,11 @@ class LessonController extends AbstractController
             // Set author
             $lesson->setAuthor($this->getUser());
 
+
             $entityManager->persist($lesson);
             $entityManager->flush();
+
+            $this->addFlash('success', 'New item added');
 
             return $this->redirectToRoute('admin_lesson_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -62,7 +65,9 @@ class LessonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Your data has been saved');
+
+            return $this->redirectToRoute('admin_lesson_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/lesson/edit.html.twig', [

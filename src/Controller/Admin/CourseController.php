@@ -33,8 +33,11 @@ class CourseController extends AbstractController
             // Set course author
             $course->setAuthor($this->getUser());
 
+
             $entityManager->persist($course);
             $entityManager->flush();
+
+            $this->addFlash('success', 'New item added');
 
             return $this->redirectToRoute('admin_course_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -61,6 +64,8 @@ class CourseController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->addFlash('success', 'Your data has been saved');
 
             return $this->redirectToRoute('admin_course_index', [], Response::HTTP_SEE_OTHER);
         }

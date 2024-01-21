@@ -1,4 +1,10 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<ion-list>
+	<ion-item>
+		{{ form_widget(form) }}
+	</ion-item>
+	<ion-item lines="none">
+		<ion-button color="success" size="normal" type="submit">{{ button_label|default('Save')|trans }}</ion-button>
+	</ion-item>
+</ion-list>
 {{ form_end(form) }}

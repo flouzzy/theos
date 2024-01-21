@@ -33,8 +33,11 @@ class ModuleController extends AbstractController
             // Set author
             $module->setAuthor($this->getUser());
 
+
             $entityManager->persist($module);
             $entityManager->flush();
+
+            $this->addFlash('success', 'New item added');
 
             return $this->redirectToRoute('admin_module_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -61,6 +64,8 @@ class ModuleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->addFlash('success', 'Your data has been saved');
 
             return $this->redirectToRoute('admin_module_index', [], Response::HTTP_SEE_OTHER);
         }

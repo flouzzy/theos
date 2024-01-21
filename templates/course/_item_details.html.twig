@@ -1,6 +1,4 @@
-<h2 class="ion-padding">{{'Course details' | trans}}</h2>
 {# Modules #}
-
 {% for module in course.modules %}
 	<ion-card>
 		<ion-card-header>
@@ -8,18 +6,7 @@
 		</ion-card-header>
 		<ion-card-content>
 			{{module.description}}
-			<ion-list>
-				{% for lesson in module.lessons %}
-					<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}">
-						<ion-label>{{lesson.title}}</ion-label>
-						<p>{{lesson.description |u.truncate(100, '...')}}</p>
-						<ion-button slot="end">
-							<ion-icon name="star" slot="end"></ion-icon>
-							{{'Preview' | trans}}
-						</ion-button>
-					</ion-item>
-				{% endfor %}
-			</ion-list>
+			{% include "course/_item_module_list.html.twig" %}
 		</ion-card-content>
 	</ion-card>
 {% endfor %}

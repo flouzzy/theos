@@ -15,7 +15,10 @@ class UserType extends AbstractType
             // ->add('email')
             ->add('firstname')
             ->add('lastname')
-            ->add('bio');
+            ->add('bio', null, [
+                'attr' => ['rows' => 10, 'cols' => 50],
+                'sanitize_html' => true
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

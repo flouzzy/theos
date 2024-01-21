@@ -1,5 +1,5 @@
 {% for label, messages in app.flashes %}
 	{% for message in messages %}
-		<ion-toast trigger="open-toast" position="bottom" color="{{label}}" message="{{ message }}" is-open="true" duration="7000"></ion-toast>
+		<ion-toast trigger="open-toast" position="bottom" color="{{label}}" message="{{ message | trans }}" is-open="true" duration="7000"></ion-toast>
 	{% endfor %}
 {% endfor %}

@@ -14,6 +14,14 @@
   --ion-color-success-contrast-rgb: 0, 0, 0;
   --ion-color-success-shade: #16774a;
   --ion-color-success-tint: #309365;
+
+  /* Warning */
+  --ion-color-warning: #ef4523;
+  --ion-color-warning-rgb: 239, 69, 35;
+  --ion-color-warning-contrast: #fefefe;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #d23d1f;
+  --ion-color-warning-tint: #f15839;
 }
 .container {
   max-width: 900px;

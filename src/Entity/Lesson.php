@@ -41,6 +41,12 @@ class Lesson
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $videoEmbeded = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $videoUrl = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -151,6 +157,30 @@ class Lesson
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getVideoEmbeded(): ?string
+    {
+        return $this->videoEmbeded;
+    }
+
+    public function setVideoEmbeded(?string $videoEmbeded): static
+    {
+        $this->videoEmbeded = $videoEmbeded;
+
+        return $this;
+    }
+
+    public function getVideoUrl(): ?string
+    {
+        return $this->videoUrl;
+    }
+
+    public function setVideoUrl(?string $videoUrl): static
+    {
+        $this->videoUrl = $videoUrl;
 
         return $this;
     }

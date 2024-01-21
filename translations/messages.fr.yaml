@@ -1,10 +1,13 @@
 # General
 Welcome: Bienvenue
 Home: Accueil
+Back to home: Retour à l'accueil
 Main menu: Menu principal
 All rights reserved: Tous droits réservés
 Update: Sauvegarder
 By: Par
+Your data has been saved: Vos données ont été sauvegardées
+New item added: Nouvel élément ajouté
 
 # Account
 Sign in: Se connecter
@@ -34,6 +37,7 @@ You can update your personal information by updating the form below: Vous pouvez
 Profile update: Mise à jour du profil
 There is already an account with this email or username: Il existe déjà un compte avec cet email ou nom d'utilisateur
 Create a new account: Créer un nouveau compte
+
 # Admin
 Back to Front-office: Retour au front office
 
@@ -50,3 +54,6 @@ Sign up for this course: S'inscrire à ce cours
 Back to course: Revenir au cours
 Preview: Prévisualiser
 Start: Commencer
+
+# Lesson
+Complete and continue: Compléter et continuer

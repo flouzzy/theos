@@ -1,0 +1,11 @@
+<ion-list>
+	{% for lesson in module.lessons %}
+		<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}">
+			<ion-label>{{lesson.title}}</ion-label>
+			<p>{{lesson.description |u.truncate(100, '...')}}</p>
+			<ion-button slot="end" color="danger">
+				{{'Preview' | trans}}
+			</ion-button>
+		</ion-item>
+	{% endfor %}
+</ion-list>

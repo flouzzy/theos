@@ -2,10 +2,17 @@
 	<ion-list-header>
 		{{'Main menu' | trans}}
 	</ion-list-header>
-	<ion-item href="{{path('admin')}}">
-		<ion-icon slot="start" name="home-outline"></ion-icon>
+	<ion-item href="{{path('course_show', {slug:course.slug})}}">
+		<ion-icon slot="start" name="arrow-back-outline"></ion-icon>
 		<ion-label>
 			{{'Back to course' | trans}}
 		</ion-label>
 	</ion-item>
+
+	{% for lesson in module.lessons %}
+		<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" {% if currentLesson == lesson %} color="light" {% endif %}>
+			<ion-icon slot="start" name="ellipse-outline"></ion-icon>
+			<ion-label>{{lesson.title}}</ion-label>
+		</ion-item>
+	{% endfor %}
 </ion-list>

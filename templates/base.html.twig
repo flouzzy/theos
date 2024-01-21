@@ -24,6 +24,7 @@
 		{% endblock %}
 	</head>
 	<body>
+		{% set current_path = app.request.get('_route') %}
 		<ion-app>
 			{% block body %}{% endblock %}
 		</ion-app>
