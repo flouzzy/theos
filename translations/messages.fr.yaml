@@ -8,6 +8,7 @@ Update: Sauvegarder
 By: Par
 Your data has been saved: Vos données ont été sauvegardées
 New item added: Nouvel élément ajouté
+Back to list: Retour à la liste
 
 # Account
 Sign in: Se connecter
@@ -46,6 +47,7 @@ Back to Front-office: Retour au front office
 Dashboard: Tableau de bord
 
 # Course
+New course: Nouveau cours
 All courses: Tous les cours
 Available courses: Cours disponibles
 Courses: Cours
@@ -66,8 +68,11 @@ You must first register for the course: Vous devez d'abord vous inscrire au cour
 
 # Module
 Module completed: Module terminé
+New module: Nouveau module
 
 # Lesson
 Complete and continue: Compléter et continuer
 Congratulations! Your registration has been processed: Félicitations ! Votre inscription a été prise en compte
 Lesson completed: Leçon terminée
+New lesson: Nouvelle leçon
+Edit Lesson: Edition d'une leçon

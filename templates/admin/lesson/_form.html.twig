@@ -1,10 +1,81 @@
-{{ form_start(form) }}
-<ion-list>
-	<ion-item>
-		{{ form_widget(form) }}
-	</ion-item>
-	<ion-item lines="none">
-		<ion-button color="success" size="normal" type="submit">{{ button_label|default('Save')|trans }}</ion-button>
-	</ion-item>
-</ion-list>
-{{ form_end(form) }}
+<div data-controller="editor">
+	{{ form_start(form) }}
+	<ion-list>
+
+		{# Title #}
+		<ion-item lines="none">
+			<ion-label>
+				{{ form_label(form.title) }}
+			</ion-label>
+			{{ form_widget(form.title) }}
+			<ion-text color="danger">
+				{{ form_errors(form.title) }}
+			</ion-text>
+		</ion-item>
+
+		{# description #}
+		<ion-item lines="none">
+			<ion-label>
+				{{ form_label(form.description) }}
+			</ion-label>
+			{{ form_widget(form.description) }}
+			<ion-text color="danger">
+				{{ form_errors(form.description) }}
+			</ion-text>
+		</ion-item>
+
+		{# Content #}
+		<ion-item lines="none">
+			<ion-label>
+				{{ form_label(form.content) }}
+			</ion-label>
+			{{ form_widget(form.content) }}
+			<ion-text color="danger">
+				{{ form_errors(form.content) }}
+			</ion-text>
+		</ion-item>
+
+
+		{# videoEmbeded #}
+		<ion-item lines="none">
+			<ion-label>
+				{{ form_label(form.videoEmbeded) }}
+			</ion-label>
+			{{ form_widget(form.videoEmbeded) }}
+			<ion-text color="danger">
+				{{ form_errors(form.videoEmbeded) }}
+			</ion-text>
+		</ion-item>
+
+
+		{# videoUrl #}
+		<ion-item lines="none">
+			<ion-label>
+				{{ form_label(form.videoUrl) }}
+			</ion-label>
+			{{ form_widget(form.videoUrl) }}
+			<ion-text color="danger">
+				{{ form_errors(form.videoUrl) }}
+			</ion-text>
+		</ion-item>
+
+
+		{# module #}
+		<ion-item lines="none">
+			<ion-label>
+				{{ form_label(form.module) }}
+			</ion-label>
+			{{ form_widget(form.module) }}
+			<ion-text color="danger">
+				{{ form_errors(form.module) }}
+			</ion-text>
+		</ion-item>
+
+
+		<ion-item lines="none">
+			<ion-button color="success" size="normal" type="submit">{{ button_label|default('Save')|trans }}</ion-button>
+		</ion-item>
+
+	</ion-list>
+	{{ form_end(form) }}
+</div>

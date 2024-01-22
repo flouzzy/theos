@@ -17,8 +17,17 @@ class LessonType extends AbstractType
             ->add('title', null, [
                 'attr' => ['class' => 'ion-margin'],
             ])
+            ->add('description', null, [
+                'attr' => [
+                    'class' => 'ion-margin text-editor',
+                    'rows' => 100, 'cols' => 100
+                ],
+            ])
             ->add('content', null, [
-                'attr' => ['class' => 'ion-margin'],
+                'attr' => [
+                    'class' => 'ion-margin text-editor',
+                    'rows' => 100, 'cols' => 100
+                ],
             ])
             ->add('videoEmbeded', null, [
                 'attr' => ['rows' => 10, 'cols' => 50],

@@ -7,20 +7,24 @@
 {% endblock %}
 
 {% block content %}
-	<ion-card color="light">
-		<ion-card-content>
-			{{currentLesson.description}}
-		</ion-card-content>
-	</ion-card>
 	<div class="ion-padding">
+		<ion-text color="dark">
+			{{currentLesson.description | raw}}
+		</ion-text>
 		<div>
 			{{currentLesson.videoEmbeded | raw}}
 		</div>
+		<hr>
+		<ion-text color="dark">
+			{{currentLesson.content | raw}}
+		</ion-text>
 		<ion-grid>
 			<ion-row class="ion-justify-content-center">
 				<ion-col size="3">
 					{% if isSubscribed %}
-						<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id})}}" color="warning">{{'Complete and continue' | trans}}</ion-button>
+						<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id})}}" color="warning">
+							{{'Complete and continue' | trans}}
+						</ion-button>
 					{% else %}
 						<ion-button href="{{path('course_subscribe', {slug:course.slug})}}" color="danger" fill="outline" size="default">
 							<ion-icon slot="start" name="add-outline"></ion-icon>

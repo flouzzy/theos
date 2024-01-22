@@ -1,12 +1,14 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}New Lesson
+{% block title %}
+	{{"New lesson" | trans}}
 {% endblock %}
 
 {% block content %}
-	<h1>Create new Lesson</h1>
-
 	{{ include('admin/lesson/_form.html.twig') }}
-
-	<a href="{{ path('admin_lesson_index') }}">back to list</a>
+{% endblock %}
+{% block javascripts %}
+	<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.2/tinymce.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/tinymce@6.8.2/skins/ui/oxide/content.min.css" rel="stylesheet">
+	{{parent()}}
 {% endblock %}

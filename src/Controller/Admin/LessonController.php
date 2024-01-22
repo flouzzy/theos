@@ -67,7 +67,7 @@ class LessonController extends AbstractController
 
             $this->addFlash('success', 'Your data has been saved');
 
-            return $this->redirectToRoute('admin_lesson_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_lesson_edit', ['id' => $lesson->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/lesson/edit.html.twig', [
