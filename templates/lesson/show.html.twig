@@ -27,7 +27,10 @@
 
 		{# User notes #}
 		{% if app.user %}
+			{# Form #}
 			{{ render(path('note_show', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
+			{# List #}
+			{{ render(path('note_index')) }}
 		{% endif %}
 
 

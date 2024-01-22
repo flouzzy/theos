@@ -7,17 +7,30 @@ use App\Entity\Lesson;
 use App\Entity\Module;
 use App\Entity\Note;
 use App\Form\NoteType;
-use App\Repository\NoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/note', name: 'note_')]
+#[IsGranted('IS_AUTHENTICATED')]
 class NoteController extends AbstractController
 {
+
+    #[Route('/', name: 'index', methods: ['GET', 'POST'])]
+    public function index(): Response
+    {
+        /**
+         * @var \App\Entity\User $currentUser
+         */
+        $currentUser = $this->getUser();
+        return $this->render('note/index.html.twig', [
+            'notes' => $currentUser->getNotes(),
+        ]);
+    }
 
     #[Route('/{courseSlug}/{moduleSlug}/{id}', name: 'show', methods: ['GET', 'POST'])]
     public function showOrAdd(
@@ -36,15 +49,21 @@ class NoteController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
 
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-
         $note = new Note();
-        $form = $this->createForm(NoteType::class, $note);
+        $form = $this->createForm(NoteType::class, $note, [
+            'action' => $this->generateUrl('note_show', [
+                'courseSlug' => $course->getSlug(),
+                'moduleSlug' => $module->getSlug(),
+                'id' => $lesson->getId()
+            ]),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // New note for current user
             $note->setUser($this->getUser());
+
+            $note->setLesson($lesson);
 
             $entityManager->persist($note);
             $entityManager->flush();
