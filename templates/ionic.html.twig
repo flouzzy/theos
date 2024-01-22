@@ -27,13 +27,16 @@
 				<ion-header>
 					<ion-toolbar>
 						<ion-buttons slot="start">
-							<ion-menu-button></ion-menu-button>
+							{% block menuBackButton %}
+								<ion-menu-button></ion-menu-button>
+							{% endblock %}
 						</ion-buttons>
 						<ion-title>
 							{% block pageTitle %}
 								{{block('title')}}
 							{% endblock %}
 						</ion-title>
+						{% block menuHeaderButtons %}{% endblock %}
 					</ion-toolbar>
 				</ion-header>
 				<ion-content class="ion-padding">

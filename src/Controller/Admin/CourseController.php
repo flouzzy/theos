@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Course;
 use App\Form\CourseType;
 use App\Repository\CourseRepository;
+use App\Service\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/course', name: 'admin_course_')]
 class CourseController extends AbstractController
 {
+    public function __construct(private MediaManager $mediaManager)
+    {
+    }
+
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(CourseRepository $courseRepository): Response
     {
@@ -32,6 +37,13 @@ class CourseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Set course author
             $course->setAuthor($this->getUser());
+
+            // Sauvegarde l'image associée à la leçon
+            $imageFile = $form->get('imageFile')->getData();
+            if ($imageFile) {
+                $imageFileName = $this->mediaManager->upload($imageFile, 'course', ['maxWidth' => 1000, 'maxHeight' => 1000]);
+                $course->setImage($imageFileName);
+            }
 
 
             $entityManager->persist($course);
@@ -63,11 +75,19 @@ class CourseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // Sauvegarde l'image associée à la leçon
+            $imageFile = $form->get('imageFile')->getData();
+            if ($imageFile) {
+                $imageFileName = $this->mediaManager->upload($imageFile, 'course', ['maxWidth' => 1000, 'maxHeight' => 1000]);
+                $course->setImage($imageFileName);
+            }
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Your data has been saved');
 
-            return $this->redirectToRoute('admin_course_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_course_edit', ['id' => $course->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/course/edit.html.twig', [
