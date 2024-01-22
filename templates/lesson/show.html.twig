@@ -7,10 +7,15 @@
 {% endblock %}
 
 {% block content %}
+	<ion-card>
+		<ion-card-content>
+			<ion-text color="dark">
+				{{currentLesson.description | raw}}
+			</ion-text>
+		</ion-card-content>
+	</ion-card>
 	<div class="ion-padding">
-		<ion-text color="dark">
-			{{currentLesson.description | raw}}
-		</ion-text>
+
 		<div>
 			{{currentLesson.videoEmbeded | raw}}
 		</div>
