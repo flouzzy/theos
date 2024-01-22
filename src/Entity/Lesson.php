@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LessonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -50,9 +52,16 @@ class Lesson
     #[ORM\Column(nullable: true)]
     private ?bool $completed = false;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $status = 'draft';
+
+    #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Note::class, orphanRemoval: true)]
+    private Collection $notes;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->notes = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -196,6 +205,48 @@ class Lesson
     public function setCompleted(?bool $completed): static
     {
         $this->completed = $completed;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Note>
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): static
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes->add($note);
+            $note->setLesson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): static
+    {
+        if ($this->notes->removeElement($note)) {
+            // set the owning side to null (unless already changed)
+            if ($note->getLesson() === $this) {
+                $note->setLesson(null);
+            }
+        }
 
         return $this;
     }

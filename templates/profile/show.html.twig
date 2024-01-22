@@ -13,54 +13,31 @@
 	<ion-card>
 		<ion-card-header>
 			<ion-card-title>
-				{{'Hello' | trans}},
-				{{ app.user.fullname }}
-				👋
+				<h2>
+					{{'Hello' | trans}},
+					{{ app.user.fullname }}
+					👋
+				</h2>
 			</ion-card-title>
 		</ion-card-header>
 
 		<ion-card-content>
-			{{'You can update your personal information by updating the form below' | trans}}
+			<ion-item lines="none">
+				<ion-thumbnail slot="start">
+					<ion-img src="{{asset(app.user.image)}}" alt="{{'Profile image of'~ app.user.firstname}}"></ion-img>
+				</ion-thumbnail>
+				<ion-label>
+					{{app.user.bio}}
+				</ion-label>
+			</ion-item>
 		</ion-card-content>
 	</ion-card>
 
 	<ion-list>
 		<ion-list-header>
-			<ion-label>
-				<h2>{{'Profile update' | trans}}</h2>
-			</ion-label>
+			<h2>{{'Profile update' | trans}}</h2>
 		</ion-list-header>
 
-		{{ form_errors(profileForm) }}
-		{{ form_start(profileForm) }}
-		{# {{ form_start(profileForm, {'attr': {'novalidate': 'novalidate'}}) }} #}
-
-		<ion-item>
-			<ion-label>
-				{{ form_label(profileForm.firstname) }}
-			</ion-label>
-			{{ form_widget(profileForm.firstname) }}
-		</ion-item>
-
-		<ion-item>
-			<ion-label>
-				{{ form_label(profileForm.lastname) }}
-			</ion-label>
-			{{ form_widget(profileForm.lastname) }}
-		</ion-item>
-
-		<ion-item>
-			<ion-label>
-				{{ form_label(profileForm.bio) }}
-			</ion-label>
-			{{ form_widget(profileForm.bio) }}
-		</ion-item>
-
-		<ion-item>
-			<ion-button type="submit" color="success">
-				{{'Update' | trans}}
-			</ion-button>
-		</ion-item>
-		{{ form_end(profileForm) }}
+		{% include "profile/_form.html.twig" %}
 	</ion-list>
 {% endblock %}

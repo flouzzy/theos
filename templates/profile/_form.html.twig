@@ -1,0 +1,51 @@
+{{ form_errors(profileForm) }}
+{{ form_start(profileForm) }}
+{# {{ form_start(profileForm, {'attr': {'novalidate': 'novalidate'}}) }} #}
+
+<ion-item>
+	<ion-label>
+		{{ form_label(profileForm.firstname) }}
+	</ion-label>
+	{{ form_widget(profileForm.firstname) }}
+	<ion-text color="danger">
+		{{ form_errors(profileForm.firstname) }}
+	</ion-text>
+</ion-item>
+
+<ion-item>
+	<ion-label>
+		{{ form_label(profileForm.lastname) }}
+	</ion-label>
+	{{ form_widget(profileForm.lastname) }}
+	<ion-text color="danger">
+		{{ form_errors(profileForm.lastname) }}
+	</ion-text>
+</ion-item>
+
+<ion-item>
+	<ion-label>
+		{{ form_label(profileForm.bio) }}
+	</ion-label>
+	{{ form_widget(profileForm.bio) }}
+	<ion-text color="danger">
+		{{ form_errors(profileForm.bio) }}
+	</ion-text>
+</ion-item>
+
+
+<ion-item>
+	<ion-label>
+		{{ form_label(profileForm.imageFile) }}
+	</ion-label>
+	{{ form_widget(profileForm.imageFile) }}
+	<ion-text color="danger">
+		{{ form_errors(profileForm.imageFile) }}
+	</ion-text>
+</ion-item>
+
+<ion-item>
+	<ion-button type="submit" color="success">
+		{{'Update' | trans}}
+	</ion-button>
+</ion-item>
+{{ form_end(profileForm) }}

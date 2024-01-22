@@ -1,0 +1,22 @@
+{{ form_start(form) }}
+
+
+<ion-item lines="none">
+	<ion-label>
+		{{ form_label(form.content) }}
+		<ion-note>({{'This content will not be public' | trans}})</ion-note>
+	</ion-label>
+	{{ form_widget(form.content) }}
+	<ion-text color="danger">
+		{{ form_errors(form.content) }}
+	</ion-text>
+</ion-item>
+
+
+<ion-item lines="none">
+	<ion-button type="submit" size="default" color="success">
+		{{'Save' | trans}}
+	</ion-button>
+</ion-item>
+
+{{ form_end(form) }}

@@ -1,6 +1,6 @@
 <ion-grid>
 	<ion-row class="ion-justify-content-center">
-		<ion-col size="3">
+		<ion-col size="12" size-sm="3">
 			{% if isSubscribed %}
 				<ion-button href="{{path('course_unsubscribe', {slug:course.slug})}}" color="danger" size="default">
 					<ion-icon slot="start" name="add-outline"></ion-icon>

@@ -16,13 +16,19 @@ class CourseController extends AbstractController
     public function index(CourseRepository $courseRepository): Response
     {
         return $this->render('course/index.html.twig', [
-            'courses' => $courseRepository->findAll(),
+            'courses' => $courseRepository->findBy(['status' => 'published']),
         ]);
     }
 
     #[Route('/{slug}', name: 'show')]
     public function show(Course $course): Response
     {
+        // Si le cours n'est pas publié et que l'on en est pas le propriétaire, on ne l'affiche pas
+        if ($course->getAuthor() != $this->getUser() && $course->getStatus() != 'published') {
+            $this->addFlash('warning', 'This course is not available');
+            return $this->redirectToRoute('course_index');
+        }
+
         return $this->render('course/show.html.twig', [
             'course' => $course,
             'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false

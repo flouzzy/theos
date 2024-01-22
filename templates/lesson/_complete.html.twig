@@ -1,0 +1,13 @@
+{% if isSubscribed %}
+	<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id})}}" color="warning" fill="solid">
+		<ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+		<ion-text class="ion-hide-md-down">
+			{{'Complete and continue' | trans}}
+		</ion-text>
+	</ion-button>
+{% else %}
+	<ion-button href="{{path('course_subscribe', {slug:course.slug})}}" color="danger" fill="outline" size="default">
+		<ion-icon slot="start" name="add-outline"></ion-icon>
+		{{'Sign up for this course' | trans}}
+	</ion-button>
+{% endif %}

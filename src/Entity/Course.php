@@ -45,6 +45,9 @@ class Course
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $status = 'draft';
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -201,6 +204,18 @@ class Course
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

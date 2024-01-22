@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\UserType;
+use App\Service\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +14,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route('/profile', name: 'profile_')]
 class ProfileController extends AbstractController
 {
+    public function __construct(private MediaManager $mediaManager)
+    {
+    }
+
     #[Route('', name: 'index')]
     public function index(EntityManagerInterface $entityManager, TranslatorInterface $translator, Request $request): Response
     {
@@ -24,9 +29,15 @@ class ProfileController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
-        // dd($form->isSubmitted(), $form->isValid());
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // Sauvegarde l'image associée à la leçon
+            $imageFile = $form->get('imageFile')->getData();
+            if ($imageFile) {
+                $imageFileName = $this->mediaManager->upload($imageFile, 'user', ['maxWidth' => 350, 'maxHeight' => 350]);
+                $user->setImage($imageFileName);
+            }
 
             // !! TODO : remplacer par des events !!
             $user->setFullname($user->getFirstname() . ' ' . $user->getLastname());
@@ -36,6 +47,7 @@ class ProfileController extends AbstractController
 
             return $this->redirectToRoute('profile_index');
         }
+
         return $this->render('profile/show.html.twig', [
             'profileForm' => $form,
         ]);

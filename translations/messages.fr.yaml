@@ -4,11 +4,15 @@ Home: Accueil
 Back to home: Retour à l'accueil
 Main menu: Menu principal
 All rights reserved: Tous droits réservés
-Update: Sauvegarder
+Save: Sauvegarder
+Update: Mettre à jour
 By: Par
 Your data has been saved: Vos données ont été sauvegardées
 New item added: Nouvel élément ajouté
 Back to list: Retour à la liste
+Hello: Salut
+Back: Retour
+Content missing: Contenu absent
 
 # Account
 Sign in: Se connecter
@@ -65,6 +69,7 @@ Unsubscribe from this course: Se désinscrire de ce cours
 You are no longer taking this course: Vous ne suivez plus ce cours
 You are not taking any courses: Vous ne suivez aucun cours
 You must first register for the course: Vous devez d'abord vous inscrire au cours
+This course is not available: Ce cours n'est pas disponible
 
 # Module
 Module completed: Module terminé
@@ -76,6 +81,11 @@ Congratulations! Your registration has been processed: Félicitations ! Votre in
 Lesson completed: Leçon terminée
 New lesson: Nouvelle leçon
 Edit Lesson: Edition d'une leçon
+What did you think of this lesson: Qu'avez-vous pensé de cette leçon
+Enter a new note: Saisir une nouvelle note
+# Note
+Note taking: Prise de notes
+This content will not be public: Ce contenu ne sera pas public
 
 # Media
 Choose an image: Choisir une image

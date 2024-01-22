@@ -10,7 +10,7 @@
   /* Primary */
   --ion-color-primary: #1877f2;
   --ion-color-primary-rgb: 24, 119, 242;
-  --ion-color-primary-contrast: #000000;
+  --ion-color-primary-contrast: #fefefe;
   --ion-color-primary-contrast-rgb: 0, 0, 0;
   --ion-color-primary-shade: #1569d5;
   --ion-color-primary-tint: #2f85f3;
@@ -31,6 +31,12 @@
   --ion-color-warning-shade: #d23d1f;
   --ion-color-warning-tint: #f15839;
 }
+
+ion-thumbnail {
+  --size: 100px;
+  --border-radius: 14px;
+}
+
 hr {
   margin: 1rem 0;
   color: inherit;
@@ -41,6 +47,10 @@ hr {
 .container {
   max-width: 900px;
   margin: 0px auto;
+}
+
+.img-responsive {
+  max-width: 100%;
 }
 
 .bg-primary {

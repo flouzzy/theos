@@ -9,6 +9,13 @@
 	{% include "course/_item.html.twig" %}
 	{% include "course/_item_signup.html.twig" %}
 
+	{% block menuBackButton %}
+		<ion-button href="{{path('course_index')}}">
+			<ion-icon name="arrow-back-outline"></ion-icon>
+			{{'Back' | trans}}
+		</ion-button>
+	{% endblock %}
+
 	{% block menuHeaderButtons %}
 		<ion-buttons slot="end">
 			{% if is_granted('ROLE_ADMIN') %}

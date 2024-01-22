@@ -6,6 +6,7 @@ use App\Entity\Course;
 use App\Entity\Module;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,7 +16,15 @@ class ModuleType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description');
+            ->add('description')
+            ->add('status', ChoiceType::class, [
+                'choices'  => [
+                    'Brouillon' => 'draft',
+                    'Publié' => 'published',
+                    'Privé' => 'private',
+                    'Archivé' => 'archived',
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

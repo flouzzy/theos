@@ -7,6 +7,7 @@ use App\Entity\Module;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,7 +30,16 @@ class CourseType extends AbstractType
                 'multiple' => true,
                 // https://symfony.com/doc/current/reference/forms/types/collection.html#by-reference
                 'by_reference' => false,
-            ])->add('imageFile', FileType::class, [
+            ])
+            ->add('status', ChoiceType::class, [
+                'choices'  => [
+                    'Brouillon' => 'draft',
+                    'Publié' => 'published',
+                    'Privé' => 'private',
+                    'Archivé' => 'archived',
+                ],
+            ])
+            ->add('imageFile', FileType::class, [
                 'label' => $this->translator->trans('Choose an image'),
 
                 // unmapped means that this field is not associated to any entity property

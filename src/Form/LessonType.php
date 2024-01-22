@@ -6,6 +6,7 @@ use App\Entity\Lesson;
 use App\Entity\Module;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -39,6 +40,14 @@ class LessonType extends AbstractType
                 'class' => Module::class,
                 'choice_label' => 'title',
                 'attr' => ['class' => 'ion-margin'],
+            ])
+            ->add('status', ChoiceType::class, [
+                'choices'  => [
+                    'Brouillon' => 'draft',
+                    'Publié' => 'published',
+                    'Privé' => 'private',
+                    'Archivé' => 'archived',
+                ],
             ]);
     }
 
