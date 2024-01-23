@@ -46,6 +46,19 @@ Already have an account ?: Vous avez déjà un compte ?
 Don't have an account yet ?: Vous n'avez pas encore de compte ?
 You should agree to our terms: Vous devez accepter nos CGU
 
+# Reset password
+Enter your email address, and we will send you a link to reset your password: Saisissez votre adresse électronique et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+Send password reset email: Envoyer un e-mail de réinitialisation du mot de passe
+Reset your password: Réinitialiser votre mot de passe
+If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password. This link will expire in: Si un compte correspondant à votre adresse e-mail existe, un e-mail contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe vient d'être envoyé. Ce lien expirera dans
+No reset password token found in the URL or in the session: Aucun jeton de réinitialisation du mot de passe n'a été trouvé dans l'URL ou dans la session
+Your password reset request: Votre demande de réinitialisation du mot de passe
+Forgotten password ?: Mot de passe oublié ?
+Password Reset Email Sent: Courriel de réinitialisation du mot de passe envoyé
+To reset your password, please visit the following link: Pour réinitialiser votre mot de passe, veuillez consulter le lien suivant
+If you don't receive an email please check your spam folder or: Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier spam ou
+Try again: Essayez encore
+
 # Admin
 Back to Front-office: Retour au front office
 Dashboard: Tableau de bord

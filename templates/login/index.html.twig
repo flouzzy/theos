@@ -45,5 +45,13 @@
 				</ion-text>
 			</ion-col>
 		</ion-row>
+		<ion-row class="ion-justify-content-center ion-margin-top">
+			<ion-col class="ion-text-center">
+				<ion-note>
+					{{"Forgotten password ?" | trans}}
+					<a href="{{path('forgot_password_request')}}">{{'Reset your password' | trans}}</a>
+				</ion-note>
+			</ion-col>
+		</ion-row>
 	</ion-grid>
 {% endblock %}

@@ -1,22 +1,49 @@
-{% extends 'base.html.twig' %}
+{% extends 'landing.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}
+	{{'Reset your password' | trans}}
+{% endblock %}
 
-{% block body %}
-    {% for flash_error in app.flashes('reset_password_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
-    <h1>Reset your password</h1>
+{% block content %}
+	{% for flash_error in app.flashes('reset_password_error') %}
+		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+	{% endfor %}
 
-    {{ form_start(requestForm) }}
-        {{ form_row(requestForm.email) }}
-        <div>
-            <small>
-                Enter your email address, and we will send you a
-                link to reset your password.
-            </small>
-        </div>
+	<ion-grid>
+		<ion-row class="ion-justify-content-center">
+			<ion-col size="12" size-sm="6">
+				{{ form_start(requestForm) }}
+				<ion-list>
+					<ion-list-header>
+						<ion-label class="ion-text-center">
+							<h1>
+								{{block('title')}}
+							</h1>
+						</ion-label>
+					</ion-list-header>
 
-        <button class="btn btn-primary">Send password reset email</button>
-    {{ form_end(requestForm) }}
+					<ion-item lines="none">
+						<ion-label>
+							{{ form_label(requestForm.email) }}
+						</ion-label>
+						{{ form_widget(requestForm.email) }}
+						<ion-note>
+							{{'Enter your email address, and we will send you a link to reset your password' | trans}}.
+						</ion-note>
+						<ion-text color="danger">
+							{{ form_errors(requestForm.email) }}
+						</ion-text>
+					</ion-item>
+
+					<ion-item lines="none">
+						<ion-button color="success" size="default" type="submit">
+							{{'Send password reset email' | trans}}
+						</ion-button>
+					</ion-item>
+
+				</ion-list>
+			</ion-col>
+			{{ form_end(requestForm) }}
+		</ion-row>
+	</ion-grid>
 {% endblock %}
