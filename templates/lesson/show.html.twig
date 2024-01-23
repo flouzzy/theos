@@ -26,7 +26,7 @@
 
 
 		{# User notes #}
-		{% if app.user %}
+		{% if is_granted('IS_AUTHENTICATED') %}
 			{# Form #}
 			{{ render(path('note_show', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
 			{# List #}

@@ -39,11 +39,18 @@
 		</ion-list-header>
 
 		{% include "profile/_form.html.twig" %}
-
+	</ion-list>
+	<ion-list>
+		<ion-list-header>
+			<h2>{{'Manage your account' | trans}}</h2>
+		</ion-list-header>
 		<ion-item>
-			<a href="{{path('forgot_password_request')}}">
-				{{'Reset password' | trans}}
-			</a>
+			<ion-buttons>
+				<ion-button href="{{path('forgot_password_request')}}" color="success" fill="outline">
+					{{'Reset your password' | trans}}
+				</ion-button>
+				{% include "profile/_delete.html.twig" %}
+			</ion-buttons>
 		</ion-item>
 	</ion-list>
 {% endblock %}

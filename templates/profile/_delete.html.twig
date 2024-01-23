@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('profile_delete', {'id': app.user.id}) }}" onsubmit="return confirm('{{'Are you sure you want to delete your account ?' | trans}} ?');">
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ app.user.id) }}">
+	<ion-button type="submit" color="danger" fill="solid">{{'Delete my account' | trans}}</ion-button>
+</form>

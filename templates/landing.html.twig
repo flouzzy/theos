@@ -5,13 +5,22 @@
 		<ion-toolbar>
 			<ion-title>Le Rocher Academie</ion-title>
 			<ion-buttons slot="end">
-				<ion-button href="{{path('login')}}">
-					<ion-icon name="log-in-outline"></ion-icon>
-					{{'Sign in' | trans}}
-				</ion-button>
-				<ion-button href="{{path('register')}}" color="danger">
-					{{'Sign up' | trans}}
-				</ion-button>
+				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+					<ion-button href="{{path('home')}}">
+						<ion-icon slot="start" name="home-outline"></ion-icon>
+						<span class="ion-hide-sm-down">
+							{{'Back to home' | trans}}
+						</span>
+					</ion-button>
+				{% else %}
+					<ion-button href="{{path('login')}}">
+						<ion-icon slot="start" name="log-in-outline"></ion-icon>
+						{{'Sign in' | trans}}
+					</ion-button>
+					<ion-button href="{{path('register')}}" color="danger">
+						{{'Sign up' | trans}}
+					</ion-button>
+				{% endif %}
 			</ion-buttons>
 		</ion-toolbar>
 	</ion-header>

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Form\UserType;
 use App\Service\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -9,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/profile', name: 'profile_')]
@@ -51,5 +53,26 @@ class ProfileController extends AbstractController
         return $this->render('profile/show.html.twig', [
             'profileForm' => $form,
         ]);
+    }
+
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
+    {
+        /**
+         * @var \App\Entity\User $user
+         */
+        $user = $this->getUser();
+
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            // Forcer la déconnexion de l'utilisateur
+            $tokenStorage->setToken(null);
+
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Your account has been successfully deleted');
+        }
+
+        return $this->redirectToRoute('login', [], Response::HTTP_SEE_OTHER);
     }
 }

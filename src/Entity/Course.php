@@ -39,7 +39,8 @@ class Course
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = 'images/default-course.png';
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'authorCourses')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
     #[ORM\Column(length: 255)]

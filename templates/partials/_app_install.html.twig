@@ -1,0 +1,25 @@
+<ion-modal id="modalAppInstall">
+	<ion-header>
+		<ion-toolbar>
+			<ion-title>Le Rocher Academie</ion-title>
+			<ion-buttons slot="end">
+				<ion-button data-action="click->app#toggleA2HSModal">{{'Close' | trans}}</ion-button>
+			</ion-buttons>
+		</ion-toolbar>
+	</ion-header>
+	<ion-content class="ion-padding ion-text-center mx-auto">
+		<h2>
+			{{"Build your spiritual life on the rock" | trans}}
+		</h2>
+		<img src="{{ asset('images/landing.jpg') }}" alt='Cover Le Rocher Academie' class="img-responsive">
+		<p class="my-4">
+			{{"Theology and leadership courses to help you fulfill your calling" | trans}}
+		</p>
+	</ion-content>
+	<ion-footer>
+		<ion-button expand="full" color="danger" id="installApp">
+			<i class="bi bi-box-seam fs-4"></i>
+			<span class="p-3">{{'Install the application' | trans}}</span>
+		</ion-button>
+	</ion-footer>
+</ion-modal>

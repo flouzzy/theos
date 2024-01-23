@@ -21,6 +21,7 @@ class ModuleFixtures extends Fixture implements DependentFixtureInterface
             $module = new Module;
             $module->setTitle('Module n°' . $index);
             $module->setDescription(AppFixtures::LOREM_IPSUM);
+            $module->setStatus('published');
 
             /**
              * @var \App\Entity\User $author

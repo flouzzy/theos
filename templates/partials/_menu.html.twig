@@ -25,7 +25,9 @@
 		{{'Account' | trans}}
 	</ion-list-header>
 
-	{% if app.user %}
+
+	{% if is_granted('IS_AUTHENTICATED') %}
+
 		{% if is_granted('ROLE_ADMIN') %}
 			<ion-item button href="{{path('admin')}}">
 				<ion-icon slot="start" name="build-outline"></ion-icon>

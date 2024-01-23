@@ -44,6 +44,7 @@ class CourseFixtures extends Fixture
         $course->setTitle($title);
         $course->setDescription(AppFixtures::LOREM_IPSUM);
         $course->setAuthor($author);
+        $course->setStatus('published');
         return $course;
     }
 }

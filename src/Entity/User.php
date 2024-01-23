@@ -68,10 +68,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = 'images/default-user.png';
 
-    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Module::class)]
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Module::class, orphanRemoval: true)]
     private Collection $modules;
 
-    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Lesson::class)]
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Lesson::class, orphanRemoval: true)]
     private Collection $lessons;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -79,6 +79,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Note::class, orphanRemoval: true)]
     private Collection $notes;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Course::class, orphanRemoval: true)]
+    private Collection $authorCourses;
 
 
     public function __construct()
@@ -88,6 +91,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->modules = new ArrayCollection();
         $this->lessons = new ArrayCollection();
         $this->notes = new ArrayCollection();
+        $this->authorCourses = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -434,6 +438,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($note->getUser() === $this) {
                 $note->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Course>
+     */
+    public function getAuthorCourses(): Collection
+    {
+        return $this->authorCourses;
+    }
+
+    public function addAuthorCourse(Course $authorCourse): static
+    {
+        if (!$this->authorCourses->contains($authorCourse)) {
+            $this->authorCourses->add($authorCourse);
+            $authorCourse->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuthorCourse(Course $authorCourse): static
+    {
+        if ($this->authorCourses->removeElement($authorCourse)) {
+            // set the owning side to null (unless already changed)
+            if ($authorCourse->getUser() === $this) {
+                $authorCourse->setUser(null);
             }
         }
 

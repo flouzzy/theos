@@ -13,6 +13,7 @@ Back to list: Retour à la liste
 Hello: Salut
 Back: Retour
 Content missing: Contenu absent
+Close: Fermer
 
 # Account
 Sign in: Se connecter
@@ -45,6 +46,10 @@ Create a new account: Créer un nouveau compte
 Already have an account ?: Vous avez déjà un compte ?
 Don't have an account yet ?: Vous n'avez pas encore de compte ?
 You should agree to our terms: Vous devez accepter nos CGU
+Manage your account: Gestion du compte
+Delete my account: Supprimer mon compte
+Are you sure you want to delete your account ?: Êtes -vous sur de vouloir supprimer votre compte
+Your account has been successfully deleted: Votre compte a bien été supprimé
 
 # Reset password
 Enter your email address, and we will send you a link to reset your password: Saisissez votre adresse électronique et nous vous enverrons un lien pour réinitialiser votre mot de passe.
@@ -102,3 +107,8 @@ This content will not be public: Ce contenu ne sera pas public
 
 # Media
 Choose an image: Choisir une image
+
+# App
+Theology and leadership courses to help you fulfill your calling: Des cours de théologie et de leadership pour entrer dans son appel
+Build your spiritual life on the rock: Batissez votre vie spirituelle sur le roc
+Install the application: Installer l'application
