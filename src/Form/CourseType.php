@@ -34,6 +34,7 @@ class CourseType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'choices'  => [
                     'Brouillon' => 'draft',
+                    'En cours' => 'progress',
                     'Publié' => 'published',
                     'Privé' => 'private',
                     'Archivé' => 'archived',
