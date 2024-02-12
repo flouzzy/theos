@@ -20,11 +20,9 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    private EmailVerifier $emailVerifier;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    public function __construct(private EmailVerifier $emailVerifier, private TranslatorInterface $translator)
     {
-        $this->emailVerifier = $emailVerifier;
     }
 
     #[Route('/register', name: 'register')]
@@ -47,17 +45,9 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation(
-                'verify_email',
-                $user,
-                (new TemplatedEmail())
-                    ->from(new Address('no-reply@academie.lerocher.fr', 'Le Rocher Academie'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-            // do anything else you need here, like send an email
-            // return $this->redirectToRoute('login');
+            $this->sendEmailConfirmation($user);
+
+            // Force user login
             $redirectResponse = $security->login($user, 'form_login');
             return $redirectResponse;
         }
@@ -95,5 +85,43 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', 'Your email address has been verified.');
 
         return $this->redirectToRoute('register');
+    }
+
+    #[Route('/verify/resend-email', name: 'verify_email_resend', priority: 3)]
+    public function resendVerifyEmail(): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        /**
+         * @var \App\Entity\User $user
+         */
+        $user = $this->getUser();
+
+        // Send verification email
+        $this->sendEmailConfirmation($user);
+
+        $this->addFlash('success', 'A confirmation e-mail has been sent to you');
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * Send verification email
+     *
+     * @param User $user
+     * @return void
+     */
+    private function sendEmailConfirmation(User $user)
+    {
+        // generate a signed url and email it to the user
+        $this->emailVerifier->sendEmailConfirmation(
+            'verify_email',
+            $user,
+            (new TemplatedEmail())
+                ->from(new Address('no-reply@academie.lerocher.fr', 'Le Rocher Academie'))
+                ->to($user->getEmail())
+                ->subject($this->translator->trans('Please Confirm your Email'))
+                ->htmlTemplate('registration/confirmation_email.html.twig')
+        );
     }
 }

@@ -1,0 +1,18 @@
+{# Si un compte n'est pas vérifié, on affiche un message #}
+
+{% if app.user and app.user.isVerified %}
+	<div class="alert alert-danger">
+		<p>{{ app.user.firstname }}, votre compte n'est pas encore vérifié.</p>
+		<p>
+			Veuillez, s'il vous plait :
+			<ul>
+				<li>Vérifier votre boîte mail (Spam inclus)</li>
+				<li>
+					ou alors,
+					<a href="{{ path('verify_email_resend') }}">cliquez ici</a>
+					pour renvoyer le mail de vérification
+				</li>
+			</ul>
+		</p>
+	</div>
+{% endif %}

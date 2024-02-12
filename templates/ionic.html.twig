@@ -28,7 +28,7 @@
 					<ion-toolbar>
 						<ion-buttons slot="start">
 							{% block menuBackButton %}
-								<ion-menu-button></ion-menu-button>
+								<ion-menu-button class="ion-hide-sm-up"></ion-menu-button>
 							{% endblock %}
 						</ion-buttons>
 						<ion-title>
@@ -41,6 +41,7 @@
 				</ion-header>
 				<ion-content class="ion-padding">
 					{% include "partials/_flash.html.twig" %}
+					{% include "partials/_warning.html.twig" %}
 					{% block content %}{% endblock %}
 				</ion-content>
 				<ion-footer>
