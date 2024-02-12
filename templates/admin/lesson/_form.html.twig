@@ -6,8 +6,8 @@
 		<ion-item lines="none">
 			<ion-label>
 				{{ form_label(form.title) }}
+				{{ form_widget(form.title) }}
 			</ion-label>
-			{{ form_widget(form.title) }}
 			<ion-text color="danger">
 				{{ form_errors(form.title) }}
 			</ion-text>
@@ -17,8 +17,8 @@
 		<ion-item lines="none">
 			<ion-label>
 				{{ form_label(form.description) }}
+				{{ form_widget(form.description) }}
 			</ion-label>
-			{{ form_widget(form.description) }}
 			<ion-text color="danger">
 				{{ form_errors(form.description) }}
 			</ion-text>
@@ -28,8 +28,8 @@
 		<ion-item lines="none">
 			<ion-label>
 				{{ form_label(form.content) }}
+				{{ form_widget(form.content) }}
 			</ion-label>
-			{{ form_widget(form.content) }}
 			<ion-text color="danger">
 				{{ form_errors(form.content) }}
 			</ion-text>
@@ -40,8 +40,8 @@
 		<ion-item lines="none">
 			<ion-label>
 				{{ form_label(form.videoEmbeded) }}
+				{{ form_widget(form.videoEmbeded) }}
 			</ion-label>
-			{{ form_widget(form.videoEmbeded) }}
 			<ion-text color="danger">
 				{{ form_errors(form.videoEmbeded) }}
 			</ion-text>
@@ -52,8 +52,8 @@
 		<ion-item lines="none">
 			<ion-label>
 				{{ form_label(form.videoUrl) }}
+				{{ form_widget(form.videoUrl) }}
 			</ion-label>
-			{{ form_widget(form.videoUrl) }}
 			<ion-text color="danger">
 				{{ form_errors(form.videoUrl) }}
 			</ion-text>
@@ -64,10 +64,22 @@
 		<ion-item lines="none">
 			<ion-label>
 				{{ form_label(form.module) }}
+				{{ form_widget(form.module) }}
 			</ion-label>
-			{{ form_widget(form.module) }}
 			<ion-text color="danger">
 				{{ form_errors(form.module) }}
+			</ion-text>
+		</ion-item>
+
+
+		{# status #}
+		<ion-item lines="none">
+			<ion-label>
+				{{ form_label(form.status) }}
+				{{ form_widget(form.status) }}
+			</ion-label>
+			<ion-text color="danger">
+				{{ form_errors(form.status) }}
 			</ion-text>
 		</ion-item>
 

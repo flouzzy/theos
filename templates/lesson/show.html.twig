@@ -9,21 +9,30 @@
 {% block content %}
 	<ion-card>
 		<ion-card-content>
+			<h2>{{'Description' | trans}}</h2>
 			<ion-text color="dark">
 				{{currentLesson.description | raw}}
 			</ion-text>
 		</ion-card-content>
 	</ion-card>
-	<div class="ion-padding">
 
+	<div class="ion-padding">
 		<div>
 			{{currentLesson.videoEmbeded | raw}}
 		</div>
-		<hr>
-		<ion-text color="dark">
-			{{currentLesson.content | raw}}
-		</ion-text>
 
+		<ion-accordion-group class="ion-padding-vertical">
+			<ion-accordion>
+				<ion-item slot="header" color="light">
+					<ion-label>{{'Text content' | trans}}</ion-label>
+				</ion-item>
+				<div class="ion-padding" slot="content">
+					<ion-text color="dark">
+						{{currentLesson.content | raw}}
+					</ion-text>
+				</div>
+			</ion-accordion>
+		</ion-accordion-group>
 
 		{# User notes #}
 		{% if is_granted('IS_AUTHENTICATED') %}

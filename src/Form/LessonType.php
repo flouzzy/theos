@@ -21,7 +21,7 @@ class LessonType extends AbstractType
             ->add('description', null, [
                 'attr' => [
                     'class' => 'ion-margin text-editor',
-                    'rows' => 100, 'cols' => 100
+                    'rows' => 100, 'cols' => 20
                 ],
             ])
             ->add('content', null, [
@@ -31,7 +31,7 @@ class LessonType extends AbstractType
                 ],
             ])
             ->add('videoEmbeded', null, [
-                'attr' => ['rows' => 10, 'cols' => 50],
+                'attr' => ['rows' => 10, 'cols' => 20],
             ])
             ->add('videoUrl', null, [
                 'attr' => ['class' => 'ion-margin'],
