@@ -1,6 +1,6 @@
 {# Si un compte n'est pas vérifié, on affiche un message #}
 
-{% if app.user and app.user.isVerified %}
+{% if app.user and not app.user.isVerified %}
 	<ion-text color="danger" class="ion-text-center">
 		<p>
 			{{ app.user.firstname }},
