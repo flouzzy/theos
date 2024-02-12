@@ -3,7 +3,7 @@
 {% block body %}
 	<ion-header>
 		<ion-toolbar>
-			<ion-title>Le Rocher Academie</ion-title>
+			<ion-title class="ion-hide-sm-down">Le Rocher Academie</ion-title>
 			<ion-buttons slot="end">
 				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 					<ion-button href="{{path('home')}}">

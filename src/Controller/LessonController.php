@@ -73,7 +73,7 @@ class LessonController extends AbstractController
 
         if ($nextLesson) {
             // Go to next lesson
-            $this->addFlash('succes', 'Lesson completed');
+            $this->addFlash('success', 'Lesson completed');
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),

@@ -3,10 +3,12 @@
 
 <ion-item lines="none">
 	<ion-label>
-		{{ form_label(form.content) }}
+		<h3>
+			{{ form_label(form.content) }}
+		</h3>
 		<ion-note>({{'This content will not be public' | trans}})</ion-note>
+		{{ form_widget(form.content) }}
 	</ion-label>
-	{{ form_widget(form.content) }}
 	<ion-text color="danger">
 		{{ form_errors(form.content) }}
 	</ion-text>

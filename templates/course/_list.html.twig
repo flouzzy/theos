@@ -2,11 +2,11 @@
 	<ion-row>
 		{% for course in courses %}
 			<ion-col size="12" size-sm="4">
-				<ion-card>
-					<ion-item href="{{path('course_show', {slug:course.slug})}}">
+				<ion-item {% if course.status == 'published' %} href="{{path('course_show', {slug:course.slug})}}" {% endif %} lines="none">
+					<ion-card>
 						<img alt="{{'Course poster' | trans}}" src="{{asset(course.image)}}"/>
 						<ion-card-header>
-							<ion-card-title>{{course.title}}</ion-card-title>
+							<ion-card-title>{{course.title|u.truncate(40, '...')}}</ion-card-title>
 							<ion-card-subtitle>
 								{{'By' | trans}}
 								{{course.author.firstname}}
@@ -14,14 +14,20 @@
 						</ion-card-header>
 
 						<ion-card-content>
-							{{course.description|u.truncate(200, '...')}}
+							{% set truncatContent = course.status == 'progress' ? 50 :200  %}
+							{{course.description|u.truncate(truncatContent, '...')}}
+							{% if course.status == 'progress' %}
+								<ion-chip color="danger">
+									{{'Coming soon' | trans}}
+								</ion-chip>
+							{% endif %}
 						</ion-card-content>
-					</ion-item>
-				</ion-card>
+					</ion-card>
+				</ion-item>
 			</ion-col>
 		{% else %}
 			<ion-col size="12" class="ion-text-center">
-				{{'You are not taking any courses' | trans}}
+				{{'No course available' | trans}}
 			</ion-col>
 			<ion-col size="12" class="ion-text-center">
 				<ion-button color="success" href="{{path('course_index')}}">{{'Start now' | trans}}</ion-button>
