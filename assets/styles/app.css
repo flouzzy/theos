@@ -37,6 +37,17 @@ ion-thumbnail {
   --border-radius: 14px;
 }
 
+.h1,
+h1 {
+  font-size: calc(1.375rem + 1.5vw);
+}
+
+.h2,
+h2,
+.sc-ion-label-md-s h2 {
+  font-size: calc(1.325rem + 0.9vw);
+}
+
 hr {
   margin: 1rem 0;
   color: inherit;
@@ -116,4 +127,8 @@ hr {
 .form-control,
 .form-select {
   margin: 0.7em 0;
+}
+
+.form-signin {
+  max-width: 50rem;
 }

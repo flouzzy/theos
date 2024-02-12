@@ -6,16 +6,16 @@
 
 {% block content %}
 
-	<ion-grid>
+	<ion-grid class="form-signin">
 		<ion-row class="ion-justify-content-center">
 			<ion-col size="12" size-sm="6">
 				{{ form_start(registrationForm, {'attr' : {'novalidate':'novalidate'}}) }}
 				<ion-list>
 					<ion-list-header>
 						<ion-label class="ion-text-center">
-							<h1>
+							<h2>
 								{{block('title')}}
-							</h1>
+							</h2>
 						</ion-label>
 					</ion-list-header>
 
@@ -25,41 +25,49 @@
 						{% endfor %}
 					</ion-item>
 
-					<ion-item>
+					<ion-item lines="none">
 						<ion-label>
-							{{ form_label(registrationForm.email) }}
+							<h3>
+								{{ form_label(registrationForm.email) }}
+							</h3>
+							{{ form_widget(registrationForm.email) }}
 						</ion-label>
-						{{ form_widget(registrationForm.email) }}
 						<ion-text color="danger">
 							{{ form_errors(registrationForm.email) }}
 						</ion-text>
 					</ion-item>
 
-					<ion-item>
+					<ion-item lines="none">
 						<ion-label>
-							{{ form_label(registrationForm.fullname) }}
+							<h3>
+								{{ form_label(registrationForm.fullname) }}
+							</h3>
+							{{ form_widget(registrationForm.fullname) }}
 						</ion-label>
-						{{ form_widget(registrationForm.fullname) }}
 						<ion-text color="danger">
 							{{ form_errors(registrationForm.fullname) }}
 						</ion-text>
 					</ion-item>
 
-					<ion-item>
+					<ion-item lines="none">
 						<ion-label>
-							{{'Password' | trans}}
+							<h3>
+								{{'Password' | trans}}
+							</h3>
+							{{ form_widget(registrationForm.plainPassword) }}
 						</ion-label>
-						{{ form_widget(registrationForm.plainPassword) }}
 						<ion-text color="danger">
 							{{ form_errors(registrationForm.plainPassword) }}
 						</ion-text>
 					</ion-item>
 
-					<ion-item>
+					<ion-item lines="none">
 						<ion-label>
-							{{ form_label(registrationForm.agreeTerms) }}
+							<h3>
+								{{ form_label(registrationForm.agreeTerms) }}
+							</h3>
+							{{ form_widget(registrationForm.agreeTerms) }}
 						</ion-label>
-						{{ form_widget(registrationForm.agreeTerms) }}
 						<ion-text color="danger">
 							{{ form_errors(registrationForm.agreeTerms) }}
 						</ion-text>
