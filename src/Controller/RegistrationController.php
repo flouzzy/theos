@@ -120,7 +120,7 @@ class RegistrationController extends AbstractController
             (new TemplatedEmail())
                 ->from(new Address('no-reply@academie.lerocher.fr', 'Le Rocher Academie'))
                 ->to($user->getEmail())
-                ->subject($this->translator->trans('Please confirm your Email'))
+                ->subject($this->translator->trans('Please confirm your email'))
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
     }
