@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
@@ -86,36 +87,6 @@ class RegistrationController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    // #[Route('/verify/email', name: 'verify_email')]
-    // public function verifyUserEmail(Request $request, UserRepository $userRepository, TranslatorInterface $translator): Response
-    // {
-    //     $id = $request->query->get('id'); // retrieve the user id from the url
-
-    //     if (null === $id) {
-    //         return $this->redirectToRoute('home');
-    //     }
-
-    //     $user = $userRepository->find($id);
-
-    //     if (null === $user) {
-    //         return $this->redirectToRoute('home');
-    //     }
-
-    //     // validate email confirmation link, sets User::isVerified=true and persists
-    //     try {
-    //         $this->emailVerifier->handleEmailConfirmation($request, $user);
-    //     } catch (VerifyEmailExceptionInterface $exception) {
-    //         $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
-
-    //         return $this->redirectToRoute('register');
-    //     }
-
-    //     // @TODO Change the redirect on success and handle or remove the flash message in your templates
-    //     $this->addFlash('success', 'Your email address has been verified.');
-
-    //     return $this->redirectToRoute('register');
-    // }
-
     #[Route('/verify/resend-email', name: 'verify_email_resend', priority: 3)]
     public function resendVerifyEmail(): Response
     {
@@ -159,13 +130,15 @@ class RegistrationController extends AbstractController
         // On génère le token
         $token = $this->jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
 
+        $signedUrl = $this->generateUrl('verify_email', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+
         // On envoie un mail        
         $this->mailer->send(
             new Address('no-reply@academie.lerocher.fr', 'Le Rocher Academie'),
             $user->getEmail(),
             $this->translator->trans('Please confirm your email'),
             'registration/confirmation_email.html.twig',
-            compact('user', 'token')
+            compact('user', 'signedUrl')
         );
     }
 }

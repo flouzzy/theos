@@ -3,19 +3,17 @@
 	{{'Please confirm your email' | trans}}
 </h1>
 
-{% set url = absolute_url(path('verify_email', {token: token}), true) %}
-
 <p>
 	{{'Please confirm your email address by clicking the following link' | trans}}:
 	<br><br>
-	<a href="{{ url }}">
+	<a href="{{ signedUrl }}">
 		{{'Confirm my Email' | trans}}
 	</a>
 </p>
 <p>
 	{{'Or copy the following url into your browser' | trans}}
-	<a href="{{ url }}">
-		{{ url }}
+	<a href="{{ signedUrl }}">
+		{{ signedUrl }}
 	</a>
 </p>
 <p>
