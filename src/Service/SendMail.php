@@ -2,17 +2,16 @@
 
 namespace App\Service;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
 class SendMail
 {
-    private $mailer;
-
-    public function __construct(MailerInterface $mailer)
+    public function __construct(private MailerInterface $mailer, private LoggerInterface $logger)
     {
-        $this->mailer = $mailer;
     }
 
     public function send(
@@ -31,6 +30,13 @@ class SendMail
             ->context($context);
 
         // On envoie le mail
-        $this->mailer->send($email);
+
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            // some error prevented the email sending; display an
+            // error message or try to resend the message
+            $this->logger->error($e->getDebug());
+        }
     }
 }

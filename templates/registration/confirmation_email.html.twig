@@ -3,14 +3,14 @@
 	{{'Please confirm your email' | trans}}
 </h1>
 
-{% set url = absolute_url(path('verify_email', {token: token})) %}
+{% set url = absolute_url(path('verify_email', {token: token}), true) %}
 
 <p>
 	{{'Please confirm your email address by clicking the following link' | trans}}:
 	<br><br>
 	<a href="{{ url }}">
 		{{'Confirm my Email' | trans}}
-	</a>.
+	</a>
 </p>
 <p>
 	{{'Or copy the following url into your browser' | trans}}
@@ -18,7 +18,10 @@
 		{{ url }}
 	</a>
 </p>
-{{'This link will expire in' | trans}}
-{{ '1 hour' | trans }}.</p><p>
-{{'Thank you' | trans}}
-!</p>
+<p>
+	{{'This link will expire in' | trans}}
+	{{ '1 hour' | trans }}.
+</p>
+<p>
+	{{'Thank you' | trans}}!
+</p>

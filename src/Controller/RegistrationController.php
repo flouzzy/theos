@@ -159,7 +159,7 @@ class RegistrationController extends AbstractController
         // On génère le token
         $token = $this->jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
 
-        // On envoie un mail
+        // On envoie un mail        
         $this->mailer->send(
             new Address('no-reply@academie.lerocher.fr', 'Le Rocher Academie'),
             $user->getEmail(),
