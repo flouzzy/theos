@@ -4,10 +4,19 @@
 	{{'Edit Lesson' | trans}}
 {% endblock %}
 
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_lesson_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+		{{'Back' | trans}}
+	</ion-button>
+{% endblock %}
+
 {% block content %}
 	{{ include('admin/lesson/_form.html.twig', {'button_label': 'Update'}) }}
 	{{ include('admin/lesson/_delete_form.html.twig') }}
 {% endblock %}
+
 {% block javascripts %}
 	<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.2/tinymce.min.js"></script>
 	<link href="https://cdn.jsdelivr.net/npm/tinymce@6.8.2/skins/ui/oxide/content.min.css" rel="stylesheet">

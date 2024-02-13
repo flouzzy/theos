@@ -39,7 +39,7 @@ class ModuleController extends AbstractController
 
             $this->addFlash('success', 'New item added');
 
-            return $this->redirectToRoute('admin_module_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_module_edit', ['id' => $module->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/module/new.html.twig', [
@@ -67,7 +67,7 @@ class ModuleController extends AbstractController
 
             $this->addFlash('success', 'Your data has been saved');
 
-            return $this->redirectToRoute('admin_module_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_module_edit', ['id' => $module->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/module/edit.html.twig', [

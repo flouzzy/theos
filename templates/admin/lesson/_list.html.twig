@@ -1,0 +1,24 @@
+<ion-grid>
+	<ion-row>
+		{% for lesson in lessons %}
+			<ion-col size="12" size-sm="3">
+				<ion-item href="{{path('admin_lesson_edit', {id:lesson.id})}}" lines="none">
+					<ion-card>
+						<ion-card-header>
+							<ion-card-title>{{ lesson.title }}</ion-card-title>
+							<ion-card-subtitle>{{ lesson.module.title }}</ion-card-subtitle>
+						</ion-card-header>
+
+						<ion-card-content>
+							{{ lesson.description|u.truncate(100, '...') }}
+						</ion-card-content>
+					</ion-card>
+				</ion-item>
+			</ion-col>
+		{% else %}
+			<ion-col>
+				{{'No item found' | trans}}
+			</ion-col>
+		{% endfor %}
+	</ion-row>
+</ion-grid>

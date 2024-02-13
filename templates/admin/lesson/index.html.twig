@@ -1,42 +1,13 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}Lesson index
+{% block title %}
+	{{'Lessons' | trans}}
 {% endblock %}
 
 {% block content %}
-	<h1>Lesson index</h1>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Title</th>
-				<th>Content</th>
-				<th>CreatedAt</th>
-				<th>UpdatedAt</th>
-				<th>actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for lesson in lessons %}
-				<tr>
-					<td>{{ lesson.id }}</td>
-					<td>{{ lesson.title }}</td>
-					<td>{{ lesson.content }}</td>
-					<td>{{ lesson.createdAt ? lesson.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-					<td>{{ lesson.updatedAt ? lesson.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-					<td>
-						<a href="{{ path('admin_lesson_show', {'id': lesson.id}) }}">show</a>
-						<a href="{{ path('admin_lesson_edit', {'id': lesson.id}) }}">edit</a>
-					</td>
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="6">no records found</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+	<a href="{{ path('admin_lesson_new') }}">{{'Create new' | trans}}</a>
 
-	<a href="{{ path('admin_lesson_new') }}">Create new</a>
+	{% include "admin/lesson/_list.html.twig" %}
+
 {% endblock %}

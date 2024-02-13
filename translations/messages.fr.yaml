@@ -17,6 +17,9 @@ Close: Fermer
 Delete: Supprimer
 Text content: Contenu texte
 Or: Ou
+No item found: Aucun élément trouvé
+Create new: Créer un nouvel élément
+Are you sure you want to delete this item ?: Êtes-vous sûr de vouloir supprimer cet élément ?
 
 # Account
 Sign in: Se connecter
@@ -102,10 +105,13 @@ You must first register for the course: Vous devez d'abord vous inscrire au cour
 This course is not available: Ce cours n'est pas disponible
 No course available: Aucun cours disponible
 Coming soon: Bientôt disponible
+Edit course: Edition d'un cours
 
 # Module
 Module completed: Module terminé
 New module: Nouveau module
+Modules: Modules
+Edit module: Edition d'un module
 
 # Lesson
 Complete and continue: Compléter et continuer
@@ -115,6 +121,9 @@ New lesson: Nouvelle leçon
 Edit Lesson: Edition d'une leçon
 What did you think of this lesson: Qu'avez-vous pensé de cette leçon
 Enter a new note: Saisir une nouvelle note
+All the lessons: Toutes les leçons
+Lessons: Leçons
+
 # Note
 Note taking: Prise de notes
 This content will not be public: Ce contenu ne sera pas public
