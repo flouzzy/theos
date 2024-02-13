@@ -6,14 +6,14 @@
 <p>
 	{{'Please confirm your email address by clicking the following link' | trans}}:
 	<br><br>
-	<a href="{{ signedUrl }}">
+	<a href="{{ signedUrl|raw }}">
 		{{'Confirm my Email' | trans}}
 	</a>
 </p>
 <p>
 	{{'Or copy the following url into your browser' | trans}}
-	<a href="{{ signedUrl }}">
-		{{ signedUrl }}
+	<a href="{{ signedUrl|raw }}">
+		{{ signedUrl|raw }}
 	</a>
 </p>
 <p>
