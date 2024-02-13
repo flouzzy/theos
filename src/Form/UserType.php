@@ -22,8 +22,7 @@ class UserType extends AbstractType
             ->add('firstname')
             ->add('lastname')
             ->add('bio', null, [
-                'attr' => ['rows' => 10, 'cols' => 50],
-                'sanitize_html' => true
+                'attr' => ['rows' => 10, 'cols' => 50]
             ])->add('imageFile', FileType::class, [
                 'label' => $this->translator->trans('Choose an image'),
 
