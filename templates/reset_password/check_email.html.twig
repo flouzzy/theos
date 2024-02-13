@@ -5,15 +5,17 @@
 {% endblock %}
 
 {% block content %}
-	<h1>
-		{{block('title')}}!
-	</h1>
-	<p>
-		{{'If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password. This link will expire in' | trans}}
-		{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-	</p>
-	<p>
-		{{"If you don't receive an email please check your spam folder or" | trans}}
-		<a href="{{ path('forgot_password_request') }}">{{'Try again' | trans}}</a>.
-	</p>
+	<div class="container">
+		<h1>
+			{{block('title')}}!
+		</h1>
+		<p>
+			{{'If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password. This link will expire in' | trans}}
+			{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+		</p>
+		<p>
+			{{"If you don't receive an email please check your spam folder or" | trans}}
+			<a href="{{ path('forgot_password_request') }}">{{'Try again' | trans}}</a>.
+		</p>
+	</div>
 {% endblock %}

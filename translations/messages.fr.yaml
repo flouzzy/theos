@@ -58,6 +58,10 @@ Your account has not yet been verified: Votre compte n'a pas encore été vérif
 Please: S'il vous plait
 Please, check your mailbox (including Spam): Merci de vérifier, s'il vous plait, votre boîte mail (Spam inclus)
 Click here to send a verification e-mail: Cliquez ici pour renvoyer un mail de vérification
+The token is invalid or has expired: Le token est invalide ou a expiré
+Your email address has been verified: Votre adresse e-mail a été vérifiée
+Or copy the following url into your browser: Ou copiez l'url suivante dans votre navigateur
+1 hour: 1 heure
 
 # Reset password
 Enter your email address, and we will send you a link to reset your password: Saisissez votre adresse électronique et nous vous enverrons un lien pour réinitialiser votre mot de passe.
