@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Form\UserType;
+use App\Service\BrevoApi;
 use App\Service\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +22,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route('', name: 'index')]
-    public function index(EntityManagerInterface $entityManager, TranslatorInterface $translator, Request $request): Response
+    public function index(EntityManagerInterface $entityManager, TranslatorInterface $translator, Request $request, BrevoApi $brevoApi): Response
     {
         /**
          * @var \App\Entity\User $user
@@ -43,6 +44,9 @@ class ProfileController extends AbstractController
 
             // !! TODO : remplacer par des events !!
             $user->setFullname($user->getFirstname() . ' ' . $user->getLastname());
+
+            // Maj brevo
+            $brevoApi->addOrUpdateContact($user);
 
             $entityManager->flush();
             $this->addFlash('success', $translator->trans('Your account has been updated'));

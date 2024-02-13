@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
+use App\Service\BrevoApi;
 use App\Service\JWT;
 use App\Service\SendMail;
 use Doctrine\ORM\EntityManagerInterface;
@@ -59,7 +60,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email/{token}', name: 'verify_email')]
-    public function verifyUserEmail($token, UserRepository $userRepository): Response
+    public function verifyUserEmail($token, UserRepository $userRepository, BrevoApi $brevoApi): Response
     {
 
         //On vérifie si le token est valide, n'a pas expiré et n'a pas été modifié
@@ -77,6 +78,9 @@ class RegistrationController extends AbstractController
             if ($user && !$user->isVerified()) {
                 $user->setIsVerified(true);
                 $this->entityManager->flush($user);
+
+                // Maj brevo
+                $brevoApi->addOrUpdateContact($user);
 
                 $this->addFlash('success', 'Your email address has been verified');
             }
