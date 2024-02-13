@@ -1,0 +1,50 @@
+{# 
+ Doc: Foundation for Emails
+ https://get.foundation/emails/docs/
+ #}
+{% apply inky_to_html|inline_css(source('@styles/foundation-emails.css')) %}
+
+{% block style_css %}
+	<style>
+		h1 {
+			color: #333;
+		}
+	</style>
+{% endblock %}
+
+
+<container>
+	<row class="header">
+		<columns></columns>
+		<columns>
+			<h1 class="text-center" href="{{path('home')}}">
+				Le Rocher Academie
+			</h1>
+		</columns>
+		<columns></columns>
+	</row>
+	<row>
+		<columns>
+			{% block content %}{% endblock %}
+
+			<spacer size="16"></spacer>
+			<h-line></h-line>
+
+			{% block footer %}
+				<h3>
+					{{'now' | date('Y')}}
+					&copy;
+					<a href="https://academie.lerocher.fr">Le rocher Academie</a>.
+					{{'All rights reserved' | trans}}
+				</h3>
+				<menu>
+					<item href="{{path('home')}}">{{'Home' | trans}}</item>
+					<item href="{{path('course_index')}}">{{'Courses' | trans}}</item>
+					<item href="{{path('profile_index')}}">{{'Profile' | trans}}</item>
+				</menu>
+			{% endblock %}
+		</columns>
+	</row>
+</container>
+
+{% endapply %}

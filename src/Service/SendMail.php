@@ -16,7 +16,7 @@ class SendMail
 
     public function send(
         Address|string $from,
-        string $to,
+        Address|string $to,
         string $subject,
         string $template,
         array $context
@@ -30,7 +30,6 @@ class SendMail
             ->context($context);
 
         // On envoie le mail
-
         try {
             $this->mailer->send($email);
         } catch (TransportExceptionInterface $e) {

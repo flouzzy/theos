@@ -1,25 +1,28 @@
-<h1>
-	{{ user.firstname }},
-	{{'Please confirm your email' | trans}}
-</h1>
+{% extends "email.html.twig" %}
+{% block content %}
+	<h1>
+		{{ user.firstname }},
+		{{'Please confirm your email' | trans | lower}}
+	</h1>
 
-<p>
-	{{'Please confirm your email address by clicking the following link' | trans}}:
-	<br><br>
-	<a href="{{ signedUrl|raw }}">
-		{{'Confirm my Email' | trans}}
-	</a>
-</p>
-<p>
-	{{'Or copy the following url into your browser' | trans}}
-	<a href="{{ signedUrl|raw }}">
-		{{ signedUrl|raw }}
-	</a>
-</p>
-<p>
-	{{'This link will expire in' | trans}}
-	{{ '1 hour' | trans }}.
-</p>
-<p>
-	{{'Thank you' | trans}}!
-</p>
+	<p>
+		{{'Please confirm your email address by clicking the following link' | trans}}:
+		<br><br>
+		<button href="{{ signedUrl|raw }}" class="small-expanded">
+			{{'Confirm my Email' | trans}}
+		</button>
+	</p>
+	<p>
+		{{'Or copy the following url into your browser' | trans}}
+		<a href="{{ signedUrl|raw }}">
+			{{ signedUrl|raw }}
+		</a>
+	</p>
+	<p>
+		{{'This link will expire in' | trans}}
+		{{ '1 hour' | trans }}.
+	</p>
+	<p>
+		{{'Thank you' | trans}}!
+	</p>
+{% endblock %}

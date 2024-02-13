@@ -47,7 +47,9 @@
         "symfony/yaml": "7.0.*",
         "symfonycasts/reset-password-bundle": "^1.20",
         "symfonycasts/verify-email-bundle": "^1.16",
-        "twig/extra-bundle": "^2.12|^3.0",
+        "twig/cssinliner-extra": "^3.8",
+        "twig/extra-bundle": "^3.8",
+        "twig/inky-extra": "^3.8",
         "twig/string-extra": "^3.8",
         "twig/twig": "^2.12|^3.0"
     },
