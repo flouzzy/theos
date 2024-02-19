@@ -97,9 +97,17 @@ blockquote,
 }
 
 blockquote::before,
-.blockquote::before {
-  content: "\00275E";
+.blockquote::before,
+blockquote::after,
+.blockquote::after {
   font-size: 3rem;
+  content: "\00275E";
+}
+
+blockquote::after,
+.blockquote::after {
+  display: block;
+  text-align: right;
 }
 
 ion-thumbnail {
