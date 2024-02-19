@@ -27,7 +27,17 @@ export default class extends Controller {
       deferredPrompt = e;
 
       // Show Modal install app
-      this.toggleA2HSModal();
+      if (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+      ) {
+        // true for mobile device
+        this.toggleA2HSModal();
+      } else {
+        // false for not mobile device
+        console.info("not mobile device");
+      }
 
       installBtn.addEventListener("click", (e) => {
         // hide our user interface that shows our A2HS button
