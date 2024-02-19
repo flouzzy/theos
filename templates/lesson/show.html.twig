@@ -20,9 +20,8 @@
 		<div>
 			{{currentLesson.videoEmbeded | raw}}
 		</div>
-
-		<ion-accordion-group class="ion-padding-vertical">
-			<ion-accordion>
+		<ion-accordion-group class="ion-padding-vertical" {% if not currentLesson.videoEmbeded %} value="accordeon-lesson-{{currentLesson.id}}" {% endif %}>
+			<ion-accordion value="accordeon-lesson-{{currentLesson.id}}">
 				<ion-item slot="header" color="light">
 					<ion-label>{{'Text content' | trans}}</ion-label>
 				</ion-item>
