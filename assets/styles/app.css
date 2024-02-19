@@ -34,6 +34,7 @@
 
 body {
   font-family: "Raleway", Helvetica, sans-serif;
+  color: #333;
 }
 
 p,
@@ -121,6 +122,9 @@ h1 {
 .h2,
 h2 {
   font-size: calc(1rem + 0.5vw);
+  border-bottom: 1px solid #cecece;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0;
 }
 
 hr {
