@@ -142,6 +142,11 @@ hr {
   border-top: var(--app-border-width) solid;
   opacity: 0.25;
 }
+
+ion-card h2 {
+  border: none;
+}
+
 .container {
   max-width: 900px;
   margin: 0px auto;
