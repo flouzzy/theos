@@ -115,12 +115,12 @@ iframe {
 
 .h1,
 h1 {
-  font-size: calc(1.375rem + 1.5vw);
+  font-size: calc(1.275rem + 1vw);
 }
 
 .h2,
 h2 {
-  font-size: calc(1.325rem + 0.9vw);
+  font-size: calc(1rem + 0.5vw);
 }
 
 hr {
