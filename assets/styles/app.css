@@ -128,7 +128,6 @@ blockquote::after,
 
 iframe {
   width: 100%;
-  min-height: 600px;
   max-width: 100%;
   max-height: 100%;
 }

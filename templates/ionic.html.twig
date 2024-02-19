@@ -39,14 +39,14 @@
 						{% block menuHeaderButtons %}{% endblock %}
 					</ion-toolbar>
 				</ion-header>
-				<ion-content class="ion-padding">
+				<ion-content>
 					{% include "partials/_flash.html.twig" %}
 					{% include "partials/_warning.html.twig" %}
 					{% block content %}{% endblock %}
 				</ion-content>
 				<ion-footer>
 					<ion-toolbar>
-						<ion-title>
+						<ion-title class="fs-5">
 							{{'now' | date('Y')}}
 							&copy; Le Rocher Academie.
 							{{'All rights reserved' | trans}}.

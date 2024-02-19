@@ -3,7 +3,7 @@
 		{% for course in courses %}
 			<ion-col size="12" size-sm="4">
 				<ion-item {% if course.status == 'published' %} href="{{path('course_show', {slug:course.slug})}}" {% endif %} lines="none">
-					<ion-card>
+					<ion-card class="ion-no-margin">
 						<img alt="{{'Course poster' | trans}}" src="{{asset(course.image)}}"/>
 						<ion-card-header>
 							<ion-card-title>{{course.title|u.truncate(40, '...')}}</ion-card-title>

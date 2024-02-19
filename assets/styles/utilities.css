@@ -17,3 +17,20 @@
 .bg-success {
   background-color: var(--ion-color-success) !important;
 }
+
+/* Font size */
+.fs-1 {
+  font-size: calc(1rem + 0.5vw);
+}
+.fs-2 {
+  font-size: calc(1rem + 0.4vw);
+}
+.fs-3 {
+  font-size: calc(1rem + 0.3vw);
+}
+.fs-4 {
+  font-size: calc(1rem + 0.2vw);
+}
+.fs-5 {
+  font-size: calc(1rem + 0.1vw);
+}
