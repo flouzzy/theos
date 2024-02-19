@@ -38,6 +38,7 @@ body {
 
 p {
   line-height: 2;
+  margin: 0;
 }
 
 /* Tables */
@@ -96,7 +97,7 @@ blockquote,
 blockquote::before,
 .blockquote::before {
   content: "\00275E";
-  font-size: 4rem;
+  font-size: 3rem;
 }
 
 ion-thumbnail {
