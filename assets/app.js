@@ -13,3 +13,7 @@ import "https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js";
  * which should already be in your base.html.twig.
  */
 import "./styles/app.css";
+import "./styles/form.css";
+import "./styles/color.css";
+import "./styles/utilities.css";
+import "./styles/ionic.css";
