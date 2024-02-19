@@ -42,6 +42,7 @@
 	</head>
 	<body data-controller="app">
 		{% set current_path = app.request.get('_route') %}
+		{% set colorActive = 'light' %}
 		{% include "partials/_app_install.html.twig" %}
 		<ion-app>
 			{% block body %}{% endblock %}

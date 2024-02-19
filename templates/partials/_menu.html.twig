@@ -10,8 +10,8 @@
 		{{'Main menu' | trans}}
 	</ion-list-header>
 	{% for menu in menuItems %}
-		<ion-item href="{{path(menu.path)}}">
-			<ion-icon slot="start" name="{{menu.icon}}-outline"></ion-icon>
+		<ion-item href="{{path(menu.path)}}" {% if current_path == menu.path %} color="{{colorActive}}" {% endif %}>
+			<ion-icon slot="start" name="{{menu.icon}}-outline" color="app"></ion-icon>
 			<ion-label>
 				{{menu.title | trans}}
 			</ion-label>
@@ -30,34 +30,34 @@
 
 		{% if is_granted('ROLE_ADMIN') %}
 			<ion-item button href="{{path('admin')}}">
-				<ion-icon slot="start" name="build-outline"></ion-icon>
+				<ion-icon slot="start" name="build-outline" color="app"></ion-icon>
 				<ion-label>
 					{{'Administration' | trans}}
 				</ion-label>
 			</ion-item>
 		{% endif %}
 
-		<ion-item button href="{{path('profile_index')}}">
-			<ion-icon slot="start" name="person-circle-outline"></ion-icon>
+		<ion-item button href="{{path('profile_index')}}" {% if current_path == 'profile_index' %} color="{{colorActive}}" {% endif %}>
+			<ion-icon slot="start" name="person-circle-outline" color="app"></ion-icon>
 			<ion-label>
 				{{'Profile' | trans}}
 			</ion-label>
 		</ion-item>
 		<ion-item button href="{{path('_logout_main')}}">
-			<ion-icon slot="start" name="log-out-outline"></ion-icon>
+			<ion-icon slot="start" name="log-out-outline" color="app"></ion-icon>
 			<ion-label>
 				{{'Sign out' | trans}}
 			</ion-label>
 		</ion-item>
 	{% else %}
 		<ion-item button href="{{path('login')}}">
-			<ion-icon slot="start" name="log-in-outline"></ion-icon>
+			<ion-icon slot="start" name="log-in-outline" color="app"></ion-icon>
 			<ion-label>
 				{{'Sign in' | trans}}
 			</ion-label>
 		</ion-item>
 		<ion-item button href="{{path('register')}}">
-			<ion-icon slot="start" name="people-outline"></ion-icon>
+			<ion-icon slot="start" name="people-outline" color="app"></ion-icon>
 			<ion-label>
 				{{'Sign up' | trans}}
 			</ion-label>

@@ -1,6 +1,6 @@
 {% if isSubscribed %}
 	{% if currentLesson.status == 'published' %}
-		<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id})}}" color="warning" fill="solid">
+		<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id})}}" color="app" fill="solid">
 			<ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
 			<ion-text class="ion-hide-md-down">
 				{{'Complete and continue' | trans}}

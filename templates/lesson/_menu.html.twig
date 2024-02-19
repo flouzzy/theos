@@ -3,16 +3,16 @@
 		{{'Main menu' | trans}}
 	</ion-list-header>
 	<ion-item href="{{path('course_show', {slug:course.slug})}}">
-		<ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+		<ion-icon slot="start" name="arrow-back-outline" color="app"></ion-icon>
 		<ion-label>
 			{{'Back to course' | trans}}
 		</ion-label>
 	</ion-item>
 
 	{% for lesson in module.lessons %}
-		<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" {% if currentLesson == lesson %} color="medium" {% endif %}>
+		<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" {% if currentLesson == lesson %} color="{{colorActive}}" {% endif %}>
 			{% set completedIcon = lesson.completed ? 'checkmark-circle': 'ellipse' %}
-			<ion-icon slot="start" name="{{completedIcon}}-outline"></ion-icon>
+			<ion-icon slot="start" name="{{completedIcon}}-outline" color="app"></ion-icon>
 			<ion-label>{{lesson.title}}</ion-label>
 		</ion-item>
 	{% endfor %}

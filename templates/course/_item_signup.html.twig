@@ -2,12 +2,12 @@
 	<ion-row class="ion-justify-content-center">
 		<ion-col size="12" size-sm="3">
 			{% if isSubscribed %}
-				<ion-button href="{{path('course_unsubscribe', {slug:course.slug})}}" color="danger" size="default">
+				<ion-button href="{{path('course_unsubscribe', {slug:course.slug})}}" color="app" size="default">
 					<ion-icon slot="start" name="add-outline"></ion-icon>
 					{{'Unsubscribe from this course' | trans}}
 				</ion-button>
 			{% else %}
-				<ion-button href="{{path('course_subscribe', {slug:course.slug})}}" color="danger" fill="outline" size="default">
+				<ion-button href="{{path('course_subscribe', {slug:course.slug})}}" color="app" fill="outline" size="default">
 					<ion-icon slot="start" name="add-outline"></ion-icon>
 					{{'Sign up for this course' | trans}}
 				</ion-button>

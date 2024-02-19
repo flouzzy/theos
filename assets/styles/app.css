@@ -1,6 +1,6 @@
 :root {
-  --app-body-bg: #fff;
-  --app-body-bg-rgb: 255, 255, 255;
+  --app-body-bg: #fefefe;
+  --app-body-bg-rgb: 254, 254, 254;
   --app-border-width: 1px;
   --app-border-color: #dee2e6;
   --app-border-color-translucent: rgba(0, 0, 0, 0.175);
@@ -24,18 +24,26 @@
   --ion-color-success-tint: #309365;
 
   /* Warning */
-  --ion-color-warning: #ef4523;
-  --ion-color-warning-rgb: 239, 69, 35;
+  --ion-color-warning: #f29f05;
+  --ion-color-warning-rgb: 242, 159, 5;
   --ion-color-warning-contrast: #fefefe;
-  --ion-color-warning-contrast-rgb: 0, 0, 0;
-  --ion-color-warning-shade: #d23d1f;
-  --ion-color-warning-tint: #f15839;
+  --ion-color-warning-contrast-rgb: 254, 254, 254;
+  --ion-color-warning-shade: #d58c04;
+  --ion-color-warning-tint: #f3a91e;
+
+  /* Danger */
+  --ion-color-danger: #f24e29;
+  --ion-color-danger-rgb: 242, 78, 41;
+  --ion-color-danger-contrast: #fefefe;
+  --ion-color-danger-contrast-rgb: 254, 254, 254;
+  --ion-color-danger-shade: #d54524;
+  --ion-color-danger-tint: #f3603e;
 
   /* Purple */
   --ion-color-purple: #7663f2;
-  --ion-color-purple-rgb: 118, 99, 242;
-  --ion-color-purple-contrast: #000000;
-  --ion-color-purple-contrast-rgb: 0, 0, 0;
+  --ion-color-purple-rgb: 254, 254, 254;
+  --ion-color-purple-contrast: #fefefe;
+  --ion-color-purple-contrast-rgb: 254, 254, 254;
   --ion-color-purple-shade: #6857d5;
   --ion-color-purple-tint: #8473f3;
 }
