@@ -38,6 +38,10 @@ body {
 
 p {
   line-height: 2;
+}
+
+p,
+li {
   margin: 1rem 0;
 }
 
