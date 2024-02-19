@@ -32,6 +32,14 @@
   --ion-color-warning-tint: #f15839;
 }
 
+body {
+  font-family: "Raleway", Helvetica, sans-serif;
+}
+
+p {
+  line-height: 2;
+}
+
 /* Tables */
 table {
   width: 100%;
