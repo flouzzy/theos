@@ -5,9 +5,10 @@
 {% endblock %}
 
 {% block content %}
-
-	<a href="{{ path('admin_lesson_new') }}">{{'Create new' | trans}}</a>
-
 	{% include "admin/lesson/_list.html.twig" %}
-
+	<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+		<ion-fab-button href="{{ path('admin_lesson_new') }}">
+			<ion-icon name="add"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
 {% endblock %}

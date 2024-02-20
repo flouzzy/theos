@@ -7,12 +7,13 @@
 {% block menuBackButton %}
 	<ion-button href="{{path('admin_lesson_index')}}">
 		<ion-icon name="arrow-back-outline"></ion-icon>
-		{{'Back' | trans}}
 	</ion-button>
 {% endblock %}
 
 {% block content %}
-	{{ include('admin/lesson/_form.html.twig') }}
+	<div class="ion-padding">
+		{{ include('admin/lesson/_form.html.twig') }}
+	</div>
 {% endblock %}
 
 {% block javascripts %}

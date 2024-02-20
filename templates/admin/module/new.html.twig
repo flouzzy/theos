@@ -6,9 +6,13 @@
 
 {% block content %}
 	<div class="ion-padding">
-
 		{{ include('admin/module/_form.html.twig') }}
 
-		<a href="{{ path('admin_module_index') }}">back to list</a>
 	</div>
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_module_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
 {% endblock %}
