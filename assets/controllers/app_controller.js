@@ -14,6 +14,18 @@ export default class extends Controller {
   connect() {
     // Init A2HS
     this.initA2HSEvent();
+
+    if (!this.isMobile()) {
+      // Force le style IOS pour la version web
+      window.Ionic = {
+        config: {
+          // rippleEffect: false,
+          mode: "ios",
+          hardwareBackButton: true,
+          experimentalCloseWatcher: true,
+        },
+      };
+    }
   }
 
   initA2HSEvent() {
@@ -27,11 +39,7 @@ export default class extends Controller {
       deferredPrompt = e;
 
       // Show Modal install app
-      if (
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        )
-      ) {
+      if (this.isMobile()) {
         // true for mobile device
         this.toggleA2HSModal();
       } else {
@@ -61,5 +69,11 @@ export default class extends Controller {
   toggleA2HSModal() {
     const modalAppInstall = document.querySelector("ion-modal#modalAppInstall");
     modalAppInstall.isOpen = modalAppInstall.isOpen == true ? false : true;
+  }
+
+  isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
   }
 }
