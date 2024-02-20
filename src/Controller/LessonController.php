@@ -10,8 +10,10 @@ use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/courses/{courseSlug}/{moduleSlug}/lesson', name: 'lesson_')]
+#[IsGranted('IS_AUTHENTICATED', message: 'You must be logged in to view this lesson')]
 class LessonController extends AbstractController
 {
     #[Route('/{id}', name: 'show')]
@@ -44,8 +46,6 @@ class LessonController extends AbstractController
         #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
         Module $module
     ): Response {
-
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
         if (!$course->isUserSubscribed($this->getUser())) {
             // Si on est pas inscrit au cours, impossible de valider une leçon

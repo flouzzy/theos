@@ -12,9 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/profile', name: 'profile_')]
+#[IsGranted('IS_AUTHENTICATED')]
 class ProfileController extends AbstractController
 {
     public function __construct(private MediaManager $mediaManager)
