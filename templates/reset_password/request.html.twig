@@ -9,7 +9,7 @@
 		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 	{% endfor %}
 
-	<ion-grid>
+	<ion-grid class="form-signin">
 		<ion-row class="ion-justify-content-center">
 			<ion-col size="12" size-sm="6">
 				{{ form_start(requestForm) }}
@@ -26,22 +26,20 @@
 						<ion-label>
 							{{ form_label(requestForm.email) }}
 							{{ form_widget(requestForm.email) }}
+							<ion-note>
+								{{'Enter your email address, and we will send you a link to reset your password' | trans}}.
+							</ion-note>
 						</ion-label>
-						<ion-note>
-							{{'Enter your email address, and we will send you a link to reset your password' | trans}}.
-						</ion-note>
 						<ion-text color="danger">
 							{{ form_errors(requestForm.email) }}
 						</ion-text>
 					</ion-item>
-
-					<ion-item lines="none">
-						<ion-button color="success" size="default" type="submit">
-							{{'Send password reset email' | trans}}
-						</ion-button>
-					</ion-item>
-
 				</ion-list>
+			</ion-col>
+			<ion-col>
+				<ion-button color="success" type="submit">
+					{{'Send password reset email' | trans}}
+				</ion-button>
 			</ion-col>
 			{{ form_end(requestForm) }}
 		</ion-row>

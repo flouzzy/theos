@@ -9,7 +9,11 @@
 		<ion-row class="ion-justify-content-center">
 			<ion-col size="12" size-sm="6">
 				{% if error %}
-					<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+					<div class="ion-text-center">
+						<ion-text color="danger">
+							{{ error.messageKey|trans(error.messageData, 'security') }}
+						</ion-text>
+					</div>
 				{% endif %}
 
 				<form action="{{ path('login') }}" method="post">
@@ -28,11 +32,11 @@
 						<ion-item>
 							<ion-input label="{{'Password'| trans}}" type="password" id="password" name="_password"></ion-input>
 						</ion-item>
-						<ion-item lines="none">
-							<ion-button type="submit" color="success">
+						<div class="ion-padding-vertical ion-text-center">
+							<ion-button type="submit" color="success" expand="solid">
 								{{block('title')}}
 							</ion-button>
-						</ion-item>
+						</div>
 					</ion-list>
 				</form>
 			</ion-col>
