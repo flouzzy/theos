@@ -35,7 +35,7 @@ class LessonController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/complete', name: 'complete')]
+    #[Route('/{id}/complete/{completed}', name: 'complete')]
     public function markLessonAsCompleted(
         Lesson $lesson,
         EntityManagerInterface $entityManager,
@@ -44,7 +44,8 @@ class LessonController extends AbstractController
         Course $course,
 
         #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
-        Module $module
+        Module $module,
+        $completed = 0
     ): Response {
 
         if (!$course->isUserSubscribed($this->getUser())) {
@@ -57,9 +58,22 @@ class LessonController extends AbstractController
             ]);
         }
 
-        $lesson->setCompleted(true);
+        // Toogle completion status
+        $completed = !(boolval($completed));
 
+        // Save completion status
+        $lesson->setCompleted($completed);
         $entityManager->flush();
+
+        if ($completed == false) {
+            // Show current lesson
+            $this->addFlash('success', 'Lesson marked as unread');
+            return $this->redirectToRoute('lesson_show', [
+                'courseSlug' => $course->getSlug(),
+                'moduleSlug' => $module->getSlug(),
+                'id' => $lesson->getId()
+            ]);
+        }
 
         /**
          * @var \App\Entity\Lesson $nextLesson 

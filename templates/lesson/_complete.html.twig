@@ -1,9 +1,15 @@
 {% if isSubscribed %}
 	{% if currentLesson.status == 'published' %}
-		<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id})}}" color="app" fill="solid">
-			<ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+		<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id, completed:currentLesson.completed ? 1 : 0})}}" color="app" {% if currentLesson.completed %} fill="solid{% endif %}">
+
+			<ion-icon slot="start" name="{% if currentLesson.completed %}checkmark-circle{% else %}ellipse{% endif %}-outline"></ion-icon>
 			<ion-text class="ion-hide-md-down">
-				{{'Complete and continue' | trans}}
+				{% if currentLesson.completed %}
+					{{'Mark the lesson as unread' | trans}}
+				{% else %}
+					{{'Complete and continue' | trans}}
+				{% endif %}
+
 			</ion-text>
 		</ion-button>
 	{% endif %}
