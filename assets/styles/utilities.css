@@ -34,3 +34,24 @@
 .fs-5 {
   font-size: calc(1rem + 0.1vw);
 }
+
+/* Width */
+@media (min-width: 992px) {
+  .w25 {
+    width: 25%;
+  }
+}
+.w100 {
+  width: 100%;
+}
+
+.w50 {
+  width: 50%;
+}
+
+/* Display */
+.mx-auto {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

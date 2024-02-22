@@ -5,24 +5,25 @@
 {% endblock %}
 
 {% block content %}
-	{% include "course/_item_signup.html.twig" %}
-	{% include "course/_item.html.twig" %}
-	{% include "course/_item_signup.html.twig" %}
+	<div class="ion-margin-vertical">
+		{% include "course/_item_signup.html.twig" %}
+		{% include "course/_item.html.twig" %}
+		{% include "course/_item_signup.html.twig" %}
+	</div>
+{% endblock %}
 
-	{% block menuHeaderButtons %}
-		<ion-buttons slot="end">
-			{% if is_granted('ROLE_ADMIN') %}
-				<ion-button href="{{path('admin_course_edit', {id:course.id})}}" target="_blank">
-					<ion-icon name="create-outline"></ion-icon>
-				</ion-button>
-			{% endif %}
-		</ion-buttons>
-	{% endblock %}
+{% block menuHeaderButtons %}
+	<ion-buttons slot="end">
+		{% if is_granted('ROLE_ADMIN') %}
+			<ion-button href="{{path('admin_course_edit', {id:course.id})}}" target="_blank">
+				<ion-icon name="create-outline"></ion-icon>
+			</ion-button>
+		{% endif %}
+	</ion-buttons>
 {% endblock %}
 
 {% block menuBackButton %}
-	<ion-button href="{{path('course_index')}}">
+	<ion-button href="{{path('course_index')}}" color="app">
 		<ion-icon name="arrow-back-outline"></ion-icon>
-		{# {{'Back' | trans}} #}
 	</ion-button>
 {% endblock %}

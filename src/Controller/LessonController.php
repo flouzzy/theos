@@ -67,7 +67,7 @@ class LessonController extends AbstractController
 
         if ($completed == false) {
             // Show current lesson
-            $this->addFlash('success', 'Lesson marked as unread');
+            $this->addFlash('app', 'Lesson marked as unread');
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
@@ -87,14 +87,14 @@ class LessonController extends AbstractController
 
         if ($nextLesson) {
             // Go to next lesson
-            $this->addFlash('success', 'Lesson completed');
+            $this->addFlash('app', 'Lesson completed');
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
                 'id' => $nextLesson->getId()
             ]);
         } else {
-            $this->addFlash('success', 'Module completed');
+            $this->addFlash('app', 'Module completed');
             // Go to next module
             return $this->redirectToRoute('course_show', [
                 'slug' => $course->getSlug()

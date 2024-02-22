@@ -49,7 +49,7 @@ class CourseController extends AbstractController
 
         $entityManager->flush();
 
-        $this->addFlash('success', 'Congratulations! Your registration has been processed');
+        $this->addFlash('app', 'Congratulations! Your registration has been processed');
 
         return $this->redirectToRoute('course_show', ['slug' => $course->getSlug()]);
     }
@@ -68,7 +68,7 @@ class CourseController extends AbstractController
 
         $entityManager->flush();
 
-        $this->addFlash('success', 'You are no longer taking this course');
+        $this->addFlash('app', 'You are no longer taking this course');
 
         return $this->redirectToRoute('course_show', ['slug' => $course->getSlug()]);
     }

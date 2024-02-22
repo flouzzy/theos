@@ -2,3 +2,7 @@ ion-thumbnail {
   --size: 100px;
   --border-radius: 14px;
 }
+
+ion-button[fill="outline"] {
+  border-radius: inherit;
+}
