@@ -145,6 +145,11 @@ h2 {
   padding: 0.5rem 0;
 }
 
+.h3,
+h3 {
+  font-size: calc(1rem + 0.25vw);
+}
+
 hr {
   margin: 1rem 0;
   color: inherit;
