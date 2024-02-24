@@ -49,19 +49,20 @@ class Lesson
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $videoUrl = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $completed = false;
-
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $status = 'draft';
 
     #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Note::class, orphanRemoval: true)]
     private Collection $notes;
 
+    #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Completion::class, orphanRemoval: true)]
+    private Collection $completions;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->notes = new ArrayCollection();
+        $this->completions = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -197,18 +198,6 @@ class Lesson
         return $this;
     }
 
-    public function isCompleted(): ?bool
-    {
-        return $this->completed;
-    }
-
-    public function setCompleted(?bool $completed): static
-    {
-        $this->completed = $completed;
-
-        return $this;
-    }
-
     public function getStatus(): ?string
     {
         return $this->status;
@@ -245,6 +234,36 @@ class Lesson
             // set the owning side to null (unless already changed)
             if ($note->getLesson() === $this) {
                 $note->setLesson(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Completion>
+     */
+    public function getCompletions(): Collection
+    {
+        return $this->completions;
+    }
+
+    public function addCompletion(Completion $completion): static
+    {
+        if (!$this->completions->contains($completion)) {
+            $this->completions->add($completion);
+            $completion->setLesson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompletion(Completion $completion): static
+    {
+        if ($this->completions->removeElement($completion)) {
+            // set the owning side to null (unless already changed)
+            if ($completion->getLesson() === $this) {
+                $completion->setLesson(null);
             }
         }
 

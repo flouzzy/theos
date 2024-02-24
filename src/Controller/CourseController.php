@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Course;
+use App\Repository\CompletionRepository;
 use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +22,7 @@ class CourseController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'show')]
-    public function show(Course $course): Response
+    public function show(Course $course, CompletionRepository $completionRepository): Response
     {
         // Si le cours n'est pas publié et que l'on en est pas le propriétaire, on ne l'affiche pas
         if ($course->getAuthor() != $this->getUser() && $course->getStatus() != 'published') {
@@ -29,9 +30,17 @@ class CourseController extends AbstractController
             return $this->redirectToRoute('course_index');
         }
 
+        // Récupérations des leçons terminées
+        $completedLessons = $completionRepository->findBy(['user' => $this->getUser(), 'completed' => true]);
+        $completedLessonIdsByCurrentUser = [];
+        foreach ($completedLessons as $completed) {
+            $completedLessonIdsByCurrentUser[] = $completed->getLesson()->getId();
+        }
+
         return $this->render('course/show.html.twig', [
             'course' => $course,
-            'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false
+            'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false,
+            'completedLessonIds' => $completedLessonIdsByCurrentUser,
         ]);
     }
 

@@ -84,6 +84,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Course::class, orphanRemoval: true)]
     private Collection $authorCourses;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Completion::class, orphanRemoval: true)]
+    private Collection $completions;
+
 
     public function __construct()
     {
@@ -93,6 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->lessons = new ArrayCollection();
         $this->notes = new ArrayCollection();
         $this->authorCourses = new ArrayCollection();
+        $this->completions = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -469,6 +473,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($authorCourse->getUser() === $this) {
                 $authorCourse->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Completion>
+     */
+    public function getCompletions(): Collection
+    {
+        return $this->completions;
+    }
+
+    public function addCompletion(Completion $completion): static
+    {
+        if (!$this->completions->contains($completion)) {
+            $this->completions->add($completion);
+            $completion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompletion(Completion $completion): static
+    {
+        if ($this->completions->removeElement($completion)) {
+            // set the owning side to null (unless already changed)
+            if ($completion->getUser() === $this) {
+                $completion->setUser(null);
             }
         }
 

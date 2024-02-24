@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Completion;
 use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Entity\Module;
+use App\Repository\CompletionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +18,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('IS_AUTHENTICATED', message: 'You must be logged in to view this lesson')]
 class LessonController extends AbstractController
 {
+    public function __construct(private CompletionRepository $completionRepository)
+    {
+    }
     #[Route('/{id}', name: 'show')]
     public function show(
         Lesson $lesson,
@@ -27,11 +32,20 @@ class LessonController extends AbstractController
         Module $module
 
     ): Response {
+
+        $completedLessons = $this->completionRepository->findBy(['user' => $this->getUser(), 'completed' => true]);
+        // Vous pouvez optimiser cette partie selon vos besoins
+        $completedLessonIdsByCurrentUser = [];
+        foreach ($completedLessons as $completed) {
+            $completedLessonIdsByCurrentUser[] = $completed->getLesson()->getId();
+        }
+
         return $this->render('lesson/show.html.twig', [
             'course' => $course,
             'module' => $module,
             'currentLesson' => $lesson,
-            'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false
+            'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false,
+            'completedLessonIds' => $completedLessonIdsByCurrentUser,
         ]);
     }
 
@@ -61,8 +75,18 @@ class LessonController extends AbstractController
         // Toogle completion status
         $completed = !(boolval($completed));
 
-        // Save completion status
-        $lesson->setCompleted($completed);
+        // Save completion status for current user
+        // Check if completion already exist
+        $user = $this->getUser();
+        $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
+        if (!$completion) {
+            $completion = new Completion();
+        }
+        $completion->setUser($this->getUser());
+        $completion->setLesson($lesson);
+        $completion->setCompleted($completed);
+
+        $entityManager->persist($completion);
         $entityManager->flush();
 
         if ($completed == false) {
