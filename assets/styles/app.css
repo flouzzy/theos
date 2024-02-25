@@ -1,51 +1,59 @@
 :root {
-  --app-body-bg: #fefefe;
-  --app-body-bg-rgb: 254, 254, 254;
+  --app-body-bg: #f5f5f5;
+  --app-body-bg-rgb: 245, 245, 245;
   --app-border-width: 1px;
   --app-border-color: #dee2e6;
   --app-border-color-translucent: rgba(0, 0, 0, 0.175);
   --app-border-radius: 0.375rem;
   --app-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
+  /* Light */
+  --ion-color-light: #f5f5f5;
+  --ion-color-light-rgb: 245, 245, 245;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d8d8d8;
+  --ion-color-light-tint: #f6f6f6;
+
   /* Primary */
   --ion-color-primary: #1877f2;
   --ion-color-primary-rgb: 24, 119, 242;
-  --ion-color-primary-contrast: #fefefe;
-  --ion-color-primary-contrast-rgb: 254, 254, 254;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #1569d5;
   --ion-color-primary-tint: #2f85f3;
 
   /* Success */
   --ion-color-success: #198754;
   --ion-color-success-rgb: 25, 135, 84;
-  --ion-color-success-contrast: #fefefe;
-  --ion-color-success-contrast-rgb: 254, 254, 254;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
   --ion-color-success-shade: #16774a;
   --ion-color-success-tint: #309365;
 
   /* Warning */
-  --ion-color-warning: #f29f05;
-  --ion-color-warning-rgb: 242, 159, 5;
-  --ion-color-warning-contrast: #fefefe;
-  --ion-color-warning-contrast-rgb: 254, 254, 254;
-  --ion-color-warning-shade: #d58c04;
-  --ion-color-warning-tint: #f3a91e;
+  --ion-color-warning: #f2b705;
+  --ion-color-warning-rgb: 242, 183, 5;
+  --ion-color-warning-contrast: #ffffff;
+  --ion-color-warning-contrast-rgb: 255, 255, 255;
+  --ion-color-warning-shade: #d5a104;
+  --ion-color-warning-tint: #f3be1e;
 
   /* Danger */
-  --ion-color-danger: #ff3342;
-  --ion-color-danger-rgb: 255, 51, 66;
-  --ion-color-danger-contrast: #fefefe;
-  --ion-color-danger-contrast-rgb: 254, 254, 254;
-  --ion-color-danger-shade: #e02d3a;
-  --ion-color-danger-tint: #ff4755;
+  --ion-color-danger: #f24e29;
+  --ion-color-danger-rgb: 242, 78, 41;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #d54524;
+  --ion-color-danger-tint: #f3603e;
 
   /* Purple */
-  --ion-color-purple: #7663f2;
-  --ion-color-purple-rgb: 254, 254, 254;
-  --ion-color-purple-contrast: #fefefe;
-  --ion-color-purple-contrast-rgb: 254, 254, 254;
-  --ion-color-purple-shade: #6857d5;
-  --ion-color-purple-tint: #8473f3;
+  --ion-color-purple: #6c5bd9;
+  --ion-color-purple-rgb: 108, 91, 217;
+  --ion-color-purple-contrast: #ffffff;
+  --ion-color-purple-contrast-rgb: 255, 255, 255;
+  --ion-color-purple-shade: #5f50bf;
+  --ion-color-purple-tint: #7b6bdd;
 }
 
 body {
@@ -64,7 +72,11 @@ table {
   width: 100%;
   max-width: 100%;
   margin-bottom: 20px;
+  min-height: 0.01%;
+  overflow-x: auto;
   background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 table > caption + thead > tr:first-child > td,
@@ -165,4 +177,10 @@ ion-card h2 {
 .container {
   max-width: 900px;
   margin: 0px auto;
+}
+
+.logo {
+  height: 6rem;
+  max-height: 100px;
+  width: auto;
 }

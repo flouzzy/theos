@@ -4,13 +4,12 @@
 	<ion-app>
 		<ion-split-pane when="md" content-id="main">
 			<ion-menu content-id="main">
-				<ion-header>
-					<ion-toolbar color="app">
+				<ion-header class="ion-no-border">
+					<ion-toolbar color="body">
 						<ion-title>
-							{% block toolBarTitle %}
-								Le Rocher Academie
-							{% endblock %}
+							{% block toolBarTitle %}{% endblock %}
 						</ion-title>
+						<ion-img src="{{asset('images/logo.svg')}}" alt="Logo le rocher Academie" class="logo"></ion-img>
 					</ion-toolbar>
 				</ion-header>
 				<ion-content class="ion-padding">
@@ -25,7 +24,7 @@
 
 			<div class="ion-page" id="main">
 				<ion-header>
-					<ion-toolbar>
+					<ion-toolbar color="app">
 						<ion-buttons slot="start">
 							{% block menuBackButton %}
 								<ion-menu-button class="ion-hide-sm-up"></ion-menu-button>

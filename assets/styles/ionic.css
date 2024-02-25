@@ -6,3 +6,9 @@ ion-thumbnail {
 ion-button[fill="outline"] {
   border-radius: inherit;
 }
+
+ion-title img,
+ion-title ion-img {
+  max-height: 100%;
+  height: 50px;
+}

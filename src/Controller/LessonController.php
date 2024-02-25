@@ -64,7 +64,7 @@ class LessonController extends AbstractController
 
         if (!$course->isUserSubscribed($this->getUser())) {
             // Si on est pas inscrit au cours, impossible de valider une leçon
-            $this->addFlash('warning', 'You must first register for the course');
+            $this->addFlash('danger', 'You must first register for the course');
 
             // Go to course page
             return $this->redirectToRoute('course_show', [
@@ -91,7 +91,7 @@ class LessonController extends AbstractController
 
         if ($completed == false) {
             // Show current lesson
-            $this->addFlash('app', 'Lesson marked as unread');
+            $this->addFlash('warning', 'Lesson marked as unread');
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
@@ -111,14 +111,14 @@ class LessonController extends AbstractController
 
         if ($nextLesson) {
             // Go to next lesson
-            $this->addFlash('app', 'Lesson completed');
+            $this->addFlash('warning', 'Lesson completed');
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
                 'id' => $nextLesson->getId()
             ]);
         } else {
-            $this->addFlash('app', 'Module completed');
+            $this->addFlash('warning', 'Module completed');
             // Go to next module
             return $this->redirectToRoute('course_show', [
                 'slug' => $course->getSlug()
