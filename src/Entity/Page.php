@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 class Page
@@ -28,6 +29,19 @@ class Page
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    public function computeSlug(): void
+    {
+        // Slug
+        $slugger = new AsciiSlugger();
+        $this->slug = $slugger->slug(substr($this->title, 0, 20))->lower();
+    }
 
     public function getId(): ?int
     {

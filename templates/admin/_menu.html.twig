@@ -30,6 +30,18 @@
 
 <ion-list>
 	<ion-list-header>
+		{{'Settings' | trans}}
+	</ion-list-header>
+	<ion-item button href="{{path('admin_page_index')}}">
+		<ion-icon slot="start" name="person-circle-outline" color="app"></ion-icon>
+		<ion-label>
+			{{'Pages' | trans}}
+		</ion-label>
+	</ion-item>
+</ion-list>
+
+<ion-list>
+	<ion-list-header>
 		{{'Account' | trans}}
 	</ion-list-header>
 	<ion-item button href="{{path('profile_index')}}">

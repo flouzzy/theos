@@ -1,0 +1,8 @@
+<div data-controller="editor" class="ion-padding">
+	{{ form_start(form) }}
+	{{ form_widget(form) }}
+
+	<ion-button type="submit" color="app">{{ button_label|default('Save')|trans }}</ion-button>
+
+	{{ form_end(form) }}
+</div>

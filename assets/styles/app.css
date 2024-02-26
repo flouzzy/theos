@@ -205,6 +205,7 @@ ion-card h2 {
 /* Landing page */
 .home {
   background-image: url("../../images/landing-home-bullet.png");
+  background-size: cover;
   background-position: top center;
 }
 

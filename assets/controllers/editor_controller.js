@@ -8,7 +8,7 @@ export default class extends Controller {
   connect() {
     console.log("tinymce", tinymce);
     tinymce.init({
-      selector: ".text-editor",
+      selector: "textarea[name='page[content]']",
       a11y_advanced_options: true,
       relative_urls: false,
       remove_script_host: false,
@@ -35,6 +35,10 @@ export default class extends Controller {
         editor.on("init", function (e) {
           // Retrait du copyright par défaut \o/
           document.querySelector(".tox-statusbar [href*='tiny']").remove();
+        });
+
+        editor.on("change", function () {
+          tinymce.triggerSave();
         });
       },
 

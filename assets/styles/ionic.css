@@ -23,7 +23,7 @@ ion-title ion-img {
 }
 
 /* ion-button */
-ion-button[fill="solid"] {
+ion-button {
   --border-radius: 50px !important;
   --padding-top: 1rem !important;
   --padding-start: 1rem !important;

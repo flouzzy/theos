@@ -23,7 +23,7 @@ class ProfileController extends AbstractController
     {
     }
 
-    #[Route('', name: 'index')]
+    #[Route('', name: 'index', priority: 3)]
     public function index(EntityManagerInterface $entityManager, TranslatorInterface $translator, Request $request, BrevoApi $brevoApi): Response
     {
         /**

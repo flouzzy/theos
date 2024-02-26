@@ -27,7 +27,7 @@ class RegistrationController extends AbstractController
     {
     }
 
-    #[Route('/register', name: 'register')]
+    #[Route('/register', name: 'register', priority: 3)]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security): Response
     {
         $user = new User();
@@ -59,7 +59,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/verify/email/{token}', name: 'verify_email')]
+    #[Route('/verify/email/{token}', name: 'verify_email', priority: 3)]
     public function verifyUserEmail($token, UserRepository $userRepository, BrevoApi $brevoApi): Response
     {
 

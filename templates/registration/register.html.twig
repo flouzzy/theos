@@ -69,7 +69,7 @@
 							<ion-text color="danger">
 								{{ form_errors(registrationForm.agreeTerms) }}
 							</ion-text>
-							{{ form_widget(registrationForm.agreeTerms, { label: 'I have read and accept' | trans ~ ' <a target="_blank" href="' ~ path("home") ~ '">' ~ "the Terms of Use"|trans ~ '</a>', label_html: true }) }}
+							{{ form_widget(registrationForm.agreeTerms, { label: 'I have read and accept' | trans ~ ' <a target="_blank" href="' ~ path('page_show', {slug:'cgu'}) ~ '">' ~ "the Terms of Use"|trans ~ '</a>', label_html: true }) }}
 						</ion-label>
 					</ion-item>
 				</ion-list>

@@ -1,0 +1,11 @@
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{page.title}}
+{% endblock %}
+
+{% block content %}
+	<div class="ion-padding">
+		{{page.content | raw}}
+	</div>
+{% endblock %}
