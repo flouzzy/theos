@@ -64,11 +64,11 @@
 }
 
 .form-signin .form-bg-login {
-  background-image: url("../../images/form/bg-login.png");
+  background-image: url("../images/form/bg-login.png");
   background-position: top center;
 }
 
 .form-signin .form-bg-bullet {
-  background-image: url("../../images/form/bg-bullet.png");
+  background-image: url("../images/form/bg-bullet.png");
   background-position: bottom center;
 }
