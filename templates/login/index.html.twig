@@ -6,7 +6,7 @@
 
 {% block content %}
 	<ion-grid class="form-signin ion-no-padding">
-		<ion-row class="ion-justify-content-center">
+		<ion-row class="ion-justify-content-center  ion-align-items-center">
 			<ion-col size="12" size-sm="5" class="form-bg-login"></ion-col>
 			<ion-col size="12" size-sm="7" class="form-bg-bullet">
 				{% if error %}
@@ -20,12 +20,12 @@
 				<form action="{{ path('login') }}" method="post">
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 					<ion-list>
-						<ion-list-header>
-							<ion-label class="ion-text-center">
-								<h1>
+						<ion-list-header class="ion-text-center">
+							<div class="w100">
+								<h1 class="ion-text-center">
 									{{block('title')}}
 								</h1>
-							</ion-label>
+							</div>
 						</ion-list-header>
 						<ion-item>
 							<ion-input label="{{'Email' | trans}}" type="text" id="username" name="_username" value="{{ last_username }}"></ion-input>
@@ -34,7 +34,7 @@
 							<ion-input label="{{'Password'| trans}}" type="password" id="password" name="_password"></ion-input>
 						</ion-item>
 						<div class="ion-padding-vertical ion-text-center">
-							<ion-button type="submit" color="app">
+							<ion-button type="submit" color="app" fill="solid">
 								{{block('title')}}
 							</ion-button>
 						</div>

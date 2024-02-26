@@ -12,12 +12,12 @@
 				{{ form_start(registrationForm, {'attr' : {'novalidate':'novalidate'}}) }}
 				<ion-list>
 					<ion-list-header>
-						<ion-label class="ion-text-center ion-margin">
-							<h1 class="ion-text-center">
+						<div class="ion-text-center">
+							<h1>
 								{{block('title')}}
 							</h1>
 							<h2>{{'Join our community of online learners' | trans}}</h2>
-						</ion-label>
+						</div>
 					</ion-list-header>
 
 					{% if app.session.flashbag.peekAll() is not empty %}
@@ -66,13 +66,10 @@
 
 					<ion-item lines="none">
 						<ion-label>
-							<h3>
-								{{ form_label(registrationForm.agreeTerms) }}
-							</h3>
 							<ion-text color="danger">
 								{{ form_errors(registrationForm.agreeTerms) }}
 							</ion-text>
-							{{ form_widget(registrationForm.agreeTerms) }}
+							{{ form_widget(registrationForm.agreeTerms, { label: 'I have read and accept' | trans ~ ' <a target="_blank" href="' ~ path("home") ~ '">' ~ "the Terms of Use"|trans ~ '</a>', label_html: true }) }}
 						</ion-label>
 					</ion-item>
 				</ion-list>
@@ -86,8 +83,8 @@
 				</ion-col>
 			</ion-col>
 		</ion-row>
-		<ion-row class="ion-justify-content-center">
-			<ion-col class="ion-text-center ion-padding">
+		<ion-row class="ion-justify-content-center ion-padding ion-margin">
+			<ion-col class="ion-text-center">
 				<ion-text>
 					{{'Already have an account ?' | trans}}
 					<a href="{{path('login')}}">{{'Sign in' | trans}}</a>

@@ -21,3 +21,12 @@ ion-title ion-img {
 .ion-margin-top {
   margin-top: 2rem;
 }
+
+/* ion-button */
+ion-button[fill="solid"] {
+  --border-radius: 50px !important;
+  --padding-top: 1rem !important;
+  --padding-start: 1rem !important;
+  --padding-end: 1rem !important;
+  --padding-bottom: 1rem !important;
+}
