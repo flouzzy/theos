@@ -1,15 +1,17 @@
 {# Si un compte n'est pas vérifié, on affiche un message #}
 
 {% if app.user and not app.user.isVerified %}
-	<ion-text color="danger" class="ion-text-center">
-		<p>
-			{{ app.user.firstname }},
-			{{'Your account has not yet been verified' | trans | lower}}.
-		</p>
-		<p>{{'Please, check your mailbox (including Spam)' | trans}}</p>
-		<p>
-			{{'Or' | trans}},
-			<a href="{{ path('verify_email_resend') }}">{{'Click here to send a verification e-mail' | trans}}</a>
-		</p>
+	<ion-text color="dark">
+		<div class="ion-text-center ion-padding ion-margin-top bg-light border-radius w50 mx-auto">
+			<p>
+				{{ app.user.firstname }},
+				{{'Your account has not yet been verified' | trans | lower}}.
+			</p>
+			<p>{{'Please, check your mailbox (including Spam)' | trans}}</p>
+			<p>
+				{{'Or' | trans}},
+				<a href="{{ path('verify_email_resend') }}">{{'Click here to send a verification e-mail' | trans}}</a>
+			</p>
+		</div>
 	</ion-text>
 {% endif %}

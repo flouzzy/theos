@@ -5,9 +5,10 @@
 {% endblock %}
 
 {% block content %}
-	<ion-grid class="form-signin">
+	<ion-grid class="form-signin ion-no-padding">
 		<ion-row class="ion-justify-content-center">
-			<ion-col size="12" size-sm="6">
+			<ion-col size="12" size-sm="5" class="form-bg-login"></ion-col>
+			<ion-col size="12" size-sm="7" class="form-bg-bullet">
 				{% if error %}
 					<div class="ion-text-center">
 						<ion-text color="danger">
@@ -33,7 +34,7 @@
 							<ion-input label="{{'Password'| trans}}" type="password" id="password" name="_password"></ion-input>
 						</ion-item>
 						<div class="ion-padding-vertical ion-text-center">
-							<ion-button type="submit" color="success" expand="solid">
+							<ion-button type="submit" color="app">
 								{{block('title')}}
 							</ion-button>
 						</div>
@@ -41,20 +42,19 @@
 				</form>
 			</ion-col>
 		</ion-row>
-		<ion-row class="ion-justify-content-center">
-			<ion-col class="ion-text-center">
+		<ion-row class="ion-justify-content-center ion-padding">
+			<ion-col class="ion-text-center" size="12">
 				<ion-text>
-					{{"Don't have an account yet ?" | trans}}
-					<a href="{{path('register')}}">{{'Sign up' | trans}}</a>
+					<p>
+						{{"Don't have an account yet ?" | trans}}
+						<a href="{{path('register')}}">{{'Sign up' | trans}}</a>
+					</p>
+
+					<p>
+						{{"Forgotten password ?" | trans}}
+						<a href="{{path('forgot_password_request')}}">{{'Reset your password' | trans}}</a>
+					</p>
 				</ion-text>
-			</ion-col>
-		</ion-row>
-		<ion-row class="ion-justify-content-center ion-margin-top">
-			<ion-col class="ion-text-center">
-				<ion-note>
-					{{"Forgotten password ?" | trans}}
-					<a href="{{path('forgot_password_request')}}">{{'Reset your password' | trans}}</a>
-				</ion-note>
 			</ion-col>
 		</ion-row>
 	</ion-grid>

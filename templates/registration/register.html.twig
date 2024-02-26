@@ -5,16 +5,18 @@
 {% endblock %}
 
 {% block content %}
-	<ion-grid class="form-signin">
-		<ion-row class="ion-justify-content-center">
-			<ion-col size="12" size-sm="6">
+	<ion-grid class="form-signin ion-no-padding">
+		<ion-row class="ion-justify-content-center ion-align-items-center">
+			<ion-col size="12" size-sm="5" class="form-bg-login"></ion-col>
+			<ion-col size="12" size-sm="7" class="form-bg-bullet">
 				{{ form_start(registrationForm, {'attr' : {'novalidate':'novalidate'}}) }}
 				<ion-list>
 					<ion-list-header>
-						<ion-label class="ion-text-center ion-no-margin">
+						<ion-label class="ion-text-center ion-margin">
 							<h1 class="ion-text-center">
 								{{block('title')}}
 							</h1>
+							<h2>{{'Join our community of online learners' | trans}}</h2>
 						</ion-label>
 					</ion-list-header>
 
@@ -76,7 +78,7 @@
 				</ion-list>
 				<ion-col class="ion-text-center">
 					<div class="ion-padding-vertical">
-						<ion-button type="submit" color="success" fill="solid">
+						<ion-button type="submit" color="app" fill="solid">
 							{{'Create a new account' | trans}}
 						</ion-button>
 					</div>

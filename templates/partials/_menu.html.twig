@@ -6,9 +6,6 @@
 %}
 
 <ion-list>
-	<ion-list-header>
-		{{'Main menu' | trans}}
-	</ion-list-header>
 	{% for menu in menuItems %}
 		<ion-item href="{{path(menu.path)}}" {% if current_path == menu.path %} color="{{colorActive}}" {% endif %}>
 			<ion-icon slot="start" name="{{menu.icon}}-outline" color="app"></ion-icon>

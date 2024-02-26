@@ -12,3 +12,12 @@ ion-title ion-img {
   max-height: 100%;
   height: 50px;
 }
+
+.ion-margin-vertical {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.ion-margin-top {
+  margin-top: 2rem;
+}

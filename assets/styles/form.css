@@ -50,3 +50,25 @@
 .form-signin {
   max-width: 50rem;
 }
+
+@media (min-width: 992px) {
+  .form-signin ion-col {
+    height: 35rem;
+  }
+}
+
+.form-signin .form-bg-bullet,
+.form-signin .form-bg-login {
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.form-signin .form-bg-login {
+  background-image: url("../../images/form/bg-login.png");
+  background-position: top center;
+}
+
+.form-signin .form-bg-bullet {
+  background-image: url("../../images/form/bg-bullet.png");
+  background-position: bottom center;
+}

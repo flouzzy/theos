@@ -3,7 +3,11 @@
 {% block body %}
 	<ion-header>
 		<ion-toolbar>
-			<ion-title class="ion-hide-sm-down">Le Rocher Academie</ion-title>
+			<ion-buttons slot="start">
+				<a href="{{path('home')}}">
+					<ion-img src="{{asset('images/logo.svg')}}" alt="Logo le rocher Academie" class="logo"></ion-img>
+				</a>
+			</ion-buttons>
 			<ion-buttons slot="end">
 				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 					<ion-button href="{{path('home')}}">
@@ -13,18 +17,19 @@
 						</span>
 					</ion-button>
 				{% else %}
-					<ion-button href="{{path('login')}}">
+					<ion-button href="{{path('login')}}" color="dark" class="ion-padding">
 						<ion-icon slot="start" name="log-in-outline"></ion-icon>
 						{{'Sign in' | trans}}
 					</ion-button>
-					<ion-button href="{{path('register')}}" color="danger">
+					<ion-button href="{{path('register')}}" color="app" fill="solid" shape="round" class="ion-padding">
+						<ion-icon slot="start" name="person-outline"></ion-icon>
 						{{'Sign up' | trans}}
 					</ion-button>
 				{% endif %}
 			</ion-buttons>
 		</ion-toolbar>
 	</ion-header>
-	<ion-content class="ion-padding">
+	<ion-content>
 		{% block content %}{% endblock %}
 	</ion-content>
 	<ion-footer>

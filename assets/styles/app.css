@@ -56,6 +56,16 @@
   --ion-color-purple-tint: #7b6bdd;
 }
 
+a {
+  color: #9689eb;
+}
+
+a:hover,
+a:focus,
+a:active {
+  color: #6c5bd9;
+}
+
 body {
   font-family: "Literata", "Raleway", Helvetica, sans-serif;
   color: #333;
