@@ -49,6 +49,9 @@ class Course
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $status = 'draft';
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $itemOrder = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -217,6 +220,18 @@ class Course
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getItemOrder(): ?int
+    {
+        return $this->itemOrder;
+    }
+
+    public function setItemOrder(?int $itemOrder): static
+    {
+        $this->itemOrder = $itemOrder;
 
         return $this;
     }

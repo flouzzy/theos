@@ -1,5 +1,5 @@
 {# Modules #}
-{% for module in course.modules %}
+{% for module in course.modules|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
 	<ion-card>
 		<ion-card-header>
 			<ion-card-title>{{module.title}}</ion-card-title>

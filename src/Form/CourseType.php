@@ -31,6 +31,9 @@ class CourseType extends AbstractType
                 // https://symfony.com/doc/current/reference/forms/types/collection.html#by-reference
                 'by_reference' => false,
             ])
+            ->add('itemOrder', null, [
+                'attr' => ['class' => 'ion-margin'],
+            ])
             ->add('status', ChoiceType::class, [
                 'choices'  => [
                     'Brouillon' => 'draft',

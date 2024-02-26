@@ -17,6 +17,9 @@ class ModuleType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
+            ->add('itemOrder', null, [
+                'attr' => ['class' => 'ion-margin'],
+            ])
             ->add('status', ChoiceType::class, [
                 'choices'  => [
                     'Brouillon' => 'draft',

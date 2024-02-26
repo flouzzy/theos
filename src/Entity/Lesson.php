@@ -58,6 +58,9 @@ class Lesson
     #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Completion::class, orphanRemoval: true)]
     private Collection $completions;
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $itemOrder = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -266,6 +269,18 @@ class Lesson
                 $completion->setLesson(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getItemOrder(): ?int
+    {
+        return $this->itemOrder;
+    }
+
+    public function setItemOrder(?int $itemOrder): static
+    {
+        $this->itemOrder = $itemOrder;
 
         return $this;
     }

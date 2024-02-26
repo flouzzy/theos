@@ -71,6 +71,17 @@
 			</ion-text>
 		</ion-item>
 
+		{# itemOrder #}
+		<ion-item lines="none">
+			<ion-label>
+				{{ form_label(form.itemOrder) }}
+				{{ form_widget(form.itemOrder) }}
+			</ion-label>
+			<ion-text color="danger">
+				{{ form_errors(form.itemOrder) }}
+			</ion-text>
+		</ion-item>
+
 
 		{# status #}
 		<ion-item lines="none">

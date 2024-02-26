@@ -1,6 +1,6 @@
 <ion-grid>
 	<ion-row>
-		{% for course in courses %}
+		{% for course in courses|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
 			<ion-col size="12" size-sm="4">
 				<ion-item {% if course.status == 'published' %} href="{{path('course_show', {slug:course.slug})}}" {% endif %} lines="none">
 					<ion-card class="ion-no-margin">
