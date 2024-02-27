@@ -1,0 +1,18 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'Edit user' | trans}}
+{% endblock %}
+
+{% block content %}
+	<div class="ion-padding">
+		{{ include('admin/user/_form.html.twig', {'button_label': 'Update'}) }}
+		{{ include('admin/user/_delete_form.html.twig') }}
+	</div>
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_user_index')}}" color="light">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}
