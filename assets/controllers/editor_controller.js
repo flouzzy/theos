@@ -8,7 +8,7 @@ export default class extends Controller {
   connect() {
     console.log("tinymce", tinymce);
     tinymce.init({
-      selector: "textarea[name='page[content]']",
+      selector: ".text-editor",
       a11y_advanced_options: true,
       relative_urls: false,
       remove_script_host: false,
