@@ -131,18 +131,18 @@ blockquote,
 .blockquote {
   background-color: #eee;
   padding: 1em;
+  margin: 2em;
   border-radius: 1em;
   font-size: 1rem;
-  margin: 0.5em 0;
-  /* quotes: "\00201C""\00275E"; */
+  position: relative;
 }
 
 blockquote::before,
-.blockquote::before,
-blockquote::after,
-.blockquote::after {
-  font-size: 3rem;
-  content: "\00275E";
+.blockquote::before {
+  content: url("../../images/icons/quote-64x64.png");
+  position: absolute;
+  top: -2rem;
+  left: -2rem;
 }
 
 blockquote::after,

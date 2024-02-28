@@ -1,14 +1,14 @@
 {% set 
     menuItems = {
-         'home':{'title':'Home', 'icon':'home', 'path':'home'},
-		 'course':{'title':'All courses', 'icon':'school', 'path':'course_index'}
+         'home':{'title':'Home', 'icon':'/images/icons/home.svg', 'path':'home'},
+		 'course':{'title':'All courses', 'icon':'/images/icons/course.svg', 'path':'course_index'}
     } 
 %}
 
 <ion-list>
 	{% for menu in menuItems %}
 		<ion-item href="{{path(menu.path)}}" {% if current_path == menu.path %} color="{{colorActive}}" {% endif %}>
-			<ion-icon slot="start" name="{{menu.icon}}-outline" color="app"></ion-icon>
+			<ion-icon slot="start" src="{{menu.icon}}" color="app"></ion-icon>
 			<ion-label>
 				{{menu.title | trans}}
 			</ion-label>
@@ -35,7 +35,7 @@
 		{% endif %}
 
 		<ion-item button href="{{path('profile_index')}}" {% if current_path == 'profile_index' %} color="{{colorActive}}" {% endif %}>
-			<ion-icon slot="start" name="person-circle-outline" color="app"></ion-icon>
+			<ion-icon slot="start" src="/images/icons/profile.svg" color="app"></ion-icon>
 			<ion-label>
 				{{'Profile' | trans}}
 			</ion-label>
