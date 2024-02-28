@@ -86,7 +86,7 @@ table {
   max-width: 100%;
   margin-bottom: 20px;
   min-height: 0.01%;
-  overflow-x: auto;
+
   background-color: transparent;
   border-collapse: collapse;
   border-spacing: 0;
@@ -120,6 +120,10 @@ table > thead > tr > th {
 
 .table-striped > tbody > tr:nth-of-type(odd) {
   background-color: #f9f9f9;
+}
+
+.table-responsive {
+  overflow-x: auto;
 }
 
 th {

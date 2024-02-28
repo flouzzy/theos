@@ -26,6 +26,9 @@ export default class extends Controller {
         },
       };
     }
+
+    // Responsive tables
+    this.responsiveTable();
   }
 
   initA2HSEvent() {
@@ -75,5 +78,23 @@ export default class extends Controller {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
     );
+  }
+
+  /**
+   * Rendre les tables responsive
+   */
+  responsiveTable() {
+    // Étape 1 : Sélection de tous les éléments <table>
+    document.querySelectorAll("table").forEach((tableElement) => {
+      // Étape 2 : Création d'un nouvel élément <div> avec une classe responsive
+      var divWrapper = document.createElement("div");
+      divWrapper.className = "table-responsive"; // Ajouter la classe désirée
+
+      // Étape 3 : Insérer l'élément <table> à l'intérieur du nouvel élément <div>
+      divWrapper.appendChild(tableElement.cloneNode(true)); // cloneNode(true) pour copier l'élément et ses enfants
+
+      // Étape 4 : Remplacer l'élément <table> original par le nouvel élément <div> dans le DOM
+      tableElement.parentNode.replaceChild(divWrapper, tableElement);
+    });
   }
 }
