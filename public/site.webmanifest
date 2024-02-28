@@ -1,6 +1,6 @@
 {
     "name": "Le Rocher Academie",
-    "short_name": "Rocher Academie",
+    "short_name": "Academie",
     "description": "L'école des batisseurs du royaume de Dieu",
     "icons": [
         {
@@ -16,14 +16,14 @@
     ],
     "screenshots": [
         {
-            "src": "images/screens/screen-1.png",
+            "src": "images/splashscreen/screen-1.png",
             "sizes": "1280x720",
             "type": "image/png",
             "form_factor": "wide",
             "label": "RocherAcademie"
         },
         {
-            "src": "images/screens/screen-1.png",
+            "src": "images/splashscreen/screen-1.png",
             "sizes": "1280x720",
             "type": "image/png",
             "form_factor": "narrow",
