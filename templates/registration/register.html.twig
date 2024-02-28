@@ -57,10 +57,10 @@
 							<h3>
 								{{'Password' | trans}}
 							</h3>
+							{{ form_widget(registrationForm.plainPassword) }}
 							<ion-text color="danger">
 								{{ form_errors(registrationForm.plainPassword) }}
 							</ion-text>
-							{{ form_widget(registrationForm.plainPassword) }}
 						</ion-label>
 					</ion-item>
 
