@@ -117,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         // Slug
         $slugger = new AsciiSlugger();
-        $this->username = $slugger->slug($this->fullname)->lower();
+        $this->username = $slugger->slug($this->fullname . '-' . uniqid())->lower();
     }
 
     public function subscribeToCourse(Course $course): self
