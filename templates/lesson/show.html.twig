@@ -52,6 +52,11 @@
 
 {% block menuHeaderButtons %}
 	<ion-buttons slot="end">
+		{% if is_granted('ROLE_ADMIN') %}
+			<ion-button href="{{path('admin_lesson_edit', {id:currentLesson.id})}}" target="_blank">
+				<ion-icon name="create-outline"></ion-icon>
+			</ion-button>
+		{% endif %}
 		{% include "lesson/_complete.html.twig" %}
 	</ion-buttons>
 {% endblock %}
