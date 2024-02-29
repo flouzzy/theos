@@ -7,6 +7,7 @@ use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Entity\Module;
 use App\Repository\CompletionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -103,12 +104,33 @@ class LessonController extends AbstractController
          * @var \App\Entity\Lesson $nextLesson 
          */
 
+        // =====================
         // Go to next lesson
+        // =====================
+
+        // On récupère les leçons du module
         $lessons = $module->getLessons();
-        $nextIndex = $lessons->indexOf($lesson) + 1;
 
-        $nextLesson  = $lessons->get($nextIndex);
+        // On triee les données par itemOrder
+        /**
+         * @var Traversable|array $iterator
+         */
+        $iterator = $lessons->getIterator();
+        $iterator->uasort(function ($first, $second) {
+            return (int) $first->getItemOrder() > (int) $second->getItemOrder() ? 1 : -1;
+        });
 
+        // On transforme les données en ArrayCollection en mettant à jour les index (grâce à array_values)
+        $sortedArray = array_values(iterator_to_array($iterator));
+        $sortedLessons = new ArrayCollection($sortedArray);
+
+        // On récupère l'index suivant
+        $nextIndex = $sortedLessons->indexOf($lesson) + 1;
+
+        // Puis la leçon suivante
+        $nextLesson  = $sortedLessons->get($nextIndex);
+
+        // Il existe une leçon suivante
         if ($nextLesson) {
             // Go to next lesson
             $this->addFlash('success', 'Lesson completed');
@@ -118,7 +140,9 @@ class LessonController extends AbstractController
                 'id' => $nextLesson->getId()
             ]);
         } else {
+            // C'était la dernière leçon du module
             $this->addFlash('success', 'Module completed');
+
             // Go to next module
             return $this->redirectToRoute('course_show', [
                 'slug' => $course->getSlug()

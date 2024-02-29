@@ -9,7 +9,7 @@
 		</ion-label>
 	</ion-item>
 
-	{% for lesson in module.lessons %}
+	{% for lesson in module.lessons|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
 		<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" {% if currentLesson == lesson %} color="{{colorActive}}" {% endif %}>
 			{% set completedIcon = lesson.id in completedLessonIds ? 'checkmark-circle': 'ellipse' %}
 			<ion-icon slot="start" name="{{completedIcon}}-outline" color="app"></ion-icon>

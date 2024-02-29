@@ -48,8 +48,10 @@
 		{% set current_path = app.request.get('_route') %}
 		{% set colorActive = 'light' %}
 		{% include "partials/_app_install.html.twig" %}
-		<ion-app>
-			{% block body %}{% endblock %}
-		</ion-app>
+		<turbo-frame id="frame_app">
+			<ion-app>
+				{% block body %}{% endblock %}
+			</ion-app>
+		</turbo-frame>
 	</body>
 </html>

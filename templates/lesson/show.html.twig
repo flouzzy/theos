@@ -5,49 +5,53 @@
 {% endblock %}
 
 {% block content %}
-	<ion-card>
-		<ion-card-content>
-			<h2>{{'Description' | trans}}</h2>
-			<ion-text color="dark">
-				{{currentLesson.description | raw}}
-			</ion-text>
-		</ion-card-content>
-	</ion-card>
 
-	<div class="ion-padding lesson-content">
-		{% if currentLesson.status == 'published' %}
-			<div>
-				{{currentLesson.videoEmbeded | raw}}
-			</div>
-			<ion-accordion-group class="ion-padding-vertical" {% if not currentLesson.videoEmbeded %} value="accordeon-lesson-{{currentLesson.id}}" {% endif %}>
-				<ion-accordion value="accordeon-lesson-{{currentLesson.id}}">
-					<ion-item slot="header" color="light">
-						<ion-label>{{'Text content' | trans}}</ion-label>
-					</ion-item>
-					<div class="ion-padding" slot="content">
-						<ion-text color="dark">
-							{{currentLesson.content | raw}}
-						</ion-text>
-					</div>
-				</ion-accordion>
-			</ion-accordion-group>
+	<turbo-frame id="frame_lesson">
 
-			{# User notes #}
-			{% if is_granted('IS_AUTHENTICATED') %}
-				{# Form #}
-				{{ render(path('note_show', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
-				{# List #}
-				{{ render(path('note_index')) }}
+		<ion-card>
+			<ion-card-content>
+				<h2>{{'Description' | trans}}</h2>
+				<ion-text color="dark">
+					{{currentLesson.description | raw}}
+				</ion-text>
+			</ion-card-content>
+		</ion-card>
+
+		<div class="ion-padding lesson-content">
+			{% if currentLesson.status == 'published' %}
+				<div>
+					{{currentLesson.videoEmbeded | raw}}
+				</div>
+				<ion-accordion-group class="ion-padding-vertical" {% if not currentLesson.videoEmbeded %} value="accordeon-lesson-{{currentLesson.id}}" {% endif %}>
+					<ion-accordion value="accordeon-lesson-{{currentLesson.id}}">
+						<ion-item slot="header" color="light">
+							<ion-label>{{'Text content' | trans}}</ion-label>
+						</ion-item>
+						<div class="ion-padding" slot="content">
+							<ion-text color="dark">
+								{{currentLesson.content | raw}}
+							</ion-text>
+						</div>
+					</ion-accordion>
+				</ion-accordion-group>
+
+				{# User notes #}
+				{% if is_granted('IS_AUTHENTICATED') %}
+					{# Form #}
+					{{ render(path('note_show', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
+					{# List #}
+					{{ render(path('note_index')) }}
+				{% endif %}
+			{% else %}
+				<ion-item lines="none" color="dark">
+					<ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+					<h3>
+						{{'This lesson is currently unavailable' | trans}}
+					</h3>
+				</ion-item>
 			{% endif %}
-		{% else %}
-			<ion-item lines="none" color="dark">
-				<ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-				<h3>
-					{{'This lesson is currently unavailable' | trans}}
-				</h3>
-			</ion-item>
-		{% endif %}
-	</div>
+		</div>
+	</turbo-frame>
 {% endblock %}
 
 {% block menuHeaderButtons %}
