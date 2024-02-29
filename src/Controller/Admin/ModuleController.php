@@ -26,7 +26,9 @@ class ModuleController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $module = new Module();
-        $form = $this->createForm(ModuleType::class, $module);
+        $form = $this->createForm(ModuleType::class, $module, [
+            'action' => $this->generateUrl('admin_module_new'),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -59,7 +61,9 @@ class ModuleController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Module $module, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ModuleType::class, $module);
+        $form = $this->createForm(ModuleType::class, $module, [
+            'action' => $this->generateUrl('admin_module_edit', ['id' => $module->getId()]),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

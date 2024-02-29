@@ -26,7 +26,9 @@ class LessonController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $lesson = new Lesson();
-        $form = $this->createForm(LessonType::class, $lesson);
+        $form = $this->createForm(LessonType::class, $lesson, [
+            'action' => $this->generateUrl('admin_lesson_new'),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -59,7 +61,9 @@ class LessonController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Lesson $lesson, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(LessonType::class, $lesson);
+        $form = $this->createForm(LessonType::class, $lesson, [
+            'action' => $this->generateUrl('admin_lesson_edit', ['id' => $lesson->getId()]),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

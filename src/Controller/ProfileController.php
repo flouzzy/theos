@@ -31,7 +31,9 @@ class ProfileController extends AbstractController
          */
         $user = $this->getUser();
 
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user, [
+            'action' => $this->generateUrl('profile_index'),
+        ]);
 
         $form->handleRequest($request);
 

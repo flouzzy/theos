@@ -1,58 +1,60 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-	<ion-app>
-		<ion-split-pane when="md" content-id="main">
-			<ion-menu content-id="main">
-				<ion-header class="ion-no-border">
-					<ion-toolbar color="body">
-						<ion-title>
-							{% block toolBarTitle %}{% endblock %}
-						</ion-title>
-						<ion-img src="{{asset('images/logo.svg')}}" alt="Logo le rocher Academie" class="logo"></ion-img>
-					</ion-toolbar>
-				</ion-header>
-				<ion-content class="ion-padding">
-					{% block menu %}
-						{% include "partials/_menu.html.twig" %}
-					{% endblock %}
-				</ion-content>
-				<ionic-footer>
-					{% block menuFooter %}{% endblock %}
-				</ionic-footer>
-			</ion-menu>
+	<turbo-frame id="frame_app">
+		<ion-app>
+			<ion-split-pane when="md" content-id="main">
+				<ion-menu content-id="main">
+					<ion-header class="ion-no-border">
+						<ion-toolbar color="body">
+							<ion-title>
+								{% block toolBarTitle %}{% endblock %}
+							</ion-title>
+							<ion-img src="{{asset('images/logo.svg')}}" alt="Logo le rocher Academie" class="logo"></ion-img>
+						</ion-toolbar>
+					</ion-header>
+					<ion-content class="ion-padding">
+						{% block menu %}
+							{% include "partials/_menu.html.twig" %}
+						{% endblock %}
+					</ion-content>
+					<ionic-footer>
+						{% block menuFooter %}{% endblock %}
+					</ionic-footer>
+				</ion-menu>
 
-			<div class="ion-page" id="main">
-				<ion-header>
-					<ion-toolbar color="app">
-						<ion-buttons slot="start">
-							{% block menuBackButton %}
-								<ion-menu-button class="ion-hide-sm-up"></ion-menu-button>
-							{% endblock %}
-						</ion-buttons>
-						<ion-title>
-							{% block pageTitle %}
-								{{block('title')}}
-							{% endblock %}
-						</ion-title>
-						{% block menuHeaderButtons %}{% endblock %}
-					</ion-toolbar>
-				</ion-header>
-				<ion-content>
-					{% include "partials/_flash.html.twig" %}
-					{% include "partials/_warning.html.twig" %}
-					{% block content %}{% endblock %}
-				</ion-content>
-				<ion-footer>
-					<ion-toolbar>
-						<ion-title class="fs-5">
-							{{'now' | date('Y')}}
-							&copy; Le Rocher Academie.
-							{{'All rights reserved' | trans}}.
-						</ion-title>
-					</ion-toolbar>
-				</ion-footer>
-			</div>
-		</ion-split-pane>
-	</ion-app>
+				<div class="ion-page" id="main">
+					<ion-header>
+						<ion-toolbar color="app">
+							<ion-buttons slot="start">
+								{% block menuBackButton %}
+									<ion-menu-button class="ion-hide-sm-up"></ion-menu-button>
+								{% endblock %}
+							</ion-buttons>
+							<ion-title>
+								{% block pageTitle %}
+									{{block('title')}}
+								{% endblock %}
+							</ion-title>
+							{% block menuHeaderButtons %}{% endblock %}
+						</ion-toolbar>
+					</ion-header>
+					<ion-content>
+						{% include "partials/_flash.html.twig" %}
+						{% include "partials/_warning.html.twig" %}
+						{% block content %}{% endblock %}
+					</ion-content>
+					<ion-footer>
+						<ion-toolbar>
+							<ion-title class="fs-5">
+								{{'now' | date('Y')}}
+								&copy; Le Rocher Academie.
+								{{'All rights reserved' | trans}}.
+							</ion-title>
+						</ion-toolbar>
+					</ion-footer>
+				</div>
+			</ion-split-pane>
+		</ion-app>
+	</turbo-frame>
 {% endblock %}

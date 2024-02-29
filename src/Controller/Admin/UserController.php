@@ -26,7 +26,9 @@ class UserController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        $form = $this->createForm(UserManagementType::class, $user);
+        $form = $this->createForm(UserManagementType::class, $user, [
+            'action' => $this->generateUrl('admin_user_new'),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

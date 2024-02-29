@@ -26,7 +26,9 @@ class PageController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $page = new Page();
-        $form = $this->createForm(PageType::class, $page);
+        $form = $this->createForm(PageType::class, $page, [
+            'action' => $this->generateUrl('admin_page_new'),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
