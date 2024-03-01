@@ -86,6 +86,8 @@ class LessonController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $lesson->getId(), $request->request->get('_token'))) {
             $entityManager->remove($lesson);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Item deleted');
         }
 
         return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);

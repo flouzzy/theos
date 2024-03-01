@@ -37,6 +37,8 @@ class PageController extends AbstractController
             $entityManager->persist($page);
             $entityManager->flush();
 
+            $this->addFlash('success', 'New item added');
+
             return $this->redirectToRoute('admin_page_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -57,11 +59,15 @@ class PageController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Page $page, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(PageType::class, $page);
+        $form = $this->createForm(PageType::class, $page, [
+            'action' => $this->generateUrl('admin_page_edit', ['id' => $page->getId()]),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->addFlash('success', 'Your data has been saved');
 
             return $this->redirectToRoute('admin_page_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -78,6 +84,8 @@ class PageController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $page->getId(), $request->request->get('_token'))) {
             $entityManager->remove($page);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Item deleted');
         }
 
         return $this->redirectToRoute('admin_page_index', [], Response::HTTP_SEE_OTHER);

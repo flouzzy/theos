@@ -86,6 +86,8 @@ class ModuleController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $module->getId(), $request->request->get('_token'))) {
             $entityManager->remove($module);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Item deleted');
         }
 
         return $this->redirectToRoute('admin_module_index', [], Response::HTTP_SEE_OTHER);
