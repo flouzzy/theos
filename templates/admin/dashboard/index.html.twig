@@ -6,4 +6,14 @@
 
 {% block content %}
 	<h1 class="ion-text-center">{{'Dashboard' | trans}}</h1>
+
+	{# Admin dashboard #}
+	<ion-grid>
+		<ion-row>
+			<ion-col>
+				{% include "admin/dashboard/_user_info.html.twig" %}
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
 {% endblock %}

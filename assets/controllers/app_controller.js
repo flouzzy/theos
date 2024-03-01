@@ -15,6 +15,9 @@ export default class extends Controller {
     // Init A2HS
     this.initA2HSEvent();
 
+    // Init SW
+    this.initSW();
+
     if (!this.isMobile()) {
       // Force le style IOS pour la version web
       window.Ionic = {
@@ -29,6 +32,19 @@ export default class extends Controller {
 
     // Responsive tables
     this.responsiveTable();
+  }
+
+  initSW() {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((serviceWorker) => {
+          console.log("Service Worker registered: ", serviceWorker);
+        })
+        .catch((error) => {
+          console.error("Error registering the Service Worker: ", error);
+        });
+    }
   }
 
   initA2HSEvent() {
