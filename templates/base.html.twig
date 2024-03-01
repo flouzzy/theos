@@ -50,9 +50,9 @@
 		{% set colorActive = 'light' %}
 		{% include "partials/_app_install.html.twig" %}
 		<turbo-frame id="frame_app">
-			<ion-app>
-				{% block body %}{% endblock %}
-			</ion-app>
+			{% block body %}
+				{% include "partials/_skeleton.html.twig" %}
+			{% endblock %}
 		</turbo-frame>
 	</body>
 </html>
