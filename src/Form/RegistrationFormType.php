@@ -13,20 +13,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationFormType extends AbstractType
 {
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', null, [
-                'attr' => ['placeholder' => 'Saisir un e-mail valide']
-            ])
+            ->add('email')
             ->add('fullname', null, [
-                'attr' => ['placeholder' => 'Saisir votre Prénom NOM']
+                'label' => $this->translator->trans('Lastname and firstname'),
             ])
             ->add('plainPassword', PasswordType::class, [
-                'attr' => ['placeholder' => 'Saisir un mot de passe sécurisé'],
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
