@@ -103,7 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function updateUserDetails(): void
     {
         if ($this->firstname || $this->lastname) {
-            $this->fullname = $this->firstname . ' ' . $this->lastname;
+            $this->fullname = $this->lastname . ' ' . $this->firstname;
         }
     }
 
@@ -111,9 +111,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserDetails(): void
     {
         $details = explode(' ', $this->fullname);
-        $this->firstname = $this->firstname ?? ($details[0] ?? '');
-        $this->lastname = $this->lastname ?? ($details[1] ?? '');
-        $this->fullname = $this->fullname ?? $this->firstname . ' ' . $this->lastname;
+        $this->lastname = $this->lastname ?? ($details[0] ?? '');
+        $this->firstname = $this->firstname ?? ($details[1] ?? '');
+        $this->fullname = $this->fullname ?? $this->lastname . ' ' . $this->firstname;
 
         // Slug
         $slugger = new AsciiSlugger();
