@@ -1,5 +1,7 @@
-{% set completionPercent = completion_percentage(course, app.user) %}
-<ion-progress-bar value="{{ completionPercent / 100 }}" color="app">
-	{{completionPercent}}
-	%
-</ion-progress-bar>
+{% if app.user %}
+	{% set completionPercent = completion_percentage(course, app.user) %}
+	<ion-progress-bar value="{{ completionPercent / 100 }}" color="app">
+		{{completionPercent}}
+		%
+	</ion-progress-bar>
+{% endif %}
