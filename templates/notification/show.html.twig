@@ -1,0 +1,11 @@
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{notification.title ? notification.title : 'Notification' | trans}}
+{% endblock %}
+
+{% block content %}
+	<div class="ion-padding">
+		{{notification.message | raw}}
+	</div>
+{% endblock %}

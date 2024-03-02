@@ -1,0 +1,17 @@
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{'Notifications' | trans}}
+{% endblock %}
+
+{% block content %}
+	<div class="ion-padding">
+		<ion-list>
+			{% for notification in notifications %}
+				<ion-item href="{{ path('notification_read', {id:notification.id}) }}" {% if not notification.isRead %} color="light" {% endif %}>
+					<ion-label>{{notification.message}}</ion-label>
+				</ion-item>
+			{% endfor %}
+		</ion-list>
+	</div>
+{% endblock %}

@@ -9,6 +9,11 @@
 		h1 {
 			color: #333;
 		}
+
+		img,
+		.logo {
+			max-width: 100%;
+		}
 	</style>
 {% endblock %}
 
@@ -17,30 +22,29 @@
 	<row class="header">
 		<columns></columns>
 		<columns>
-			<h1 class="text-center" href="{{path('home')}}">
+			<h1 class="text-center" href="{{absolute_url(path('home'))}}">
 				Le Rocher Academie
 			</h1>
+			<img src="{{ email.image('@images/logo.svg') }}" class="logo" alt="App Logo">
 		</columns>
 		<columns></columns>
 	</row>
 	<row>
 		<columns>
 			{% block content %}{% endblock %}
-
 			<spacer size="16"></spacer>
 			<h-line></h-line>
-
 			{% block footer %}
 				<h3>
 					{{'now' | date('Y')}}
 					&copy;
-					<a href="https://academie.lerocher.fr">Le rocher Academie</a>.
+					<a href="https://academie.lerocher.fr">Le Rocher Academie</a>.
 					{{'All rights reserved' | trans}}
 				</h3>
 				<menu>
-					<item href="{{path('home')}}">{{'Home' | trans}}</item>
-					<item href="{{path('course_index')}}">{{'Courses' | trans}}</item>
-					<item href="{{path('profile_index')}}">{{'Profile' | trans}}</item>
+					<item href="{{absolute_url(path('home'))}}">{{'Home' | trans}}</item>
+					<item href="{{absolute_url(path('course_index'))}}">{{'Courses' | trans}}</item>
+					<item href="{{absolute_url(path('profile_index'))}}">{{'Profile' | trans}}</item>
 				</menu>
 			{% endblock %}
 		</columns>
