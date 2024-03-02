@@ -23,9 +23,6 @@ class CourseCompletion
     #[ORM\Column(nullable: true)]
     private ?bool $completed = false;
 
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?int $percentage = null;
-
     public function getId(): ?int
     {
         return $this->id;
