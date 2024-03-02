@@ -1,10 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-	<turbo-frame
-		id="frame_app">
-
-		{# Set current url #}
+	<turbo-frame id="frame_app">
 		{% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %}
 		<ion-app data-current-url="{{currentPath}}">
 			<ion-split-pane when="md" content-id="main">

@@ -52,11 +52,15 @@ class Course
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $itemOrder = null;
 
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: CourseCompletion::class)]
+    private Collection $completions;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->modules = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->completions = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -232,6 +236,36 @@ class Course
     public function setItemOrder(?int $itemOrder): static
     {
         $this->itemOrder = $itemOrder;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CourseCompletion>
+     */
+    public function getCompletions(): Collection
+    {
+        return $this->completions;
+    }
+
+    public function addCompletion(CourseCompletion $completion): static
+    {
+        if (!$this->completions->contains($completion)) {
+            $this->completions->add($completion);
+            $completion->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompletion(CourseCompletion $completion): static
+    {
+        if ($this->completions->removeElement($completion)) {
+            // set the owning side to null (unless already changed)
+            if ($completion->getCourse() === $this) {
+                $completion->setCourse(null);
+            }
+        }
 
         return $this;
     }

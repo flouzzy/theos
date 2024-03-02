@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Course;
+use App\Entity\CourseCompletion;
 use App\Repository\CompletionRepository;
+use App\Repository\CourseCompletionRepository;
 use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,13 +18,14 @@ class CourseController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(CourseRepository $courseRepository): Response
     {
+
         return $this->render('course/index.html.twig', [
             'courses' => $courseRepository->findBy(['status' => ['published', 'progress']]),
         ]);
     }
 
     #[Route('/{slug}', name: 'show')]
-    public function show(Course $course, CompletionRepository $completionRepository): Response
+    public function show(Course $course, CompletionRepository $completionRepository, CourseCompletionRepository $courseCompletionRepository): Response
     {
         // Si le cours n'est pas publié et que l'on en est pas le propriétaire, on ne l'affiche pas
         if ($course->getAuthor() != $this->getUser() && $course->getStatus() != 'published') {
@@ -40,7 +43,7 @@ class CourseController extends AbstractController
         return $this->render('course/show.html.twig', [
             'course' => $course,
             'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false,
-            'completedLessonIds' => $completedLessonIdsByCurrentUser,
+            'completedLessonIds' => $completedLessonIdsByCurrentUser
         ]);
     }
 

@@ -48,11 +48,15 @@ class Module
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $itemOrder = null;
 
+    #[ORM\OneToMany(mappedBy: 'module', targetEntity: ModuleCompletion::class, orphanRemoval: true)]
+    private Collection $completions;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
         $this->lessons = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->completions = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -214,6 +218,36 @@ class Module
     public function setItemOrder(?int $itemOrder): static
     {
         $this->itemOrder = $itemOrder;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ModuleCompletion>
+     */
+    public function getCompletions(): Collection
+    {
+        return $this->completions;
+    }
+
+    public function addCompletion(ModuleCompletion $completion): static
+    {
+        if (!$this->completions->contains($completion)) {
+            $this->completions->add($completion);
+            $completion->setModule($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompletion(ModuleCompletion $completion): static
+    {
+        if ($this->completions->removeElement($completion)) {
+            // set the owning side to null (unless already changed)
+            if ($completion->getModule() === $this) {
+                $completion->setModule(null);
+            }
+        }
 
         return $this;
     }

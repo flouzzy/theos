@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\ModuleCompletion;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<ModuleCompletion>
+ *
+ * @method ModuleCompletion|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ModuleCompletion|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ModuleCompletion[]    findAll()
+ * @method ModuleCompletion[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class ModuleCompletionRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, ModuleCompletion::class);
+    }
+
+//    /**
+//     * @return ModuleCompletion[] Returns an array of ModuleCompletion objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('m')
+//            ->andWhere('m.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('m.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
+
+//    public function findOneBySomeField($value): ?ModuleCompletion
+//    {
+//        return $this->createQueryBuilder('m')
+//            ->andWhere('m.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
+}

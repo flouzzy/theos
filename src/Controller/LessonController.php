@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Completion;
 use App\Entity\Course;
+use App\Entity\CourseCompletion;
 use App\Entity\Lesson;
 use App\Entity\Module;
+use App\Entity\ModuleCompletion;
 use App\Repository\CompletionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('IS_AUTHENTICATED', message: 'You must be logged in to view this lesson')]
 class LessonController extends AbstractController
 {
-    public function __construct(private CompletionRepository $completionRepository)
+    public function __construct(private CompletionRepository $completionRepository, private EntityManagerInterface $entityManager)
     {
     }
     #[Route('/{id}', name: 'show')]
@@ -53,7 +55,6 @@ class LessonController extends AbstractController
     #[Route('/{id}/complete/{completed}', name: 'complete')]
     public function markLessonAsCompleted(
         Lesson $lesson,
-        EntityManagerInterface $entityManager,
 
         #[MapEntity(mapping: ['courseSlug' => 'slug'])]
         Course $course,
@@ -76,7 +77,7 @@ class LessonController extends AbstractController
         // Toogle completion status
         $completed = !(boolval($completed));
 
-        // Save completion status for current user
+        // Save lesson completion status for current user
         // Check if completion already exist
         $user = $this->getUser();
         $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
@@ -87,8 +88,14 @@ class LessonController extends AbstractController
         $completion->setLesson($lesson);
         $completion->setCompleted($completed);
 
-        $entityManager->persist($completion);
-        $entityManager->flush();
+        // Maj du statut de completion d'un module
+        $this->setModuleCompleted($module);
+
+        // Maj du statut de completion d'un parcours
+        $this->setCourseCompleted($course);
+
+        $this->entityManager->persist($completion);
+        $this->entityManager->flush();
 
         if ($completed == false) {
             // Show current lesson
@@ -141,12 +148,92 @@ class LessonController extends AbstractController
             ]);
         } else {
             // C'était la dernière leçon du module
-            $this->addFlash('success', 'Module completed');
+            $this->addFlash('success', 'Well done! Keep up the good work');
 
             // Go to next module
             return $this->redirectToRoute('course_show', [
                 'slug' => $course->getSlug()
             ]);
         }
+    }
+
+    /**
+     * Mark module as completed
+     *
+     * @param Module $module
+     * @param EntityManagerInterface $entityManager
+     * @return void
+     */
+    private function setModuleCompleted(Module $module): void
+    {
+        $allLessonsCompleted = true;
+        foreach ($module->getLessons() as $moduleLesson) {
+            $lessonCompletion = $this->completionRepository->findOneBy([
+                'user' => $this->getUser(),
+                'lesson' => $moduleLesson
+            ]);
+
+            if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
+                $allLessonsCompleted = false;
+                break;
+            }
+        }
+
+        $moduleCompletion = $this->entityManager->getRepository(ModuleCompletion::class)->findOneBy([
+            'user' => $this->getUser(),
+            'module' => $module
+        ]);
+
+        if (!$moduleCompletion) {
+            $moduleCompletion = new ModuleCompletion();
+            $moduleCompletion->setUser($this->getUser());
+            $moduleCompletion->setModule($module);
+        }
+
+        // Si toutes les leçons sont complétées, marquez le module comme complété
+        $moduleCompletion->setCompleted($allLessonsCompleted);
+
+        $this->entityManager->persist($moduleCompletion);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Mark course as completed
+     */
+    private function setCourseCompleted($course)
+    {
+        $courseCompletion = $this->entityManager->getRepository(CourseCompletion::class)->findOneBy([
+            'user' => $this->getUser(),
+            'course' => $course
+        ]);
+
+        if (!$courseCompletion) {
+            $courseCompletion = new CourseCompletion();
+            $courseCompletion->setUser($this->getUser());
+            $courseCompletion->setCourse($course);
+        }
+
+        // On vérifie que tous les modules sont completés (ou non)
+        $allModulesCompleted = true;
+        $modules = $course->getModules();
+        foreach ($modules as $courseModule) {
+            // On aurait pu simplement vérifié le statut de completion du module sans passer par les leçons
+            // mais dans ce cas on risquerait de passer à côté des modules qui ne sont associés à aucune leçon (cygne noir)
+            $moduleLessons = $courseModule->getLessons();
+            foreach ($moduleLessons as $lesson) {
+                $completion = $this->completionRepository->findOneBy(['user' => $this->getUser(), 'lesson' => $lesson]);
+
+                if (!$completion || !$completion->isCompleted()) {
+                    $allModulesCompleted = false;
+                    break 2; // Sort des deux boucles si une leçon non complétée est trouvée
+                }
+            }
+        }
+
+
+        // MAj du statut du parcours
+        $courseCompletion->setCompleted($allModulesCompleted);
+
+        $this->entityManager->persist($courseCompletion);
     }
 }

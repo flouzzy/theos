@@ -87,6 +87,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Completion::class, orphanRemoval: true)]
     private Collection $completions;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CourseCompletion::class)]
+    private Collection $courseCompletions;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ModuleCompletion::class)]
+    private Collection $moduleCompletions;
+
 
     public function __construct()
     {
@@ -97,6 +103,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->notes = new ArrayCollection();
         $this->authorCourses = new ArrayCollection();
         $this->completions = new ArrayCollection();
+        $this->courseCompletions = new ArrayCollection();
+        $this->moduleCompletions = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -503,6 +511,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($completion->getUser() === $this) {
                 $completion->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CourseCompletion>
+     */
+    public function getCourseCompletions(): Collection
+    {
+        return $this->courseCompletions;
+    }
+
+    public function addCourseCompletion(CourseCompletion $courseCompletion): static
+    {
+        if (!$this->courseCompletions->contains($courseCompletion)) {
+            $this->courseCompletions->add($courseCompletion);
+            $courseCompletion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCourseCompletion(CourseCompletion $courseCompletion): static
+    {
+        if ($this->courseCompletions->removeElement($courseCompletion)) {
+            // set the owning side to null (unless already changed)
+            if ($courseCompletion->getUser() === $this) {
+                $courseCompletion->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ModuleCompletion>
+     */
+    public function getModuleCompletions(): Collection
+    {
+        return $this->moduleCompletions;
+    }
+
+    public function addModuleCompletion(ModuleCompletion $moduleCompletion): static
+    {
+        if (!$this->moduleCompletions->contains($moduleCompletion)) {
+            $this->moduleCompletions->add($moduleCompletion);
+            $moduleCompletion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModuleCompletion(ModuleCompletion $moduleCompletion): static
+    {
+        if ($this->moduleCompletions->removeElement($moduleCompletion)) {
+            // set the owning side to null (unless already changed)
+            if ($moduleCompletion->getUser() === $this) {
+                $moduleCompletion->setUser(null);
             }
         }
 

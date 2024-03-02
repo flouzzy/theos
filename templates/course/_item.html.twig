@@ -6,8 +6,11 @@
 		<ion-col size="12" size-sm="9">
 			<ion-card>
 				<img alt="{{'Course poster' | trans}}" src="{{asset(course.image)}}"/>
+				{% include "course/_item_progress.html.twig" %}
 				<ion-card-header>
-					<ion-card-title>{{course.title}}</ion-card-title>
+					<ion-card-title>
+						{{course.title}}
+					</ion-card-title>
 				</ion-card-header>
 				<ion-card-content>
 					{{course.description}}

@@ -3,8 +3,9 @@
 		{% for course in courses|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
 			<ion-col size="12" size-sm="4">
 				<ion-item {% if course.status == 'published' %} href="{{path('course_show', {slug:course.slug})}}" {% endif %} lines="none">
-					<ion-card class="ion-no-margin">
+					<ion-card>
 						<img alt="{{'Course poster' | trans}}" src="{{asset(course.image)}}"/>
+						{% include "course/_item_progress.html.twig" %}
 						<ion-card-header>
 							<ion-card-title>{{course.title|u.truncate(40, '...')}}</ion-card-title>
 							<ion-card-subtitle>
