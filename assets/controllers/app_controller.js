@@ -32,6 +32,19 @@ export default class extends Controller {
 
     // Responsive tables
     this.responsiveTable();
+
+    // Turbo transitions
+
+    document.addEventListener("turbo:before-frame-render", (event) => {
+      // fade out the old body
+      console.log("turbo:before-frame-render", event);
+    });
+
+    document.addEventListener("turbo:frame-render", (event) => {
+      // fade out the old body
+      console.log("turbo:frame-render", event);
+      document.body.classList.remove("turbo-loading");
+    });
   }
 
   initSW() {
