@@ -6,29 +6,22 @@
 
 {% block content %}
 	<div class="ion-padding">
-		<ion-grid>
+		<ion-accordion-group color="light">
 			{% for user in users %}
-				<ion-row>
-					<ion-item href="{{path('admin_user_edit', {id:user.id})}}">
-						<ion-col size="4">
-							{{ user.fullname }}
-						</ion-col>
-						<ion-col size="4">
-							{% if user.isVerified %}
-								<ion-icon name="checkmark-circle-outline" color="app"></ion-icon>
-							{% endif %}
-							{{ user.email }}
-						</ion-col>
-						<ion-col>{{ user.roles ? user.roles|json_encode : '' }}</ion-col>
-						<ion-col>{{ user.lastConnectionAt ? user.lastConnectionAt|date('Y-m-d H:i:s') : '' }}</ion-col>
+				<ion-accordion value="user-detail-{{user.id}}">
+					<ion-item slot="header" color="light">
+						<ion-label>{{user.fullname}}</ion-label>
 					</ion-item>
-				</ion-row>
+					<div class="ion-padding" slot="content">
+						{% include "admin/user/_user_data.html.twig" %}
+					</div>
+				</ion-accordion>
 			{% else %}
-				<ion-row>
-					<ion-col>{{'No item found' | trans}}</ion-col>
-				</ion-row>
+				<ion-item>
+					{{'No item found' | trans}}
+				</ion-item>
 			{% endfor %}
-		</ion-grid>
+		</ion-accordion-group>
 	</div>
 
 	<ion-fab slot="fixed" vertical="bottom" horizontal="end">

@@ -2,18 +2,17 @@
 
 namespace App\Service;
 
-use App\Entity\Completion;
 use App\Entity\Course;
 use App\Entity\User;
 use App\Repository\CompletionRepository;
-use App\Repository\CourseCompletionRepository;
 
-class CourseCompletionCalculator
+class CompletionCalculator
 {
 
     public function __construct(private CompletionRepository $completionRepository)
     {
     }
+
 
     public function calculateCompletionPercentage(Course $course, User $user): float
     {

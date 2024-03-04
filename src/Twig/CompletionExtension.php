@@ -1,19 +1,19 @@
 <?php
 
-// src/Twig/CourseExtension.php
+// src/Twig/CompletionExtension.php
 namespace App\Twig;
 
 use App\Entity\Course;
 use App\Entity\User;
-use App\Service\CourseCompletionCalculator;
+use App\Service\CompletionCalculator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
-class CourseExtension extends AbstractExtension
+class CompletionExtension extends AbstractExtension
 {
 
-    public function __construct(private CourseCompletionCalculator $completionCalculator)
+    public function __construct(private CompletionCalculator $completionCalculator)
     {
     }
 

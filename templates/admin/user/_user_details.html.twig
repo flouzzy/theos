@@ -1,0 +1,23 @@
+<ion-item-group>
+	<ion-item-divider>
+		<ion-label>
+			{{'User details' | trans}}
+		</ion-label>
+	</ion-item-divider>
+	<ion-item href="{{ path('admin_user_edit', {id:user.id}) }}" lines="none">
+		<ion-icon name="{{ user.isVerified ? 'checkmark-circle' : 'close-circle'}}-outline" color="app" slot="start"></ion-icon>
+		<ion-grid>
+			<ion-row>
+				<ion-col size="4">
+					{{ user.fullname }}
+				</ion-col>
+				<ion-col size="4">
+					{{ user.email }}
+				</ion-col>
+				<ion-col>{{ user.roles ? user.roles|json_encode : '' }}</ion-col>
+				<ion-col>{{ user.lastConnectionAt ? user.lastConnectionAt|date('Y-m-d H:i:s') : '' }}</ion-col>
+			</ion-row>
+		</ion-grid>
+
+	</ion-item>
+</ion-item-group>

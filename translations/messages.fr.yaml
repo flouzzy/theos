@@ -115,17 +115,23 @@ This course is not available: Ce cours n'est pas disponible
 No course available: Aucun cours disponible
 Coming soon: Bientôt disponible
 Edit course: Edition d'un cours
+Started courses: Cours commencés
+Completed courses: Cours terminés
+Completion percentage: Pourcentage de complétion
 
 # Module
 Module completed: Module terminé
+Completed modules: Modules terminés
 New module: Nouveau module
 Modules: Modules
 Edit module: Edition d'un module
+Started modules: Modules démarrés
 
 # Lesson
 Complete and continue: Compléter et continuer
 Congratulations! Your registration has been processed: Félicitations ! Votre inscription a été prise en compte
 Lesson completed: Leçon terminée
+Completed lessons: Leçons terminées
 Lesson marked as unread: Leçon marquée comme non lue
 Mark the lesson as unread: Marquer la leçon comme non lue
 New lesson: Nouvelle leçon
@@ -137,6 +143,7 @@ All the lessons: Toutes les leçons
 Lessons: Leçons
 This lesson is currently unavailable: Cette leçon n'est pas disponible pour le moment
 You must be logged in to view this lesson: Vous devez être connecté pour consulter cette leçon
+Started lessons: Leçons démarrées
 
 # Note
 Note taking: Prise de notes
@@ -161,8 +168,9 @@ Edit user: Modifier un utilisateur
 New user: Nouvel utilisateur
 Username: Nom d'utilisateur
 Lastname and firstname: Nom et prénom
+User details: Détails de l'utilisateur
 Users details: Détails des utilisateurs
-Number of verified users: Nombre d'utilisateurs inscrits et validés
+Verified users: Utilisateurs validés
 Address: Adresse postale
 Birth date: Date de naissance
 
