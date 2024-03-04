@@ -56,10 +56,8 @@ export default class extends Controller {
 
     refresher.addEventListener("ionRefresh", () => {
       // Reload current page
-      setTimeout(() => {
-        visit(window.location.href);
-        refresher.complete();
-      }, 300);
+      visit(window.location.href);
+      refresher.complete();
     });
   }
 
