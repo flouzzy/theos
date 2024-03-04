@@ -5,33 +5,36 @@
 		</ion-label>
 	</ion-item-divider>
 	<ion-item>
+		{% set courseCompletions = user.courseCompletions |filter(c => c.completed == true) %}
 		<ion-label>
 			{{'Completed courses' | trans}}
-			({{user.courseCompletions | length}})
+			({{ courseCompletions | length}})
 		</ion-label>
-		{% for completion in user.courseCompletions %}
+		{% for completion in courseCompletions %}
 			<ion-item lines="none" href="{{ path('course_show', {slug:completion.course.slug}) }}">
 				{{completion.course.title}}
 			</ion-item>
 		{% endfor %}
 	</ion-item>
 	<ion-item>
+		{% set moduleCompletions = user.moduleCompletions |filter(c => c.completed == true) %}
 		<ion-label>
 			{{'Completed modules' | trans}}
-			({{user.moduleCompletions | length}})
+			({{ moduleCompletions | length }})
 		</ion-label>
-		{% for completion in user.moduleCompletions %}
+		{% for completion in moduleCompletions %}
 			<ion-item lines="none" href="{{ path('admin_module_show', {id:completion.module.id}) }}">
 				{{completion.module.title}}
 			</ion-item>
 		{% endfor %}
 	</ion-item>
 	<ion-item>
+		{% set lessonCompletions = user.completions |filter(c => c.completed == true) %}
 		<ion-label>
 			{{'Completed lessons' | trans}}
-			({{user.completions | length}})
+			({{lessonCompletions | length}})
 		</ion-label>
-		{% for completion in user.completions %}
+		{% for completion in lessonCompletions %}
 			<ion-item lines="none" href="{{ path('admin_lesson_show', {id:completion.lesson.id}) }}">
 				{{completion.lesson.title}}
 			</ion-item>
