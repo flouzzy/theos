@@ -4,7 +4,9 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -21,9 +23,12 @@ class UserType extends AbstractType
             // ->add('email')
             ->add('firstname')
             ->add('lastname')
+            ->add('address', TextareaType::class)
+            ->add('birthDate', DateType::class)
             ->add('bio', null, [
                 'attr' => ['rows' => 10, 'cols' => 50]
-            ])->add('imageFile', FileType::class, [
+            ])
+            ->add('imageFile', FileType::class, [
                 'label' => $this->translator->trans('Choose an image'),
 
                 // unmapped means that this field is not associated to any entity property

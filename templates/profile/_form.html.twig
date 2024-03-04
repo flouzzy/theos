@@ -2,31 +2,52 @@
 {{ form_start(profileForm) }}
 {# {{ form_start(profileForm, {'attr': {'novalidate': 'novalidate'}}) }} #}
 
-<ion-item>
+<ion-item lines="none">
 	<ion-label>
 		{{ form_label(profileForm.firstname) }}
+		{{ form_widget(profileForm.firstname) }}
 	</ion-label>
-	{{ form_widget(profileForm.firstname) }}
 	<ion-text color="danger">
 		{{ form_errors(profileForm.firstname) }}
 	</ion-text>
 </ion-item>
 
-<ion-item>
+<ion-item lines="none">
 	<ion-label>
 		{{ form_label(profileForm.lastname) }}
+		{{ form_widget(profileForm.lastname) }}
 	</ion-label>
-	{{ form_widget(profileForm.lastname) }}
 	<ion-text color="danger">
 		{{ form_errors(profileForm.lastname) }}
 	</ion-text>
 </ion-item>
 
-<ion-item>
+<ion-item lines="none">
+	<ion-label>
+		{{ form_label(profileForm.birthDate) }}
+		{{ form_widget(profileForm.birthDate) }}
+	</ion-label>
+	<ion-text color="danger">
+		{{ form_errors(profileForm.birthDate) }}
+	</ion-text>
+</ion-item>
+
+
+<ion-item lines="none">
+	<ion-label>
+		{{ form_label(profileForm.address) }}
+		{{ form_widget(profileForm.address) }}
+	</ion-label>
+	<ion-text color="danger">
+		{{ form_errors(profileForm.address) }}
+	</ion-text>
+</ion-item>
+
+<ion-item lines="none">
 	<ion-label>
 		{{ form_label(profileForm.bio) }}
+		{{ form_widget(profileForm.bio) }}
 	</ion-label>
-	{{ form_widget(profileForm.bio) }}
 	<ion-text color="danger">
 		{{ form_errors(profileForm.bio) }}
 	</ion-text>
@@ -36,8 +57,8 @@
 <ion-item lines="none">
 	<ion-label>
 		{{ form_label(profileForm.imageFile) }}
+		{{ form_widget(profileForm.imageFile) }}
 	</ion-label>
-	{{ form_widget(profileForm.imageFile) }}
 	<ion-text color="danger">
 		{{ form_errors(profileForm.imageFile) }}
 	</ion-text>
