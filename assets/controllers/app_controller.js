@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-import Swiper from "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs";
+import { visit } from "@hotwired/turbo";
 
 /*
  * This is an example Stimulus controller!
@@ -30,6 +30,8 @@ export default class extends Controller {
       };
     }
 
+    this.initRefresherEvent();
+
     // Responsive tables
     this.responsiveTable();
 
@@ -42,8 +44,22 @@ export default class extends Controller {
 
     document.addEventListener("turbo:frame-render", (event) => {
       // fade out the old body
-      console.log("turbo:frame-render", event);
+      // console.log("turbo:frame-render", event);
+      this.initRefresherEvent();
       document.body.classList.remove("turbo-loading");
+    });
+  }
+
+  initRefresherEvent() {
+    // Ionic refresher
+    const refresher = document.getElementById("refresher");
+
+    refresher.addEventListener("ionRefresh", () => {
+      // Reload current page
+      setTimeout(() => {
+        visit(window.location.href);
+        refresher.complete();
+      }, 300);
     });
   }
 
