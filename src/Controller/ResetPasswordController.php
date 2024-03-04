@@ -38,7 +38,10 @@ class ResetPasswordController extends AbstractController
     #[Route('', name: 'forgot_password_request')]
     public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
     {
-        $form = $this->createForm(ResetPasswordRequestFormType::class);
+        $form = $this->createForm(ResetPasswordRequestFormType::class, null, [
+            'action' => $this->generateUrl('forgot_password_request'),
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
