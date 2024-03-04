@@ -54,12 +54,6 @@
 	</turbo-frame>
 {% endblock %}
 
-{% block menuBackButton %}
-	<ion-button href="{{path('course_show', {slug:course.slug})}}">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-	</ion-button>
-{% endblock %}
-
 {% block menuHeaderButtons %}
 	<ion-buttons slot="end">
 		{% if is_granted('ROLE_ADMIN') %}
