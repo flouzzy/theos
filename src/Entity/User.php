@@ -121,6 +121,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->fullname;
+    }
+
     #[ORM\PreUpdate]
     public function updateUserDetails(): void
     {

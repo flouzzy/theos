@@ -1,0 +1,46 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Notification index
+{% endblock %}
+
+{% block content %}
+	<h1>Notification index</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Message</th>
+				<th>Title</th>
+				<th>CreatedAt</th>
+				<th>SentAt</th>
+				<th>SendAt</th>
+				<th>IsRead</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for notification in notifications %}
+				<tr>
+					<td>{{ notification.id }}</td>
+					<td>{{ notification.message }}</td>
+					<td>{{ notification.title }}</td>
+					<td>{{ notification.createdAt ? notification.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ notification.sentAt ? notification.sentAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ notification.sendAt ? notification.sendAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ notification.isRead ? 'Yes' : 'No' }}</td>
+					<td>
+						<a href="{{ path('admin_notification_show', {'id': notification.id}) }}">show</a>
+						<a href="{{ path('admin_notification_edit', {'id': notification.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="8">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_notification_new') }}">Create new</a>
+{% endblock %}
