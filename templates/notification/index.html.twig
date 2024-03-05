@@ -8,8 +8,10 @@
 	<div class="ion-padding">
 		<ion-list>
 			{% for notification in notifications %}
-				<ion-item href="{{ path('notification_show', { id:notification.id }) }}" {% if not notification.isRead %} color="light" {% endif %}>
-					<ion-label>{{notification.message}}</ion-label>
+				<ion-item href="{{ path('notification_show', { id:notification.id }) }}">
+					<ion-text {% if not notification.isRead %} color="danger" {% endif %}>
+						{{notification.message | raw}}
+					</ion-text>
 				</ion-item>
 			{% endfor %}
 		</ion-list>

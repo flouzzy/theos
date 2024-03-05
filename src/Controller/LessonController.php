@@ -8,6 +8,8 @@ use App\Entity\CourseCompletion;
 use App\Entity\Lesson;
 use App\Entity\Module;
 use App\Entity\ModuleCompletion;
+use App\Entity\Notification;
+use App\Entity\User;
 use App\Repository\CompletionRepository;
 use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -121,7 +123,7 @@ class LessonController extends AbstractController
                 'lesson' => $lesson
             ]);
 
-            $this->notificationService->createAndSendNotification(
+            $this->sendNotificationToAllUsers(
                 $content,
                 $this->translator->trans('Lesson completed for') . ' ' . $user->getFirstname()
             );
@@ -222,9 +224,9 @@ class LessonController extends AbstractController
                 'module' => $module
             ]);
 
-            $this->notificationService->createAndSendNotification(
+            $this->sendNotificationToAllUsers(
                 $content,
-                $this->translator->trans('Module completed for') . ' ' .  $user->getFirstname()
+                $this->translator->trans('Module completed for') . ' ' . $user->getFirstname()
             );
         }
 
@@ -280,7 +282,7 @@ class LessonController extends AbstractController
                 'course' => $course
             ]);
 
-            $this->notificationService->createAndSendNotification(
+            $this->sendNotificationToAllUsers(
                 $content,
                 $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
             );
@@ -290,5 +292,26 @@ class LessonController extends AbstractController
         $courseCompletion->setCompleted($allModulesCompleted);
 
         $this->entityManager->persist($courseCompletion);
+    }
+
+    /**
+     * Send notification to all users, except the current one
+     *
+     * @param Notification $notification
+     * @param User $user
+     * @return void
+     */
+    private function sendNotificationToAllUsers($content, $title): void
+    {
+        $users = $this->entityManager->getRepository(User::class)->findBy(['isVerified' => true]);
+        foreach ($users as $user) {
+            if ($user !== $this->getUser()) {
+                $this->notificationService->createAndSendNotification(
+                    $content,
+                    $title,
+                    $user
+                );
+            }
+        }
     }
 }

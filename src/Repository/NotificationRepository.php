@@ -6,6 +6,7 @@ use App\Entity\Notification;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @extends ServiceEntityRepository<Notification>
@@ -17,20 +18,38 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class NotificationRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private Security $security)
     {
         parent::__construct($registry, Notification::class);
     }
 
     public function findAllUnread(): array
     {
-        return $this->findBy(['isRead' => false]);
+        // Find all notification attached with current user and unread
+        // or where user is null
+        // order by creation date
+
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.user = :user OR n.user IS NULL')
+            ->andWhere('n.isRead = :isRead')
+            ->setParameter('user', $this->security->getUser())
+            ->setParameter('isRead', false)
+            ->orderBy('n.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
 
-    public function findAllByUser(User $user, $orderBy = ['createdAt' => 'DESC'], $limit = null, $offset = null): array
+    public function findAllByUser(User $user, $limit = null): array
     {
-        return $this->findBy(['user' => $user], ['createdAt' => 'DESC'], $limit, $offset);
+        // return $this->findBy(['user' => $user], $orderBy, $limit, $offset);
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.user = :user OR n.user IS NULL')
+            ->setParameter('user', $user)
+            ->setMaxResults($limit)
+            ->orderBy('n.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Notification;
 use App\Repository\NotificationRepository;
-use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,20 +19,10 @@ class NotificationController extends AbstractController
      * Show current user notifications
      */
     #[Route('/', name: 'index')]
-    public function index(NotificationService $notificationService, NotificationRepository $notificationRepository): Response
+    public function index(NotificationRepository $notificationRepository): Response
     {
-        // $notificationService->createAndSendNotification('Un test grandeur nature ' . random_int(0, 100), 'Test de notification 3', $this->getUser());
-
-        /**
-         * @var \App\Entity\User $user
-         */
-        $user = $this->getUser();
         return $this->render('notification/index.html.twig', [
-            'notifications' => $notificationRepository->findAllByUser(
-                $user,
-                ['createdAt' => 'DESC'],
-                20
-            ),
+            'notifications' => $notificationRepository->findAllByUser($this->getUser(), 10),
         ]);
     }
 
