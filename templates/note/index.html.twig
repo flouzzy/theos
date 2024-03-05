@@ -1,5 +1,7 @@
-<ion-list>
-	{% for note in notes %}
-		{{ include('note/_item.html.twig') }}
-	{% endfor %}
-</ion-list>
+<turbo-frame id="frame_note">
+	<ion-list>
+		{% for note in notes %}
+			{{ include('note/_item.html.twig') }}
+		{% endfor %}
+	</ion-list>
+</turbo-frame>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Notification;
+use App\Repository\NotificationRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,26 +20,39 @@ class NotificationController extends AbstractController
      * Show current user notifications
      */
     #[Route('/', name: 'index')]
-    public function index(NotificationService $notificationService): Response
+    public function index(NotificationService $notificationService, NotificationRepository $notificationRepository): Response
     {
-        // $notificationService->createAndSendNotification($this->getUser(), 'Test de notification 3', 'Hello : Prêt à tout déchirer 22?', 'Nouvelle notification');
+        // $notificationService->createAndSendNotification('Un test grandeur nature ' . random_int(0, 100), 'Test de notification 3', $this->getUser());
 
         /**
          * @var \App\Entity\User $user
          */
         $user = $this->getUser();
         return $this->render('notification/index.html.twig', [
-            'notifications' => $user->getNotifications(),
+            'notifications' => $notificationRepository->findAllByUser(
+                $user,
+                ['createdAt' => 'DESC'],
+                20
+            ),
         ]);
     }
 
-    #[Route('/{id)', name: 'show')]
-    public function show(Notification $notification): Response
+    #[Route('/{id}', name: 'show')]
+    public function show(Notification $notification, EntityManagerInterface $entityManager): Response
     {
-        // We can't see other people notification
-        if ($notification->getUser() !== $this->getUser()) {
+        // We can't see other people personal notification...
+        if ($notification->getUser() && $notification->getUser() !== $this->getUser()) {
+            // Nothing to see here...
             return $this->redirectToRoute('notification_index');
         }
+
+        // Mark as read if not read
+        if (!$notification->isIsRead()) {
+            $notification->setIsRead(true);
+            $entityManager->flush();
+        }
+
+        // ... but we can see general notifications (without a targeted user)
         return $this->render('notification/show.html.twig', [
             'notification' => $notification,
         ]);

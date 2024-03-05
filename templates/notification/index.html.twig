@@ -8,10 +8,17 @@
 	<div class="ion-padding">
 		<ion-list>
 			{% for notification in notifications %}
-				<ion-item href="{{ path('notification_read', {id:notification.id}) }}" {% if not notification.isRead %} color="light" {% endif %}>
+				<ion-item href="{{ path('notification_show', { id:notification.id }) }}" {% if not notification.isRead %} color="light" {% endif %}>
 					<ion-label>{{notification.message}}</ion-label>
 				</ion-item>
 			{% endfor %}
 		</ion-list>
 	</div>
+{% endblock %}
+
+
+{% block menuBackButton %}
+	<ion-button href="{{path('home')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
 {% endblock %}

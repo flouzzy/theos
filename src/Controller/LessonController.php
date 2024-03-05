@@ -9,6 +9,7 @@ use App\Entity\Lesson;
 use App\Entity\Module;
 use App\Entity\ModuleCompletion;
 use App\Repository\CompletionRepository;
+use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -16,13 +17,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/courses/{courseSlug}/{moduleSlug}/lesson', name: 'lesson_')]
 #[IsGranted('IS_AUTHENTICATED', message: 'You must be logged in to view this lesson')]
 class LessonController extends AbstractController
 {
-    public function __construct(private CompletionRepository $completionRepository, private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private CompletionRepository $completionRepository,
+        private EntityManagerInterface $entityManager,
+        private NotificationService $notificationService,
+        private TranslatorInterface $translator
+    ) {
     }
     #[Route('/{id}', name: 'show')]
     public function show(
@@ -79,6 +85,9 @@ class LessonController extends AbstractController
 
         // Save lesson completion status for current user
         // Check if completion already exist
+        /**
+         * @var \App\Entity\User $user
+         */
         $user = $this->getUser();
         $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
         if (!$completion) {
@@ -105,6 +114,17 @@ class LessonController extends AbstractController
                 'moduleSlug' => $module->getSlug(),
                 'id' => $lesson->getId()
             ]);
+        } else {
+            // Send a notification to all users
+            $content = $this->renderView('notification/emails/lesson_completed.html.twig', [
+                'user' => $user,
+                'lesson' => $lesson
+            ]);
+
+            $this->notificationService->createAndSendNotification(
+                $content,
+                $this->translator->trans('Lesson completed for') . ' ' . $user->getFirstname()
+            );
         }
 
         /**
@@ -166,10 +186,14 @@ class LessonController extends AbstractController
      */
     private function setModuleCompleted(Module $module): void
     {
+        /**
+         * @var \App\Entity\User $user
+         */
+        $user = $this->getUser();
         $allLessonsCompleted = true;
         foreach ($module->getLessons() as $moduleLesson) {
             $lessonCompletion = $this->completionRepository->findOneBy([
-                'user' => $this->getUser(),
+                'user' => $user,
                 'lesson' => $moduleLesson
             ]);
 
@@ -180,17 +204,31 @@ class LessonController extends AbstractController
         }
 
         $moduleCompletion = $this->entityManager->getRepository(ModuleCompletion::class)->findOneBy([
-            'user' => $this->getUser(),
+            'user' => $user,
             'module' => $module
         ]);
 
         if (!$moduleCompletion) {
             $moduleCompletion = new ModuleCompletion();
-            $moduleCompletion->setUser($this->getUser());
+            $moduleCompletion->setUser($user);
             $moduleCompletion->setModule($module);
         }
 
-        // Si toutes les leçons sont complétées, marquez le module comme complété
+        // Send notification to all the users if someone complete a course
+        if ($allLessonsCompleted) {
+            // Render a content based on twig template
+            $content = $this->renderView('notification/emails/module_completed.html.twig', [
+                'user' => $user,
+                'module' => $module
+            ]);
+
+            $this->notificationService->createAndSendNotification(
+                $content,
+                $this->translator->trans('Module completed for') . ' ' .  $user->getFirstname()
+            );
+        }
+
+        // Mise à jour du statut de completion
         $moduleCompletion->setCompleted($allLessonsCompleted);
 
         $this->entityManager->persist($moduleCompletion);
@@ -202,14 +240,18 @@ class LessonController extends AbstractController
      */
     private function setCourseCompleted($course)
     {
+        /**
+         * @var \App\Entity\User $user
+         */
+        $user = $this->getUser();
         $courseCompletion = $this->entityManager->getRepository(CourseCompletion::class)->findOneBy([
-            'user' => $this->getUser(),
+            'user' => $user,
             'course' => $course
         ]);
 
         if (!$courseCompletion) {
             $courseCompletion = new CourseCompletion();
-            $courseCompletion->setUser($this->getUser());
+            $courseCompletion->setUser($user);
             $courseCompletion->setCourse($course);
         }
 
@@ -221,7 +263,7 @@ class LessonController extends AbstractController
             // mais dans ce cas on risquerait de passer à côté des modules qui ne sont associés à aucune leçon (cygne noir)
             $moduleLessons = $courseModule->getLessons();
             foreach ($moduleLessons as $lesson) {
-                $completion = $this->completionRepository->findOneBy(['user' => $this->getUser(), 'lesson' => $lesson]);
+                $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
 
                 if (!$completion || !$completion->isCompleted()) {
                     $allModulesCompleted = false;
@@ -230,6 +272,19 @@ class LessonController extends AbstractController
             }
         }
 
+        // Send notification to all the users if someone complete a course
+        if ($allModulesCompleted) {
+            // Render a content based on twig template
+            $content = $this->renderView('notification/emails/course_completed.html.twig', [
+                'user' => $user,
+                'course' => $course
+            ]);
+
+            $this->notificationService->createAndSendNotification(
+                $content,
+                $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
+            );
+        }
 
         // MAj du statut du parcours
         $courseCompletion->setCompleted($allModulesCompleted);

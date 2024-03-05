@@ -14,6 +14,19 @@
 			</ion-label>
 		</ion-item>
 	{% endfor %}
+
+	{% set notifications = app_notification.findAllUnread %}
+	<ion-item button href="{{path('notification_index')}}">
+		<ion-icon slot="start" name="notifications-outline" color="app"></ion-icon>
+		<ion-label>
+			{{'Notifications' | trans}}
+			{% if notifications | length > 0 %}
+				<ion-text color="danger">
+					({{notifications | length}})
+				</ion-text>
+			{% endif %}
+		</ion-label>
+	</ion-item>
 </ion-list>
 
 {# User connected #}

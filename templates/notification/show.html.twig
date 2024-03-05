@@ -9,3 +9,9 @@
 		{{notification.message | raw}}
 	</div>
 {% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('notification_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}

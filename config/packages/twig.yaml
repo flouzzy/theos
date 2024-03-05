@@ -8,6 +8,10 @@ twig:
     # Images css
     "%kernel.project_dir%/assets/images": images
 
+  globals:
+    # the value is the service's id
+    app_notification: '@App\Repository\NotificationRepository'
+
 when@test:
   twig:
     strict_variables: true
