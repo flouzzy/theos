@@ -1,10 +1,10 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}Notification index
+{% block title %}
+	{{'Notifications' | trans}}
 {% endblock %}
 
 {% block content %}
-	<h1>Notification index</h1>
 
 	<table class="table">
 		<thead>
@@ -42,5 +42,9 @@
 		</tbody>
 	</table>
 
-	<a href="{{ path('admin_notification_new') }}">Create new</a>
+	<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+		<ion-fab-button href="{{ path('admin_notification_new') }}">
+			<ion-icon name="add"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
 {% endblock %}

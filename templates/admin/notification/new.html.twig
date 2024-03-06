@@ -1,12 +1,16 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}New Notification
+{% block title %}
+	{{'New notification' | trans}}
 {% endblock %}
 
 {% block content %}
-	<h1>Create new Notification</h1>
 
 	{{ include('admin/notification/_form.html.twig') }}
+{% endblock %}
 
-	<a href="{{ path('admin_notification_index') }}">back to list</a>
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_notification_index')}}" color="light">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
 {% endblock %}
