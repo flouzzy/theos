@@ -23,9 +23,6 @@
 		<columns></columns>
 		<columns>
 			<center>
-				<h1 class="text-center" href="{{absolute_url(path('home'))}}">
-					Le Rocher Academie
-				</h1>
 				<img src="{{ email.image('@images/logo.png') }}" class="logo" alt="App Logo">
 			</center>
 		</columns>
@@ -37,12 +34,12 @@
 			<spacer size="16"></spacer>
 			<h-line></h-line>
 			{% block footer %}
-				<h3>
+				<p class="text-center">
 					{{'now' | date('Y')}}
 					&copy;
 					<a href="https://academie.lerocher.fr">Le Rocher Academie</a>.
 					{{'All rights reserved' | trans}}
-				</h3>
+				</p>
 				<menu>
 					<item href="{{absolute_url(path('home'))}}">{{'Home' | trans}}</item>
 					<item href="{{absolute_url(path('course_index'))}}">{{'Courses' | trans}}</item>
