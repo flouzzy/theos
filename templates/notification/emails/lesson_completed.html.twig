@@ -1,9 +1,11 @@
 <callout>
 	<p>
-		{{user.firstname}},
-		{{'Has just completed the lesson' | trans}}
+		{{user.firstname}}
+		{{'Has just completed the lesson' | trans | lower}}
 		:
-		{{course.title}}.
+		<strong>
+			{{lesson.title}}.
+		</strong>
 		{{"Don't hesitate to congratulate him" | trans}}
 	</p>
 </callout>
