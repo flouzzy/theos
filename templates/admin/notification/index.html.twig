@@ -23,7 +23,7 @@
 			{% for notification in notifications %}
 				<tr>
 					<td>{{ notification.id }}</td>
-					<td>{{ notification.message }}</td>
+					<td>{{ notification.message | raw }}</td>
 					<td>{{ notification.title }}</td>
 					<td>{{ notification.createdAt ? notification.createdAt|date('Y-m-d H:i:s') : '' }}</td>
 					<td>{{ notification.sentAt ? notification.sentAt|date('Y-m-d H:i:s') : '' }}</td>
