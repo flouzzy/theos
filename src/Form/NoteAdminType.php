@@ -20,7 +20,7 @@ class NoteAdminType extends AbstractType
             ->add('updatedAt')
             ->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => 'firstname',
             ])
             ->add('lesson', EntityType::class, [
                 'class' => Lesson::class,
