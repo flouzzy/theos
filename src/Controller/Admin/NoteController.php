@@ -18,7 +18,8 @@ class NoteController extends AbstractController
     public function index(NoteRepository $noteRepository): Response
     {
         return $this->render('admin/note/index.html.twig', [
-            'notes' => $noteRepository->findAll(),
+            // Return all notes order by createdAt DESC
+            'notes' => $noteRepository->findBy([], ['createdAt' => 'DESC']),
         ]);
     }
 
