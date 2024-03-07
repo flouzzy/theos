@@ -9,16 +9,20 @@
 		<thead>
 			<tr>
 				<th>Id</th>
-				<th>Content</th>
-				<th>CreatedAt</th>
-				<th>UpdatedAt</th>
-				<th>actions</th>
+				<th>{{'Author' | trans}}</th>
+				<th>{{'Lesson' | trans}}</th>
+				<th>{{'Content' | trans}}</th>
+				<th>{{'Created at' | trans}}</th>
+				<th>{{'Updated at' | trans}}</th>
+				<th>*</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for note in notes %}
 				<tr>
 					<td>{{ note.id }}</td>
+					<td>{{ note.user.firstname }}</td>
+					<td>{{ note.lesson.title }}</td>
 					<td>{{ note.content }}</td>
 					<td>{{ note.createdAt ? note.createdAt|date('Y-m-d H:i:s') : '' }}</td>
 					<td>{{ note.updatedAt ? note.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
@@ -29,7 +33,7 @@
 				</tr>
 			{% else %}
 				<tr>
-					<td colspan="5">no records found</td>
+					<td colspan="5">{{'No item found' | trans}}</td>
 				</tr>
 			{% endfor %}
 		</tbody>
