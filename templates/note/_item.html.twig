@@ -1,4 +1,4 @@
-<ion-item>
+<ion-item {% if loop.last %} lines="none" {% endif %}>
 	<ion-text class="ion-padding-vertical">
 		<ion-note>{{note.createdAt | date('Y-m-d H:i:s') | ago }}</ion-note>
 		{{note.content}}
