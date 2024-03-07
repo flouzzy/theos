@@ -60,5 +60,9 @@ class NotificationService
             ]);
 
         $this->mailer->send($email);
+
+        // Save notification sentAt date
+        $notification->setSentAt(new \DateTimeImmutable());
+        $this->entityManager->flush();
     }
 }

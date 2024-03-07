@@ -1,0 +1,15 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'New note' | trans}}
+{% endblock %}
+
+{% block content %}
+	{{ include('admin/note/_form.html.twig') }}
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_note_index')}}" color="light">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}
