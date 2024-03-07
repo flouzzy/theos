@@ -48,6 +48,7 @@ class NotificationRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setMaxResults($limit)
             ->orderBy('n.createdAt', 'DESC')
+            ->orderBy('n.isRead', 'ASC')
             ->getQuery()
             ->getResult();
     }
