@@ -1,0 +1,11 @@
+<ion-list id="completion-course">
+	{% for completion in coursesCompletion %}
+		<ion-item>
+			<ion-label>{{completion.course.title}}</ion-label>
+			<ion-label>{{completion.user.firstname}}</ion-label>
+		</ion-item>
+	{% endfor %}
+	<ion-item href="{{ path('admin_completion_course') }}" lines="none">
+		{{'Show more' | trans}}
+	</ion-item>
+</ion-list>

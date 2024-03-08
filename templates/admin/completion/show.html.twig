@@ -1,0 +1,28 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{title | trans}}
+{% endblock %}
+
+{% block content %}
+	<div class="ion-padding">
+		<ion-list>
+			<ion-list-header>
+				<ion-label>{{title | trans}}</ion-label>
+			</ion-list-header>
+			{% for completion in completions %}
+				{% set completionData = attribute(completion, completionType) %}
+				<ion-item>
+					<ion-label>{{completionData.title}}</ion-label>
+					<ion-label>{{completion.user.firstname}}</ion-label>
+				</ion-item>
+			{% endfor %}
+		</ion-list>
+	</div>
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_completion_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}

@@ -1,0 +1,11 @@
+<ion-list id="completion-module">
+	{% for completion in modulesCompletion %}
+		<ion-item>
+			<ion-label>{{completion.module.title}}</ion-label>
+			<ion-label>{{completion.user.firstname}}</ion-label>
+		</ion-item>
+	{% endfor %}
+	<ion-item href="{{ path('admin_completion_module') }}" lines="none">
+		{{'Show more' | trans}}
+	</ion-item>
+</ion-list>
