@@ -32,7 +32,7 @@ class CompletionController extends AbstractController
         CompletionRepository $completionRepository,
     ): Response {
         return $this->render('admin/completion/show.html.twig', [
-            'completions' => $completionRepository->findAll(),
+            'completions' => $completionRepository->findBy([], ['id' => 'DESC']),
             'title' => 'Lessons completions',
             'completionType' => 'lesson'
         ]);
@@ -43,7 +43,7 @@ class CompletionController extends AbstractController
         ModuleCompletionRepository $completionRepository,
     ): Response {
         return $this->render('admin/completion/show.html.twig', [
-            'completions' => $completionRepository->findAll(),
+            'completions' => $completionRepository->findBy([], ['id' => 'DESC']),
             'title' => 'Modules completions',
             'completionType' => 'module'
         ]);
@@ -54,7 +54,7 @@ class CompletionController extends AbstractController
         CourseCompletionRepository $completionRepository,
     ): Response {
         return $this->render('admin/completion/show.html.twig', [
-            'completions' => $completionRepository->findAll(),
+            'completions' => $completionRepository->findBy([], ['id' => 'DESC']),
             'title' => 'Courses completions',
             'completionType' => 'course'
         ]);
