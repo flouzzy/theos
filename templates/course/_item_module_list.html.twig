@@ -14,8 +14,9 @@
 				{% endif %}
 			</ion-label>
 			{% if lesson.status == 'published' %}
+				{% set buttonTitle = isSubscribed ? 'Start' : 'Preview' %}
 				<ion-button slot="end" color="app" class="ion-hide-sm-down">
-					{{'Preview' | trans}}
+					{{buttonTitle | trans}}
 				</ion-button>
 			{% endif %}
 		</ion-item>
