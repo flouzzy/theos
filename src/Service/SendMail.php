@@ -36,6 +36,10 @@ class SendMail
             // some error prevented the email sending; display an
             // error message or try to resend the message
             $this->logger->error($e->getDebug());
+
+            // ... use the transport "alternative":
+            $email->getHeaders()->addTextHeader('X-Transport', 'alternative');
+            $this->mailer->send($email);
         }
     }
 }

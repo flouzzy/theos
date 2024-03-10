@@ -5,7 +5,9 @@ namespace App\Service;
 use App\Entity\Notification;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -14,7 +16,8 @@ class NotificationService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private MailerInterface $mailer,
-        private UrlGeneratorInterface $router
+        private UrlGeneratorInterface $router,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -59,7 +62,17 @@ class NotificationService
                 ),
             ]);
 
-        $this->mailer->send($email);
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            // some error prevented the email sending; display an
+            // error message or try to resend the message
+            $this->logger->error($e->getDebug());
+
+            // ... use the transport "alternative":
+            $email->getHeaders()->addTextHeader('X-Transport', 'alternative');
+            $this->mailer->send($email);
+        }
 
         // Save notification sentAt date
         $notification->setSentAt(new \DateTimeImmutable());
