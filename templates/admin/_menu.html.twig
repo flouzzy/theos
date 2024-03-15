@@ -2,43 +2,43 @@
 	<ion-list-header>
 		{{'Main menu' | trans}}
 	</ion-list-header>
-	<ion-item href="{{path('admin')}}" {% if current_path == 'admin' %} color="{{colorActive}}" {% endif %}>
+	<ion-item href="{{path('admin')}}" {% if currentroute == 'admin' %} color="{{colorActive}}" {% endif %}>
 		<ion-icon slot="start" name="home-outline" color="app"></ion-icon>
 		<ion-label>
 			{{'Dashboard' | trans}}
 		</ion-label>
 	</ion-item>
-	<ion-item href="{{path('admin_course_index')}}" {% if current_path == 'admin_course_index' %} color="{{colorActive}}" {% endif %}>
+	<ion-item href="{{path('admin_course_index')}}" {% if currentroute == 'admin_course_index' %} color="{{colorActive}}" {% endif %}>
 		<ion-icon slot="start" name="school-outline" color="app"></ion-icon>
 		<ion-label>
 			{{'Courses' | trans}}
 		</ion-label>
 	</ion-item>
-	<ion-item href="{{path('admin_module_index')}}" {% if current_path == 'admin_module_index' %} color="{{colorActive}}" {% endif %}>
+	<ion-item href="{{path('admin_module_index')}}" {% if currentroute == 'admin_module_index' %} color="{{colorActive}}" {% endif %}>
 		<ion-icon slot="start" name="albums-outline" color="app"></ion-icon>
 		<ion-label>
 			{{'Modules' | trans}}
 		</ion-label>
 	</ion-item>
-	<ion-item href="{{path('admin_lesson_index')}}" {% if current_path == 'admin_lesson_index' %} color="{{colorActive}}" {% endif %}>
+	<ion-item href="{{path('admin_lesson_index')}}" {% if currentroute == 'admin_lesson_index' %} color="{{colorActive}}" {% endif %}>
 		<ion-icon slot="start" name="flask-outline" color="app"></ion-icon>
 		<ion-label>
 			{{'Lessons' | trans}}
 		</ion-label>
 	</ion-item>
-	<ion-item href="{{path('admin_notification_index')}}" {% if current_path == 'admin_notification_index' %} color="{{colorActive}}" {% endif %}>
+	<ion-item href="{{path('admin_notification_index')}}" {% if currentroute == 'admin_notification_index' %} color="{{colorActive}}" {% endif %}>
 		<ion-icon slot="start" name="notifications-outline" color="app"></ion-icon>
 		<ion-label>
 			{{'Notifications' | trans}}
 		</ion-label>
 	</ion-item>
-	<ion-item href="{{path('admin_note_index')}}" {% if current_path == 'admin_note_index' %} color="{{colorActive}}" {% endif %}>
+	<ion-item href="{{path('admin_note_index')}}" {% if currentroute == 'admin_note_index' %} color="{{colorActive}}" {% endif %}>
 		<ion-icon slot="start" name="book-outline" color="app"></ion-icon>
 		<ion-label>
 			{{'Notes' | trans}}
 		</ion-label>
 	</ion-item>
-	<ion-item href="{{path('admin_completion_index')}}" {% if current_path == 'admin_completion_index' %} color="{{colorActive}}" {% endif %}>
+	<ion-item href="{{path('admin_completion_index')}}" {% if currentroute == 'admin_completion_index' %} color="{{colorActive}}" {% endif %}>
 		<ion-icon slot="start" name="checkbox-outline" color="app"></ion-icon>
 		<ion-label>
 			{{'Completion status' | trans}}

@@ -7,7 +7,7 @@
 
 <ion-list>
 	{% for menu in menuItems %}
-		<ion-item href="{{path(menu.path)}}" {% if current_path == menu.path %} color="{{colorActive}}" {% endif %}>
+		<ion-item href="{{path(menu.path)}}" {% if currentroute == menu.path %} color="{{colorActive}}" {% endif %}>
 			<ion-icon slot="start" src="{{menu.icon}}" color="app"></ion-icon>
 			<ion-label>
 				{{menu.title | trans}}
@@ -47,7 +47,7 @@
 			</ion-item>
 		{% endif %}
 
-		<ion-item button href="{{path('profile_index')}}" {% if current_path == 'profile_index' %} color="{{colorActive}}" {% endif %}>
+		<ion-item button href="{{path('profile_index')}}" {% if currentroute == 'profile_index' %} color="{{colorActive}}" {% endif %}>
 			<ion-icon slot="start" src="/images/icons/profile.svg" color="app"></ion-icon>
 			<ion-label>
 				{{'Profile' | trans}}

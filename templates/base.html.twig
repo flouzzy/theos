@@ -36,7 +36,7 @@
 
 		<title>
 			{% block title %}
-				{{'Welcome' | trans}}
+				{{'Evangelical theology school online' | trans}}
 			{% endblock %}
 			| Le Rocher Academie
 		</title>
@@ -54,7 +54,7 @@
 		{% endblock %}
 	</head>
 	<body data-controller="app">
-		{% set current_path = app.request.get('_route') %}
+		{% set currentroute = app.request.get('_route') %}
 		{% set colorActive = 'light' %}
 		{% include "partials/_app_install.html.twig" %}
 		<turbo-frame id="frame_app">

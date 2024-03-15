@@ -7,7 +7,12 @@
 			<ion-card-title>{{'An error has occurred' | trans}}</ion-card-title>
 		</ion-card-header>
 		<ion-card-content>
-			{{'Oops! Something went wrong. Please try again, or contact an administrator if it persists' | trans}}
+			<h2>
+				{{'Oops! Something went wrong. Please try again, or contact an administrator if it persists' | trans}}
+			</h2>
+			<p>
+				<a href="{{ path('home') }}">{{'Return to the homepage' | trans}}</a>.
+			</p>
 		</ion-card-content>
 	</ion-card>
 {% endblock %}

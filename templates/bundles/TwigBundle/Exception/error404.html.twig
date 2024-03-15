@@ -7,7 +7,12 @@
 			<ion-card-title>{{'Page not found' | trans}}</ion-card-title>
 		</ion-card-header>
 		<ion-card-content>
-			{{'Sorry, but the page you are looking for cannot be found' | trans}}
+			<h2>
+				{{'Sorry, but the page you are looking for cannot be found' | trans}}
+			</h2>
+			<p>
+				<a href="{{ path('home') }}">{{'Return to the homepage' | trans}}</a>.
+			</p>
 		</ion-card-content>
 	</ion-card>
 {% endblock %}

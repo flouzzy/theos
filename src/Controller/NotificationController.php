@@ -60,4 +60,21 @@ class NotificationController extends AbstractController
 
         return $this->redirectToRoute('notification_index');
     }
+
+    #[Route('/read/all', name: 'read_all')]
+    public function markAllAsRead(EntityManagerInterface $entityManager): Response
+    {
+        /**
+         * @var \App\Entity\User $currentUser
+         */
+        $currentUser = $this->getUser();
+        $notifications = $currentUser->getNotifications();
+        foreach ($notifications as $notification) {
+            $notification->setIsRead(true);
+        }
+        $entityManager->flush();
+
+        $this->addFlash('success', 'All notifications have been marked as read');
+        return $this->redirectToRoute('notification_index');
+    }
 }
