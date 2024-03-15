@@ -20,7 +20,7 @@ class CourseFixtures extends Fixture
         // Admin courses
         for ($index = 0; $index < 10; $index++) {
             # Create 5 courses
-            $newCourse = $this->create('Course admin n°' . $index, $this->getReference(AppFixtures::ADMIN_USER_REFERENCE));
+            $newCourse = $this->create($index, $this->getReference(AppFixtures::ADMIN_USER_REFERENCE));
             $this->manager->persist($newCourse);
 
             $this->addReference(CourseFixtures::COURSE_REFERENCE . $index, $newCourse);
@@ -29,7 +29,7 @@ class CourseFixtures extends Fixture
         // Simple users course
         for ($index = 10; $index < 20; $index++) {
             # Create 5 courses
-            $newCourse = $this->create('Course user n°' . $index, $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 4)));
+            $newCourse = $this->create($index, $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 4)));
             $this->manager->persist($newCourse);
 
             $this->addReference(CourseFixtures::COURSE_REFERENCE . $index, $newCourse);
@@ -38,13 +38,15 @@ class CourseFixtures extends Fixture
         $this->manager->flush();
     }
 
-    private function create($title, $author)
+    private function create(int $index, $author)
     {
+        $title = 'Course n°' . $index;
         $course = new Course;
         $course->setTitle($title);
         $course->setDescription(AppFixtures::LOREM_IPSUM);
         $course->setAuthor($author);
         $course->setStatus('published');
+        $course->setItemOrder($index);
         return $course;
     }
 }
