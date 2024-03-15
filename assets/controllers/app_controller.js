@@ -44,51 +44,30 @@ export default class extends Controller {
       console.log("turbo:before-visit : ", event);
 
       if (!navigator.onLine) {
-        event.preventDefault();
-        // Afficher une notification ou une page d'erreur personnalisée ici
         console.log("Vous êtes hors ligne, navigation annulée.");
+
+        // If online, load the page from the cache
+        event.preventDefault();
+        const url = event.detail.url;
+        this.loadContentFromCache(url);
       }
     });
 
     document.addEventListener("turbo:before-frame-render", (event) => {
-      // console.log("turbo:before-frame-render : ");
-
       document.body.classList.add("turbo-loading");
-
-      // const frame = event.target;
-
-      // // Utilisez l'URL actuelle comme clé de cache
-      // const cacheKey = `frameCache_${window.location.href}`;
-
-      // // Vérifiez si le contenu du cadre est stocké dans le cache
-      // const cachedContent = localStorage.getItem(cacheKey);
-
-      // if (cachedContent) {
-      //   // Empêchez le rendu par défaut
-      //   event.preventDefault();
-
-      //   // Mettez à jour le contenu du cadre manuellement avec le contenu du cache
-      //   frame.innerHTML = cachedContent;
-
-      //   console.log(
-      //     `Contenu du cadre chargé depuis le cache pour ${window.location.href}`
-      //   );
-
-      //   // Remove du loader
-      //   document.body.classList.remove("turbo-loading");
-      // }
     });
 
     document.addEventListener("turbo:frame-render", (event) => {
       // console.log("turbo:frame-render : ");
 
-      // const frame = event.target;
+      // Save content in cache
+      const frame = event.target;
 
-      // // Utilisez l'URL actuelle comme clé de cache
-      // const cacheKey = `frameCache_${window.location.href}`;
+      // Utilisez l'URL actuelle comme clé de cache
+      const cacheKey = `frameCache_${window.location.href}`;
 
-      // // Stockez le contenu du cadre dans le stockage local
-      // localStorage.setItem(cacheKey, frame.innerHTML);
+      // Stockez le contenu du cadre dans le stockage local
+      localStorage.setItem(cacheKey, frame.innerHTML);
 
       // Refresher
       this.initRefresherEvent();
@@ -96,33 +75,17 @@ export default class extends Controller {
       // Remove du loader
       document.body.classList.remove("turbo-loading");
     });
+  }
 
-    // document.addEventListener("turbo:click", (event) => {
-    //   console.log("turbo:click : ", event.detail.url);
+  loadContentFromCache(url) {
+    const cacheKey = `frameCache_${url}`;
+    const cachedContent = localStorage.getItem(cacheKey);
+    if (cachedContent) {
+      const frame = document.querySelector("turbo-frame");
+      frame.innerHTML = cachedContent;
 
-    //   // Utilisez l'URL actuelle comme clé de cache
-    //   const cacheKey = `frameCache_${event.detail.url}`;
-
-    //   // Vérifiez si le contenu du cadre est stocké dans le cache
-    //   const cachedContent = localStorage.getItem(cacheKey);
-
-    //   if (cachedContent) {
-    //     event.preventDefault();
-    //     // Empêchez le rendu par défaut
-
-    //     // Mettez à jour le contenu du cadre manuellement avec le contenu du cache
-    //     const frame = document.querySelector("turbo-frame");
-
-    //     frame.innerHTML = cachedContent;
-
-    //     console.log(
-    //       `Contenu :: du cadre chargé depuis le cache pour ${window.location.href}`
-    //     );
-
-    //     // Remove du loader
-    //     document.body.classList.remove("turbo-loading");
-    //   }
-    // });
+      console.log(`Contenu :: du cadre chargé depuis le cache pour ${url}`);
+    }
   }
 
   initRefresherEvent() {
