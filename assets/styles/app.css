@@ -58,6 +58,12 @@
   --ion-color-purple-tint: #7b6bdd;
 }
 
+html[data-turbo-visit-direction="forward"]::view-transition-old(
+    sidebar
+  ):only-child {
+  animation: slide-to-right 0.5s ease-out;
+}
+
 a {
   color: #9689eb;
   text-decoration: none;

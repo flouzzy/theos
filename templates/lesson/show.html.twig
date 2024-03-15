@@ -1,13 +1,13 @@
 {% extends 'lesson/layout.html.twig' %}
 
 {% block title %}
-	{{currentLesson.title}}
+	{{module.title}}
 {% endblock %}
 
 {% block content %}
 
 	<turbo-frame id="frame_lesson">
-
+		<h2 class="ion-text-center">{{currentLesson.title}}</h2>
 		<ion-card>
 			<ion-card-content>
 				<h2>{{'Description' | trans}}</h2>

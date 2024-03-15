@@ -1,0 +1,13 @@
+{% extends "ionic.html.twig" %}
+
+{% block content %}
+	<ion-card>
+		<img alt="Silhouette of mountains" src="{{ asset('images/default-error.png') }}"/>
+		<ion-card-header>
+			<ion-card-title>{{'An error has occurred' | trans}}</ion-card-title>
+		</ion-card-header>
+		<ion-card-content>
+			{{'Oops! Something went wrong. Please try again, or contact an administrator if it persists' | trans}}
+		</ion-card-content>
+	</ion-card>
+{% endblock %}

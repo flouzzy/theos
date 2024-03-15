@@ -35,24 +35,103 @@ export default class extends Controller {
     // Responsive tables
     this.responsiveTable();
 
-    // Turbo transitions
+    // Turbo
+    this.initTurboEvents();
+  }
+
+  initTurboEvents() {
+    document.addEventListener("turbo:before-visit", function (event) {
+      console.log("turbo:before-visit : ", event);
+
+      if (!navigator.onLine) {
+        event.preventDefault();
+        // Afficher une notification ou une page d'erreur personnalisée ici
+        console.log("Vous êtes hors ligne, navigation annulée.");
+      }
+    });
 
     document.addEventListener("turbo:before-frame-render", (event) => {
-      // fade out the old body
-      console.log("turbo:before-frame-render", event);
+      // console.log("turbo:before-frame-render : ");
+
+      document.body.classList.add("turbo-loading");
+
+      // const frame = event.target;
+
+      // // Utilisez l'URL actuelle comme clé de cache
+      // const cacheKey = `frameCache_${window.location.href}`;
+
+      // // Vérifiez si le contenu du cadre est stocké dans le cache
+      // const cachedContent = localStorage.getItem(cacheKey);
+
+      // if (cachedContent) {
+      //   // Empêchez le rendu par défaut
+      //   event.preventDefault();
+
+      //   // Mettez à jour le contenu du cadre manuellement avec le contenu du cache
+      //   frame.innerHTML = cachedContent;
+
+      //   console.log(
+      //     `Contenu du cadre chargé depuis le cache pour ${window.location.href}`
+      //   );
+
+      //   // Remove du loader
+      //   document.body.classList.remove("turbo-loading");
+      // }
     });
 
     document.addEventListener("turbo:frame-render", (event) => {
-      // fade out the old body
-      // console.log("turbo:frame-render", event);
+      // console.log("turbo:frame-render : ");
+
+      // const frame = event.target;
+
+      // // Utilisez l'URL actuelle comme clé de cache
+      // const cacheKey = `frameCache_${window.location.href}`;
+
+      // // Stockez le contenu du cadre dans le stockage local
+      // localStorage.setItem(cacheKey, frame.innerHTML);
+
+      // Refresher
       this.initRefresherEvent();
+
+      // Remove du loader
       document.body.classList.remove("turbo-loading");
     });
+
+    // document.addEventListener("turbo:click", (event) => {
+    //   console.log("turbo:click : ", event.detail.url);
+
+    //   // Utilisez l'URL actuelle comme clé de cache
+    //   const cacheKey = `frameCache_${event.detail.url}`;
+
+    //   // Vérifiez si le contenu du cadre est stocké dans le cache
+    //   const cachedContent = localStorage.getItem(cacheKey);
+
+    //   if (cachedContent) {
+    //     event.preventDefault();
+    //     // Empêchez le rendu par défaut
+
+    //     // Mettez à jour le contenu du cadre manuellement avec le contenu du cache
+    //     const frame = document.querySelector("turbo-frame");
+
+    //     frame.innerHTML = cachedContent;
+
+    //     console.log(
+    //       `Contenu :: du cadre chargé depuis le cache pour ${window.location.href}`
+    //     );
+
+    //     // Remove du loader
+    //     document.body.classList.remove("turbo-loading");
+    //   }
+    // });
   }
 
   initRefresherEvent() {
     // Ionic refresher
     const refresher = document.getElementById("refresher");
+
+    if (!refresher) {
+      return;
+    }
 
     refresher.addEventListener("ionRefresh", () => {
       // Reload current page
@@ -63,14 +142,22 @@ export default class extends Controller {
 
   initSW() {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/sw.js")
-        .then((serviceWorker) => {
-          console.log("Service Worker registered: ", serviceWorker);
-        })
-        .catch((error) => {
-          console.error("Error registering the Service Worker: ", error);
-        });
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((registration) => {
+            console.log(
+              "Service Worker enregistré avec succès :",
+              registration
+            );
+          })
+          .catch((registrationError) => {
+            console.log(
+              "Erreur d’enregistrement du Service Worker :",
+              registrationError
+            );
+          });
+      });
     }
   }
 

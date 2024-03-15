@@ -1,0 +1,13 @@
+{% extends "ionic.html.twig" %}
+
+{% block content %}
+	<ion-card>
+		<img alt="Silhouette of mountains" src="{{ asset('images/default-error.png') }}"/>
+		<ion-card-header>
+			<ion-card-title>{{'Page not found' | trans}}</ion-card-title>
+		</ion-card-header>
+		<ion-card-content>
+			{{'Sorry, but the page you are looking for cannot be found' | trans}}
+		</ion-card-content>
+	</ion-card>
+{% endblock %}
