@@ -66,10 +66,10 @@ export default class extends Controller {
       navigator.serviceWorker
         .register("/sw.js")
         .then((serviceWorker) => {
-          // console.log("Service Worker registered: ", serviceWorker);
+          console.log("Service Worker registered: ", serviceWorker);
         })
         .catch((error) => {
-          // console.error("Error registering the Service Worker: ", error);
+          console.error("Error registering the Service Worker: ", error);
         });
     }
   }
@@ -88,9 +88,6 @@ export default class extends Controller {
       if (this.isMobile()) {
         // true for mobile device
         this.toggleA2HSModal();
-      } else {
-        // false for not mobile device
-        console.info("not mobile device");
       }
 
       installBtn.addEventListener("click", (e) => {

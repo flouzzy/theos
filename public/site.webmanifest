@@ -2,6 +2,7 @@
     "name": "Le Rocher Academie",
     "short_name": "Academie",
     "description": "L'école des batisseurs du royaume de Dieu",
+    "id": "/?source=pwa",
     "icons": [
         {
             "src": "images/favicon/android-chrome-192x192.png",
