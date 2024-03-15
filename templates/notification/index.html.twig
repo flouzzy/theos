@@ -28,7 +28,9 @@
 {% block menuHeaderButtons %}
 	<ion-buttons slot="end">
 		<ion-button href="{{path('notification_read_all')}}" fill="clear">
-			{{'Mark all as read' | trans}}
+			<span class="ion-hide-md-down">
+				{{'Mark all as read' | trans}}
+			</span>
 			<ion-icon name="checkmark-done-outline"></ion-icon>
 		</ion-button>
 	</ion-buttons>
