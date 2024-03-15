@@ -8,7 +8,7 @@ use App\Entity\CourseCompletion;
 use App\Entity\Lesson;
 use App\Entity\Module;
 use App\Entity\ModuleCompletion;
-use App\Entity\Notification;
+// use App\Entity\Notification;
 use App\Entity\User;
 use App\Repository\CompletionRepository;
 use App\Service\NotificationService;
@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -29,7 +30,8 @@ class LessonController extends AbstractController
         private CompletionRepository $completionRepository,
         private EntityManagerInterface $entityManager,
         private NotificationService $notificationService,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private MessageBusInterface $bus
     ) {
     }
     #[Route('/{id}', name: 'show')]
@@ -116,20 +118,18 @@ class LessonController extends AbstractController
                 'moduleSlug' => $module->getSlug(),
                 'id' => $lesson->getId()
             ]);
+        } else {
+            // Send a notification to all users
+            $content = $this->renderView('notification/emails/lesson_completed.html.twig', [
+                'user' => $user,
+                'lesson' => $lesson
+            ]);
+
+            $this->sendNotificationToAllUsers(
+                $content,
+                $this->translator->trans('Lesson completed for') . ' ' . $user->getFirstname()
+            );
         }
-
-        // else {
-        //     // Send a notification to all users
-        //     $content = $this->renderView('notification/emails/lesson_completed.html.twig', [
-        //         'user' => $user,
-        //         'lesson' => $lesson
-        //     ]);
-
-        //     $this->sendNotificationToAllUsers(
-        //         $content,
-        //         $this->translator->trans('Lesson completed for') . ' ' . $user->getFirstname()
-        //     );
-        // }
 
         /**
          * @var \App\Entity\Lesson $nextLesson 
@@ -219,18 +219,18 @@ class LessonController extends AbstractController
         }
 
         // Send notification to all the users if someone complete a course
-        // if ($allLessonsCompleted) {
-        //     // Render a content based on twig template
-        //     $content = $this->renderView('notification/emails/module_completed.html.twig', [
-        //         'user' => $user,
-        //         'module' => $module
-        //     ]);
+        if ($allLessonsCompleted) {
+            // Render a content based on twig template
+            $content = $this->renderView('notification/emails/module_completed.html.twig', [
+                'user' => $user,
+                'module' => $module
+            ]);
 
-        //     $this->sendNotificationToAllUsers(
-        //         $content,
-        //         $this->translator->trans('Module completed for') . ' ' . $user->getFirstname()
-        //     );
-        // }
+            $this->sendNotificationToAllUsers(
+                $content,
+                $this->translator->trans('Module completed for') . ' ' . $user->getFirstname()
+            );
+        }
 
         // Mise à jour du statut de completion
         $moduleCompletion->setCompleted($allLessonsCompleted);
@@ -277,18 +277,18 @@ class LessonController extends AbstractController
         }
 
         // Send notification to all the users if someone complete a course
-        // if ($allModulesCompleted) {
-        //     // Render a content based on twig template
-        //     $content = $this->renderView('notification/emails/course_completed.html.twig', [
-        //         'user' => $user,
-        //         'course' => $course
-        //     ]);
+        if ($allModulesCompleted) {
+            // Render a content based on twig template
+            $content = $this->renderView('notification/emails/course_completed.html.twig', [
+                'user' => $user,
+                'course' => $course
+            ]);
 
-        //     $this->sendNotificationToAllUsers(
-        //         $content,
-        //         $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
-        //     );
-        // }
+            $this->sendNotificationToAllUsers(
+                $content,
+                $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
+            );
+        }
 
         // MAj du statut du parcours
         $courseCompletion->setCompleted($allModulesCompleted);
@@ -299,21 +299,12 @@ class LessonController extends AbstractController
     /**
      * Send notification to all users, except the current one
      *
-     * @param Notification $notification
-     * @param User $user
+     * @param string $content
+     * @param string $title
      * @return void
      */
     private function sendNotificationToAllUsers($content, $title): void
     {
-        $users = $this->entityManager->getRepository(User::class)->findBy(['isVerified' => true]);
-        foreach ($users as $user) {
-            if ($user !== $this->getUser()) {
-                $this->notificationService->createAndSendNotification(
-                    $content,
-                    $title,
-                    $user
-                );
-            }
-        }
+        $this->bus->dispatch(new \App\Message\Notification($content, $title));
     }
 }
