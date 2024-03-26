@@ -1,12 +1,16 @@
-{% extends 'base.html.twig' %}
+{% extends 'ionic.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}
+	{{'Reset your password' | trans}}
+{% endblock %}
 
-{% block body %}
-    <h1>Reset your password</h1>
-
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+{% block content %}
+	<div class="ion-padding">
+		{{ form_start(resetForm) }}
+		{{ form_row(resetForm.plainPassword) }}
+		<ion-button type="submit">
+			{{'Reset password' | trans}}
+		</ion-button>
+		{{ form_end(resetForm) }}
+	</div>
 {% endblock %}
