@@ -21,28 +21,40 @@ class NoteRepository extends ServiceEntityRepository
         parent::__construct($registry, Note::class);
     }
 
-//    /**
-//     * @return Note[] Returns an array of Note objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('n')
-//            ->andWhere('n.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('n.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findUserNotesByLesson($lesson, $user)
+    {
 
-//    public function findOneBySomeField($value): ?Note
-//    {
-//        return $this->createQueryBuilder('n')
-//            ->andWhere('n.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.user = :user')
+            ->andWhere('n.lesson = :lesson')
+            ->setParameter('user', $user)
+            ->setParameter('lesson', $lesson)
+            ->getQuery()
+            ->getResult();
+    }
+
+    //    /**
+    //     * @return Note[] Returns an array of Note objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('n')
+    //            ->andWhere('n.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('n.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Note
+    //    {
+    //        return $this->createQueryBuilder('n')
+    //            ->andWhere('n.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

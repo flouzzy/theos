@@ -7,6 +7,7 @@ use App\Entity\Lesson;
 use App\Entity\Module;
 use App\Entity\Note;
 use App\Form\NoteType;
+use App\Repository\NoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,15 +21,21 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class NoteController extends AbstractController
 {
 
-    #[Route('/', name: 'index', methods: ['GET', 'POST'])]
-    public function index(): Response
-    {
+    #[Route('/{lessonId}', name: 'index', methods: ['GET', 'POST'])]
+    public function index(
+        #[MapEntity(mapping: ['lessonId' => 'id'])]
+        Lesson $lesson,
+
+        NoteRepository $noteRepository
+    ): Response {
         /**
          * @var \App\Entity\User $currentUser
          */
         $currentUser = $this->getUser();
+        $notes = $noteRepository->findUserNotesByLesson($lesson, $currentUser);
         return $this->render('note/index.html.twig', [
-            'notes' => $currentUser->getNotes(),
+            // Return all user notes form the current lesson
+            'notes' => $notes
         ]);
     }
 

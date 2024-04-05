@@ -40,7 +40,7 @@
 					{# Form #}
 					{{ render(path('note_show', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
 					{# List #}
-					{{ render(path('note_index')) }}
+					{{ render(path('note_index', {lessonId : currentLesson.id})) }}
 				{% endif %}
 			{% else %}
 				<ion-item lines="none" color="dark">
