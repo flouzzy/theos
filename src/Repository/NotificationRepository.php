@@ -47,8 +47,8 @@ class NotificationRepository extends ServiceEntityRepository
             ->andWhere('n.user = :user OR n.user IS NULL')
             ->setParameter('user', $user)
             ->setMaxResults($limit)
-            ->orderBy('n.createdAt', 'DESC')
-            ->orderBy('n.isRead', 'ASC')
+            ->addOrderBy('n.createdAt', 'DESC')
+            ->addOrderBy('n.isRead', 'DESC')
             ->getQuery()
             ->getResult();
     }

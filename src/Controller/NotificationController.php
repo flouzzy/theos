@@ -22,7 +22,7 @@ class NotificationController extends AbstractController
     public function index(NotificationRepository $notificationRepository): Response
     {
         return $this->render('notification/index.html.twig', [
-            'notifications' => $notificationRepository->findAllByUser($this->getUser(), 10),
+            'notifications' => $notificationRepository->findAllByUser($this->getUser(), 12),
         ]);
     }
 
