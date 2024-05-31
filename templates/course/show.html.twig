@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block menuHeaderButtons %}
+	{{parent()}}
 	<ion-buttons slot="end">
 		{% if is_granted('ROLE_ADMIN') %}
 			<ion-button href="{{path('admin_course_edit', {id:course.id})}}" target="_blank">

@@ -1,10 +1,10 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-	<turbo-frame
-		id="frame_app" data-turbo-action="advance">
-		{# {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %} #}
+	{# {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %} #}
+	<turbo-frame id="frame_app" data-turbo-action="advance">
 		{% set currentPath = 'currentPath' %}
+		{% set notifications = app_notification.findAllUnread %}
 		<ion-app data-current-url="{{currentPath}}">
 			<ion-split-pane when="md" content-id="main">
 				<ion-menu content-id="main">
@@ -39,7 +39,11 @@
 									{{block('title')}}
 								{% endblock %}
 							</ion-title>
-							{% block menuHeaderButtons %}{% endblock %}
+							{% block menuHeaderButtons %}
+								<ion-buttons slot="end">
+									{% include "notification/_notification_icon.html.twig" %}
+								</ion-buttons>
+							{% endblock %}
 						</ion-toolbar>
 					</ion-header>
 					<ion-content>
