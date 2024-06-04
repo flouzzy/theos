@@ -44,6 +44,12 @@
 			{{'Completion status' | trans}}
 		</ion-label>
 	</ion-item>
+	<ion-item href="{{path('admin_badge_type_index')}}" {% if currentroute == 'admin_badge_type_index' %} color="{{colorActive}}" {% endif %}>
+		<ion-icon slot="start" name="checkbox-outline" color="app"></ion-icon>
+		<ion-label>
+			{{'Badge' | trans}}
+		</ion-label>
+	</ion-item>
 </ion-list>
 
 <ion-list>

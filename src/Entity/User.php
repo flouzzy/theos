@@ -105,6 +105,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
+    #[ORM\ManyToMany(targetEntity: Badge::class, mappedBy: 'users')]
+    private Collection $badges;
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $score = null;
+
 
     public function __construct()
     {
@@ -119,6 +125,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->moduleCompletions = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->badges = new ArrayCollection();
     }
 
     public function __toString()
@@ -676,6 +683,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $comment->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Badge>
+     */
+    public function getBadges(): Collection
+    {
+        return $this->badges;
+    }
+
+    public function addBadge(Badge $badge): static
+    {
+        if (!$this->badges->contains($badge)) {
+            $this->badges->add($badge);
+            $badge->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBadge(Badge $badge): static
+    {
+        if ($this->badges->removeElement($badge)) {
+            $badge->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getScore(): ?int
+    {
+        return $this->score;
+    }
+
+    public function setScore(?int $score): static
+    {
+        $this->score = $score;
 
         return $this;
     }

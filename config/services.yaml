@@ -6,6 +6,12 @@
 parameters:
   upload_directory: "%kernel.project_dir%/public/uploads"
   app.jwtsecret: "%env(APP_JWTSECRET)%"
+  brevo_api_key: "%env(BREVO_API_KEY)%"
+  brevo_template_id: "%env(BREVO_TEMPLATE_ID)%"
+  brevo_from_name: "%env(BREVO_FROM_NAME)%"
+  brevo_from_email: "%env(BREVO_FROM_EMAIL)%"
+  brevo_list_id: "%env(BREVO_LIST_ID)%"
+  brevo_subject: "%env(BREVO_SUBJECT)%"
 
 services:
   # default configuration for services in *this* file

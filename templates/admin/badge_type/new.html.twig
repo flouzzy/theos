@@ -1,0 +1,16 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'New BadgeType' | trans}}
+{% endblock %}
+
+{% block content %}
+	<div class="ion-padding">
+		{{ include('admin/badge_type/_form.html.twig') }}
+	</div>
+{% endblock %}
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_badge_type_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}

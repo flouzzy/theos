@@ -10,13 +10,16 @@ use Symfony\Component\Mime\Address;
 
 class SendMail
 {
-    public function __construct(private MailerInterface $mailer, private LoggerInterface $logger)
-    {
+    public function __construct(
+        private MailerInterface $mailer,
+        private LoggerInterface $logger,
+        private BrevoApi $brevoApi
+    ) {
     }
 
     public function send(
         Address|string $from,
-        Address|string $to,
+        array|string $to,
         string $subject,
         string $template,
         array $context
@@ -31,7 +34,16 @@ class SendMail
 
         // On envoie le mail
         try {
-            $this->mailer->send($email);
+            // $this->mailer->send($email);
+            $toList = [];
+            if (is_array($to)) {
+                $toList = ['email' => $to];
+            } else {
+                foreach ($to as $email) {
+                    $toList[] = ['email' => $email];
+                }
+            }
+            $this->brevoApi->sendEmail();
         } catch (TransportExceptionInterface $e) {
             // some error prevented the email sending; display an
             // error message or try to resend the message

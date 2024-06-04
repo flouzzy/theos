@@ -1,0 +1,44 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'Badge Type' | trans}}
+{% endblock %}
+
+{% block content %}
+	<div class="ion-padding">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Title</th>
+					<th>Description</th>
+					<th>Image</th>
+					<th>Code</th>
+					<th>actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for badge_type in badge_types %}
+					<tr>
+						<td>{{ badge_type.id }}</td>
+						<td>{{ badge_type.title }}</td>
+						<td>{{ badge_type.description }}</td>
+						<td>{{ badge_type.image }}</td>
+						<td>{{ badge_type.code }}</td>
+						<td>
+							<a href="{{ path('admin_badge_type_show', {'id': badge_type.id}) }}">show</a>
+							<a href="{{ path('admin_badge_type_edit', {'id': badge_type.id}) }}">edit</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="6">no records found</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<a href="{{ path('admin_badge_type_new') }}">Create new</a>
+
+	</div>
+{% endblock %}

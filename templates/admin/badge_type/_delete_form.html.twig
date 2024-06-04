@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('admin_badge_type_delete', {'id': badge_type.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ badge_type.id) }}">
+	<button class="btn">Delete</button>
+</form>

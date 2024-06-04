@@ -1,0 +1,44 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'BadgeType' | trans}}
+{% endblock %}
+
+{% block content %}
+	<h1>BadgeType</h1>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ badge_type.id }}</td>
+			</tr>
+			<tr>
+				<th>Title</th>
+				<td>{{ badge_type.title }}</td>
+			</tr>
+			<tr>
+				<th>Description</th>
+				<td>{{ badge_type.description }}</td>
+			</tr>
+			<tr>
+				<th>Image</th>
+				<td>{{ badge_type.image }}</td>
+			</tr>
+			<tr>
+				<th>Code</th>
+				<td>{{ badge_type.code }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_badge_type_edit', {'id': badge_type.id}) }}">edit</a>
+
+	{{ include('admin/badge_type/_delete_form.html.twig') }}
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_badge_type_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}
