@@ -8,6 +8,7 @@ const URLS_TO_CACHE = [
   "/assets/styles/",
   "/assets/styles/*.css",
   "/assets/images/*.jpg",
+  "/build/",
   "/images/",
   "/images/*",
   "/images/favicon/",
@@ -25,9 +26,23 @@ const URLS_TO_CACHE = [
 self.addEventListener("install", (event) => {
   console.log("SW::install :: event", event);
 
+  // event.waitUntil(
+  //   caches.open(CACHE_NAME).then((cache) => {
+  //     return cache.addAll(URLS_TO_CACHE);
+  //   })
+  // );
+
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(URLS_TO_CACHE);
+      console.log("SW::install :: Caching files");
+      return Promise.all(
+        URLS_TO_CACHE.map((url) => {
+          console.log("Caching:", url);
+          return cache.add(url).catch((error) => {
+            console.error(`Failed to cache ${url}:`, error);
+          });
+        })
+      );
     })
   );
 });
