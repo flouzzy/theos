@@ -5,21 +5,21 @@ const CACHE_NAME = "pepiteclub-cache-v" + CACHE_VERSION;
 // Liste des fichiers à mettre en cache
 const URLS_TO_CACHE = [
   "/",
+  "/assets/styles/",
+  "/assets/styles/*.css",
+  "/assets/images/*.jpg",
   "/images/",
   "/images/*",
   "/images/favicon/",
   "/images/favicon/*.png",
-  "images/favicon/favicon.ico",
   "/images/favicon/apple-touch-icon.png",
   "/images/favicon/favicon-32x32.png",
   "/images/favicon/favicon-16x16.png",
+  "/images/favicon/favicon.ico",
   "/images/favicon/safari-pinned-tab.svg",
   "/images/screens/",
   "/images/screens/*.png",
   "/site.webmanifest",
-  "/assets/styles/",
-  "/assets/styles/*.css",
-  "/assets/images/*.jpg",
 ];
 
 self.addEventListener("install", (event) => {
