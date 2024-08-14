@@ -105,22 +105,21 @@ export default class extends Controller {
 
   initSW() {
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((registration) => {
-            console.log(
-              "Service Worker enregistré avec succès :",
-              registration
-            );
-          })
-          .catch((registrationError) => {
-            console.log(
-              "Erreur d’enregistrement du Service Worker :",
-              registrationError
-            );
-          });
-      });
+      console.log("Service Worker disponible");
+      navigator.serviceWorker
+        .register("/service-worker.js")
+        .then((registration) => {
+          console.log("Service Worker enregistré avec succès :", registration);
+        })
+        .catch((error) => {
+          console.error("Échec de l'enregistrement du Service Worker :", error);
+        });
+      // window.addEventListener("load", () => {
+      //   console.log("window::load fired");
+
+      // });
+    } else {
+      console.log("Service Worker non disponible");
     }
   }
 
