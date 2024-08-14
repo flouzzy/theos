@@ -42,15 +42,6 @@ export default class extends Controller {
   initTurboEvents() {
     document.addEventListener("turbo:before-visit", function (event) {
       console.log("turbo:before-visit : ", event);
-
-      if (!navigator.onLine) {
-        console.log("Vous êtes hors ligne, navigation annulée.");
-
-        // If online, load the page from the cache
-        event.preventDefault();
-        const url = event.detail.url;
-        this.loadContentFromCache(url);
-      }
     });
 
     document.addEventListener("turbo:before-frame-render", (event) => {
@@ -58,16 +49,7 @@ export default class extends Controller {
     });
 
     document.addEventListener("turbo:frame-render", (event) => {
-      // console.log("turbo:frame-render : ");
-
-      // Save content in cache
-      const frame = event.target;
-
-      // Utilisez l'URL actuelle comme clé de cache
-      const cacheKey = `frameCache_${window.location.href}`;
-
-      // Stockez le contenu du cadre dans le stockage local
-      localStorage.setItem(cacheKey, frame.innerHTML);
+      console.log("turbo:frame-render : ", event);
 
       // Refresher
       this.initRefresherEvent();
@@ -75,17 +57,6 @@ export default class extends Controller {
       // Remove du loader
       document.body.classList.remove("turbo-loading");
     });
-  }
-
-  loadContentFromCache(url) {
-    const cacheKey = `frameCache_${url}`;
-    const cachedContent = localStorage.getItem(cacheKey);
-    if (cachedContent) {
-      const frame = document.querySelector("turbo-frame");
-      frame.innerHTML = cachedContent;
-
-      console.log(`Contenu :: du cadre chargé depuis le cache pour ${url}`);
-    }
   }
 
   initRefresherEvent() {
