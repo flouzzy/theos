@@ -1,17 +1,33 @@
 // Nom du cache
-const CACHE_VERSION = "0.0.3";
+// cache à la date du jour au format YYYY-MM-DD
+// On garantie qu'il sera renouvelé quotidiennement
+const CACHE_VERSION = new Date().toISOString().split("T")[0];
 const CACHE_NAME = "pepiteclub-cache-v" + CACHE_VERSION;
 
 // Liste des fichiers à mettre en cache
-const URLS_TO_CACHE = [
+// const URLS_TO_CACHE = [
+//   "/",
+//   "/courses",
+//   "/assets/styles/",
+//   "/assets/styles/*.css",
+//   "/assets/images/*.jpg",
+//   "/build/",
+//   "/images/",
+//   "/images/*",
+//   "/images/favicon/",
+//   "/images/favicon/*.png",
+//   "/images/favicon/apple-touch-icon.png",
+//   "/images/favicon/favicon-32x32.png",
+//   "/images/favicon/favicon-16x16.png",
+//   "/images/favicon/safari-pinned-tab.svg",
+//   "/images/screens/",
+//   "/images/screens/*.png",
+//   "/site.webmanifest",
+// ];
+
+// URLs des pages statiques (qui ne changent pratiquement jamais)
+const STATIC_URLS = [
   "/",
-  "/courses",
-  "/assets/styles/",
-  "/assets/styles/*.css",
-  "/assets/images/*.jpg",
-  "/build/",
-  "/images/",
-  "/images/*",
   "/images/favicon/",
   "/images/favicon/*.png",
   "/images/favicon/apple-touch-icon.png",
@@ -23,6 +39,17 @@ const URLS_TO_CACHE = [
   "/site.webmanifest",
 ];
 
+// URLs des pages dynamiques ou moins souvent modifiées
+const DYNAMIC_URLS = [
+  "/assets/images/*.jpg",
+  "/assets/styles/",
+  "/assets/styles/*.css",
+  "/build/",
+  "/courses",
+  "/images/",
+  "/images/*",
+];
+
 self.addEventListener("install", (event) => {
   console.log("SW::install :: event", event);
 
@@ -30,7 +57,8 @@ self.addEventListener("install", (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       console.log("SW::install :: Caching files");
       return Promise.all(
-        URLS_TO_CACHE.map((url) => {
+        // URLS_TO_CACHE.map((url) => {
+        [...STATIC_URLS, ...DYNAMIC_URLS].map((url) => {
           console.log("Caching:", url);
           return cache.add(url).catch((error) => {
             console.error(`Failed to cache ${url}:`, error);
@@ -51,7 +79,7 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (!cacheWhitelist.includes(cacheName)) {
+          if (navigator.onLine && !cacheWhitelist.includes(cacheName)) {
             console.log(`SW::activate :: Deleting old cache: ${cacheName}`);
             return caches.delete(cacheName);
           }
