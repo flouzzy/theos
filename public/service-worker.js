@@ -1,7 +1,6 @@
 // Nom du cache
 const CACHE_VERSION = "0.0.2";
 const CACHE_NAME = "pepiteclub-cache-v" + CACHE_VERSION;
-const MAX_CACHE_AGE = 1 * 60 * 60 * 1000; // 1 heure en millisecondes
 
 // Liste des fichiers à mettre en cache
 const URLS_TO_CACHE = [
@@ -18,7 +17,6 @@ const URLS_TO_CACHE = [
   "/images/favicon/apple-touch-icon.png",
   "/images/favicon/favicon-32x32.png",
   "/images/favicon/favicon-16x16.png",
-  "/images/favicon/favicon.ico",
   "/images/favicon/safari-pinned-tab.svg",
   "/images/screens/",
   "/images/screens/*.png",
@@ -48,12 +46,13 @@ self.addEventListener("activate", (event) => {
 
   const cacheWhitelist = [CACHE_NAME];
 
-  // Suppression des autres caches
+  // Suppression des anciens caches qui ne sont pas dans la liste blanche
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
+          if (!cacheWhitelist.includes(cacheName)) {
+            console.log(`SW::activate :: Deleting old cache: ${cacheName}`);
             return caches.delete(cacheName);
           }
         })
@@ -67,59 +66,66 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
-      const cachedResponse = await caches.match(event.request);
+      // Vérifier si l'utilisateur est en ligne
+      const isConnected = navigator.onLine;
 
-      // Si une réponse en cache existe
-      if (cachedResponse) {
-        const cachedDate = new Date(cachedResponse.headers.get("date"));
-        const now = new Date();
-        const isConnected = navigator.onLine; // Vérifie si l'utilisateur est en ligne
+      if (isConnected) {
+        // Si l'utilisateur est en ligne, on essaie d'abord de récupérer la ressource depuis le réseau
+        try {
+          const response = await fetch(event.request);
 
-        // Si l'utilisateur est en ligne et le cache est plus vieux que la durée de cache max, on le rafraîchit
-        if (isConnected && now - cachedDate > MAX_CACHE_AGE) {
+          if (response.status === 404) {
+            console.error(
+              `[Service Worker] Page non trouvée: ${event.request.url}`
+            );
+            return new Response("Page non trouvée", { status: 404 });
+          }
+
+          // Si la requête réussit, mettre à jour le cache
+          const cache = await caches.open(CACHE_NAME);
           console.log(
-            `[Service Worker] Cache too old, refreshing: ${event.request.url}`
+            `[Service Worker] Caching new resource: ${event.request.url}`
           );
-          return fetchAndUpdateCache(event.request, cachedResponse);
+          cache.put(event.request, response.clone());
+
+          return response;
+        } catch (error) {
+          console.error(
+            `[Service Worker] Network fetch failed: ${event.request.url}`,
+            error
+          );
+          // Si la requête réseau échoue, utiliser la réponse en cache (s'il existe)
+          const cachedResponse = await caches.match(event.request);
+          if (cachedResponse) {
+            console.log(
+              `[Service Worker] Serving cached resource (fallback): ${event.request.url}`
+            );
+            return cachedResponse;
+          }
+
+          return new Response(
+            "Service non disponible. Merci de recommencer dans quelques instants ou vérifier la connexion internet",
+            { status: 503 }
+          );
         }
-
-        console.log(
-          `[Service Worker] Serving cached resource: ${event.request.url}`
-        );
-        return cachedResponse;
+      } else {
+        // Si l'utilisateur est hors ligne, on sert directement la réponse du cache
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) {
+          console.log(
+            `[Service Worker] Serving cached resource (offline): ${event.request.url}`
+          );
+          return cachedResponse;
+        } else {
+          console.error(
+            `[Service Worker] Resource not found in cache while offline: ${event.request.url}`
+          );
+          return new Response(
+            "Vous êtes hors ligne. Cette ressource n'est pas disponible.",
+            { status: 503 }
+          );
+        }
       }
-
-      // Si aucune réponse en cache, on va chercher la ressource en ligne
-      return fetchAndUpdateCache(event.request);
     })()
   );
 });
-
-// Fonction pour récupérer une ressource en ligne et mettre à jour le cache
-async function fetchAndUpdateCache(request, fallbackResponse) {
-  try {
-    const response = await fetch(request);
-
-    if (response.status === 404) {
-      console.error(`[Service Worker] Page non trouvée: ${request.url}`);
-      return (
-        fallbackResponse || new Response("Page non trouvée", { status: 404 })
-      );
-    }
-
-    const cache = await caches.open(CACHE_NAME);
-    console.log(`[Service Worker] Caching new resource: ${request.url}`);
-    cache.put(request, response.clone());
-
-    return response;
-  } catch (error) {
-    console.error(`[Service Worker] Fetch failed: ${request.url}`, error);
-    return (
-      fallbackResponse ||
-      new Response(
-        "Service non disponible. Merci de recommencer dans quelques instants ou vérifier la connexion internet",
-        { status: 503 }
-      )
-    );
-  }
-}
