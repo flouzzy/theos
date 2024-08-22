@@ -1,4 +1,11 @@
 /* Form */
+
+textarea {
+  line-height: 1.5;
+  field-sizing: content;
+  min-height: 3lh;
+}
+
 .form-control {
   display: block;
   width: 100%;
