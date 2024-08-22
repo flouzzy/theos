@@ -1,22 +1,22 @@
-{% if isSubscribed %}
-	{% set completed = currentLesson.id in completedLessonIds %}
-	{% if currentLesson.status == 'published' %}
-		<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id, completed:completed ? 1 : 0})}}" color="light" {% if completed %} fill="solid{% endif %}">
+{# {% if isSubscribed %} #}
+{% set completed = currentLesson.id in completedLessonIds %}
+{% if currentLesson.status == 'published' %}
+	<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id, completed:completed ? 1 : 0})}}" color="light" {% if completed %} fill="solid{% endif %}">
 
-			<ion-icon slot="start" name="{% if completed %}checkmark-circle{% else %}ellipse{% endif %}-outline"></ion-icon>
-			<ion-text class="ion-hide-md-down">
-				{% if completed %}
-					{{'Mark the lesson as unread' | trans}}
-				{% else %}
-					{{'Complete and continue' | trans}}
-				{% endif %}
+		<ion-icon slot="start" name="{% if completed %}checkmark-circle{% else %}ellipse{% endif %}-outline"></ion-icon>
+		<ion-text class="ion-hide-md-down">
+			{% if completed %}
+				{{'Mark the lesson as unread' | trans}}
+			{% else %}
+				{{'Complete and continue' | trans}}
+			{% endif %}
 
-			</ion-text>
-		</ion-button>
-	{% endif %}
-{% else %}
+		</ion-text>
+	</ion-button>
+{% endif %}
+{# {% else %}
 	<ion-button href="{{path('course_subscribe', {slug:course.slug})}}" color="light" fill="solid">
 		<ion-icon slot="start" name="add-outline"></ion-icon>
 		{{'Sign up for this course' | trans}}
 	</ion-button>
-{% endif %}
+{% endif %} #}
