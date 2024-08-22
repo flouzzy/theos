@@ -1,8 +1,8 @@
 // Nom du cache
 // cache à la date du jour au format YYYY-MM-DD
 // On garantie qu'il sera renouvelé quotidiennement
-// const CACHE_VERSION = new Date().toISOString().split("T")[0];
-const CACHE_VERSION = "0.0.4";
+// const CACHE_VERSION = "0.0.4";
+const CACHE_VERSION = new Date().toISOString().split("T")[0];
 const CACHE_NAME = "pepiteclub-cache-v" + CACHE_VERSION;
 
 // Liste des fichiers à mettre en cache
