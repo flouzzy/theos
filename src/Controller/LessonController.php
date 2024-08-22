@@ -32,8 +32,7 @@ class LessonController extends AbstractController
         private NotificationService $notificationService,
         private TranslatorInterface $translator,
         private MessageBusInterface $bus
-    ) {
-    }
+    ) {}
     #[Route('/{id}', name: 'show')]
     public function show(
         Lesson $lesson,
@@ -74,25 +73,34 @@ class LessonController extends AbstractController
         $completed = 0
     ): Response {
 
-        if (!$course->isUserSubscribed($this->getUser())) {
-            // Si on est pas inscrit au cours, impossible de valider une leçon
-            $this->addFlash('danger', 'You must first register for the course');
+        // if (!$course->isUserSubscribed($this->getUser())) {
+        //     // Si on est pas inscrit au cours, impossible de valider une leçon
+        //     $this->addFlash('danger', 'You must first register for the course');
 
-            // Go to course page
-            return $this->redirectToRoute('course_show', [
-                'slug' => $course->getSlug()
-            ]);
+        //     // Go to course page
+        //     return $this->redirectToRoute('course_show', [
+        //         'slug' => $course->getSlug()
+        //     ]);
+        // }
+
+        /**
+         * @var \App\Entity\User $user
+         */
+        $user = $this->getUser();
+
+        if (!$course->isUserSubscribed($user)) {
+            // Si on est pas inscrit au cours, on le devient automatiquement
+            $user->subscribeToCourse($course);
         }
+
+
 
         // Toogle completion status
         $completed = !(boolval($completed));
 
         // Save lesson completion status for current user
         // Check if completion already exist
-        /**
-         * @var \App\Entity\User $user
-         */
-        $user = $this->getUser();
+        // If not, create it
         $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
         if (!$completion) {
             $completion = new Completion();
