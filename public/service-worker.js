@@ -1,5 +1,5 @@
 // Nom du cache
-const CACHE_VERSION = "0.0.2";
+const CACHE_VERSION = "0.0.3";
 const CACHE_NAME = "pepiteclub-cache-v" + CACHE_VERSION;
 
 // Liste des fichiers à mettre en cache
