@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BadgeRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Badge
 {
     use DateTimeAble;

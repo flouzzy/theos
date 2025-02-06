@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Page
 {
     use DateTimeAble;

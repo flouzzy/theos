@@ -6,6 +6,7 @@ use App\Repository\ModuleCompletionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ModuleCompletionRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class ModuleCompletion
 {
     use DateTimeAble;

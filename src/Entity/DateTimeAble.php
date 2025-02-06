@@ -13,15 +13,14 @@ trait DateTimeAble
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\PrePersist]
-    public function setDateTime(): void
-    {
-        $this->createdAt = new \DateTimeImmutable();
-    }
-
     #[ORM\PreUpdate]
-    public function updateDateTime(): void
+    public function setDateTimeValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $now = new \DateTimeImmutable();
+        if ($this->createdAt === null) {
+            $this->createdAt = $now;
+        }
+        $this->updatedAt = $now;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable

@@ -6,6 +6,7 @@ use App\Repository\CourseCompletionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CourseCompletionRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class CourseCompletion
 {
     use DateTimeAble;
@@ -23,12 +24,6 @@ class CourseCompletion
 
     #[ORM\Column(nullable: true)]
     private ?bool $completed = false;
-
-    #[ORM\PreUpdate]
-    public function updateUserDetails(): void
-    {
-        $this->updatedAt = new \DateTimeImmutable();
-    }
 
     public function getId(): ?int
     {
