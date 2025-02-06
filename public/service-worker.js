@@ -2,32 +2,11 @@
 // cache à la date du jour au format YYYY-MM-DD
 // On garantie qu'il sera renouvelé quotidiennement
 // const CACHE_VERSION = "0.0.4";
-const CACHE_VERSION = new Date().toISOString().split("T")[0];
-const CACHE_NAME = "pepiteclub-cache-v" + CACHE_VERSION;
-
-// Liste des fichiers à mettre en cache
-// const URLS_TO_CACHE = [
-//   "/",
-//   "/courses",
-//   "/assets/styles/",
-//   "/assets/styles/*.css",
-//   "/assets/images/*.jpg",
-//   "/build/",
-//   "/images/",
-//   "/images/*",
-//   "/images/favicon/",
-//   "/images/favicon/*.png",
-//   "/images/favicon/apple-touch-icon.png",
-//   "/images/favicon/favicon-32x32.png",
-//   "/images/favicon/favicon-16x16.png",
-//   "/images/favicon/safari-pinned-tab.svg",
-//   "/images/screens/",
-//   "/images/screens/*.png",
-//   "/site.webmanifest",
-// ];
+const CACHE_VERSION = "0.0.2";
+const CACHE_NAME = "academie-lerocher-cache-v" + CACHE_VERSION;
 
 // URLs des pages statiques (qui ne changent pratiquement jamais)
-const STATIC_URLS = [
+const URLS_TO_CACHE = [
   "/",
   "/images/favicon/",
   "/images/favicon/*.png",
@@ -35,126 +14,121 @@ const STATIC_URLS = [
   "/images/favicon/favicon-32x32.png",
   "/images/favicon/favicon-16x16.png",
   "/images/favicon/safari-pinned-tab.svg",
-  "/images/screens/",
-  "/images/screens/*.png",
   "/site.webmanifest",
 ];
 
-// URLs des pages dynamiques ou moins souvent modifiées
-const DYNAMIC_URLS = [
-  "/assets/images/*.jpg",
-  "/assets/styles/",
-  "/assets/styles/*.css",
-  "/build/",
-  "/courses",
-  "/images/",
-  "/images/*",
-];
+// Exclude certain pages from caching (e.g., /login, /admin)
+const noCachePages = ["/login", "/admin"];
 
+// Install event: Caches essential resources
 self.addEventListener("install", (event) => {
-  console.log("SW::install :: event", event);
-
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("SW::install :: Caching files");
-      return Promise.all(
-        // URLS_TO_CACHE.map((url) => {
-        [...STATIC_URLS, ...DYNAMIC_URLS].map((url) => {
-          console.log("Caching:", url);
-          return cache.add(url).catch((error) => {
-            console.error(`Failed to cache ${url}:`, error);
-          });
-        })
-      );
+      return cache.addAll(URLS_TO_CACHE);
     })
   );
+  self.skipWaiting();
 });
 
+// Activate event: Deletes old caches
 self.addEventListener("activate", (event) => {
-  console.log("SW::activate :: event", event);
-
   const cacheWhitelist = [CACHE_NAME];
-
-  // Suppression des anciens caches qui ne sont pas dans la liste blanche
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (navigator.onLine && !cacheWhitelist.includes(cacheName)) {
-            console.log(`SW::activate :: Deleting old cache: ${cacheName}`);
+          if (!cacheWhitelist.includes(cacheName)) {
             return caches.delete(cacheName);
           }
         })
       );
     })
   );
+  self.clients.claim();
 });
 
+// Fetch event: Handles all internal and external requests
 self.addEventListener("fetch", (event) => {
-  console.log(`SW::fetch :: event for ${event.request.url}`, event);
+  const requestUrl = new URL(event.request.url);
 
-  event.respondWith(
-    (async () => {
-      // Vérifier si l'utilisateur est en ligne
-      const isConnected = navigator.onLine;
-
-      if (isConnected) {
-        // Si l'utilisateur est en ligne, on essaie d'abord de récupérer la ressource depuis le réseau
-        try {
-          const response = await fetch(event.request);
-
-          if (response.status === 404) {
-            console.error(
-              `[Service Worker] Page non trouvée: ${event.request.url}`
-            );
-            return new Response("Page non trouvée", { status: 404 });
-          }
-
-          // Si la requête réussit, mettre à jour le cache
-          const cache = await caches.open(CACHE_NAME);
-          console.log(
-            `[Service Worker] Caching new resource: ${event.request.url}`
-          );
-          cache.put(event.request, response.clone());
-
-          return response;
-        } catch (error) {
-          console.error(
-            `[Service Worker] Network fetch failed: ${event.request.url}`,
-            error
-          );
-          // Si la requête réseau échoue, utiliser la réponse en cache (s'il existe)
-          const cachedResponse = await caches.match(event.request);
-          if (cachedResponse) {
-            console.log(
-              `[Service Worker] Serving cached resource (fallback): ${event.request.url}`
-            );
-            return cachedResponse;
-          }
-
-          return new Response(
-            "Service non disponible. Merci de recommencer dans quelques instants ou vérifier la connexion internet",
-            { status: 503 }
-          );
-        }
-      } else {
-        // Si l'utilisateur est hors ligne, on sert directement la réponse du cache
-        const cachedResponse = await caches.match(event.request);
-        if (cachedResponse) {
-          console.log(
-            `[Service Worker] Serving cached resource (offline): ${event.request.url}`
-          );
-          return cachedResponse;
-        } else {
-          console.error(
-            `[Service Worker] Resource not found in cache while offline: ${event.request.url}`
-          );
-          return new Response(
-            "Vous êtes hors ligne. Cette ressource n'est pas disponible.",
-            { status: 503 }
-          );
-        }
-      }
-    })()
+  console.log(
+    "Fetch event for:",
+    event.request.url,
+    "from:",
+    requestUrl.origin,
+    requestUrl.origin === location.origin
   );
+
+  // Handle internal requests only
+  if (requestUrl.origin === location.origin) {
+    if (noCachePages.some((page) => requestUrl.pathname.startsWith(page))) {
+      return fetch(event.request); // Always fetch from network
+    }
+
+    // Check if the URL contains '?pageview=page_editor'
+    if (requestUrl.search.includes("pageview=page_editor")) {
+      // Always bypass the cache for these pages
+      return fetch(event.request);
+    }
+
+    // Cache, then Network strategy for internal resources
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            // Update the cache with the latest response
+            return caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, networkResponse.clone());
+              return networkResponse;
+            });
+          })
+          .catch(() => {
+            // Return offline page for navigation requests if network fails
+            return caches.match("/offline.html");
+          });
+
+        // Return cached response if available, else wait for network response
+        return cachedResponse || fetchPromise;
+      })
+    );
+  } else {
+    // External resources (e.g., fonts, APIs)
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        // Ne rien faire pour les échecs externes, ou loguer l'erreur
+        console.error("Network request failed for:", event.request.url);
+      })
+    );
+  }
+});
+
+// Message event: Ecoute le message de la page pour forcer une mise à jour
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+// Message event: Ecoute le message de la page pour forcer une mise à jour
+self.addEventListener("message", (event) => {
+  if (event.data) {
+    switch (event.data.type) {
+      case "SKIP_WAITING":
+        self.skipWaiting();
+        break;
+      case "CACHE_UPDATED":
+        caches.keys().then((cacheNames) => {
+          return Promise.all(
+            cacheNames.map((cacheName) => {
+              if (cacheName !== CACHE_NAME) {
+                return caches.delete(cacheName);
+              }
+            })
+          );
+        });
+        break;
+      default:
+        console.log("Unknown message type:", event.data.type);
+    }
+  }
 });
