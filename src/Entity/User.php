@@ -107,6 +107,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $score = null;
 
+    #[ORM\ManyToMany(targetEntity: Cohort::class, mappedBy: 'users')]
+    private Collection $cohorts;
+
 
     public function __construct()
     {
@@ -121,6 +124,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->notifications = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->badges = new ArrayCollection();
+        $this->cohorts = new ArrayCollection();
     }
 
     public function __toString()
@@ -693,6 +697,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setScore(?int $score): static
     {
         $this->score = $score;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cohort>
+     */
+    public function getCohorts(): Collection
+    {
+        return $this->cohorts;
+    }
+
+    public function addCohort(Cohort $cohort): static
+    {
+        if (!$this->cohorts->contains($cohort)) {
+            $this->cohorts->add($cohort);
+            $cohort->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCohort(Cohort $cohort): static
+    {
+        if ($this->cohorts->removeElement($cohort)) {
+            $cohort->removeUser($this);
+        }
 
         return $this;
     }

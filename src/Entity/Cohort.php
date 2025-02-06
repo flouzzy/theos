@@ -34,11 +34,15 @@ class Cohort
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $year = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'cohorts')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
 
         $this->year = (new \DateTime('now'))->format('Y');
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +118,30 @@ class Cohort
     public function setYear(int $year): static
     {
         $this->year = $year;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        $this->users->removeElement($user);
 
         return $this;
     }
