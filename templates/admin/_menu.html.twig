@@ -8,6 +8,12 @@
 			{{'Dashboard' | trans}}
 		</ion-label>
 	</ion-item>
+	<ion-item href="{{path('admin_cohort_index')}}" {% if currentroute == 'admin_cohort_index' %} color="{{colorActive}}" {% endif %}>
+		<ion-icon slot="start" name="school-outline" color="app"></ion-icon>
+		<ion-label>
+			{{'Cohorts' | trans}}
+		</ion-label>
+	</ion-item>
 	<ion-item href="{{path('admin_course_index')}}" {% if currentroute == 'admin_course_index' %} color="{{colorActive}}" {% endif %}>
 		<ion-icon slot="start" name="school-outline" color="app"></ion-icon>
 		<ion-label>

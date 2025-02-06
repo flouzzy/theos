@@ -1,0 +1,17 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_cohort_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+		{{'Back' | trans}}
+	</ion-button>
+{% endblock %}
+
+{% block title %}
+	{{'New cohort' | trans}}
+{% endblock %}
+
+{% block content %}
+
+	{{ include('admin/cohort/_form.html.twig') }}
+{% endblock %}

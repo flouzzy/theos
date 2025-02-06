@@ -9,6 +9,12 @@
 	{{block('title')}}
 {% endblock %}
 
+{% block menuBackButton %}
+	<ion-button href="{{path('home')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}
+
 {% block content %}
 	<ion-card>
 		<ion-card-header>

@@ -1,0 +1,49 @@
+{% extends 'admin/layout.html.twig' %}
+
+
+{% block title %}
+	{{'Cohorts' | trans}}
+{% endblock %}
+
+{% block content %}
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Title</th>
+				<th>Description</th>
+				<th>Image</th>
+				<th>Year</th>
+				<th>Status</th>
+				<th>CreatedAt</th>
+				<th>UpdatedAt</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for cohort in cohorts %}
+				<tr>
+					<td>{{ cohort.id }}</td>
+					<td>{{ cohort.title }}</td>
+					<td>{{ cohort.description }}</td>
+					<td>{{ cohort.image }}</td>
+					<td>{{ cohort.year }}</td>
+					<td>{{ cohort.status }}</td>
+					<td>{{ cohort.createdAt ? cohort.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ cohort.updatedAt ? cohort.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>
+						<a href="{{ path('admin_cohort_show', {'id': cohort.id}) }}">show</a>
+						<a href="{{ path('admin_cohort_edit', {'id': cohort.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="9">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_cohort_new') }}">Create new</a>
+{% endblock %}
