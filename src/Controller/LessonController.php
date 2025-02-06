@@ -4,18 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Completion;
 use App\Entity\Course;
-use App\Entity\CourseCompletion;
 use App\Entity\Lesson;
 use App\Entity\Module;
-use App\Entity\ModuleCompletion;
-// use App\Entity\Notification;
-use App\Entity\User;
+use App\Event\LessonCompleteEvent;
 use App\Repository\CompletionRepository;
+use App\Service\CompletionService;
 use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +30,9 @@ class LessonController extends AbstractController
         private EntityManagerInterface $entityManager,
         private NotificationService $notificationService,
         private TranslatorInterface $translator,
-        private MessageBusInterface $bus
+        private MessageBusInterface $bus,
+        private EventDispatcherInterface $dispatcher,
+        private CompletionService $completionService,
     ) {}
     #[Route('/{id}', name: 'show')]
     public function show(
@@ -45,8 +46,9 @@ class LessonController extends AbstractController
 
     ): Response {
 
+        // On récupère les leçons déjà complétées par l'utilisateur pour les identifier comme telles depuis le front
+        // @todo A optimiser !!
         $completedLessons = $this->completionRepository->findBy(['user' => $this->getUser(), 'completed' => true]);
-        // Vous pouvez optimiser cette partie selon vos besoins
         $completedLessonIdsByCurrentUser = [];
         foreach ($completedLessons as $completed) {
             $completedLessonIdsByCurrentUser[] = $completed->getLesson()->getId();
@@ -61,6 +63,9 @@ class LessonController extends AbstractController
         ]);
     }
 
+    /**
+     * Mark lesson as completed or uncompleted depending on $completed value
+     */
     #[Route('/{id}/complete/{completed}', name: 'complete')]
     public function markLessonAsCompleted(
         Lesson $lesson,
@@ -73,16 +78,6 @@ class LessonController extends AbstractController
         $completed = 0
     ): Response {
 
-        // if (!$course->isUserSubscribed($this->getUser())) {
-        //     // Si on est pas inscrit au cours, impossible de valider une leçon
-        //     $this->addFlash('danger', 'You must first register for the course');
-
-        //     // Go to course page
-        //     return $this->redirectToRoute('course_show', [
-        //         'slug' => $course->getSlug()
-        //     ]);
-        // }
-
         /**
          * @var \App\Entity\User $user
          */
@@ -93,10 +88,13 @@ class LessonController extends AbstractController
             $user->subscribeToCourse($course);
         }
 
-
-
         // Toogle completion status
         $completed = !(boolval($completed));
+
+
+        // Dispatch lesson event to notify subscribers
+        $lessonCompleteEvent = new LessonCompleteEvent($lesson, $completed);
+        $this->dispatcher->dispatch($lessonCompleteEvent);
 
         // Save lesson completion status for current user
         // Check if completion already exist
@@ -110,10 +108,10 @@ class LessonController extends AbstractController
         $completion->setCompleted($completed);
 
         // Maj du statut de completion d'un module
-        $this->setModuleCompleted($module);
+        $this->completionService->setModuleCompletion($module);
 
         // Maj du statut de completion d'un parcours
-        $this->setCourseCompleted($course);
+        $this->completionService->setCourseCompletion($course);
 
         $this->entityManager->persist($completion);
         $this->entityManager->flush();
@@ -133,7 +131,7 @@ class LessonController extends AbstractController
                 'lesson' => $lesson
             ]);
 
-            $this->sendNotificationToAllUsers(
+            $this->completionService->sendNotificationToAllUsers(
                 $content,
                 $this->translator->trans('Lesson completed for') . ' ' . $user->getFirstname()
             );
@@ -196,113 +194,113 @@ class LessonController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return void
      */
-    private function setModuleCompleted(Module $module): void
-    {
-        /**
-         * @var \App\Entity\User $user
-         */
-        $user = $this->getUser();
-        $allLessonsCompleted = true;
-        foreach ($module->getLessons() as $moduleLesson) {
-            $lessonCompletion = $this->completionRepository->findOneBy([
-                'user' => $user,
-                'lesson' => $moduleLesson
-            ]);
+    // private function setModuleCompletion(Module $module): void
+    // {
+    //     /**
+    //      * @var \App\Entity\User $user
+    //      */
+    //     $user = $this->getUser();
+    //     $allLessonsCompleted = true;
+    //     foreach ($module->getLessons() as $moduleLesson) {
+    //         $lessonCompletion = $this->completionRepository->findOneBy([
+    //             'user' => $user,
+    //             'lesson' => $moduleLesson
+    //         ]);
 
-            if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
-                $allLessonsCompleted = false;
-                break;
-            }
-        }
+    //         if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
+    //             $allLessonsCompleted = false;
+    //             break;
+    //         }
+    //     }
 
-        $moduleCompletion = $this->entityManager->getRepository(ModuleCompletion::class)->findOneBy([
-            'user' => $user,
-            'module' => $module
-        ]);
+    //     $moduleCompletion = $this->entityManager->getRepository(ModuleCompletion::class)->findOneBy([
+    //         'user' => $user,
+    //         'module' => $module
+    //     ]);
 
-        if (!$moduleCompletion) {
-            $moduleCompletion = new ModuleCompletion();
-            $moduleCompletion->setUser($user);
-            $moduleCompletion->setModule($module);
-        }
+    //     if (!$moduleCompletion) {
+    //         $moduleCompletion = new ModuleCompletion();
+    //         $moduleCompletion->setUser($user);
+    //         $moduleCompletion->setModule($module);
+    //     }
 
-        // Send notification to all the users if someone complete a course
-        if ($allLessonsCompleted) {
-            // Render a content based on twig template
-            $content = $this->renderView('notification/emails/module_completed.html.twig', [
-                'user' => $user,
-                'module' => $module
-            ]);
+    //     // Send notification to all the users if someone complete a course
+    //     if ($allLessonsCompleted) {
+    //         // Render a content based on twig template
+    //         $content = $this->renderView('notification/emails/module_completed.html.twig', [
+    //             'user' => $user,
+    //             'module' => $module
+    //         ]);
 
-            $this->sendNotificationToAllUsers(
-                $content,
-                $this->translator->trans('Module completed for') . ' ' . $user->getFirstname()
-            );
-        }
+    //         $this->sendNotificationToAllUsers(
+    //             $content,
+    //             $this->translator->trans('Module completed for') . ' ' . $user->getFirstname()
+    //         );
+    //     }
 
-        // Mise à jour du statut de completion
-        $moduleCompletion->setCompleted($allLessonsCompleted);
+    //     // Mise à jour du statut de completion
+    //     $moduleCompletion->setCompleted($allLessonsCompleted);
 
-        $this->entityManager->persist($moduleCompletion);
-        $this->entityManager->flush();
-    }
+    //     $this->entityManager->persist($moduleCompletion);
+    //     $this->entityManager->flush();
+    // }
 
     /**
      * Mark course as completed
      */
-    private function setCourseCompleted($course)
-    {
-        /**
-         * @var \App\Entity\User $user
-         */
-        $user = $this->getUser();
-        $courseCompletion = $this->entityManager->getRepository(CourseCompletion::class)->findOneBy([
-            'user' => $user,
-            'course' => $course
-        ]);
+    // private function setCourseCompletion($course)
+    // {
+    //     /**
+    //      * @var \App\Entity\User $user
+    //      */
+    //     $user = $this->getUser();
+    //     $courseCompletion = $this->entityManager->getRepository(CourseCompletion::class)->findOneBy([
+    //         'user' => $user,
+    //         'course' => $course
+    //     ]);
 
-        if (!$courseCompletion) {
-            $courseCompletion = new CourseCompletion();
-            $courseCompletion->setUser($user);
-            $courseCompletion->setCourse($course);
-        }
+    //     if (!$courseCompletion) {
+    //         $courseCompletion = new CourseCompletion();
+    //         $courseCompletion->setUser($user);
+    //         $courseCompletion->setCourse($course);
+    //     }
 
-        // On vérifie que tous les modules sont completés (ou non)
-        $allModulesCompleted = true;
-        $modules = $course->getModules();
-        foreach ($modules as $courseModule) {
-            // On aurait pu simplement vérifié le statut de completion du module sans passer par les leçons
-            // mais dans ce cas on risquerait de passer à côté des modules qui ne sont associés à aucune leçon (cygne noir)
-            $moduleLessons = $courseModule->getLessons();
-            foreach ($moduleLessons as $lesson) {
-                $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
+    //     // On vérifie que tous les modules sont completés (ou non)
+    //     $allModulesCompleted = true;
+    //     $modules = $course->getModules();
+    //     foreach ($modules as $courseModule) {
+    //         // On aurait pu simplement vérifié le statut de completion du module sans passer par les leçons
+    //         // mais dans ce cas on risquerait de passer à côté des modules qui ne sont associés à aucune leçon (cygne noir)
+    //         $moduleLessons = $courseModule->getLessons();
+    //         foreach ($moduleLessons as $lesson) {
+    //             $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
 
-                if (!$completion || !$completion->isCompleted()) {
-                    $allModulesCompleted = false;
-                    break 2; // Sort des deux boucles si une leçon non complétée est trouvée
-                }
-            }
-        }
+    //             if (!$completion || !$completion->isCompleted()) {
+    //                 $allModulesCompleted = false;
+    //                 break 2; // Sort des deux boucles si une leçon non complétée est trouvée
+    //             }
+    //         }
+    //     }
 
-        // Send notification to all the users if someone complete a course
-        if ($allModulesCompleted) {
-            // Render a content based on twig template
-            $content = $this->renderView('notification/emails/course_completed.html.twig', [
-                'user' => $user,
-                'course' => $course
-            ]);
+    //     // Send notification to all the users if someone complete a course
+    //     if ($allModulesCompleted) {
+    //         // Render a content based on twig template
+    //         $content = $this->renderView('notification/emails/course_completed.html.twig', [
+    //             'user' => $user,
+    //             'course' => $course
+    //         ]);
 
-            $this->sendNotificationToAllUsers(
-                $content,
-                $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
-            );
-        }
+    //         $this->sendNotificationToAllUsers(
+    //             $content,
+    //             $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
+    //         );
+    //     }
 
-        // MAj du statut du parcours
-        $courseCompletion->setCompleted($allModulesCompleted);
+    //     // MAj du statut du parcours
+    //     $courseCompletion->setCompleted($allModulesCompleted);
 
-        $this->entityManager->persist($courseCompletion);
-    }
+    //     $this->entityManager->persist($courseCompletion);
+    // }
 
     /**
      * Send notification to all users, except the current one
@@ -311,8 +309,8 @@ class LessonController extends AbstractController
      * @param string $title
      * @return void
      */
-    private function sendNotificationToAllUsers($content, $title): void
-    {
-        $this->bus->dispatch(new \App\Message\Notification($content, $title));
-    }
+    // private function sendNotificationToAllUsers($content, $title): void
+    // {
+    //     $this->bus->dispatch(new \App\Message\Notification($content, $title));
+    // }
 }
