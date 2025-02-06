@@ -13,6 +13,8 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 #[ORM\HasLifecycleCallbacks]
 class Course
 {
+    use DateTimeAble;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -24,11 +26,6 @@ class Course
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'courses')]
     private Collection $users;
@@ -55,12 +52,15 @@ class Course
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: CourseCompletion::class)]
     private Collection $completions;
 
+    #[ORM\ManyToMany(targetEntity: Cohort::class, mappedBy: 'courses')]
+    private Collection $cohorts;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->modules = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
         $this->completions = new ArrayCollection();
+        $this->cohorts = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -100,29 +100,6 @@ class Course
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
 
     public function isUserSubscribed(User $user): bool
     {
@@ -265,6 +242,33 @@ class Course
             if ($completion->getCourse() === $this) {
                 $completion->setCourse(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cohort>
+     */
+    public function getCohorts(): Collection
+    {
+        return $this->cohorts;
+    }
+
+    public function addCohort(Cohort $cohort): static
+    {
+        if (!$this->cohorts->contains($cohort)) {
+            $this->cohorts->add($cohort);
+            $cohort->addCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCohort(Cohort $cohort): static
+    {
+        if ($this->cohorts->removeElement($cohort)) {
+            $cohort->removeCourse($this);
         }
 
         return $this;

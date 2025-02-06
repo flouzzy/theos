@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\BadgeTypeRepository;
+use App\Repository\CohortRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: BadgeTypeRepository::class)]
-class BadgeType
+#[ORM\Entity(repositoryClass: CohortRepository::class)]
+class Cohort
 {
     use DateTimeAble;
 
@@ -25,17 +25,19 @@ class BadgeType
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image = null;
+    private ?string $image = 'images/default-cohort.png';
 
-    #[ORM\OneToMany(mappedBy: 'badgeType', targetEntity: Badge::class)]
-    private Collection $badges;
+    #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'cohorts')]
+    private Collection $courses;
 
-    #[ORM\Column(length: 20)]
-    private ?string $code = null;
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $year = null;
 
     public function __construct()
     {
-        $this->badges = new ArrayCollection();
+        $this->courses = new ArrayCollection();
+
+        $this->year = (new \DateTime('now'))->format('Y');
     }
 
     public function getId(): ?int
@@ -80,43 +82,37 @@ class BadgeType
     }
 
     /**
-     * @return Collection<int, Badge>
+     * @return Collection<int, Course>
      */
-    public function getBadges(): Collection
+    public function getCourses(): Collection
     {
-        return $this->badges;
+        return $this->courses;
     }
 
-    public function addBadge(Badge $badge): static
+    public function addCourse(Course $course): static
     {
-        if (!$this->badges->contains($badge)) {
-            $this->badges->add($badge);
-            $badge->setBadgeType($this);
+        if (!$this->courses->contains($course)) {
+            $this->courses->add($course);
         }
 
         return $this;
     }
 
-    public function removeBadge(Badge $badge): static
+    public function removeCourse(Course $course): static
     {
-        if ($this->badges->removeElement($badge)) {
-            // set the owning side to null (unless already changed)
-            if ($badge->getBadgeType() === $this) {
-                $badge->setBadgeType(null);
-            }
-        }
+        $this->courses->removeElement($course);
 
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getYear(): ?int
     {
-        return $this->code;
+        return $this->year;
     }
 
-    public function setCode(string $code): static
+    public function setYear(int $year): static
     {
-        $this->code = $code;
+        $this->year = $year;
 
         return $this;
     }

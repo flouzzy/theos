@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\CourseCompletionRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CourseCompletionRepository::class)]
 class CourseCompletion
 {
+    use DateTimeAble;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,17 +23,6 @@ class CourseCompletion
 
     #[ORM\Column(nullable: true)]
     private ?bool $completed = false;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTimeImmutable();
-    }
 
     #[ORM\PreUpdate]
     public function updateUserDetails(): void
@@ -77,42 +67,6 @@ class CourseCompletion
     public function setCompleted(?bool $completed): static
     {
         $this->completed = $completed;
-
-        return $this;
-    }
-
-    public function getPercentage(): ?int
-    {
-        return $this->percentage;
-    }
-
-    public function setPercentage(?int $percentage): static
-    {
-        $this->percentage = $percentage;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
 
         return $this;
     }
