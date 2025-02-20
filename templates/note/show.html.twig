@@ -1,11 +1,21 @@
-<ion-card>
-	<ion-card-header>
-		<ion-card-title>{{app.user.firstname}},
-			{{'What did you learn from this lesson' | trans | lower}}
-			?</ion-card-title>
-	</ion-card-header>
+{% extends 'ionic.html.twig' %}
 
-	<ion-card-content>
-		{{ include('note/_form.html.twig') }}
-	</ion-card-content>
-</ion-card>
+{% block title %}
+	{{'Note taking' | trans}}
+{% endblock %}
+
+
+{% block pageTitle %}
+	{{block('title')}}
+{% endblock %}
+
+
+{% block menuBackButton %}
+	<ion-button href="{{path('note_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}
+
+{% block content %}
+	{{ include('note/_item_details.html.twig') }}
+{% endblock %}

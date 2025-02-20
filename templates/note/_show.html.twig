@@ -1,0 +1,11 @@
+<ion-card>
+	<ion-card-header>
+		<ion-card-title>{{app.user.firstname}},
+			{{'What did you learn from this lesson' | trans | lower}}
+			?</ion-card-title>
+	</ion-card-header>
+
+	<ion-card-content>
+		{{ include('note/_form.html.twig') }}
+	</ion-card-content>
+</ion-card>

@@ -38,9 +38,9 @@
 				{# User notes #}
 				{% if is_granted('IS_AUTHENTICATED') %}
 					{# Form #}
-					{{ render(path('note_show', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
+					{{ render(path('note_show_lesson', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
 					{# List #}
-					{{ render(path('note_index', {lessonId : currentLesson.id})) }}
+					{{ render(path('note_index_lesson', {lessonId : currentLesson.id})) }}
 				{% endif %}
 			{% else %}
 				<ion-item lines="none" color="dark">

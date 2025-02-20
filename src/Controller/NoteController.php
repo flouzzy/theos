@@ -21,8 +21,29 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class NoteController extends AbstractController
 {
 
-    #[Route('/{lessonId}', name: 'index', methods: ['GET', 'POST'])]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(
+        NoteRepository $noteRepository
+    ): Response {
+        $notes = $noteRepository->findAll();
+        return $this->render('note/index.html.twig', [
+            // Return all user notes from all lessons
+            'notes' => $notes
+        ]);
+    }
+
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    public function show(
+        Note $note
+    ): Response {
+        return $this->render('note/show.html.twig', [
+            // Return all user notes from all lessons
+            'note' => $note
+        ]);
+    }
+
+    #[Route('/{lessonId}', name: 'index_lesson', methods: ['GET', 'POST'])]
+    public function indexByLesson(
         #[MapEntity(mapping: ['lessonId' => 'id'])]
         Lesson $lesson,
 
@@ -33,13 +54,13 @@ class NoteController extends AbstractController
          */
         $currentUser = $this->getUser();
         $notes = $noteRepository->findUserNotesByLesson($lesson, $currentUser);
-        return $this->render('note/index.html.twig', [
+        return $this->render('note/_list.html.twig', [
             // Return all user notes form the current lesson
             'notes' => $notes
         ]);
     }
 
-    #[Route('/{courseSlug}/{moduleSlug}/{id}', name: 'show', methods: ['GET', 'POST'])]
+    #[Route('/{courseSlug}/{moduleSlug}/{id}', name: 'show_lesson', methods: ['GET', 'POST'])]
     public function showOrAdd(
 
         #[MapEntity(mapping: ['courseSlug' => 'slug'])]
@@ -58,7 +79,7 @@ class NoteController extends AbstractController
 
         $note = new Note();
         $form = $this->createForm(NoteType::class, $note, [
-            'action' => $this->generateUrl('note_show', [
+            'action' => $this->generateUrl('note_show_lesson', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
                 'id' => $lesson->getId()
@@ -84,7 +105,7 @@ class NoteController extends AbstractController
             return $this->redirectToRoute('lesson_show', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('note/show.html.twig', [
+        return $this->render('note/_show.html.twig', [
             'note' => $note,
             'form' => $form,
         ]);

@@ -1,6 +1,7 @@
-<ion-item {% if loop.last %} lines="none" {% endif %}>
-	<ion-text class="ion-padding-vertical">
-		<ion-note>{{note.createdAt | date('Y-m-d H:i:s') | ago }}</ion-note>
-		{{note.content}}
-	</ion-text>
+{# <ion-item button href="{{path('note_show_lesson', {id:note.lesson.id, courseSlug:course.slug, moduleSlug:note.lesson.module.slug})}}"> #}
+<ion-item button href="{{path('note_show', {id:note.id})}}">
+	<ion-label>
+		<h3>{{note.lesson.title}}</h3>
+		<p>{{note.lesson.content}}</p>
+	</ion-label>
 </ion-item>

@@ -1,7 +1,23 @@
-<turbo-frame id="frame_note">
-	<ion-list>
-		{% for note in notes %}
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{'Note taking' | trans}}
+{% endblock %}
+
+
+{% block pageTitle %}
+	{{block('title')}}
+{% endblock %}
+
+
+{% block content %}
+	{% for note in notes %}
+		<ion-list>
 			{{ include('note/_item.html.twig') }}
-		{% endfor %}
-	</ion-list>
-</turbo-frame>
+		</ion-list>
+	{% else %}
+		<p class="ion-text-center">
+			{{'No note available' | trans}}
+		</p>
+	{% endfor %}
+{% endblock %}
