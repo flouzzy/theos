@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\DateTimeAble;
+use App\Entity\Trait\SlugAble;
 use App\Repository\CohortRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class Cohort
 {
-    use DateTimeAble;
+    use DateTimeAble, SlugAble;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

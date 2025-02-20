@@ -1,0 +1,31 @@
+<ion-segment color="dark">
+	{% for cohort in cohorts|filter(c => c.status == 'published' or c.status == 'coming_soon') %}
+		<ion-segment-button value="cohort-{{cohort.id}}" content-id="cohort-{{cohort.id}}">
+			<ion-label>
+				{{cohort.title}}
+				({{cohort.year}})
+			</ion-label>
+		</ion-segment-button>
+	{% else %}
+		<p class="ion-text-center">
+			{{'You are not assigned to any cohort' | trans}}
+		</p>
+	{% endfor %}
+
+</ion-segment>
+
+<ion-segment-view>
+	{% for cohort in cohorts|filter(c => c.status == 'published' or c.status == 'coming_soon') %}
+		<ion-segment-content id="cohort-{{cohort.id}}">
+			{% if cohort.status == 'coming_soon' %}
+				<ion-text color="app">
+					<p class="ion-text-center">
+						{{'Coming soon' | trans}}
+					</p>
+				</ion-text>
+			{% else %}
+				{% include "course/_list.html.twig"  with {'courses': cohort.courses} %}
+			{% endif %}
+		</ion-segment-content>
+	{% endfor %}
+</ion-segment-view>

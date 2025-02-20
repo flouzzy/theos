@@ -1,0 +1,37 @@
+<ion-grid>
+	<ion-row>
+		{% for cohort in cohorts %}
+			<ion-col size="12" size-sm="4">
+				<ion-item {% if cohort.status == 'published' %} href="{{path('cohort_show', {slug:cohort.slug})}}" {% endif %} lines="none">
+					<ion-card>
+						<img alt="{{'Course poster' | trans}}" src="{{asset(cohort.image)}}"/>
+						<ion-card-header>
+							<ion-card-title>{{cohort.title|u.truncate(40, '...')}}</ion-card-title>
+							<ion-card-subtitle>
+								{{'Year' | trans}}
+								{{cohort.year}}
+							</ion-card-subtitle>
+						</ion-card-header>
+
+						<ion-card-content>
+							{% set truncatContent = cohort.status == 'progress' ? 50 :200  %}
+							{{cohort.description|u.truncate(truncatContent, '...')}}
+							{% if cohort.status == 'progress' %}
+								<ion-chip color="danger">
+									{{'Coming soon' | trans}}
+								</ion-chip>
+							{% endif %}
+						</ion-card-content>
+					</ion-card>
+				</ion-item>
+			</ion-col>
+		{% else %}
+			<ion-col size="12" class="ion-text-center">
+				{{'No cohort available' | trans}}
+			</ion-col>
+			<ion-col class="ion-text-center">
+				<ion-button color="app" href="{{path('cohort_index')}}" class="w25 mx-auto">{{'Start now' | trans}}</ion-button>
+			</ion-col>
+		{% endfor %}
+	</ion-row>
+</ion-grid>

@@ -20,12 +20,14 @@ class HomeController extends AbstractController
         $user = $this->getUser();
         if ($user) {
             // Page d'accueil si on est connecté
-            $template = 'index';
+            // $template = 'index';
 
-            $params = [
-                // Cours de l'utilisateur courant
-                'courses' => $user->getCourses()
-            ];
+            // $params = [
+            //     // Cours de l'utilisateur courant
+            //     'courses' => $user->getCourses()
+            // ];
+
+            return $this->redirectToRoute('cohort_index');
         }
 
         return $this->render('home/' . $template . '.html.twig', $params);

@@ -22,6 +22,7 @@ class CohortType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'choices'  => [
                     'Brouillon' => 'draft',
+                    'Bientot disponible' => 'coming_soon',
                     'Publié' => 'published',
                     'Privé' => 'private',
                     'Archivé' => 'archived',
@@ -30,11 +31,6 @@ class CohortType extends AbstractType
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
                 'choice_label' => 'title',
-                'multiple' => true,
-            ])
-            ->add('users', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'fullname',
                 'multiple' => true,
             ])
         ;

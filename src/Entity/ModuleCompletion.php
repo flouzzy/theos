@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\DateTimeAble;
 use App\Repository\ModuleCompletionRepository;
 use Doctrine\ORM\Mapping as ORM;
 

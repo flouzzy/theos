@@ -1,0 +1,14 @@
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{'Cohort' | trans}}
+{% endblock %}
+
+
+{% block pageTitlte %}
+	{{block('title')}}
+{% endblock %}
+
+{% block content %}
+	{% include "cohort/_list.html.twig" %}
+{% endblock %}
