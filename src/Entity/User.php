@@ -107,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $score = null;
 
-    #[ORM\ManyToMany(targetEntity: Cohort::class, mappedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Cohort::class, inversedBy: 'users')]
     private Collection $cohorts;
 
 

@@ -34,7 +34,7 @@ class Cohort
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $year = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'cohorts')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'cohorts')]
     private Collection $users;
 
     #[ORM\Column(length: 255, options: ['default' => 'draft'])]
@@ -46,6 +46,11 @@ class Cohort
 
         $this->year = (new \DateTime('now'))->format('Y');
         $this->users = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->title;
     }
 
     public function getId(): ?int

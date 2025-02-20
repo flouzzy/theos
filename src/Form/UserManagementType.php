@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Cohort;
 use App\Entity\Course;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -27,6 +28,12 @@ class UserManagementType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'label' => 'Rôles'
+            ])
+            ->add('cohorts',  EntityType::class, [
+                'class' => Cohort::class,
+                'expanded' => true,
+                'multiple' => true,
+                'label' => 'Promotions'
             ])
             ->add('isVerified')
             ->add('firstname')
