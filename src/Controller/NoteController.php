@@ -25,7 +25,7 @@ class NoteController extends AbstractController
     public function index(
         NoteRepository $noteRepository
     ): Response {
-        $notes = $noteRepository->findAll();
+        $notes = $noteRepository->findByUser($this->getUser());
         return $this->render('note/index.html.twig', [
             // Return all user notes from all lessons
             'notes' => $notes
