@@ -42,7 +42,7 @@ class NoteController extends AbstractController
         ]);
     }
 
-    #[Route('/{lessonId}', name: 'index_lesson', methods: ['GET', 'POST'])]
+    #[Route('/lesson/{lessonId}', name: 'index_lesson', methods: ['GET', 'POST'])]
     public function indexByLesson(
         #[MapEntity(mapping: ['lessonId' => 'id'])]
         Lesson $lesson,
