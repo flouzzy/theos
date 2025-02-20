@@ -20,7 +20,9 @@
 			{% if cohort.status == 'coming_soon' %}
 				<ion-text color="app">
 					<p class="ion-text-center">
-						{{'Coming soon' | trans}}
+						{{'Starting date' | trans}}
+						:
+						{{cohort.startAt|date("d/m/Y")}}
 					</p>
 				</ion-text>
 			{% else %}

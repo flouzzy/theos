@@ -42,6 +42,9 @@ class Cohort
     #[ORM\Column(length: 255, options: ['default' => 'draft'])]
     private ?string $status = 'draft';
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $startAt = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -164,6 +167,18 @@ class Cohort
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStartAt(): ?\DateTimeImmutable
+    {
+        return $this->startAt;
+    }
+
+    public function setStartAt(?\DateTimeImmutable $startAt): static
+    {
+        $this->startAt = $startAt;
 
         return $this;
     }
