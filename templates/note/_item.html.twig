@@ -2,6 +2,6 @@
 <ion-item button href="{{path('note_show', {id:note.id})}}">
 	<ion-label>
 		<h3>{{note.lesson.title}}</h3>
-		<p>{{note.lesson.content | striptags | u.truncate(200, '...') }}</p>
+		<p>{{note.lesson.content | striptags | u.truncate(200, '...')|raw }}</p>
 	</ion-label>
 </ion-item>
