@@ -1,0 +1,15 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'New payment settings' | trans}}
+{% endblock %}
+
+{% block content %}
+	{{ include('admin/payment/_form.html.twig') }}
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_payment_index')}}" color="light">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}

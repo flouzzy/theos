@@ -1,0 +1,48 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'Payment' | trans}}
+{% endblock %}
+
+{% block content %}
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Rib</th>
+				<th>CheckOrder</th>
+				<th>CreatedAt</th>
+				<th>UpdatedAt</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for payment_setting in payment_settings %}
+				<tr>
+					<td>{{ payment_setting.id }}</td>
+					<td>{{ payment_setting.rib }}</td>
+					<td>{{ payment_setting.checkOrder }}</td>
+					<td>{{ payment_setting.createdAt ? payment_setting.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ payment_setting.updatedAt ? payment_setting.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td>
+						<a href="{{ path('admin_payment_show', {'id': payment_setting.id}) }}">show</a>
+						<a href="{{ path('admin_payment_edit', {'id': payment_setting.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="6">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_payment_new') }}">Create new</a>
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_payment_index')}}" color="light">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}

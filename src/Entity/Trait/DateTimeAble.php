@@ -17,7 +17,7 @@ trait DateTimeAble
     public function setDateTimeValue(): void
     {
         $now = new \DateTimeImmutable();
-        if ($this->createdAt === null) {
+        if (!$this->createdAt) {
             $this->createdAt = $now;
         }
         $this->updatedAt = $now;

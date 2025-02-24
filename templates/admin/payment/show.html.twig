@@ -1,0 +1,43 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'Payment settings' | trans}}
+{% endblock %}
+
+{% block content %}
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ payment_setting.id }}</td>
+			</tr>
+			<tr>
+				<th>Rib</th>
+				<td>{{ payment_setting.rib }}</td>
+			</tr>
+			<tr>
+				<th>CheckOrder</th>
+				<td>{{ payment_setting.checkOrder }}</td>
+			</tr>
+			<tr>
+				<th>CreatedAt</th>
+				<td>{{ payment_setting.createdAt ? payment_setting.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+			</tr>
+			<tr>
+				<th>UpdatedAt</th>
+				<td>{{ payment_setting.updatedAt ? payment_setting.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_payment_edit', {'id': payment_setting.id}) }}">edit</a>
+
+	{{ include('admin/payment/_delete_form.html.twig') }}
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_payment_index')}}" color="light">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}
