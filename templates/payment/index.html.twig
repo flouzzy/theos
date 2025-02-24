@@ -1,0 +1,56 @@
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{'Payment methods' | trans}}
+{% endblock %}
+
+
+{% block pageTitle %}
+	{{block('title')}}
+{% endblock %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('home')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-button>
+{% endblock %}
+
+{% block content %}
+	<ion-card>
+		<ion-card-content>
+			{% if payment.rib %}
+				<p>
+					<strong>
+						{{'RIB' | trans}}
+					</strong>
+					:
+					{{payment.rib}}
+				</p>
+			{% endif %}
+
+			{% if payment.checkOrder %}
+				<p>
+					<strong>
+						{{'Check order' | trans}}
+					</strong>
+					:
+					{{payment.checkOrder}}
+					{% if payment.receptionAddress %}
+						(
+						<strong>{{'Reception address' | trans}}</strong>
+						:
+						{{payment.receptionAddress}})
+					{% endif %}
+
+				</p>
+			{% endif %}
+
+			{% if payment.note %}
+				<p>
+					{{payment.note}}
+				</p>
+			{% endif %}
+
+		</ion-card-content>
+	</ion-card>
+{% endblock %}

@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/cohort', name: 'cohort_')]
 class CohortController extends AbstractController
 {
-    #[Route('/', name: 'index')]
+    #[Route('/', name: 'index', priority: 3)]
     public function index(): Response
     {
         // Récupère l'utilisateur actuellement authentifié

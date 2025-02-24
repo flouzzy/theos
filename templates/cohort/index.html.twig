@@ -10,5 +10,17 @@
 {% endblock %}
 
 {% block content %}
+	{% if app.user and not app.user.isPaid() %}
+		<ion-card>
+			<ion-card-header>
+				<ion-card-title>{{'Your registration has not yet been paid' | trans}}</ion-card-title>
+			</ion-card-header>
+
+			<ion-card-content>
+				<a href="{{ path('payment_index') }}">{{'Click here' | trans}}</a>
+				{{'To see payment details' | trans}}
+			</ion-card-content>
+		</ion-card>
+	{% endif %}
 	{% include "cohort/_list.html.twig" %}
 {% endblock %}

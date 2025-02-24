@@ -28,6 +28,9 @@ Item deleted: L'élément a été supprimé
 Created at: Créé le
 Updated at: Mis à jour le
 Show more: Voir plus
+Click here: Cliquez ici
+In progress: En cours
+Refused: Refusé
 
 # Landing
 Equip yourself for the destiny God has for you: Équipez-vous pour la destinée que Dieu a pour vous
@@ -79,6 +82,9 @@ Or copy the following url into your browser: Ou copiez l'url suivante dans votre
 1 hour: 1 heure
 Join our community of online learners: Rejoignez notre communauté d’apprenants en ligne
 Well done! Keep up the good work: Bravo ! Continuez comme ça
+Your registration has not yet been paid: Votre inscription n'a pas encore été payée
+Your registration has been paid: Votre inscription a bien été payée
+Your registration has been canceled: Votre inscription a bien été annulée
 
 # Reset password
 Enter your email address, and we will send you a link to reset your password: Saisissez votre adresse électronique et nous vous enverrons un lien pour réinitialiser votre mot de passe.
@@ -115,6 +121,13 @@ Payment settings: Paramètres de paiement
 New payment settings: Nouveaux paramètres de paiement
 Edit payment settings: Edition des paramètres de paiement
 Check order: Ordre du chèque
+To see payment details: Pour voir les détails du paiement
+Reception address: Adresse de réception
+Payment details: Détails du paiement
+Payment methods: Méthodes de paiement
+Unpaid payments: Paiements impayés
+Unpaid: Impayé
+Paid: Payé
 
 # Course
 New course: Nouveau cours

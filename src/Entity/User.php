@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\Enum\PaymentStatusEnum;
 use App\Entity\Trait\DateTimeAble;
 use App\Repository\UserRepository;
+use App\Service\Payment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -20,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     use DateTimeAble;
 
     #[ORM\Id]
@@ -111,6 +114,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: Cohort::class, inversedBy: 'users')]
     private Collection $cohorts;
+
+    // #[ORM\Column(length: 255, options: ['default' => PaymentStatusEnum::UNPAID])]
+    // private ?string $paymentStatus = PaymentStatusEnum::UNPAID;
+    #[ORM\Column(type: 'string', enumType: PaymentStatusEnum::class, options: ['default' => PaymentStatusEnum::UNPAID])]
+    private PaymentStatusEnum $paymentStatus = PaymentStatusEnum::UNPAID;
 
 
     public function __construct()
@@ -728,5 +736,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getPaymentStatus(): PaymentStatusEnum
+    {
+        return $this->paymentStatus;
+    }
+
+    public function setPaymentStatus(PaymentStatusEnum $paymentStatus): static
+    {
+        $this->paymentStatus = $paymentStatus;
+
+        return $this;
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->paymentStatus === PaymentStatusEnum::PAID;
     }
 }
