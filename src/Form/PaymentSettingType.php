@@ -12,6 +12,7 @@ class PaymentSettingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('pricing')
             ->add('rib')
             ->add('checkOrder')
             ->add('receptionAddress')

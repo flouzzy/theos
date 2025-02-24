@@ -31,6 +31,9 @@ class PaymentSetting
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
 
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $pricing = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,6 +83,18 @@ class PaymentSetting
     public function setNote(?string $note): static
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getPricing(): ?int
+    {
+        return $this->pricing;
+    }
+
+    public function setPricing(int $pricing): static
+    {
+        $this->pricing = $pricing;
 
         return $this;
     }

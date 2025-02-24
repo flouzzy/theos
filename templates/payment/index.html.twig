@@ -18,6 +18,14 @@
 {% block content %}
 	<ion-card>
 		<ion-card-content>
+			<ion-card-header>
+				<ion-card-title>
+					{{'Training fees' | trans}}
+					:
+					{{payment.pricing}}
+					€
+				</ion-card-title>
+			</ion-card-header>
 			{% if payment.rib %}
 				<p>
 					<strong>
