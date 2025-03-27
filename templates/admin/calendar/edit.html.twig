@@ -1,0 +1,20 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_calendar_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+		{{'Back' | trans}}
+	</ion-button>
+{% endblock %}
+
+{% block title %}
+	{{'Edit calendar' | trans}}
+{% endblock %}
+
+{% block content %}
+	{{ include('admin/calendar/_form.html.twig', {'button_label': 'Update'}) }}
+
+	<a href="{{ path('admin_calendar_index') }}">back to list</a>
+
+	{{ include('admin/calendar/_delete_form.html.twig') }}
+{% endblock %}

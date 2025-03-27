@@ -45,6 +45,9 @@ class Cohort
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $startAt = null;
 
+    #[ORM\OneToOne(mappedBy: 'cohort', cascade: ['persist', 'remove'])]
+    private ?Calendar $calendar = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -179,6 +182,28 @@ class Cohort
     public function setStartAt(?\DateTimeImmutable $startAt): static
     {
         $this->startAt = $startAt;
+
+        return $this;
+    }
+
+    public function getCalendar(): ?Calendar
+    {
+        return $this->calendar;
+    }
+
+    public function setCalendar(?Calendar $calendar): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($calendar === null && $this->calendar !== null) {
+            $this->calendar->setCohort(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($calendar !== null && $calendar->getCohort() !== $this) {
+            $calendar->setCohort($this);
+        }
+
+        $this->calendar = $calendar;
 
         return $this;
     }

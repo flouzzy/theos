@@ -1,0 +1,19 @@
+{% extends 'ionic.html.twig' %}
+
+{% block title %}
+	{{'Calendar' | trans}}
+{% endblock %}
+
+
+{% block pageTitlte %}
+	{{block('title')}}
+{% endblock %}
+
+{% block content %}
+	{% if calendar and calendar.embed %}
+		{{calendar.embed | raw}}
+	{% else %}
+		<p>{{'No calendar found'}}</p>
+	{% endif %}
+
+{% endblock %}

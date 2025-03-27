@@ -1,0 +1,42 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_calendar_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+		{{'Back' | trans}}
+	</ion-button>
+{% endblock %}
+
+{% block title %}
+	{{'Calendar' | trans}}
+{% endblock %}
+
+{% block content %}
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ calendar.id }}</td>
+			</tr>
+			<tr>
+				<th>Description</th>
+				<td>{{ calendar.description }}</td>
+			</tr>
+			<tr>
+				<th>Url</th>
+				<td>{{ calendar.url }}</td>
+			</tr>
+			<tr>
+				<th>Embed</th>
+				<td>{{ calendar.embed }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_calendar_index') }}">back to list</a>
+
+	<a href="{{ path('admin_calendar_edit', {'id': calendar.id}) }}">edit</a>
+
+	{{ include('admin/calendar/_delete_form.html.twig') }}
+{% endblock %}

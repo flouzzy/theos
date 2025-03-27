@@ -1,0 +1,16 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_calendar_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+		{{'Back' | trans}}
+	</ion-button>
+{% endblock %}
+
+{% block title %}
+	{{'New calendar' | trans}}
+{% endblock %}
+
+{% block content %}
+	{{ include('admin/calendar/_form.html.twig') }}
+{% endblock %}

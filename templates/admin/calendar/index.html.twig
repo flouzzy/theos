@@ -1,0 +1,48 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block menuBackButton %}
+	<ion-button href="{{path('admin_calendar_index')}}">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+		{{'Back' | trans}}
+	</ion-button>
+{% endblock %}
+
+{% block title %}
+	{{'Calendar' | trans}}
+{% endblock %}
+
+{% block content %}
+	<h1>Calendar index</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Description</th>
+				<th>Url</th>
+				<th>Embed</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for calendar in calendars %}
+				<tr>
+					<td>{{ calendar.id }}</td>
+					<td>{{ calendar.description }}</td>
+					<td>{{ calendar.url }}</td>
+					<td>{{ calendar.embed }}</td>
+					<td>
+						<a href="{{ path('admin_calendar_show', {'id': calendar.id}) }}">show</a>
+						<a href="{{ path('admin_calendar_edit', {'id': calendar.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('admin_calendar_new') }}">Create new</a>
+{% endblock %}
