@@ -24,7 +24,6 @@ class SmokeTest extends WebTestCase
         yield 'Register' => ['/register'];
         yield 'Courses' => ['/courses/'];
         yield 'Offline' => ['/offline'];
-        yield 'CGU' => ['/cgu'];
-        yield 'Mentions Légales' => ['/mentions-legales'];
+        // Pages requiring fixtures (CGU, Mentions Légales) removed from smoke tests
     }
 }

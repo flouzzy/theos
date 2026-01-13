@@ -1,76 +1,97 @@
 {% set 
     menuItems = {
-         'home':{'title':'Home', 'icon':'/images/icons/home.svg', 'path':'home'},
-		 'calendar':{'title':'Note taking', 'icon':'/images/icons/course.svg', 'path':'note_index'},
-		 'note':{'title':'Calendar', 'icon':'/images/icons/calendar.svg', 'path':'calendar'}
+        'home': {'title': 'Home', 'icon': 'lucide:home', 'path': 'home'},
+        'courses': {'title': 'Courses', 'icon': 'lucide:book-open', 'path': 'course_index'},
+        'calendar': {'title': 'Calendar', 'icon': 'lucide:calendar', 'path': 'calendar'},
+        'notes': {'title': 'Notes', 'icon': 'lucide:sticky-note', 'path': 'note_index'},
     } 
 %}
 
-<ion-list>
-	{% for menu in menuItems %}
-		<ion-item href="{{path(menu.path)}}" {% if currentroute == menu.path %} color="{{colorActive}}" {% endif %}>
-			<ion-icon slot="start" src="{{menu.icon}}" color="app"></ion-icon>
-			<ion-label>
-				{{menu.title | trans}}
-			</ion-label>
-		</ion-item>
-	{% endfor %}
+{# Main Navigation #}
+<div class="space-y-1">
+    <div class="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        {{ 'Navigation' | trans }}
+    </div>
+    
+    {% for key, menu in menuItems %}
+        <a href="{{ path(menu.path) }}" 
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all
+                  {% if app.request.attributes.get('_route') == menu.path %}
+                      bg-primary text-primary-foreground
+                  {% else %}
+                      text-muted-foreground hover:text-foreground hover:bg-muted
+                  {% endif %}">
+            <twig:ux:icon name="{{ menu.icon }}" class="h-4 w-4 flex-shrink-0" />
+            <span>{{ menu.title | trans }}</span>
+        </a>
+    {% endfor %}
 
-	<ion-item button href="{{path('notification_index')}}">
-		<ion-icon slot="start" name="notifications{% if notifications|default([]) | length == 0 %}-outline{% endif %}" color="app"></ion-icon>
-		<ion-label>
-			{{'Notifications' | trans}}
-			{% if notifications|default([]) | length > 0 %}
-				<ion-text color="danger">
-					({{notifications|default([]) | length}})
-				</ion-text>
-			{% endif %}
-		</ion-label>
-	</ion-item>
-</ion-list>
+    {# Notifications with Badge #}
+    <a href="{{ path('notification_index') }}" 
+       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all
+              {% if app.request.attributes.get('_route') == 'notification_index' %}
+                  bg-primary text-primary-foreground
+              {% else %}
+                  text-muted-foreground hover:text-foreground hover:bg-muted
+              {% endif %}">
+        <twig:ux:icon name="lucide:bell" class="h-4 w-4 flex-shrink-0" />
+        <span class="flex-1">{{ 'Notifications' | trans }}</span>
+        {% if notifications|default([]) | length > 0 %}
+            <span class="inline-flex items-center justify-center rounded-full bg-destructive px-2 py-0.5 text-xs font-medium text-destructive-foreground">
+                {{ notifications|default([]) | length }}
+            </span>
+        {% endif %}
+    </a>
+</div>
 
-{# User connected #}
-<ion-list>
-	<ion-list-header>
-		{{'Account' | trans}}
-	</ion-list-header>
+{# Account Section #}
+{% if is_granted('IS_AUTHENTICATED') %}
+    <div class="mt-6 space-y-1">
+        <div class="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            {{ 'Account' | trans }}
+        </div>
 
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin') }}" 
+               class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted">
+                <twig:ux:icon name="lucide:settings" class="h-4 w-4 flex-shrink-0" />
+                <span>{{ 'Administration' | trans }}</span>
+            </a>
+        {% endif %}
 
-	{% if is_granted('IS_AUTHENTICATED') %}
+        <a href="{{ path('profile_index') }}" 
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all
+                  {% if app.request.attributes.get('_route') == 'profile_index' %}
+                      bg-primary text-primary-foreground
+                  {% else %}
+                      text-muted-foreground hover:text-foreground hover:bg-muted
+                  {% endif %}">
+            <twig:ux:icon name="lucide:user" class="h-4 w-4 flex-shrink-0" />
+            <span>{{ 'Profile' | trans }}</span>
+        </a>
 
-		{% if is_granted('ROLE_ADMIN') %}
-			<ion-item button href="{{path('admin')}}">
-				<ion-icon slot="start" name="build-outline" color="app"></ion-icon>
-				<ion-label>
-					{{'Administration' | trans}}
-				</ion-label>
-			</ion-item>
-		{% endif %}
+        <a href="{{ path('_logout_main') }}" 
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted">
+            <twig:ux:icon name="lucide:log-out" class="h-4 w-4 flex-shrink-0" />
+            <span>{{ 'Sign out' | trans }}</span>
+        </a>
+    </div>
+{% else %}
+    <div class="mt-6 space-y-1">
+        <div class="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            {{ 'Account' | trans }}
+        </div>
 
-		<ion-item button href="{{path('profile_index')}}" {% if currentroute == 'profile_index' %} color="{{colorActive}}" {% endif %}>
-			<ion-icon slot="start" src="/images/icons/profile.svg" color="app"></ion-icon>
-			<ion-label>
-				{{'Profile' | trans}}
-			</ion-label>
-		</ion-item>
-		<ion-item button href="{{path('_logout_main')}}">
-			<ion-icon slot="start" name="log-out-outline" color="app"></ion-icon>
-			<ion-label>
-				{{'Sign out' | trans}}
-			</ion-label>
-		</ion-item>
-	{% else %}
-		<ion-item button href="{{path('login')}}">
-			<ion-icon slot="start" name="log-in-outline" color="app"></ion-icon>
-			<ion-label>
-				{{'Sign in' | trans}}
-			</ion-label>
-		</ion-item>
-		<ion-item button href="{{path('register')}}">
-			<ion-icon slot="start" name="people-outline" color="app"></ion-icon>
-			<ion-label>
-				{{'Sign up' | trans}}
-			</ion-label>
-		</ion-item>
-	{% endif %}
-</ion-list>
+        <a href="{{ path('login') }}" 
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted">
+            <twig:ux:icon name="lucide:log-in" class="h-4 w-4 flex-shrink-0" />
+            <span>{{ 'Sign in' | trans }}</span>
+        </a>
+
+        <a href="{{ path('register') }}" 
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted">
+            <twig:ux:icon name="lucide:user-plus" class="h-4 w-4 flex-shrink-0" />
+            <span>{{ 'Sign up' | trans }}</span>
+        </a>
+    </div>
+{% endif %}

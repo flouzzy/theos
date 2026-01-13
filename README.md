@@ -1,51 +1,99 @@
-# Symfony Docker
+# Le Rocher Académie
 
-A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework,
-with [FrankenPHP](https://frankenphp.dev) and [Caddy](https://caddyserver.com/) inside!
+**Le Rocher Académie** is a modern Learning Management System (LMS) built with Symfony 8, designed to deliver engaging online courses with a seamless user experience.
 
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
+## 🎯 What is Le Rocher Académie?
 
-## Getting Started
+Le Rocher Académie is an online learning platform that enables educators to create, manage, and deliver comprehensive courses to learners. The platform provides a rich set of features for both administrators and students, including course management, progress tracking, interactive lessons, and community engagement.
 
-1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/) (v2.10+)
-2. Run `docker compose build --pull --no-cache` to build fresh images
-3. Run `docker compose up --wait` to set up and start a fresh Symfony project
-4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
-5. Run `docker compose down --remove-orphans` to stop the Docker containers.
+## ✨ Key Features
 
-## Features
+- **📚 Course Management** - Create and organize courses with modules and lessons
+- **📝 Interactive Lessons** - Rich content support with multimedia integration
+- **📊 Progress Tracking** - Monitor student progress and completion rates
+- **💬 Comments & Discussions** - Foster community engagement on lessons
+- **📅 Calendar & Scheduling** - Manage cohorts and course schedules
+- **🔔 Notifications** - Real-time updates for students and instructors
+- **👤 User Profiles** - Personalized learning experiences
+- **🎓 Badges & Achievements** - Gamification to motivate learners
+- **💳 Payment Integration** - Manage subscriptions and course payments
+- **📱 Fully Responsive** - Optimized for mobile, tablet, and desktop
+- **🌐 Multi-language Support** - Internationalization ready
 
-- Production, development and CI ready
-- Just 1 service by default
-- Blazing-fast performance thanks to [the worker mode of FrankenPHP](https://frankenphp.dev/docs/worker/)
-- [Installation of extra Docker Compose services](docs/extra-services.md) with Symfony Flex
-- Automatic HTTPS (in dev and prod)
-- HTTP/3 and [Early Hints](https://symfony.com/blog/new-in-symfony-6-3-early-hints) support
-- Real-time messaging thanks to a built-in [Mercure hub](https://symfony.com/doc/current/mercure.html)
-- [Vulcain](https://vulcain.rocks) support
-- Native [XDebug](docs/xdebug.md) integration
-- Super-readable configuration
+## 🛠️ Tech Stack
 
-**Enjoy!**
+- **Backend:** Symfony 8 (PHP 8.4)
+- **Frontend:** Tailwind CSS + Shadcn UI Components
+- **Database:** PostgreSQL 15
+- **Web Server:** FrankenPHP + Caddy
+- **Email Service:** Brevo (via Symfony Mailer)
+- **Containerization:** Docker & Docker Compose
+- **Testing:** PHPUnit + Symfony Browser Kit
+- **Real-time:** Turbo Frames for dynamic updates
 
-## Docs
+## 🚀 Quick Start
 
-1. [Options available](docs/options.md)
-2. [Using Symfony Docker with an existing project](docs/existing-project.md)
-3. [Support for extra services](docs/extra-services.md)
-4. [Deploying in production](docs/production.md)
-5. [Debugging with Xdebug](docs/xdebug.md)
-6. [TLS Certificates](docs/tls.md)
-7. [Using MySQL instead of PostgreSQL](docs/mysql.md)
-8. [Using Alpine Linux instead of Debian](docs/alpine.md)
-9. [Using a Makefile](docs/makefile.md)
-10. [Updating the template](docs/updating.md)
-11. [Troubleshooting](docs/troubleshooting.md)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/egliselerocher/academie.git
+   cd academie
+   ```
 
-## License
+2. **Start Docker containers**
+   ```bash
+   docker compose up -d
+   ```
 
-Symfony Docker is available under the MIT License.
+3. **Install dependencies & setup database**
+   ```bash
+   docker compose exec php composer install
+   docker compose exec php bin/console doctrine:migrations:migrate
+   docker compose exec php bin/console doctrine:fixtures:load
+   ```
 
-## Credits
+4. **Access the application**
+   - **HTTPS:** `https://localhost:8096`
+   - **HTTP:** `http://localhost:8095`
 
-Created by [Kévin Dunglas](https://dunglas.dev), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
+For detailed installation instructions, see [docs/installation.md](docs/installation.md).
+
+## 📖 Documentation
+
+- [Installation Guide](docs/installation.md) - Complete setup instructions
+- [Development Guide](docs/development.md) - Local development workflow
+- [Architecture Overview](docs/architecture.md) - Application structure and design
+- [Features Documentation](docs/features.md) - Detailed feature descriptions
+- [Database Schema](docs/database.md) - Database structure and migrations
+- [Testing Guide](docs/testing.md) - Running and writing tests
+- [Deployment Guide](docs/deployment.md) - Production deployment
+- [Contributing Guidelines](docs/contributing.md) - How to contribute
+- [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
+- [API Documentation](docs/api.md) - API endpoints (if applicable)
+
+## 🧪 Testing
+
+Run the full test suite:
+```bash
+docker compose exec php bin/phpunit
+```
+
+Run specific test suites:
+```bash
+# Smoke tests
+docker compose exec php bin/phpunit tests/SmokeTest.php
+
+# Functional tests
+docker compose exec php bin/phpunit tests/RegistrationFunctionalTest.php
+```
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+## 👥 Credits
+
+Developed by **Le Rocher** team.
+
+---
+
+**Need help?** Check our [Troubleshooting Guide](docs/troubleshooting.md) or open an issue on GitHub.

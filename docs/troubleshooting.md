@@ -1,87 +1,134 @@
 # Troubleshooting
 
-## Editing Permissions on Linux
+Common issues and solutions for Le Rocher Académie.
 
-If you work on Linux and cannot edit some of the project files right after
-the first installation, you can run the following command
-to set yourself as owner of the project files that were created by the Docker container:
+## Installation Issues
 
-```console
-docker compose run --rm php chown -R $(id -u):$(id -g) .
+### Port Already in Use
+
+**Error**: `Bind for 0.0.0.0:8096 failed: port is already allocated`
+
+**Solution**: Change ports in `.env`:
+```bash
+HTTP_PORT=8085
+HTTPS_PORT=8086
+docker compose down
+docker compose up -d
 ```
 
-## TLS/HTTPS Issues
+### Database Connection Failed
 
-See more in the [TLS section](tls.md)
+**Error**: `Connection refused` or `could not connect to server`
+
+**Solution**:
+```bash
+# Check database container
+docker compose ps
+docker compose logs database
+
+# Restart database
+docker compose restart database
+
+# Wait for database to be ready
+docker compose exec php bin/console wait-for-it database:5432
+```
+
+### Permission Denied
+
+**Error**: Permission errors in `var/` directory
+
+**Solution**:
+```bash
+docker compose exec php chown -R www-data:www-data var/
+docker compose exec php chmod -R 775 var/
+```
+
+## Development Issues
+
+### Cache Not Clearing
+
+**Solution**:
+```bash
+# Hard clear
+docker compose exec php rm -rf var/cache/*
+docker compose exec php bin/console cache:clear
+```
+
+### Assets Not Loading
+
+**Solution**:
+```bash
+# Rebuild assets
+docker compose exec php bin/console tailwind:build
+
+# Check asset paths
+docker compose exec php bin/console debug:router
+```
+
+### Migrations Fail
+
+**Error**: Migration already executed or schema mismatch
+
+**Solution**:
+```bash
+# Check migration status
+docker compose exec php bin/console doctrine:migrations:status
+
+# Force version (use with caution)
+docker compose exec php bin/console doctrine:migrations:version <version> --add
+
+# Reset database (dev only)
+docker compose exec php bin/console doctrine:database:drop --force
+docker compose exec php bin/console doctrine:database:create
+docker compose exec php bin/console doctrine:migrations:migrate
+```
+
+## Testing Issues
+
+### Test Database Not Found
+
+**Solution**:
+```bash
+docker compose exec database createdb -U app app_test
+docker compose exec php bin/console doctrine:migrations:migrate --env=test
+docker compose exec php bin/console doctrine:fixtures:load --env=test
+```
+
+### Tests Hanging
+
+**Solution**: Check for infinite loops or missing mocks for external services.
 
 ## Production Issues
 
-### How To Properly Build Fresh Images for Production Use
+### 500 Internal Server Error
 
-Remember that, by default, if you run `docker compose up --wait`,
-only the files `compose.yaml` and `compose.override.yaml` will be used.
-See ["How Compose works"](https://docs.docker.com/compose/intro/compose-application-model)
-and ["Merge Compose files"](https://docs.docker.com/compose/how-tos/multiple-compose-files/merge).
+**Check**:
+1. Application logs: `docker compose logs php`
+2. Error logs: `var/log/prod.log`
+3. Check `.env` configuration
+4. Ensure cache is cleared
 
-If you need to build images for production environment, you have to use the following
-command:
+### Slow Performance
 
-```console
-docker compose -f compose.yaml -f compose.prod.yaml build --pull --no-cache
-```
+**Solutions**:
+- Enable OPcache
+- Use Redis for caching
+- Optimize database queries
+- Check server resources
 
-### Why Application Outputs `phpinfo()`?
+### Email Not Sending
 
-Both dev and prod images have the same image tag (`<...>app-php:latest`).
-This can cause confusion when working with images.
-It is important to make sure that your image is the appropriate one
-for the current environment.
+**Check**:
+1. MAILER_DSN configuration
+2. Brevo API key validity
+3. Email logs: `docker compose logs php`
+4. Test with: `docker compose exec php bin/console mailer:test`
 
-If you are not careful about this, and try to run your production container(s) with
-`docker compose -f compose.yaml -f compose.prod.yaml up --wait`
-without the right build process beforehand, your application **will still launch**,
-but will be displaying an output of `phpinfo()`
-(or possibly even a HTTP 500 error page).
+## Getting Help
 
-See details below.
+1. Check [Documentation](../README.md)
+2. Search [existing issues](https://github.com/egliselerocher/academie/issues)
+3. Ask in discussions
+4. Contact support
 
-#### Output of a basic build process
-
-In the case of a dev image, you need the `compose.yaml` and
-`compose.override.yaml` files, which are the default files for Docker Compose.
-
-This means that running `docker compose <command>` or
-`docker compose -f compose.yaml -f compose.override.yaml <command>` is the same thing.
-
-In doing so, images `frankenphp_base` and `frankenphp_dev` are built,
-but not `frankenphp_prod`, which is good enough for dev purposes.
-
-Then, you can start your dev container(s) by running:
-
-```console
-docker compose up --wait
-```
-
-#### Output expected for the production build process
-
-To build the production image, you have to specify the `compose.yaml` and
-`compose.prod.yaml` files.
-
-This means you have to run the following command in order to build your image:
-
-```console
-docker compose -f compose.yaml -f compose.prod.yaml build --pull --no-cache
-```
-
-> [!WARNING]
->
-> The order of `-f` arguments matters.
-
-That way, you will see that `frankenphp_base` and `frankenphp_prod` are built,
-which is what you will need for production purposes.
-
-You can finally start your prod container(s) by running:
-
-```console
-docker compose -f compose.yaml -f compose.prod.yaml up --wait
-```
+Still having issues? Create a detailed bug report.

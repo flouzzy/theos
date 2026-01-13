@@ -16,7 +16,12 @@ class CohortController extends AbstractController
         // Récupère l'utilisateur actuellement authentifié
         /** @var User $user */
         $user = $this->getUser();
-
+        
+        // Redirect to login if not authenticated
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
+        
         // Récupère toutes ses cohortes
         $cohorts = $user->getCohorts();
 
