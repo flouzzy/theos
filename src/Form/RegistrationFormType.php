@@ -22,25 +22,39 @@ class RegistrationFormType extends AbstractType
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $inputClass = 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+
         $builder
             ->add('lastname', null, [
                 'label' => $this->translator->trans('Lastname'),
-                'attr' => ['placeholder' => 'Doe']
+                'attr' => [
+                    'placeholder' => 'Doe',
+                    'class' => $inputClass,
+                ]
             ])
             ->add('firstname', null, [
                 'label' => $this->translator->trans('Firstname'),
-                'attr' => ['placeholder' => 'John']
+                'attr' => [
+                    'placeholder' => 'John',
+                    'class' => $inputClass,
+                ]
             ])
             ->add('email', null, [
                 'label' => $this->translator->trans('Email'),
-                'attr' => ['placeholder' => 'john.doe@example.com']
+                'attr' => [
+                    'placeholder' => 'john.doe@example.com',
+                    'class' => $inputClass,
+                ]
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
                 'label' => $this->translator->trans('Password'),
-                'attr' => ['autocomplete' => 'new-password'],
+                'attr' => [
+                    'autocomplete' => 'new-password',
+                    'class' => $inputClass,
+                ],
                 'constraints' => [
                     new NotBlank(message: 'Please enter a password'),
                     new Length(
