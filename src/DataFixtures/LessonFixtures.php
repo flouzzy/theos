@@ -28,18 +28,18 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
             /**
              * @var \App\Entity\User $author
              */
-            $author = $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 9));
+            $author = $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 9), \App\Entity\User::class);
             $lesson->setAuthor($author);
 
             // Add module
-            $lesson->setModule($this->getReference(ModuleFixtures::MODULE_REFERENCE . random_int(0, 9)));
+            $lesson->setModule($this->getReference(ModuleFixtures::MODULE_REFERENCE . random_int(0, 9), \App\Entity\Module::class));
 
             $this->manager->persist($lesson);
         }
         $this->manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             ModuleFixtures::class,

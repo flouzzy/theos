@@ -4,62 +4,73 @@
 	{{module.title}}
 {% endblock %}
 
-{% block content %}
-	<turbo-frame id="frame_lesson">
-		<h2 class="ion-text-center">{{currentLesson.title}}</h2>
-		<ion-card>
-			<ion-card-content>
-				<h2>{{'Description' | trans}}</h2>
-				<ion-text color="dark">
-					{{currentLesson.description | raw}}
-				</ion-text>
-			</ion-card-content>
-		</ion-card>
+	<turbo-frame id="frame_lesson" class="block space-y-6 max-w-4xl mx-auto p-4">
+		<div class="text-center space-y-2">
+			<h2 class="text-3xl font-bold tracking-tight">{{ currentLesson.title }}</h2>
+		</div>
 
-		<div class="ion-padding-bottom lesson-content">
+		<twig:Card class="p-6">
+			<h3 class="font-semibold mb-2 text-lg">{{ 'Description'|trans }}</h3>
+			<div class="text-muted-foreground">
+				{{ currentLesson.description|raw }}
+			</div>
+		</twig:Card>
+
+		<div class="space-y-6">
 			{% if currentLesson.status == 'published' %}
-				<div>
-					{{currentLesson.videoEmbeded | raw}}
-				</div>
-				<ion-accordion-group class="ion-padding-vertical" {% if not currentLesson.videoEmbeded %} value="accordeon-lesson-{{currentLesson.id}}" {% endif %}>
-					<ion-accordion value="accordeon-lesson-{{currentLesson.id}}">
-						<ion-item slot="header" color="light">
-							<ion-label>{{'Text content' | trans}}</ion-label>
-						</ion-item>
-						<div class="ion-padding" slot="content">
-							<ion-text color="dark">
-								{{currentLesson.content | raw}}
-							</ion-text>
+				{% if currentLesson.videoEmbeded %}
+					<div class="aspect-video w-full overflow-hidden rounded-lg border bg-muted">
+						{{ currentLesson.videoEmbeded|raw }}
+					</div>
+				{% endif %}
+
+				<div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+					<details class="group" {% if not currentLesson.videoEmbeded %}open{% endif %}>
+						<summary class="flex cursor-pointer items-center justify-between p-6 font-medium transition-all hover:bg-muted/50 [&::-webkit-details-marker]:hidden">
+							<span>{{ 'Text content'|trans }}</span>
+							<twig:ux:icon name="lucide:chevron-down" class="h-4 w-4 transition-transform group-open:rotate-180" />
+						</summary>
+						<div class="border-t p-6 pt-0 mt-4">
+							<div class="prose dark:prose-invert max-w-none">
+								{{ currentLesson.content|raw }}
+							</div>
 						</div>
-					</ion-accordion>
-				</ion-accordion-group>
-				<hr>
+					</details>
+				</div>
+
+				<twig:Separator class="my-6" />
+
 				{# User notes #}
 				{% if is_granted('IS_AUTHENTICATED') %}
-					{# Form #}
-					{{ render(path('note_show_lesson', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
-					{# List #}
-					{{ render(path('note_index_lesson', {lessonId : currentLesson.id})) }}
+					<div class="space-y-4">
+						{# Form #}
+						{{ render(path('note_show_lesson', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
+						{# List #}
+						{{ render(path('note_index_lesson', {lessonId : currentLesson.id})) }}
+					</div>
 				{% endif %}
 			{% else %}
-				<ion-item lines="none" color="dark">
-					<ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-					<h3>
-						{{'This lesson is currently unavailable' | trans}}
-					</h3>
-				</ion-item>
+				<div class="rounded-lg border border-destructive/50 p-4 text-destructive-foreground">
+					<div class="flex items-center gap-3">
+						<twig:ux:icon name="lucide:alert-circle" class="h-5 w-5" />
+						<h3 class="font-semibold">
+							{{ 'This lesson is currently unavailable'|trans }}
+						</h3>
+					</div>
+				</div>
 			{% endif %}
 		</div>
 	</turbo-frame>
-{% endblock %}
 
 {% block menuHeaderButtons %}
-	<ion-buttons slot="end">
+	<div class="flex items-center gap-2">
 		{% if is_granted('ROLE_ADMIN') %}
-			<ion-button href="{{path('admin_lesson_edit', {id:currentLesson.id})}}" target="_blank">
-				<ion-icon name="create-outline"></ion-icon>
-			</ion-button>
+			<twig:Button variant="ghost" size="icon" asChild>
+				<a href="{{path('admin_lesson_edit', {id:currentLesson.id})}}" target="_blank">
+					<twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
+				</a>
+			</twig:Button>
 		{% endif %}
 		{% include "lesson/_complete.html.twig" %}
-	</ion-buttons>
+	</div>
 {% endblock %}

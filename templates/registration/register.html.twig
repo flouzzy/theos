@@ -5,91 +5,78 @@
 {% endblock %}
 
 {% block content %}
-	<ion-grid class="form-signin ion-no-padding">
-		<ion-row class="ion-justify-content-center ion-align-items-center">
-			<ion-col size="12" size-sm="5" class="form-bg-login"></ion-col>
-			<ion-col size="12" size-sm="7" class="form-bg-bullet">
-				{{ form_start(registrationForm, {'attr' : {'novalidate':'novalidate'}}) }}
-				<ion-list>
-					<ion-list-header>
-						<div class="ion-text-center">
-							<h1>
-								{{block('title')}}
-							</h1>
-							<h2>{{'Join our community of online learners' | trans}}</h2>
-						</div>
-					</ion-list-header>
+    <div class="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-200px)]">
+        <twig:Card class="w-full max-w-4xl overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-12">
+                <div class="md:col-span-5 bg-muted h-64 md:h-auto bg-cover bg-center hidden md:block" style="background-image: url('{{ asset('images/landing-1.png') }}')">
+                    {# Optional: Placeholder image or background #}
+                </div>
+                <div class="md:col-span-7 p-6 md:p-8">
+                    <div class="text-center mb-6">
+                        <h1 class="text-2xl font-bold">{{'New account' | trans}}</h1>
+                        <h2 class="text-muted-foreground">{{'Join our community of online learners' | trans}}</h2>
+                    </div>
 
-					{% if app.session.flashbag.peekAll() is not empty %}
-						<ion-item lines="none">
-							{% for flash_error in app.flashes('verify_email_error') %}
-								<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-							{% endfor %}
-						</ion-item>
-					{% endif %}
+                    {% if app.session.flashbag.peekAll() is not empty %}
+                         {% for flash_error in app.flashes('verify_email_error') %}
+                            <div class="bg-destructive/15 text-destructive text-sm p-3 rounded-md mb-6 text-center" role="alert">{{ flash_error }}</div>
+                        {% endfor %}
+                    {% endif %}
 
-					<ion-item lines="none" class="ion-no-margin">
-						<ion-label>
-							<h3>
-								{{ form_label(registrationForm.email) }}
-							</h3>
-							<ion-text color="danger">
-								{{ form_errors(registrationForm.email) }}
-							</ion-text>
-							{{ form_widget(registrationForm.email) }}
-						</ion-label>
-					</ion-item>
+                    {{ form_start(registrationForm, {'attr' : {'novalidate':'novalidate', 'class': 'space-y-4'}}) }}
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                             <div class="space-y-2">
+                                {{ form_label(registrationForm.firstname) }}
+                                {{ form_widget(registrationForm.firstname) }}
+                                {{ form_errors(registrationForm.firstname) }}
+                            </div>
+                             <div class="space-y-2">
+                                {{ form_label(registrationForm.lastname) }}
+                                {{ form_widget(registrationForm.lastname) }}
+                                {{ form_errors(registrationForm.lastname) }}
+                            </div>
+                        </div>
 
-					<ion-item lines="none">
-						<ion-label>
-							<h3>
-								{{ form_label(registrationForm.fullname) }}
-							</h3>
-							<ion-text color="danger">
-								{{ form_errors(registrationForm.fullname) }}
-							</ion-text>
-							{{ form_widget(registrationForm.fullname) }}
-						</ion-label>
-					</ion-item>
+                        <div class="space-y-2">
+                             {{ form_label(registrationForm.email) }}
+                             {{ form_widget(registrationForm.email) }}
+                             {{ form_errors(registrationForm.email) }}
+                        </div>
 
-					<ion-item lines="none">
-						<ion-label>
-							<h3>
-								{{'Password' | trans}}
-							</h3>
-							{{ form_widget(registrationForm.plainPassword) }}
-							<ion-text color="danger">
-								{{ form_errors(registrationForm.plainPassword) }}
-							</ion-text>
-						</ion-label>
-					</ion-item>
+                        <div class="space-y-2">
+                             {{ form_label(registrationForm.plainPassword) }}
+                            {{ form_widget(registrationForm.plainPassword) }}
+                            {{ form_errors(registrationForm.plainPassword) }}
+                        </div>
 
-					<ion-item lines="none">
-						<ion-label>
-							<ion-text color="danger">
-								{{ form_errors(registrationForm.agreeTerms) }}
-							</ion-text>
-							{{ form_widget(registrationForm.agreeTerms, { label: 'I have read and accept' | trans ~ ' <a target="_blank" href="' ~ path('page_show', {slug:'cgu'}) ~ '">' ~ "the Terms of Use"|trans ~ '</a>', label_html: true }) }}
-						</ion-label>
-					</ion-item>
-				</ion-list>
-				<ion-col class="ion-text-center">
-					<div class="ion-padding-vertical">
-						<ion-button type="submit" color="app" fill="solid">
-							{{'Create a new account' | trans}}
-						</ion-button>
-					</div>
-					{{ form_end(registrationForm) }}
-				</ion-col>
-			</ion-col>
-		</ion-row>
-		<ion-row class="ion-justify-content-center ion-padding ion-margin">
-			<ion-col class="ion-text-center">
-				<ion-text>
-					{{'Already have an account ?' | trans}}
-					<a href="{{path('login')}}">{{'Sign in' | trans}}</a>
-				</ion-text>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+                        <div class="flex items-start space-x-2 pt-2">
+                             {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'mt-1'}}) }}
+                             <div class="grid gap-1.5 leading-none">
+                                <label for="{{ registrationForm.agreeTerms.vars.id }}" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                    {{ 'I have read and accept' | trans }} <a target="_blank" href="{{ path('page_show', {slug:'cgu'}) }}" class="text-primary hover:underline">{{ "the Terms of Use"|trans }}</a>
+                                </label>
+                                <div class="text-destructive text-sm">
+                                    {{ form_errors(registrationForm.agreeTerms) }}
+                                </div>
+                             </div>
+                        </div>
+
+                        <div class="pt-4 text-center">
+                            <twig:Button type="submit" class="w-full">
+                                {{'Create a new account' | trans}}
+                            </twig:Button>
+                        </div>
+                    {{ form_end(registrationForm) }}
+
+                    <div class="mt-8 text-center text-sm text-muted-foreground">
+                        <p>
+                            {{ 'Already have an account ?' | trans }}
+                            <a href="{{ path('login') }}" class="text-primary hover:underline font-medium">{{ 'Sign in' | trans }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </twig:Card>
+    </div>
 {% endblock %}

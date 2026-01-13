@@ -4,12 +4,10 @@
 	{% include "lesson/_menu.html.twig" %}
 {% endblock %}
 {% block menuFooter %}
-	<ion-list lines="none">
-		<ion-item button href="{{path('home')}}">
-			<ion-icon slot="start" name="home-outline"></ion-icon>
-			<ion-label>
-				{{'Back to home' | trans}}
-			</ion-label>
-		</ion-item>
-	</ion-list>
+	<div class="p-4">
+		<a href="{{path('home')}}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted">
+			<twig:ux:icon name="lucide:home" class="h-4 w-4" />
+			{{'Back to home' | trans}}
+		</a>
+	</div>
 {% endblock %}

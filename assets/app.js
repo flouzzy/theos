@@ -1,8 +1,8 @@
+import './bootstrap.js';
 import "./bootstrap.js";
 
 // Ionic
-import "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js";
-import "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js";
+
 // import "https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js";
 
 // import "./js/ionic.esm.js";
@@ -16,7 +16,4 @@ import "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js";
  * which should already be in your base.html.twig.
  */
 import "./styles/app.css";
-import "./styles/form.css";
-import "./styles/color.css";
-import "./styles/utilities.css";
-import "./styles/ionic.css";
+

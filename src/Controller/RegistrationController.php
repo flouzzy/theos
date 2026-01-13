@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -150,7 +150,13 @@ class RegistrationController extends AbstractController
             $user->getEmail(),
             $this->translator->trans('Please confirm your email'),
             'registration/confirmation_email.html.twig',
-            compact('user', 'signedUrl')
+            [
+                'user' => [
+                    'firstname' => $user->getFirstname(),
+                    'email' => $user->getEmail()
+                ],
+                'signedUrl' => $signedUrl
+            ]
         );
     }
 }

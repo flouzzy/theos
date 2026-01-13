@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Repository\PaymentSettingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/payment', name: 'payment_', priority: 3)]
 class PaymentController extends AbstractController

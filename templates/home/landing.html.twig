@@ -5,36 +5,38 @@
 {% endblock %}
 
 {% block content %}
-	<div class="home ion-text-center">
-		<h1 class="ion-padding-top">
-			{{'The school for builders of the kingdom of God' | trans}}
-		</h1>
-		<h2>
-			{{'Equip yourself for the destiny God has for you' | trans}}
-		</h2>
-		<p class="ion-padding">
-			<ion-button href="{{path('register')}}" color="app" fill="solid">{{'Enroll Now' | trans}}</ion-button>
-		</p>
-		<ion-grid>
-			<ion-row class="ion-justify-content-center">
-				<ion-col></ion-col>
-				<ion-col size-sm="6" size="12">
-					<ion-grid>
-						<ion-row class="ion-justify-content-center">
-							<ion-col size-sm="4" size="12">
-								<img class="img-responsive border-radius" src="{{asset('images/landing-1.png')}}" alt="Image d'une étudiante sur son ordinateur">
-							</ion-col>
-							<ion-col size-sm="4" size="12">
-								<img class="img-responsive border-radius ion-padding-top" src="{{asset('images/landing-2.png')}}" alt="Image d'un étudiant lisant la Bible">
-							</ion-col>
-							<ion-col size-sm="4" size="12">
-								<img class="img-responsive border-radius" src="{{asset('images/landing-3.png')}}" alt="Image d'un étudiant diplomée">
-							</ion-col>
-						</ion-row>
-					</ion-grid>
-				</ion-col>
-				<ion-col></ion-col>
-			</ion-row>
-		</ion-grid>
-	</div>
+    <div class="container mx-auto p-4 text-center">
+        <h1 class="text-4xl font-bold mb-4">
+            {{'The school for builders of the kingdom of God' | trans}}
+        </h1>
+        <h2 class="text-2xl mb-6">
+            {{'Equip yourself for the destiny God has for you' | trans}}
+        </h2>
+        
+        <div class="flex justify-center mb-8">
+            <twig:Button as="a" href="{{ path('register') }}" variant="default" size="lg">
+                {{'Enroll Now' | trans}}
+            </twig:Button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <twig:Card>
+                <twig:Card:Content class="p-0">
+                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-1.png') }}" alt="Image d'une étudiante sur son ordinateur">
+                </twig:Card:Content>
+            </twig:Card>
+
+            <twig:Card class="md:mt-12">
+                <twig:Card:Content class="p-0">
+                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-2.png') }}" alt="Image d'un étudiant lisant la Bible">
+                </twig:Card:Content>
+            </twig:Card>
+
+            <twig:Card>
+                <twig:Card:Content class="p-0">
+                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-3.png') }}" alt="Image d'un étudiant diplomée">
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+    </div>
 {% endblock %}

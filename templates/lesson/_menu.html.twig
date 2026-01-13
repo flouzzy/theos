@@ -1,19 +1,26 @@
-<ion-list>
-	<ion-list-header>
-		{{module.title}}
-	</ion-list-header>
-	<ion-item href="{{path('course_show', {slug:course.slug})}}">
-		<ion-icon slot="start" name="arrow-back-outline" color="app"></ion-icon>
-		<ion-label>
-			{{'Back to course' | trans}}
-		</ion-label>
-	</ion-item>
-
-	{% for lesson in module.lessons|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
-		<ion-item href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" {% if currentLesson == lesson %} color="{{colorActive}}" {% endif %}>
-			{% set completedIcon = lesson.id in completedLessonIds ? 'checkmark-circle': 'ellipse' %}
-			<ion-icon slot="start" name="{{completedIcon}}-outline" color="app"></ion-icon>
-			<ion-label>{{lesson.title}}</ion-label>
-		</ion-item>
-	{% endfor %}
-</ion-list>
+<div class="p-4 space-y-4">
+	<div class="px-3 py-2">
+		<h2 class="mb-2 px-4 text-lg font-semibold tracking-tight">
+			{{module.title}}
+		</h2>
+		<div class="space-y-1">
+			<a href="{{path('course_show', {slug:course.slug})}}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:text-primary hover:bg-muted">
+				<twig:ux:icon name="lucide:arrow-left" class="h-4 w-4" />
+				{{'Back to course' | trans}}
+			</a>
+		</div>
+	</div>
+	<div class="py-2">
+		<div class="space-y-1">
+			{% for lesson in module.lessons|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
+				{% set isActive = currentLesson == lesson %}
+				<a href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" 
+				   class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all {{ isActive ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:text-primary hover:bg-muted' }}">
+					{% set completedIcon = lesson.id in completedLessonIds ? 'lucide:check-circle': 'lucide:circle' %}
+					<twig:ux:icon name="{{completedIcon}}" class="h-4 w-4" />
+					{{lesson.title}}
+				</a>
+			{% endfor %}
+		</div>
+	</div>
+</div>

@@ -27,11 +27,11 @@ class ModuleFixtures extends Fixture implements DependentFixtureInterface
             /**
              * @var \App\Entity\User $author
              */
-            $author = $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 9));
+            $author = $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 9), \App\Entity\User::class);
             $module->setAuthor($author);
 
             // Link to random course
-            $module->addCourse($this->getReference(CourseFixtures::COURSE_REFERENCE . random_int(0, 19)));
+            $module->addCourse($this->getReference(CourseFixtures::COURSE_REFERENCE . random_int(0, 19), \App\Entity\Course::class));
 
             $this->manager->persist($module);
 
@@ -41,7 +41,7 @@ class ModuleFixtures extends Fixture implements DependentFixtureInterface
         $this->manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             CourseFixtures::class,

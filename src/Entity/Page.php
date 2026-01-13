@@ -31,6 +31,9 @@ class Page
     #[ORM\PrePersist]
     public function computeSlug(): void
     {
+        if ($this->slug) {
+            return;
+        }
         // Slug
         $slugger = new AsciiSlugger();
         $this->slug = $slugger->slug(substr($this->title, 0, 20))->lower();

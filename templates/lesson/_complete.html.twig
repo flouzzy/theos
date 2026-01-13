@@ -1,18 +1,21 @@
 {# {% if isSubscribed %} #}
 {% set completed = currentLesson.id in completedLessonIds %}
 {% if currentLesson.status == 'published' %}
-	<ion-button href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id, completed:completed ? 1 : 0})}}" color="light" {% if completed %} fill="solid{% endif %}">
-
-		<ion-icon slot="start" name="{% if completed %}checkmark-circle{% else %}ellipse{% endif %}-outline"></ion-icon>
-		<ion-text class="ion-hide-md-down">
-			{% if completed %}
-				{{'Mark the lesson as unread' | trans}}
-			{% else %}
-				{{'Complete and continue' | trans}}
-			{% endif %}
-
-		</ion-text>
-	</ion-button>
+	{% if completed %}
+		<twig:Button asChild variant="default" class="bg-green-600 hover:bg-green-700">
+			<a href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id, completed:0})}}">
+				<twig:ux:icon name="lucide:check-circle" class="mr-2 h-4 w-4" />
+				<span class="hidden md:inline">{{'Mark the lesson as unread' | trans}}</span>
+			</a>
+		</twig:Button>
+	{% else %}
+		<twig:Button asChild variant="outline">
+			<a href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id, completed:1})}}">
+				<twig:ux:icon name="lucide:circle" class="mr-2 h-4 w-4" />
+				<span class="hidden md:inline">{{'Complete and continue' | trans}}</span>
+			</a>
+		</twig:Button>
+	{% endif %}
 {% endif %}
 {# {% else %}
 	<ion-button href="{{path('course_subscribe', {slug:course.slug})}}" color="light" fill="solid">

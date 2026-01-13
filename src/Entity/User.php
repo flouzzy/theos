@@ -153,10 +153,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PrePersist]
     public function setUserDetails(): void
     {
-        $details = explode(' ', $this->fullname);
-        $this->lastname = $this->lastname ?? ($details[0] ?? '');
-        $this->firstname = $this->firstname ?? ($details[1] ?? '');
-        $this->fullname = $this->fullname ?? $this->lastname . ' ' . $this->firstname;
+        if ($this->fullname) {
+            $details = explode(' ', $this->fullname);
+            $this->lastname = $this->lastname ?? ($details[0] ?? '');
+            $this->firstname = $this->firstname ?? ($details[1] ?? '');
+        } else {
+            $this->fullname = trim($this->lastname . ' ' . $this->firstname);
+        }
 
         // Slug
         $slugger = new AsciiSlugger();

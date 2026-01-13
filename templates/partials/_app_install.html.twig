@@ -1,25 +1,23 @@
-<ion-modal id="modalAppInstall">
-	<ion-header>
-		<ion-toolbar>
-			<ion-title>Le Rocher Academie</ion-title>
-			<ion-buttons slot="end">
-				<ion-button data-action="click->app#toggleA2HSModal">{{'Close' | trans}}</ion-button>
-			</ion-buttons>
-		</ion-toolbar>
-	</ion-header>
-	<ion-content class="ion-padding ion-text-center mx-auto">
-		<h2>
-			{{"Build your spiritual life on the rock" | trans}}
-		</h2>
-		<img src="{{ asset('images/landing.jpg') }}" alt='Cover Le Rocher Academie' class="img-responsive">
-		<p class="my-4">
-			{{"Theology and leadership courses to help you fulfill your calling" | trans}}
-		</p>
-	</ion-content>
-	<ion-footer>
-		<ion-button expand="full" color="danger" id="installApp">
-			<i class="bi bi-box-seam fs-4"></i>
-			<span class="p-3">{{'Install the application' | trans}}</span>
-		</ion-button>
-	</ion-footer>
-</ion-modal>
+<div id="modalAppInstall" class="hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" data-controller="app">
+	<div class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg">
+		<div class="flex flex-col space-y-1.5 text-center sm:text-left">
+			<h2 class="text-lg font-semibold leading-none tracking-tight">Le Rocher Academie</h2>
+		</div>
+		<div class="py-4 text-center">
+			<h2 class="text-xl font-bold mb-4">
+				{{"Build your spiritual life on the rock" | trans}}
+			</h2>
+			<img src="{{ asset('images/landing.jpg') }}" alt='Cover Le Rocher Academie' class="rounded-lg object-cover w-full h-48 mb-4">
+			<p class="text-muted-foreground">
+				{{"Theology and leadership courses to help you fulfill your calling" | trans}}
+			</p>
+		</div>
+		<div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
+			<twig:Button variant="outline" data-action="click->app#toggleA2HSModal">{{'Close' | trans}}</twig:Button>
+			<twig:Button variant="destructive" id="installApp">
+				<twig:ux:icon name="lucide:download" class="mr-2 h-4 w-4" />
+				{{'Install the application' | trans}}
+			</twig:Button>
+		</div>
+	</div>
+</div>

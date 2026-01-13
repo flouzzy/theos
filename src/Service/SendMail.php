@@ -36,14 +36,18 @@ class SendMail
         try {
             // $this->mailer->send($email);
             $toList = [];
-            if (is_array($to)) {
-                $toList = ['email' => $to];
+            if (is_string($to)) {
+                $toList[] = ['email' => $to];
             } else {
-                foreach ($to as $email) {
-                    $toList[] = ['email' => $email];
+                foreach ($to as $recipient) {
+                    if ($recipient instanceof Address) {
+                        $toList[] = ['email' => $recipient->getAddress(), 'name' => $recipient->getName()];
+                    } else {
+                        $toList[] = ['email' => $recipient];
+                    }
                 }
             }
-            $this->brevoApi->sendEmail();
+            $this->brevoApi->sendEmail($toList, $context);
         } catch (TransportExceptionInterface $e) {
             // some error prevented the email sending; display an
             // error message or try to resend the message

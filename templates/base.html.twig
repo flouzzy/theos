@@ -42,25 +42,19 @@
 		</title>
 
 		{% block stylesheets %}
-			<link href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" rel="stylesheet">
+			<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
 		{% endblock %}
 
 		{% block javascripts %}
-			<script defer src="https://cdn.jsdelivr.net/npm/tinymce@6.8.2/tinymce.min.js"></script>
-			<link href="https://cdn.jsdelivr.net/npm/tinymce@6.8.2/skins/ui/oxide/content.min.css" rel="stylesheet">
-			{% block importmap %}
-				{{ importmap('app') }}
-			{% endblock %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
 		{% endblock %}
 	</head>
 	<body data-controller="app">
-		{% set currentroute = app.request.get('_route') %}
+		{% set currentroute = app.request.attributes.get('_route') %}
 		{% set colorActive = 'light' %}
 		{% include "partials/_app_install.html.twig" %}
-		<turbo-frame id="frame_app">
-			{% block body %}
-				{% include "partials/_skeleton.html.twig" %}
-			{% endblock %}
-		</turbo-frame>
+		{% block body %}
+			{% include "partials/_skeleton.html.twig" %}
+		{% endblock %}
 	</body>
 </html>

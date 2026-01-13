@@ -1,8 +1,8 @@
 <ion-button href="{{path('notification_index')}}" fill="clear">
-	<ion-icon name="notifications{% if notifications | length == 0 %}-outline{% endif %}"></ion-icon>
-	{% if notifications | length > 0 %}
+	<ion-icon name="notifications{% if notifications|default([]) | length == 0 %}-outline{% endif %}"></ion-icon>
+	{% if notifications|default([]) | length > 0 %}
 		<ion-badge slot="end" color="danger">
-			{{notifications | length}}
+			{{notifications|default([]) | length}}
 		</ion-badge>
 	{% endif %}
 </ion-button>

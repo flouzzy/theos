@@ -17,12 +17,12 @@
 	{% endfor %}
 
 	<ion-item button href="{{path('notification_index')}}">
-		<ion-icon slot="start" name="notifications{% if notifications | length == 0 %}-outline{% endif %}" color="app"></ion-icon>
+		<ion-icon slot="start" name="notifications{% if notifications|default([]) | length == 0 %}-outline{% endif %}" color="app"></ion-icon>
 		<ion-label>
 			{{'Notifications' | trans}}
-			{% if notifications | length > 0 %}
+			{% if notifications|default([]) | length > 0 %}
 				<ion-text color="danger">
-					({{notifications | length}})
+					({{notifications|default([]) | length}})
 				</ion-text>
 			{% endif %}
 		</ion-label>

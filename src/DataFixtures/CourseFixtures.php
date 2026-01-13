@@ -20,7 +20,7 @@ class CourseFixtures extends Fixture
         // Admin courses
         for ($index = 0; $index < 10; $index++) {
             # Create 5 courses
-            $newCourse = $this->create($index, $this->getReference(AppFixtures::ADMIN_USER_REFERENCE));
+            $newCourse = $this->create($index, $this->getReference(AppFixtures::ADMIN_USER_REFERENCE, \App\Entity\User::class));
             $this->manager->persist($newCourse);
 
             $this->addReference(CourseFixtures::COURSE_REFERENCE . $index, $newCourse);
@@ -29,7 +29,7 @@ class CourseFixtures extends Fixture
         // Simple users course
         for ($index = 10; $index < 20; $index++) {
             # Create 5 courses
-            $newCourse = $this->create($index, $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 4)));
+            $newCourse = $this->create($index, $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 4), \App\Entity\User::class));
             $this->manager->persist($newCourse);
 
             $this->addReference(CourseFixtures::COURSE_REFERENCE . $index, $newCourse);

@@ -23,48 +23,47 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
-            ->add('fullname', null, [
-                'label' => $this->translator->trans('Lastname and firstname'),
+            ->add('lastname', null, [
+                'label' => $this->translator->trans('Lastname'),
+                'attr' => ['placeholder' => 'Doe']
+            ])
+            ->add('firstname', null, [
+                'label' => $this->translator->trans('Firstname'),
+                'attr' => ['placeholder' => 'John']
+            ])
+            ->add('email', null, [
+                'label' => $this->translator->trans('Email'),
+                'attr' => ['placeholder' => 'john.doe@example.com']
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
+                'label' => $this->translator->trans('Password'),
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Your password should be at least 6 characters',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
+                    new NotBlank(message: 'Please enter a password'),
+                    new Length(
+                        min: 6,
+                        minMessage: 'Your password should be at least 6 characters',
+                        max: 4096,
+                    ),
                 ],
-            ])->add('agreeTerms', CheckboxType::class, [
+            ])
+            ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
+                'label' => $this->translator->trans('Agree terms'),
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms',
-                    ]),
+                    new IsTrue(message: 'You should agree to our terms'),
                 ],
             ]);
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
-            /**
-             * @var \App\Entity\User $user
-             */
+            /** @var User $user */
             $user = $event->getData();
-
-
-            // Add firstname and lastname if necesary
-            $fullnameArray = explode(' ', $user->getFullname());
-            $user->setFirstname($user->getFirstname() ?? $fullnameArray[0] ?? '');
-            $user->setLastname($user->getLastname() ?? $fullnameArray[1] ?? '');
-
-            // Update user datas
+            if ($user->getFirstname() && $user->getLastname()) {
+                $user->setFullname(trim($user->getLastname() . ' ' . $user->getFirstname()));
+            }
             $event->setData($user);
         });
     }

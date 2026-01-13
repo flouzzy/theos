@@ -5,24 +5,5 @@
 {% endblock %}
 
 {% block content %}
-	<h1 class="ion-text-center">{{'Dashboard' | trans}}</h1>
-
-	{# Admin dashboard #}
-	<ion-grid>
-		<ion-row>
-			<ion-col>
-				{% include "admin/dashboard/_user_info.html.twig" %}
-			</ion-col>
-			<ion-col>
-				{% include "admin/dashboard/_course_info.html.twig" %}
-			</ion-col>
-			<ion-col>
-				{% include "admin/dashboard/_module_info.html.twig" %}
-			</ion-col>
-			<ion-col>
-				{% include "admin/dashboard/_lesson_info.html.twig" %}
-			</ion-col>
-		</ion-row>
-	</ion-grid>
-
+    <twig:AdminDashboard lazy="true" />
 {% endblock %}
