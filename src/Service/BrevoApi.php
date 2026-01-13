@@ -44,6 +44,13 @@ class BrevoApi
 
     public function addOrUpdateContact(User $user)
     {
+        // Skip Brevo operations in dev/test environments to avoid polluting data
+        $env = $this->parameterBag->get('kernel.environment');
+        if (in_array($env, ['dev', 'test'])) {
+            $this->logger->info('Skipping Brevo contact addition in ' . $env . ' environment');
+            return;
+        }
+
         $createContact = new BrevoClient\Model\CreateContact();
         $createContact->setEmail($user->getEmail());
         $createContact->setExtId((string)$user->getId());
