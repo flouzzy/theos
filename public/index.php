@@ -3,13 +3,12 @@
 use App\Kernel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+
+error_log("DEBUG: public/index.php starting");
 require_once dirname(__DIR__) . '/vendor/autoload_runtime.php';
 
 
-// Custom events listener
-$dispatcher = new EventDispatcher();
-$lessonSubcriber = new \App\EventSubscriber\LessonSubscriber();
-$dispatcher->addSubscriber($lessonSubcriber);
+
 
 
 return function (array $context) {
