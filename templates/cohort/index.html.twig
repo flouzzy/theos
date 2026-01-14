@@ -7,6 +7,26 @@
 {% block content %}
 <div class="space-y-8">
     
+    {# Stats Section #}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-card border border-border rounded-xl p-4 flex flex-col items-center justify-center text-center hover:bg-muted/20 transition-colors">
+            <span class="text-3xl font-bold text-primary">{{ stats.ongoing }}</span>
+            <span class="text-sm text-muted-foreground">{{ 'Cours en cours' | trans }}</span>
+        </div>
+        <div class="bg-card border border-border rounded-xl p-4 flex flex-col items-center justify-center text-center hover:bg-muted/20 transition-colors">
+            <span class="text-3xl font-bold text-primary">{{ stats.progress }}%</span>
+            <span class="text-sm text-muted-foreground">{{ 'Progression globale' | trans }}</span>
+        </div>
+        <div class="bg-card border border-border rounded-xl p-4 flex flex-col items-center justify-center text-center hover:bg-muted/20 transition-colors">
+            <span class="text-3xl font-bold text-primary">{{ stats.hours }}h</span>
+            <span class="text-sm text-muted-foreground">{{ 'Heures de cours' | trans }}</span>
+        </div>
+        <div class="bg-card border border-border rounded-xl p-4 flex flex-col items-center justify-center text-center hover:bg-muted/20 transition-colors">
+            <span class="text-3xl font-bold text-primary">{{ stats.completed }}</span>
+            <span class="text-sm text-muted-foreground">{{ 'Cours terminés' | trans }}</span>
+        </div>
+    </div>
+
     {# Top Section: Courses & Events #}
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
         
@@ -19,7 +39,9 @@
 
             <div class="space-y-4">
             <div class="space-y-4">
-                {% for course in myCourses %}
+                {% for item in myCourses %}
+                    {% set course = item.course %}
+                    {% set progress = item.progress %}
                         {# Course Card #}
                         <div class="bg-card rounded-xl border border-border p-4 flex gap-4 transition-all hover:shadow-md card-hover group">
                             {# Course Image/Thumbnail #}
@@ -49,7 +71,7 @@
                                         </div>
                                         {# Progress placeholder #}
                                         <span class="text-xs font-semibold text-primary bg-primary/5 px-2 py-1 rounded">
-                                            0%
+                                            {{ progress }}%
                                         </span>
                                     </div>
                                 </div>
@@ -60,7 +82,7 @@
                                         <span class="text-muted-foreground">{{ 'Progression' }}</span>
                                     </div>
                                     <div class="h-1.5 w-full bg-secondary/30 rounded-full overflow-hidden">
-                                        <div class="h-full bg-primary rounded-full" style="width: 0%"></div>
+                                        <div class="h-full bg-primary rounded-full" style="width: {{ progress }}%"></div>
                                     </div>
                                 </div>
                             </div>
@@ -94,41 +116,22 @@
             </h2>
 
             <div class="bg-card rounded-xl border border-border p-4 space-y-4">
-                {# Event Item 1 #}
-                <div class="flex gap-3 items-start">
-                    <div class="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-lg flex flex-col items-center justify-center leading-none">
-                        <span class="text-xs font-medium">15</span>
-                        <span class="text-[10px] uppercase font-bold">Jan</span>
+                {% for event in events %}
+                    {# Event Item #}
+                    <div class="flex gap-3 items-start">
+                        <div class="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-lg flex flex-col items-center justify-center leading-none">
+                            <span class="text-xs font-medium">{{ event.startAt|date('d') }}</span>
+                            <span class="text-[10px] uppercase font-bold">{{ event.startAt|date('M') }}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-sm">{{ event.title }}</h4>
+                            <p class="text-xs text-muted-foreground mt-0.5">{{ event.startAt|date('H:i') }} • {{ event.location }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-semibold text-sm">Webinar: Best practices React</h4>
-                        <p class="text-xs text-muted-foreground mt-0.5">14:00 • En ligne</p>
-                    </div>
-                </div>
-                <hr class="border-border">
-                {# Event Item 2 #}
-                <div class="flex gap-3 items-start">
-                    <div class="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-lg flex flex-col items-center justify-center leading-none">
-                        <span class="text-xs font-medium">18</span>
-                        <span class="text-[10px] uppercase font-bold">Jan</span>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-sm">Session Q&A TypeScript</h4>
-                        <p class="text-xs text-muted-foreground mt-0.5">16:00 • Salle de conf.</p>
-                    </div>
-                </div>
-                <hr class="border-border">
-                {# Event Item 3 #}
-                <div class="flex gap-3 items-start">
-                    <div class="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-lg flex flex-col items-center justify-center leading-none">
-                        <span class="text-xs font-medium">22</span>
-                        <span class="text-[10px] uppercase font-bold">Jan</span>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-sm">Début du module Node.js</h4>
-                        <p class="text-xs text-muted-foreground mt-0.5">10:00 • Campus</p>
-                    </div>
-                </div>
+                    {% if not loop.last %}<hr class="border-border">{% endif %}
+                {% else %}
+                    <p class="text-sm text-muted-foreground text-center py-4">{{ 'Aucun événement à venir.' | trans }}</p>
+                {% endfor %}
             </div>
         </div>
     </div>

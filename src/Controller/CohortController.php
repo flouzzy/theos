@@ -11,10 +11,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class CohortController extends AbstractController
 {
     #[Route('/', name: 'index', priority: 3)]
-    public function index(): Response
+    public function index(\App\Repository\EventRepository $eventRepository): Response
     {
-        // Récupère l'utilisateur actuellement authentifié
-        /** @var User $user */
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
         
         // Redirect to login if not authenticated
@@ -22,14 +21,69 @@ class CohortController extends AbstractController
             return $this->redirectToRoute('login');
         }
         
-        // Récupère toutes ses cohortes
-        $cohorts = $user->getCohorts();
-        // Récupère les cours auxquels l'utilisateur est inscrit
-        $myCourses = $user->getCourses();
+        // Récupère la première cohorte du user (ou null)
+        $cohort = $user->getCohorts()->first() ?: null;
+        
+        // Récupère les cours et calcule la progression
+        $myCoursesEntities = $user->getCourses();
+        $myCoursesData = [];
+        
+        $totalMinutes = 0;
+        $totalLessons = 0;
+        $totalCompletedLessons = 0;
+        
+        // Optimisation: récupérer tous les IDs des leçons complétées par le user
+        $completedLessonIds = [];
+        foreach ($user->getCompletions() as $completion) {
+            if ($completion->getLesson()) {
+                $completedLessonIds[] = $completion->getLesson()->getId();
+            }
+        }
+
+        foreach ($myCoursesEntities as $course) {
+            $courseLessonsCount = 0;
+            $courseCompletedCount = 0;
+            
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    $totalMinutes += $lesson->getDuration() ?? 0;
+                    $courseLessonsCount++;
+                    $totalLessons++;
+                    
+                    if (in_array($lesson->getId(), $completedLessonIds)) {
+                        $courseCompletedCount++;
+                        $totalCompletedLessons++;
+                    }
+                }
+            }
+            
+            $progress = $courseLessonsCount > 0 ? round(($courseCompletedCount / $courseLessonsCount) * 100) : 0;
+            
+            $myCoursesData[] = [
+                'course' => $course,
+                'progress' => $progress,
+            ];
+        }
+
+        // Stats Globales
+        $globalProgress = $totalLessons > 0 ? round(($totalCompletedLessons / $totalLessons) * 100) : 0;
+        $completedCoursesCount = $user->getCourseCompletions()->filter(fn($cc) => $cc->isCompleted())->count();
+        $ongoingCoursesCount = count($myCoursesEntities) - $completedCoursesCount;
+        $totalHours = floor($totalMinutes / 60);
+
+        // Events
+        $events = $eventRepository->findUpdatedEvents($cohort);
 
         return $this->render('cohort/index.html.twig', [
-            'cohorts' => $cohorts,
-            'myCourses' => $myCourses,
+            'cohort' => $cohort,
+            'myCourses' => $myCoursesData, 
+            'events' => $events,
+            'stats' => [
+                'ongoing' => $ongoingCoursesCount,
+                'completed' => $completedCoursesCount,
+                'hours' => $totalHours,
+                'progress' => $globalProgress,
+            ]
         ]);
     }
 
