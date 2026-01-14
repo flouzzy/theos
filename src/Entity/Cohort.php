@@ -48,12 +48,16 @@ class Cohort
     #[ORM\OneToOne(mappedBy: 'cohort', cascade: ['persist', 'remove'])]
     private ?Calendar $calendar = null;
 
+    #[ORM\OneToMany(mappedBy: 'cohort', targetEntity: Event::class)]
+    private Collection $events;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
 
         $this->year = (new \DateTime('now'))->format('Y');
         $this->users = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -204,6 +208,36 @@ class Cohort
         }
 
         $this->calendar = $calendar;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): static
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->setCohort($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            // set the owning side to null (unless already changed)
+            if ($event->getCohort() === $this) {
+                $event->setCohort(null);
+            }
+        }
 
         return $this;
     }
