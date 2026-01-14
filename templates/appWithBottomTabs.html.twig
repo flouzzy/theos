@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="min-h-screen bg-background pb-16 md:pb-0" x-data="{ mobileMenuOpen: false, moreMenuOpen: false }">
+    
+    {# Desktop Sidebar - Same as app.html.twig #}
+    <aside class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col bg-white border-r border-border">
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6">
+            {# Logo #}
+            <div class="flex h-16 shrink-0 items-center gap-2">
+                <div class="h-10 w-10 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg">
+                    📚
+                </div>
+                <div>
+                    <span class="text-base font-semibold">Le Rocher</span><br>
+                    <span class="text-sm text-muted-foreground">Académie</span>
+                </div>
+            </div>
+            
+            {# Navigation #}
+            <nav class="flex flex-1 flex-col gap-1">
+                {% include 'partials/_menu.html.twig' %}
+            </nav>
+            
+            {# User Profile Footer #}
+            <div class="mt-auto pb-4">
+                {% if app.user %}
+                    <div class="flex items-center gap-3 px-3 py-2 border-t border-border pt-4">
+                        <div class="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">
+                            {{ app.user.firstname|first }}{{ app.user.lastname|first }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold truncate">{{ app.user.firstname }} {{ app.user.lastname }}</p>
+                            <p class="text-xs text-muted-foreground truncate">Promo 2024</p>
+                        </div>
+                    </div>
+                    <a href="{{ path('_logout_main') }}" class="mt-2 flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l-4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span>{{ 'Déconnexion' | trans }}</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
+
+    {# Mobile Menu Overlay #}
+    <div x-show="mobileMenuOpen" 
+         x-transition:enter="transition-opacity ease-linear duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-linear duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="mobileMenuOpen = false"
+         class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+         style="display: none;">
+    </div>
+
+    {# Mobile Slide-out Menu #}
+    <aside x-show="mobileMenuOpen"
+           x-transition:enter="transition ease-in-out duration-300 transform"
+           x-transition:enter-start="-translate-x-full"
+           x-transition:enter-end="translate-x-0"
+           x-transition:leave="transition ease-in-out duration-300 transform"
+           x-transition:leave-start="translate-x-0"
+           x-transition:leave-end="-translate-x-full"
+           @click.away="mobileMenuOpen = false"
+           class="fixed inset-y-0 left-0 z-50 w-80 bg-white shadow-xl lg:hidden overflow-y-auto"
+           style="display: none;">
+        
+        <div class="flex flex-col h-full">
+            {# Header with Close Button #}
+            <div class="flex items-center justify-between p-4 border-b border-border">
+                <div class="flex items-center gap-2">
+                    <div class="h-10 w-10 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg">
+                        📚
+                    </div>
+                    <div>
+                        <span class="text-base font-semibold">Le Rocher</span><br>
+                        <span class="text-sm text-muted-foreground">Académie</span>
+                    </div>
+                </div>
+                <button @click="mobileMenuOpen = false" class="p-2 hover:bg-muted rounded-lg">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            {# Navigation Items #}
+            <nav class="flex-1 px-4 py-6 space-y-1">
+                {% include 'partials/_menu.html.twig' %}
+            </nav>
+            
+            {# User Profile Footer #}
+            {% if app.user %}
+                <div class="border-t border-border p-4">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-lg">
+                            {{ app.user.firstname|first }}{{ app.user.lastname|first }}
+                        </div>
+                        <div>
+                            <p class="font-semibold">{{ app.user.firstname }} {{ app.user.lastname }}</p>
+                            <p class="text-sm text-muted-foreground">Promo 2024</p>
+                        </div>
+                    </div>
+                    <a href="{{ path('_logout_main') }}" class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l-4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span>{{ 'Déconnexion' | trans }}</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </aside>
+
+    {# Main Content Area #}
+    <div class="lg:pl-64">
+        {# Top Bar (Mobile Title Only - No Menu Button) #}
+        <div class="lg:hidden sticky top-0 z-30 flex h-14 items-center gap-x-4 border-b border-border bg-white px-4 shadow-sm">
+            <span class="text-base font-semibold flex-1">{{ block('page_title') }}</span>
+        </div>
+
+        {# Page Content #}
+        <main class="py-6 px-4 lg:px-8">
+            {% include "partials/_flash.html.twig" %}
+            {% include "partials/_warning.html.twig" %}
+            
+            <turbo-frame id="frame_app" data-turbo-action="advance">
+                {% block content %}{% endblock %}
+            </turbo-frame>
+        </main>
+    </div>
+
+    {# Mobile Bottom Navigation (Fixed) - Only visible on mobile #}
+    <nav class="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-border lg:hidden">
+        <div class="flex justify-around items-center h-16">
+            {# Tab 1: Dashboard #}
+            <a href="{{ path('cohort_index') }}" class="tab-item {{ app.request.attributes.get('_route') == 'cohort_index' ? 'active' : '' }} flex-1 flex flex-col items-center justify-center gap-1">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="text-xs">{{ 'Dashboard' | trans }}</span>
+            </a>
+            
+            {# Tab 2: Cours #}
+            <a href="{{ path('course_index') }}" class="tab-item {{ app.request.attributes.get('_route') starts with 'course' ? 'active' : '' }} flex-1 flex flex-col items-center justify-center gap-1">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span class="text-xs">{{ 'Cours' | trans }}</span>
+            </a>
+            
+            {# Tab 3: Notes #}
+            <a href="#" class="tab-item flex-1 flex flex-col items-center justify-center gap-1">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span class="text-xs">{{ 'Notes' | trans }}</span>
+            </a>
+            
+            {# Tab 4: Notifications #}
+            <a href="#" class="tab-item flex-1 flex flex-col items-center justify-center gap-1 relative">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span class="badge badge-notification absolute top-1 right-1/4">1</span>
+                <span class="text-xs">{{ 'Notifs' | trans }}</span>
+            </a>
+            
+            {# Tab 5: Plus (Opens drawer menu) #}
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="tab-item flex-1 flex flex-col items-center justify-center gap-1">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <span class="text-xs">{{ 'Plus' | trans }}</span>
+            </button>
+        </div>
+    </nav>
+</div>
+
+{% block page_title %}{{ 'Le Rocher Académie' | trans }}{% endblock %}
+{% endblock %}
