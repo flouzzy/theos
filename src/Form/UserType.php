@@ -45,16 +45,15 @@ class UserType extends AbstractType
                 // unmapped fields can't define their validation using annotations
                 // in the associated entity, so you can use the PHP constraint classes
                 'constraints' => [
-                    new File([
-                        // 'maxSize' => '1024k',
-                        'mimeTypes' => [
+                    new File(
+                        mimeTypes: [
                             'image/webp',
                             'image/jpeg',
                             'image/png',
                             'image/gif'
                         ],
-                        'mimeTypesMessage' => 'Merci de charger une image valide',
-                    ])
+                        mimeTypesMessage: 'Merci de charger une image valide'
+                    )
                 ],
             ]);
     }
