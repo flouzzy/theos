@@ -13,27 +13,25 @@ class RegistrationFunctionalTest extends WebTestCase
         $crawler = $client->request('GET', '/register');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Nouveau compte');
+        $this->assertSelectorTextContains('h1', 'Inscription');
 
-        // Generate unique email
-        $email = 'test_' . uniqid() . '@example.com';
-        
-        $form = $crawler->filter('button[type="submit"]')->form();
-        $form['registration_form[firstname]'] = 'John';
-        $form['registration_form[lastname]'] = 'Doe';
-        $form['registration_form[email]'] = $email;
-        $form['registration_form[plainPassword]'] = 'password123';
-        $form['registration_form[agreeTerms]'] = true;
+        // Find the form and fill it
+        $form = $crawler->selectButton('Créer mon compte')->form([
+            'registration_form[firstname]' => 'John',
+            'registration_form[lastname]' => 'Doe',
+            'registration_form[email]' => 'john.doe@test.com',
+            'registration_form[plainPassword]' => 'password123',
+            'registration_form[agreeTerms]' => true,
+        ]);
 
         $client->submit($form);
 
-        // Should redirect after successful registration (usually to home or login or email verification)
-        // Assuming redirection to home or login with flash message
+        // After successful registration we should be redirected
         $this->assertResponseRedirects();
         
         // Verify user creation in DB
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $user = $userRepository->findOneBy(['email' => $email]);
+        $user = $userRepository->findOneBy(['email' => 'john.doe@test.com']); // Use the hardcoded email for verification
 
         $this->assertNotNull($user);
         $this->assertSame('John', $user->getFirstname());
