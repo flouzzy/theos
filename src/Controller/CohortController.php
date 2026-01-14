@@ -24,9 +24,12 @@ class CohortController extends AbstractController
         
         // Récupère toutes ses cohortes
         $cohorts = $user->getCohorts();
+        // Récupère les cours auxquels l'utilisateur est inscrit
+        $myCourses = $user->getCourses();
 
         return $this->render('cohort/index.html.twig', [
             'cohorts' => $cohorts,
+            'myCourses' => $myCourses,
         ]);
     }
 
