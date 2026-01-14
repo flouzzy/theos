@@ -1,6 +1,8 @@
-<ion-item {% if loop is defined and loop.last %} lines="none" {% endif %}>
-	<ion-text class="ion-padding-vertical">
-		<ion-note>{{note.createdAt | date('Y-m-d H:i:s') | ago }}</ion-note>
-		{{note.content}}
-	</ion-text>
-</ion-item>
+<div class="bg-muted/50 rounded-lg p-3 text-sm border border-border/50">
+    <div class="flex justify-between items-center mb-1 text-xs text-muted-foreground">
+        <span>{{ note.createdAt | date('d/m/Y H:i') }}</span>
+    </div>
+    <div class="text-foreground/90 whitespace-pre-wrap">
+        {{ note.content }}
+    </div>
+</div>
