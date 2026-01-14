@@ -1,10 +1,110 @@
 {% extends 'app.html.twig' %}
 
-{% block title %}
-	{{'Courses' | trans}}
-{% endblock %}
+{% block title %}{{ 'Catalogue' | trans }}{% endblock %}
+
+{% block page_title %}{{ 'Catalogue de cours' | trans }}{% endblock %}
 
 {% block content %}
-	<h1 class="ion-text-center">{{'All courses' | trans}}</h1>
-	{% include "course/_list.html.twig" %}
+<div class="space-y-8">
+    
+    {# Header Section #}
+    <div>
+        <h1 class="text-3xl font-bold mb-2">{{ 'Catalogue de cours' | trans }}</h1>
+        <p class="text-muted-foreground">{{ 'Explorez tous les cours disponibles' | trans }}</p>
+    </div>
+
+    {# Search and Filter Bar #}
+    <div class="flex flex-col md:flex-row gap-4">
+        <div class="relative flex-1">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <input type="text" 
+                   class="block w-full pl-10 pr-3 py-2.5 bg-card border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/70" 
+                   placeholder="{{ 'Rechercher un cours...' | trans }}">
+        </div>
+        <button class="flex items-center gap-2 px-4 py-2.5 bg-card border border-border rounded-lg hover:bg-muted transition-colors text-sm font-medium">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            {{ 'Toutes les promos' | trans }}
+        </button>
+    </div>
+
+    {# Course Grid #}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for course in courses %}
+            <div class="bg-card border border-border rounded-xl overflow-hidden flex flex-col hover:shadow-lg transition-all duration-300 group">
+                {# Card Image #}
+                <div class="relative h-48 bg-muted">
+                    {% if course.media %}
+                        <img src="{{ course.media.url }}" alt="{{ course.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    {% else %}
+                        {# Fallback Gradient Header #}
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-900 to-primary text-white">
+                             <span class="text-4xl font-bold opacity-20">HTML</span>
+                        </div>
+                    {% endif %}
+
+                    {# Inscrit Badge (Mocked logic for now, relies on isUserSubscribed check ideally) #}
+                    {% if app.user and course.isUserSubscribed(app.user) %}
+                        <span class="absolute top-3 right-3 bg-success text-success-foreground text-xs font-bold px-2 py-1 rounded-full shadow-sm">
+                            {{ 'Inscrit' | trans }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                {# Card Content #}
+                <div class="p-5 flex-1 flex flex-col">
+                    <div class="mb-3">
+                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
+                            {{ 'Promo 2024' }} {# Placeholder dynamic tag #}
+                        </span>
+                    </div>
+
+                    <h3 class="font-bold text-lg mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+                        <a href="{{ path('course_show', {slug: course.slug}) }}">
+                            {{ course.title }}
+                        </a>
+                    </h3>
+
+                    <p class="text-muted-foreground text-sm mb-4 line-clamp-2">
+                        {{ course.description }}
+                    </p>
+
+                    <div class="mt-auto pt-4 flex items-center justify-between text-xs text-muted-foreground border-t border-border">
+                        <div class="flex items-center gap-1">
+                           <span>{{ course.lessons|length }} {{ 'modules' | trans }}</span>
+                        </div>
+                         <div class="flex items-center gap-1">
+                           <span>6h</span> {# Placeholder Duration #}
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ path('course_show', {slug: course.slug}) }}" class="flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all">
+                            {% if app.user and course.isUserSubscribed(app.user) %}
+                                {{ 'Continuer' | trans }}
+                            {% else %}
+                                {{ 'Voir le cours' | trans }}
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-span-full py-12 text-center">
+                <div class="mx-auto h-24 w-24 rounded-full bg-muted flex items-center justify-center mb-4 text-muted-foreground">
+                    <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">{{ 'Aucun cours trouvé' | trans }}</h3>
+                <p class="text-muted-foreground">{{ 'Revenez plus tard pour de nouveaux contenus.' | trans }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
