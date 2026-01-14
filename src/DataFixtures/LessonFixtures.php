@@ -24,6 +24,7 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
             $lesson->setContent(AppFixtures::LOREM_IPSUM);
             $lesson->setStatus('published');
             $lesson->setItemOrder($index);
+            $lesson->setDuration(random_int(30, 120));
 
             /**
              * @var \App\Entity\User $author
