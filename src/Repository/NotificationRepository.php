@@ -39,6 +39,22 @@ class NotificationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function countUnread(): int
+    {
+        $user = $this->security->getUser();
+        if (!$user) {
+            return 0;
+        }
+
+        return $this->createQueryBuilder('n')
+            ->select('count(n.id)')
+            ->andWhere('n.user = :user OR n.user IS NULL')
+            ->andWhere('n.isRead = :isRead')
+            ->setParameter('user', $user)
+            ->setParameter('isRead', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
     public function findAllByUser(User $user, $limit = null): array
     {
@@ -52,29 +68,4 @@ class NotificationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-    //    /**
-    //     * @return Notification[] Returns an array of Notification objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('n')
-    //            ->andWhere('n.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('n.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Notification
-    //    {
-    //        return $this->createQueryBuilder('n')
-    //            ->andWhere('n.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
