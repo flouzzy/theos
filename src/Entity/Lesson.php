@@ -55,6 +55,9 @@ class Lesson
     #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Completion::class, orphanRemoval: true)]
     private Collection $completions;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $duration = null;
+
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $itemOrder = null;
 
@@ -243,6 +246,18 @@ class Lesson
                 $completion->setLesson(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(?int $duration): static
+    {
+        $this->duration = $duration;
 
         return $this;
     }
