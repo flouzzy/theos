@@ -21,13 +21,13 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // Admin User
-        $userAdmin = $this->userRepository->findOneByUsername('charles@charlesen.fr');
+        $userAdmin = $this->userRepository->findOneByUsername('charles@edounze.com');
         if (!$userAdmin) {
             $userAdmin = $this->createUser(
                 [
-                    'email' => 'charles@charlesen.fr',
+                    'email' => 'charles@edounze.com',
                     'firstname' => 'Charles',
-                    'lastname' => 'EDOU NZE',
+                    'lastname' => 'Edounze',
                     'fullname'
                 ],
                 ['ROLE_ADMIN']
