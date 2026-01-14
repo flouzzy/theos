@@ -1,74 +1,92 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    /* Vibrant Gamified Palette - Duolingo Style */
-    --background: oklch(1 0 0);
-    /* Pure white */
-    --foreground: oklch(0.2 0 0);
-    /* Dark gray for text */
-
-    /* Primary: Energetic Green (Duolingo green) */
-    --primary: oklch(0.72 0.20 145);
-    /* #58CC02 - Bright green */
+    /* Primary - Purple from Figma */
+    --primary: oklch(0.55 0.20 285);
+    /* #5B4FEF - Violet */
     --primary-foreground: oklch(1 0 0);
-    /* White text on green */
+    /* White */
 
-    /* Secondary: Playful Orange */
-    --secondary: oklch(0.75 0.15 55);
-    /* #FF9600 - Orange */
-    --secondary-foreground: oklch(1 0 0);
+    /* Background - Very light purple/gray */
+    --background: oklch(0.99 0.005 285);
+    /* #FAFAFF */
+    --foreground: oklch(0.15 0 0);
+    /* #1A1A1A - Dark text */
 
-    /* Card with subtle background */
+    /* Card - Pure white */
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.2 0 0);
+    /* #FFFFFF */
+    --card-foreground: oklch(0.15 0 0);
 
-    /* Muted backgrounds */
-    --muted: oklch(0.98 0 0);
-    /* Very light gray */
+    /* Muted */
+    --muted: oklch(0.96 0 0);
+    /* #F3F4F6 */
     --muted-foreground: oklch(0.50 0 0);
+    /* #6B7280 */
 
-    /* Accent: Cheerful Yellow */
-    --accent: oklch(0.85 0.12 95);
-    /* #FFC107 */
-    --accent-foreground: oklch(0.2 0 0);
+    /* Secondary - Lighter purple for accents */
+    --secondary: oklch(0.95 0.02 285);
+    /* Very light purple */
+    --secondary-foreground: oklch(0.55 0.20 285);
 
-    /* Success: Same as primary green */
-    --success: oklch(0.72 0.20 145);
+    /* Accent - Same as primary but for special highlights */
+    --accent: oklch(0.55 0.20 285);
+    --accent-foreground: oklch(1 0 0);
+
+    /* Success - Green */
+    --success: oklch(0.65 0.18 150);
+    /* #10B981 */
     --success-foreground: oklch(1 0 0);
 
-    /* Destructive: Soft Red (not harsh) */
-    --destructive: oklch(0.60 0.22 25);
-    /* #FF4B4B */
+    /* Destructive - Red */
+    --destructive: oklch(0.60 0.25 25);
+    /* #EF4444 */
     --destructive-foreground: oklch(1 0 0);
 
-    /* Borders and inputs */
-    --border: oklch(0.90 0 0);
-    --input: oklch(0.95 0 0);
-    --ring: oklch(0.72 0.20 145);
-    /* Green ring for focus */
+    /* Borders */
+    --border: oklch(0.92 0 0);
+    /* #E5E7EB */
+    --input: oklch(0.92 0 0);
+    --ring: oklch(0.55 0.20 285);
+    /* Purple ring for focus */
 
-    /* Chart colors - vibrant and playful */
-    --chart-1: oklch(0.72 0.20 145);
-    /* Green */
-    --chart-2: oklch(0.75 0.15 55);
-    /* Orange */
-    --chart-3: oklch(0.60 0.25 265);
+    /* Popover */
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.15 0 0);
+
+    /* Chart colors */
+    --chart-1: oklch(0.55 0.20 285);
     /* Purple */
-    --chart-4: oklch(0.70 0.20 195);
+    --chart-2: oklch(0.65 0.18 150);
+    /* Green */
+    --chart-3: oklch(0.70 0.15 220);
     /* Blue */
-    --chart-5: oklch(0.85 0.12 95);
-    /* Yellow */
+    --chart-4: oklch(0.75 0.12 55);
+    /* Orange */
+    --chart-5: oklch(0.80 0.10 330);
+    /* Pink */
 
-    /* Rounded, friendly design */
-    --radius: 1rem;
-    --sidebar-ring: oklch(0.708 0 0);
+    /* Sidebar */
+    --sidebar: oklch(1 0 0);
+    /* White sidebar */
+    --sidebar-foreground: oklch(0.15 0 0);
+    --sidebar-primary: oklch(0.55 0.20 285);
+    --sidebar-primary-foreground: oklch(1 0 0);
+    --sidebar-accent: oklch(0.95 0.02 285);
+    --sidebar-accent-foreground: oklch(0.15 0 0);
+    --sidebar-border: oklch(0.92 0 0);
+    --sidebar-ring: oklch(0.55 0.20 285);
+
+    /* Radius - More moderate for minimal look */
+    --radius: 0.75rem;
+    /* 12px */
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
+    --background: oklch(0.15 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.145 0 0);
     --card-foreground: oklch(0.985 0 0);
