@@ -48,8 +48,20 @@ class CohortFixtures extends Fixture implements DependentFixtureInterface
 
             // Add some courses to cohort
             for ($i = 0; $i < 3; $i++) {
-                $course = $this->getReference(CourseFixtures::COURSE_REFERENCE . $i, \App\Entity\Course::class);
-                $cohort->addCourse($course);
+                if ($this->hasReference(CourseFixtures::COURSE_REFERENCE . $i, \App\Entity\Course::class)) {
+                    $course = $this->getReference(CourseFixtures::COURSE_REFERENCE . $i, \App\Entity\Course::class);
+                    $cohort->addCourse($course);
+                }
+            }
+            
+            // Add some users to cohort (first 5 users)
+            if ($index === 0) { // Add users mainly to the first cohort
+                for ($u = 0; $u < 5; $u++) {
+                    if ($this->hasReference(AppFixtures::SIMPLE_USER_REFERENCE . $u, \App\Entity\User::class)) {
+                        $user = $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . $u, \App\Entity\User::class);
+                        $cohort->addUser($user);
+                    }
+                }
             }
 
             $manager->persist($cohort);
@@ -63,6 +75,7 @@ class CohortFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             CourseFixtures::class,
+            AppFixtures::class,
         ];
     }
 }
