@@ -43,7 +43,7 @@ class CohortFixtures extends Fixture implements DependentFixtureInterface
             $cohort->setTitle($data['title']);
             $cohort->setSlug($data['slug']);
             $cohort->setStartAt($data['startAt']);
-            $cohort->setCapacity($data['capacity']);
+            // $cohort->setCapacity($data['capacity']); // Property removed or missing
             $cohort->setStatus($data['status']);
 
             // Add some courses to cohort
