@@ -1,5 +1,8 @@
 framework:
     messenger:
+        transports:
+            sync: 'sync://'
+
         routing:
             # Route all messages to the sync transport in dev
             # so they are handled immediately
