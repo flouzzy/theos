@@ -1,76 +1,99 @@
 {% extends 'lesson/layout.html.twig' %}
 
-{% block title %}
-	{{module.title}}
+{% block title %}{{ currentLesson.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto p-4 lg:p-8">
+    
+    {# Navigation Back (Top) #}
+    <div class="mb-6">
+        <a href="{{ path('course_show', {slug: course.slug}) }}" class="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors">
+            <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            {{ 'Retour aux modules' | trans }}
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {# Main Content Column (2/3) #}
+        <div class="lg:col-span-2 space-y-8">
+            
+            {# Header: Title & Complete Button #}
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight mb-2">{{ currentLesson.title }}</h1>
+                    <div class="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span class="flex items-center gap-1">
+                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            25 min {# Placeholder duration #}
+                        </span>
+                    </div>
+                </div>
+                
+                {# Action Button (Complete/Uncomplete) #}
+                <div>
+                    {% include "lesson/_complete.html.twig" %}
+                </div>
+            </div>
+
+            {# Subtitle / Course Context #}
+            <div>
+                 <h2 class="text-xl font-semibold mb-2 text-foreground/80">{{ course.title }}</h2>
+            </div>
+            
+            {# Lesson Content #}
+            <div class="prose prose-slate dark:prose-invert max-w-none">
+                {# Description #}
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold mb-2">{{ 'Introduction' | trans }}</h3>
+                    <div class="leading-relaxed text-muted-foreground">
+                        {{ currentLesson.description|raw }}
+                    </div>
+                </div>
+
+                {# Video #}
+                {% if currentLesson.videoEmbeded %}
+                    <div class="aspect-video w-full overflow-hidden rounded-xl border border-border bg-muted mb-8 shadow-sm">
+                        {{ currentLesson.videoEmbeded|raw }}
+                    </div>
+                {% endif %}
+
+                {# Main HTML Content #}
+                <div class="bg-card rounded-xl border border-border p-6 md:p-8 shadow-sm">
+                     {{ currentLesson.content|raw }}
+                </div>
+            </div>
+
+        </div>
+
+        {# Sidebar Column (1/3) : Notes #}
+        <div class="space-y-6">
+            {% if is_granted('IS_AUTHENTICATED') %}
+                {# Note Taking Form #}
+                {{ render(path('note_show_lesson', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
+                
+                {# Existing Notes List #}
+                <div class="pt-4 border-t border-border">
+                     <h3 class="text-sm font-semibold mb-4 text-muted-foreground">{{ 'Mes notes précédentes' | trans }}</h3>
+                     {{ render(path('note_index_lesson', {lessonId : currentLesson.id})) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-	<turbo-frame id="frame_lesson" class="block space-y-6 max-w-4xl mx-auto p-4">
-		<div class="text-center space-y-2">
-			<h2 class="text-3xl font-bold tracking-tight">{{ currentLesson.title }}</h2>
-		</div>
-
-		<twig:Card class="p-6">
-			<h3 class="font-semibold mb-2 text-lg">{{ 'Description'|trans }}</h3>
-			<div class="text-muted-foreground">
-				{{ currentLesson.description|raw }}
-			</div>
-		</twig:Card>
-
-		<div class="space-y-6">
-			{% if currentLesson.status == 'published' %}
-				{% if currentLesson.videoEmbeded %}
-					<div class="aspect-video w-full overflow-hidden rounded-lg border bg-muted">
-						{{ currentLesson.videoEmbeded|raw }}
-					</div>
-				{% endif %}
-
-				<div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-					<details class="group" {% if not currentLesson.videoEmbeded %}open{% endif %}>
-						<summary class="flex cursor-pointer items-center justify-between p-6 font-medium transition-all hover:bg-muted/50 [&::-webkit-details-marker]:hidden">
-							<span>{{ 'Text content'|trans }}</span>
-							<twig:ux:icon name="lucide:chevron-down" class="h-4 w-4 transition-transform group-open:rotate-180" />
-						</summary>
-						<div class="border-t p-6 pt-0 mt-4">
-							<div class="prose dark:prose-invert max-w-none">
-								{{ currentLesson.content|raw }}
-							</div>
-						</div>
-					</details>
-				</div>
-
-				<twig:Separator class="my-6" />
-
-				{# User notes #}
-				{% if is_granted('IS_AUTHENTICATED') %}
-					<div class="space-y-4">
-						{# Form #}
-						{{ render(path('note_show_lesson', {id:currentLesson.id, courseSlug:course.slug, moduleSlug:module.slug})) }}
-						{# List #}
-						{{ render(path('note_index_lesson', {lessonId : currentLesson.id})) }}
-					</div>
-				{% endif %}
-			{% else %}
-				<div class="rounded-lg border border-destructive/50 p-4 text-destructive-foreground">
-					<div class="flex items-center gap-3">
-						<twig:ux:icon name="lucide:alert-circle" class="h-5 w-5" />
-						<h3 class="font-semibold">
-							{{ 'This lesson is currently unavailable'|trans }}
-						</h3>
-					</div>
-				</div>
-			{% endif %}
-		</div>
-	</turbo-frame>
-
+{# Hidden header buttons block as we moved action to main content #}
 {% block menuHeaderButtons %}
-	<div class="flex items-center gap-2">
-		{% if is_granted('ROLE_ADMIN') %}
-			<twig:Button variant="ghost" size="icon" asChild>
-				<a href="{{path('admin_lesson_edit', {id:currentLesson.id})}}" target="_blank">
-					<twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
-				</a>
-			</twig:Button>
-		{% endif %}
-		{% include "lesson/_complete.html.twig" %}
-	</div>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{path('admin_lesson_edit', {id:currentLesson.id})}}" target="_blank" class="text-muted-foreground hover:text-primary">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+        </a>
+    {% endif %}
 {% endblock %}
