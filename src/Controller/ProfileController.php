@@ -58,8 +58,28 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('profile_index');
         }
 
+        // Calculate Stats
+        $coursesEnrolled = $user->getCourses();
+        $completedCoursesCount = $user->getCourseCompletions()->filter(fn($cc) => $cc->isCompleted())->count();
+        $notesCount = $user->getNotes()->count();
+
+        $totalMinutes = 0;
+        foreach ($user->getCompletions() as $completion) {
+            if ($lesson = $completion->getLesson()) {
+                $totalMinutes += $lesson->getDuration() ?? 0;
+            }
+        }
+        $learningHours = floor($totalMinutes / 60);
+
         return $this->render('profile/show.html.twig', [
             'profileForm' => $form,
+            'stats' => [
+                'enrolled' => $coursesEnrolled->count(),
+                'completed' => $completedCoursesCount,
+                'hours' => $learningHours,
+                'notes' => $notesCount,
+            ],
+            'badges' => $user->getBadges(),
         ]);
     }
 
