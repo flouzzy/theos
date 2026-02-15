@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Completion;
+use App\Entity\Course;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -31,6 +33,25 @@ class CompletionRepository extends ServiceEntityRepository
             ->andWhere('c.completed = true')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @return int[]
+     */
+    public function findCompletedLessonIdsByCourse(User $user, Course $course): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('l.id')
+            ->join('c.lesson', 'l')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'co')
+            ->where('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->andWhere('co = :course')
+            ->setParameter('user', $user)
+            ->setParameter('course', $course)
+            ->getQuery()
+            ->getSingleColumnResult();
     }
 
     //    /**
