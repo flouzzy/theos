@@ -29,15 +29,29 @@ class CompletionService
          */
         $user = $this->security->getUser();
         $allLessonsCompleted = true;
-        foreach ($module->getLessons() as $moduleLesson) {
-            $lessonCompletion = $this->entityManager->getRepository(Completion::class)->findOneBy([
+        $lessons = $module->getLessons();
+
+        if ($lessons->count() > 0) {
+            $completions = $this->entityManager->getRepository(Completion::class)->findBy([
                 'user' => $user,
-                'lesson' => $moduleLesson
+                'lesson' => $lessons->toArray()
             ]);
 
-            if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
-                $allLessonsCompleted = false;
-                break;
+            $completionMap = [];
+            foreach ($completions as $completion) {
+                if ($completion->getLesson()) {
+                    $completionMap[$completion->getLesson()->getId()] = $completion;
+                }
+            }
+
+            foreach ($lessons as $moduleLesson) {
+                $lessonId = $moduleLesson->getId();
+                $lessonCompletion = $completionMap[$lessonId] ?? null;
+
+                if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
+                    $allLessonsCompleted = false;
+                    break;
+                }
             }
         }
 
