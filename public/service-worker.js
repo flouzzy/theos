@@ -1,20 +1,29 @@
 // Nom du cache
 // cache à la date du jour au format YYYY-MM-DD
 // On garantie qu'il sera renouvelé quotidiennement
-// const CACHE_VERSION = "0.0.4";
-const CACHE_VERSION = "0.0.2";
+const CACHE_VERSION = "0.0.3";
 const CACHE_NAME = "academie-lerocher-cache-v" + CACHE_VERSION;
 
 // URLs des pages statiques (qui ne changent pratiquement jamais)
 const URLS_TO_CACHE = [
   "/",
-  "/images/favicon/",
-  "/images/favicon/*.png",
+  "/offline.html",
+  "/images/favicon/android-chrome-192x192.png",
+  "/images/favicon/android-chrome-512x512.png",
   "/images/favicon/apple-touch-icon.png",
   "/images/favicon/favicon-32x32.png",
   "/images/favicon/favicon-16x16.png",
   "/images/favicon/safari-pinned-tab.svg",
+  "/images/logo.svg",
+  "/images/logo_black.svg",
+  "/images/logo_white.svg",
+  "/images/default-course.png",
+  "/images/default-user.png",
   "/site.webmanifest",
+  "/styles/app.css",
+  "/styles/color.css",
+  "/styles/form.css",
+  "/styles/utilities.css",
 ];
 
 // Exclude certain pages from caching (e.g., /login, /admin)
@@ -24,6 +33,7 @@ const noCachePages = ["/login", "/admin"];
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
+      console.log("Opened cache");
       return cache.addAll(URLS_TO_CACHE);
     })
   );
@@ -51,13 +61,13 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
 
-  console.log(
-    "Fetch event for:",
-    event.request.url,
-    "from:",
-    requestUrl.origin,
-    requestUrl.origin === location.origin
-  );
+  // console.log(
+  //   "Fetch event for:",
+  //   event.request.url,
+  //   "from:",
+  //   requestUrl.origin,
+  //   requestUrl.origin === location.origin
+  // );
 
   // Handle internal requests only
   if (requestUrl.origin === location.origin) {
@@ -69,6 +79,11 @@ self.addEventListener("fetch", (event) => {
     if (requestUrl.search.includes("pageview=page_editor")) {
       // Always bypass the cache for these pages
       return fetch(event.request);
+    }
+
+    // Exclude video files from caching (handled by OfflineVideoManager)
+    if (requestUrl.pathname.match(/\.(mp4|webm|ogg|mov)$/i) || event.request.destination === 'video') {
+      return;
     }
 
     // Cache, then Network strategy for internal resources
@@ -84,7 +99,9 @@ self.addEventListener("fetch", (event) => {
           })
           .catch(() => {
             // Return offline page for navigation requests if network fails
-            return caches.match("/offline.html");
+            if (event.request.mode === 'navigate') {
+                 return caches.match("/offline.html");
+            }
           });
 
         // Return cached response if available, else wait for network response
@@ -96,16 +113,9 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request).catch(() => {
         // Ne rien faire pour les échecs externes, ou loguer l'erreur
-        console.error("Network request failed for:", event.request.url);
+        // console.error("Network request failed for:", event.request.url);
       })
     );
-  }
-});
-
-// Message event: Ecoute le message de la page pour forcer une mise à jour
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
   }
 });
 
