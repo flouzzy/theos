@@ -4,6 +4,7 @@
 	{{'Users' | trans}}
 {% endblock %}
 
+{% block content %}
 	<div class="container mx-auto py-10">
 		<div class="flex justify-between items-center mb-6">
 			<h1 class="text-2xl font-bold tracking-tight">{{ 'Users'|trans }}</h1>
@@ -30,8 +31,8 @@
 							<twig:Table:Cell class="font-medium">
 								<div class="flex items-center gap-3">
 									<twig:Avatar>
-										<twig:Avatar:Image src="{{ user.gravatar }}" alt="{{ user.fullname }}" />
-										<twig:Avatar:Fallback>{{ user.fullname|slice(0, 2)|upper }}</twig:Avatar:Fallback>
+										<twig:Avatar:Image src="{{ asset(user.image) }}" alt="{{ user.fullname }}" />
+										<twig:Avatar:Text>{{ user.fullname|slice(0, 2)|upper }}</twig:Avatar:Text>
 									</twig:Avatar>
 									<div class="flex flex-col">
 										<span>{{ user.fullname }}</span>
@@ -74,6 +75,24 @@
 					{% endfor %}
 				</twig:Table:Body>
 			</twig:Table>
+		</div>
+
+		<div class="mt-4 flex items-center justify-center space-x-2">
+			{% if currentPage > 1 %}
+				<a href="{{ path('admin_user_index', {page: currentPage - 1}) }}" class="px-3 py-1 border rounded hover:bg-gray-100">
+					{{ 'Previous'|trans }}
+				</a>
+			{% endif %}
+
+			<span class="px-3 py-1">
+				{{ 'Page %current% of %total%'|trans({'%current%': currentPage, '%total%': totalPages}) }}
+			</span>
+
+			{% if currentPage < totalPages %}
+				<a href="{{ path('admin_user_index', {page: currentPage + 1}) }}" class="px-3 py-1 border rounded hover:bg-gray-100">
+					{{ 'Next'|trans }}
+				</a>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}

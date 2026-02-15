@@ -15,10 +15,19 @@ use Symfony\Component\Routing\Attribute\Route;
 class UserController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
+    public function index(Request $request, UserRepository $userRepository): Response
     {
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = 20;
+
+        $paginator = $userRepository->findPaginatedUsers($page, $limit);
+        $totalUsers = count($paginator);
+        $totalPages = ceil($totalUsers / $limit);
+
         return $this->render('admin/user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $paginator,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 
