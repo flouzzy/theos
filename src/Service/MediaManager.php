@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class MediaManager
 {
@@ -15,7 +17,7 @@ class MediaManager
     private $slugger;
     private $filesystem;
 
-    public function __construct($targetDirectory, SluggerInterface $slugger, private ImageOptimizer $imageOptimizer, private Security $security, private LoggerInterface $logger)
+    public function __construct($targetDirectory, SluggerInterface $slugger, private ImageOptimizer $imageOptimizer, private Security $security, private LoggerInterface $logger, private HttpClientInterface $httpClient)
     {
         $this->targetDirectory = $targetDirectory;
         $this->slugger = $slugger;
@@ -76,18 +78,63 @@ class MediaManager
 
     public function downloadFileByUrl($fileUrl, $mediaType = null)
     {
+        // Check for valid protocol
+        if (!preg_match('/^https?:\/\//i', $fileUrl)) {
+            return false;
+        }
+
+        // Validate mediaType to prevent directory traversal
+        if ($mediaType && !preg_match('/^[a-zA-Z0-9_-]+$/', $mediaType)) {
+            return false;
+        }
+
         try {
-            $filename = basename($fileUrl);
             $targetDirectory = $this->getTargetDirectory($mediaType);
 
             // Get current directory
             if (!is_dir($targetDirectory)) {
                 mkdir($targetDirectory, 0777, true);
             }
+
+            $response = $this->httpClient->request('GET', $fileUrl, [
+                'timeout' => 30,
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                return false;
+            }
+
+            $content = $response->getContent();
+
+            // Verify content type
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->buffer($content);
+
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!in_array($mimeType, $allowedMimeTypes)) {
+                return false;
+            }
+
+            $extensions = [
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png',
+                'image/gif' => 'gif',
+                'image/webp' => 'webp'
+            ];
+            $extension = $extensions[$mimeType];
+
+            // Generate safe filename
+            $filename = uniqid('media_', true) . '.' . $extension;
             $fileFullPath = $targetDirectory . '/' . $filename;
-            $fileDownloaded = @file_put_contents($fileFullPath, file_get_contents($fileUrl));
+
+            $fileDownloaded = file_put_contents($fileFullPath, $content);
+
             if ($fileDownloaded) {
-                $this->imageOptimizer->resize($fileFullPath, ['maxWidth' => 800, 'maxHeight' => 600]);
+                try {
+                    $this->imageOptimizer->resize($fileFullPath, ['maxWidth' => 800, 'maxHeight' => 600]);
+                } catch (\Throwable $e) {
+                    // Ignore resize error, keep the file as it's a valid image
+                }
                 return explode('public/', $fileFullPath)[1];
             }
         } catch (FileException $exception) {
@@ -99,9 +146,36 @@ class MediaManager
             $this->logger->error(
                 'Erreur lors du téléchargement du fichier',
                 [
-                    'user_email' => $user->getEmail(),
+                    'user_email' => $user ? $user->getEmail() : 'anonymous',
                     'error_message' => $exception->getMessage(),
-                    'fileUrl' => $fileUrl, 'fileFullPath' => $fileFullPath
+                    'fileUrl' => $fileUrl, 'fileFullPath' => $fileFullPath ?? 'unknown'
+                ]
+            );
+        } catch (TransportExceptionInterface $e) {
+            /**
+             * @var $user \App\Entity\User
+             */
+            $user = $this->security->getUser();
+            $this->logger->error(
+                'Error downloading file (Transport)',
+                [
+                    'user_email' => $user ? $user->getEmail() : 'anonymous',
+                    'error_message' => $e->getMessage(),
+                    'fileUrl' => $fileUrl
+                ]
+            );
+        } catch (\Throwable $e) {
+            // Catch other exceptions
+            /**
+             * @var $user \App\Entity\User
+             */
+            $user = $this->security->getUser();
+            $this->logger->error(
+                'Error downloading file',
+                [
+                    'user_email' => $user ? $user->getEmail() : 'anonymous',
+                    'error_message' => $e->getMessage(),
+                    'fileUrl' => $fileUrl
                 ]
             );
         }
