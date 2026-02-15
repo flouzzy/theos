@@ -27,6 +27,9 @@ class ModuleCompletion
     #[ORM\Column(nullable: true)]
     private ?bool $completed = false;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $score = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class ModuleCompletion
     public function isCompleted(): ?bool
     {
         return $this->completed;
+    }
+
+    public function getScore(): ?float
+    {
+        return $this->score;
+    }
+
+    public function setScore(?float $score): static
+    {
+        $this->score = $score;
+
+        return $this;
     }
 
     public function setCompleted(?bool $completed): static

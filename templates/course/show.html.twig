@@ -19,8 +19,8 @@
     <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
         {# Cover Image #}
         <div class="h-48 md:h-64 relative bg-muted">
-            {% if course.media %}
-                <img src="{{ course.media.url }}" alt="{{ course.title }}" class="w-full h-full object-cover">
+            {% if course.image %}
+                <img src="{{ asset(course.image) }}" alt="{{ course.title }}" class="w-full h-full object-cover">
                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             {% else %}
                  <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-900 to-primary text-white">

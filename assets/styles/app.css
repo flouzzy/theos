@@ -1,11 +1,275 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+    /* Color Palette - Premium Academic (Gold & Slate) */
+
+    /* Background: White */
+    --background: hsl(0 0% 100%);
+    /* Foreground: Deep Slate */
+    --foreground: hsl(222.2 84% 4.9%);
+
+    /* Primary: Rocher Gold (#D4AF37) */
+    --primary: hsl(45 67% 50%);
+    --primary-foreground: hsl(0 0% 100%);
+
+    /* Secondary: Slate-100 */
+    --secondary: hsl(210 40% 96.1%);
+    --secondary-foreground: hsl(222.2 47.4% 11.2%);
+
+    /* Muted: Light Gray */
+    --muted: hsl(210 40% 96.1%);
+    --muted-foreground: hsl(215.4 16.3% 46.9%);
+
+    /* Card: White */
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(222.2 84% 4.9%);
+
+    /* Popover */
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(222.2 84% 4.9%);
+
+    /* Accent */
+    --accent: hsl(210 40% 96.1%);
+    --accent-foreground: hsl(222.2 47.4% 11.2%);
+
+    /* Utility Colors */
+    --destructive: hsl(0 84.2% 60.2%);
+    --destructive-foreground: hsl(210 40% 98%);
+    --border: hsl(214.3 31.8% 91.4%);
+    --input: hsl(214.3 31.8% 91.4%);
+    --ring: hsl(45 67% 50%);
+    /* Match Primary */
+
+    /* Chart Colors */
+    --chart-1: hsl(45 67% 50%);
+    /* Gold */
+    --chart-2: hsl(222.2 84% 4.9%);
+    /* Slate */
+    --chart-3: hsl(142 76% 36%);
+    /* Green */
+    --chart-4: hsl(346 84% 61%);
+    /* Pink */
+    --chart-5: hsl(27 87% 67%);
+    /* Orange */
+
+    /* Sidebar */
+    --sidebar: hsl(0 0% 100%);
+    --sidebar-foreground: hsl(222.2 84% 4.9%);
+    --sidebar-primary: hsl(45 67% 50%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(210 40% 96.1%);
+    --sidebar-accent-foreground: hsl(222.2 84% 4.9%);
+    --sidebar-border: hsl(214.3 31.8% 91.4%);
+    --sidebar-ring: hsl(45 67% 50%);
+
+    /* Radius */
+    --radius: 0.75rem;
+}
+
+.dark {
+    /* Dark Mode - Inverted Slate */
+    --background: hsl(222.2 84% 4.9%);
+    --foreground: hsl(210 40% 98%);
+
+    --primary: hsl(45 67% 50%);
+    --primary-foreground: hsl(0 0% 100%);
+
+    --secondary: hsl(217.2 32.6% 17.5%);
+    --secondary-foreground: hsl(210 40% 98%);
+
+    --muted: hsl(217.2 32.6% 17.5%);
+    --muted-foreground: hsl(215 20.2% 65.1%);
+
+    --card: hsl(222.2 84% 4.9%);
+    /* Or slightly lighter for depth */
+    --card-foreground: hsl(210 40% 98%);
+
+    --popover: hsl(222.2 84% 4.9%);
+    --popover-foreground: hsl(210 40% 98%);
+
+    --accent: hsl(217.2 32.6% 17.5%);
+    --accent-foreground: hsl(210 40% 98%);
+
+    --destructive: hsl(0 62.8% 30.6%);
+    --destructive-foreground: hsl(210 40% 98%);
+
+    --border: hsl(217.2 32.6% 17.5%);
+    --input: hsl(217.2 32.6% 17.5%);
+    --ring: hsl(45 67% 50%);
+
+    --chart-1: hsl(45 67% 50%);
+    --chart-2: hsl(210 40% 98%);
+    --chart-3: hsl(142 70% 50%);
+    --chart-4: hsl(346 80% 60%);
+    --chart-5: hsl(27 85% 65%);
+
+    --sidebar: hsl(222.2 84% 4.9%);
+    --sidebar-foreground: hsl(210 40% 98%);
+    --sidebar-primary: hsl(45 67% 50%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(217.2 32.6% 17.5%);
+    --sidebar-accent-foreground: hsl(210 40% 98%);
+    --sidebar-border: hsl(217.2 32.6% 17.5%);
+    --sidebar-ring: hsl(45 67% 50%);
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+
+    --font-heading: "Merriweather", serif;
+    --font-sans: "Inter", sans-serif;
+    --font-serif: "Merriweather", serif;
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-heading tracking-tight;
+    }
+
+    h1 {
+        @apply text-3xl md:text-4xl font-bold;
+    }
+
+    h2 {
+        @apply text-2xl md:text-3xl font-bold;
+    }
+
+    h3 {
+        @apply text-xl md:text-2xl font-semibold;
+    }
+
+    /* Input placeholders - Better visibility */
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--muted-foreground);
+        opacity: 0.65;
+    }
+
+    input:focus::placeholder,
+    textarea:focus::placeholder {
+        opacity: 0.4;
+    }
+
+    /* Sidebar nav item styles */
+    .nav-item {
+        @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all;
+        @apply text-foreground/70 hover:text-foreground hover:bg-muted font-sans;
+    }
+
+    .nav-item svg {
+        @apply flex-shrink-0 w-5 h-5;
+    }
+
+    .nav-item.active {
+        @apply bg-primary text-primary-foreground shadow-sm;
+    }
+
+    /* Bottom tab styles (mobile) */
+    .tab-item {
+        @apply flex flex-col items-center gap-1 text-xs font-medium transition-all;
+        @apply text-foreground/60 hover:text-foreground font-sans;
+    }
+
+    .tab-item svg {
+        @apply flex-shrink-0 w-6 h-6;
+    }
+
+    .tab-item.active {
+        @apply text-primary;
+    }
+
+    /* Badge styles */
+    .badge {
+        @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    }
+
+    .badge-default {
+        @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
+    }
+
+    .badge-secondary {
+        @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+    }
+
+    .badge-destructive {
+        @apply border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80;
+    }
+
+    .badge-outline {
+        @apply text-foreground;
+    }
+}
+
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
     /* Primary - Purple from Figma */
-    --primary: oklch(0.55 0.20 285);
+    --primary: 266 65% 60%;
+    /* #6c5bd9 converted to HSL for better Tailwind compat if needed, or stick to hex/oklch. Let's use the explicit hex or mapped oklch if possible, but simplest is often direct hex in tailwind config. Here in CSS let's use a roughly equivalent OKLCH or just the Hex if the system supports it. 
+    Actually, let's just stick to the requested hex in the tailwind config if possible, but if this is the source of truth, let's calculate oklch for #6c5bd9. 
+    #6c5bd9 is r=108 g=91 b=217. 
+    Approx OKLCH: 0.56 0.21 286. The existing was 0.55 0.20 285. It's extremely close. 
+    Let's explicitly use the requested hex by redefining the variable logic or just keeping the existing one if it matches visual expectations. 
+    However, the user asked to "Update Primary Color to #6c5bd9".
+    I will rely on tailwind.config.js to map 'primary' to this CSS variable. 
+    Let's check tailwind.config.js first before editing CSS. */
+    --primary: oklch(0.56 0.21 286);
+    /* Updated to match #6c5bd9 more precisely */
     /* #5B4FEF - Violet */
     --primary-foreground: oklch(1 0 0);
     /* White */
@@ -256,5 +520,48 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+
+    /* Wave Animation */
+    @keyframes wave {
+        0% {
+            transform: rotate(0.0deg)
+        }
+
+        10% {
+            transform: rotate(14.0deg)
+        }
+
+        20% {
+            transform: rotate(-8.0deg)
+        }
+
+        30% {
+            transform: rotate(14.0deg)
+        }
+
+        40% {
+            transform: rotate(-4.0deg)
+        }
+
+        50% {
+            transform: rotate(10.0deg)
+        }
+
+        60% {
+            transform: rotate(0.0deg)
+        }
+
+        100% {
+            transform: rotate(0.0deg)
+        }
+    }
+
+    .animate-wave {
+        animation-name: wave;
+        animation-duration: 2.5s;
+        animation-iteration-count: infinite;
+        transform-origin: 70% 70%;
+        display: inline-block;
     }
 }

@@ -36,9 +36,16 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?Notification $notification = null;
 
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    private ?Lesson $lesson = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'likedComments')]
+    private Collection $likes;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -120,6 +127,42 @@ class Comment
     public function setNotification(?Notification $notification): static
     {
         $this->notification = $notification;
+
+        return $this;
+    }
+
+    public function getLesson(): ?Lesson
+    {
+        return $this->lesson;
+    }
+
+    public function setLesson(?Lesson $lesson): static
+    {
+        $this->lesson = $lesson;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(User $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(User $like): static
+    {
+        $this->likes->removeElement($like);
 
         return $this;
     }

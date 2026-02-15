@@ -9,6 +9,7 @@ use App\Repository\CompletionRepository;
 use App\Repository\CourseCompletionRepository;
 use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,7 +34,7 @@ class CourseController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'show')]
-    public function show(Course $course, CompletionRepository $completionRepository, CourseCompletionRepository $courseCompletionRepository): Response
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Course $course, CompletionRepository $completionRepository, CourseCompletionRepository $courseCompletionRepository): Response
     {
         // Si le cours n'est pas publié et que l'on en est pas le propriétaire, on ne l'affiche pas
         if ($course->getAuthor() != $this->getUser() && $course->getStatus() != 'published') {

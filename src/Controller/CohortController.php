@@ -71,6 +71,9 @@ class CohortController extends AbstractController
         $ongoingCoursesCount = count($myCoursesEntities) - $completedCoursesCount;
         $totalHours = floor($totalMinutes / 60);
 
+        // Calculate remaining lessons to discover
+        $newLessonsCount = $totalLessons - $totalCompletedLessons;
+
         // Events
         $events = $eventRepository->findUpdatedEvents($cohort);
 
@@ -78,6 +81,7 @@ class CohortController extends AbstractController
             'cohort' => $cohort,
             'myCourses' => $myCoursesData, 
             'events' => $events,
+            'newLessonsCount' => $newLessonsCount,
             'stats' => [
                 'ongoing' => $ongoingCoursesCount,
                 'completed' => $completedCoursesCount,

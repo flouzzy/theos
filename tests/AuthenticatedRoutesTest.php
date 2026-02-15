@@ -62,6 +62,10 @@ class AuthenticatedRoutesTest extends WebTestCase
         yield 'Courses List' => ['/courses/'];
         yield 'Cohorts' => ['/cohort/'];
         yield 'Payment' => ['/payment/'];
+        yield 'Coach' => ['/coach/'];
+        yield 'Evaluations' => ['/evaluation/'];
+        yield 'Settings' => ['/settings/'];
+        yield 'Comments' => ['/comment/'];
     }
 
     /**

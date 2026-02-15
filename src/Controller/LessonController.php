@@ -16,6 +16,7 @@ use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -186,6 +187,37 @@ class LessonController extends AbstractController
             ]);
         }
     }
+
+    #[Route('/{id}/comment', name: 'add_comment', methods: ['POST'])]
+    public function addComment(
+        Request $request,
+        Lesson $lesson,
+        #[MapEntity(mapping: ['courseSlug' => 'slug'])]
+        Course $course,
+        #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
+        Module $module
+    ): Response {
+        $content = $request->request->get('content');
+        
+        if ($content) {
+            $comment = new \App\Entity\Comment();
+            $comment->setContent($content);
+            $comment->setLesson($lesson);
+            $comment->setUser($this->getUser());
+            
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
+            
+            $this->addFlash('success', 'Commentaire publié !');
+        }
+
+        return $this->redirectToRoute('lesson_show', [
+            'courseSlug' => $course->getSlug(),
+            'moduleSlug' => $module->getSlug(),
+            'id' => $lesson->getId()
+        ]);
+    }
+
 
     /**
      * Mark module as completed

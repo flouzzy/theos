@@ -55,6 +55,9 @@ class Lesson
     #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Completion::class, orphanRemoval: true)]
     private Collection $completions;
 
+    #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Comment::class, orphanRemoval: true)]
+    private Collection $comments;
+
     #[ORM\Column(nullable: true)]
     private ?int $duration = null;
 
@@ -65,7 +68,9 @@ class Lesson
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->notes = new ArrayCollection();
+        $this->notes = new ArrayCollection();
         $this->completions = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -270,6 +275,36 @@ class Lesson
     public function setItemOrder(?int $itemOrder): static
     {
         $this->itemOrder = $itemOrder;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setLesson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getLesson() === $this) {
+                $comment->setLesson(null);
+            }
+        }
 
         return $this;
     }

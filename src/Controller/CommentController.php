@@ -78,4 +78,25 @@ class CommentController extends AbstractController
 
         return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/like', name: 'app_comment_like', methods: ['GET'])]
+    public function like(Comment $comment, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        if ($comment->getLikes()->contains($user)) {
+            $comment->removeLike($user);
+        } else {
+            $comment->addLike($user);
+        }
+
+        $entityManager->flush();
+
+        // Redirect back to the lesson page if possible, or referer
+        $referer = $request->headers->get('referer');
+        return $this->redirect($referer ?? $this->generateUrl('app_comment_index'));
+    }
 }

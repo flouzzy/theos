@@ -115,6 +115,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Cohort::class, inversedBy: 'users')]
     private Collection $cohorts;
 
+    #[ORM\ManyToMany(targetEntity: Comment::class, mappedBy: 'likes')]
+    private Collection $likedComments;
+
     // #[ORM\Column(length: 255, options: ['default' => PaymentStatusEnum::UNPAID])]
     // private ?string $paymentStatus = PaymentStatusEnum::UNPAID;
     #[ORM\Column(type: 'string', enumType: PaymentStatusEnum::class, options: ['default' => PaymentStatusEnum::UNPAID])]
@@ -135,6 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
         $this->badges = new ArrayCollection();
         $this->cohorts = new ArrayCollection();
+        $this->likedComments = new ArrayCollection();
     }
 
     public function __toString()
@@ -756,5 +760,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isPaid(): bool
     {
         return $this->paymentStatus === PaymentStatusEnum::PAID;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getLikedComments(): Collection
+    {
+        return $this->likedComments;
+    }
+
+    public function addLikedComment(Comment $likedComment): static
+    {
+        if (!$this->likedComments->contains($likedComment)) {
+            $this->likedComments->add($likedComment);
+            $likedComment->addLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedComment(Comment $likedComment): static
+    {
+        if ($this->likedComments->removeElement($likedComment)) {
+            $likedComment->removeLike($this);
+        }
+
+        return $this;
     }
 }

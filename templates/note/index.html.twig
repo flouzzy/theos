@@ -1,23 +1,58 @@
-{% extends 'app.html.twig' %}
+{% extends 'appWithBottomTabs.html.twig' %}
 
 {% block title %}
-	{{'Note taking' | trans}}
+	{{'Bloc-notes' | trans}}
 {% endblock %}
 
-
-{% block pageTitle %}
-	{{block('title')}}
+{% block page_title %}
+	{{'Bloc-notes' | trans}}
 {% endblock %}
-
 
 {% block content %}
-	{% for note in notes %}
-		<ion-list>
-			{{ include('note/_item.html.twig') }}
-		</ion-list>
-	{% else %}
-		<p class="ion-text-center">
-			{{'No note available' | trans}}
-		</p>
-	{% endfor %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold flex items-center gap-2">
+            📝 {{ 'Mes annotations' | trans }}
+        </h1>
+        <div class="text-sm text-muted-foreground">
+             {{ notes|length }} {{ 'notes' | trans }}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+	    {% for note in notes %}
+            <div class="bg-yellow-50 border-2 border-yellow-100 rounded-br-3xl rounded-tl-xl rounded-tr-xl rounded-bl-xl p-6 shadow-sm hover:shadow-md transition-all relative group overflow-hidden">
+                <div class="absolute top-0 right-0 w-8 h-8 bg-yellow-100 rounded-bl-xl z-10"></div>
+                
+                <div class="mb-4 flex items-center gap-2 text-xs font-bold text-yellow-700 uppercase tracking-wider">
+                     <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                     {{ note.lesson.title }}
+                </div>
+                
+                <p class="font-handwriting text-gray-800 text-lg leading-relaxed mb-4">
+                    {{ note.content }}
+                </p>
+
+                <div class="flex items-center justify-between mt-auto pt-4 border-t border-yellow-100/50">
+                     <span class="text-xs text-yellow-600 font-medium">
+                        {{ note.createdAt|date('d M Y') }}
+                     </span>
+                     <a href="{{ path('lesson_show', {slug: note.lesson.slug, moduleSlug: note.lesson.module.slug, courseSlug: note.lesson.module.course.slug}) }}" class="text-xs font-bold text-yellow-700 hover:text-yellow-900 flex items-center gap-1">
+                        {{ 'Voir la leçon' | trans }} ->
+                     </a>
+                </div>
+            </div>
+	    {% else %}
+            <div class="col-span-full py-16 text-center bg-muted/30 rounded-3xl border-2 border-dashed border-border text-muted-foreground flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
+                <div class="w-16 h-16 bg-yellow-100 text-yellow-500 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </div>
+			    <p class="text-lg font-medium mb-2">{{'Votre bloc-notes est vide' | trans}}</p>
+                <p class="text-sm max-w-xs text-muted-foreground">{{ "Prenez des notes pendant vos leçons, elles apparaîtront ici !" | trans }}</p>
+            </div>
+	    {% endfor %}
+    </div>
+</div>
 {% endblock %}
