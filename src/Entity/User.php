@@ -127,6 +127,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $lastStreakDate = null;
 
+    #[ORM\Column(length: 50, options: ['default' => 'UTC'])]
+    private string $timezone = 'UTC';
+
+    #[ORM\ManyToMany(targetEntity: Skill::class, mappedBy: 'users')]
+    private Collection $skills;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PortfolioProject::class, orphanRemoval: true)]
+    private Collection $portfolioProjects;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: AssignmentSubmission::class, orphanRemoval: true)]
+    private Collection $assignmentSubmissions;
+
+    #[ORM\OneToMany(mappedBy: 'reviewer', targetEntity: PeerReview::class, orphanRemoval: true)]
+    private Collection $peerReviews;
+
     // #[ORM\Column(length: 255, options: ['default' => PaymentStatusEnum::UNPAID])]
     // private ?string $paymentStatus = PaymentStatusEnum::UNPAID;
     #[ORM\Column(type: 'string', enumType: PaymentStatusEnum::class, options: ['default' => PaymentStatusEnum::UNPAID])]
@@ -148,6 +163,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->badges = new ArrayCollection();
         $this->cohorts = new ArrayCollection();
         $this->likedComments = new ArrayCollection();
+        $this->skills = new ArrayCollection();
+        $this->portfolioProjects = new ArrayCollection();
+        $this->assignmentSubmissions = new ArrayCollection();
+        $this->peerReviews = new ArrayCollection();
     }
 
     public function __toString()
@@ -836,6 +855,135 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastStreakDate(?\DateTimeImmutable $lastStreakDate): static
     {
         $this->lastStreakDate = $lastStreakDate;
+
+        return $this;
+    }
+
+    public function getTimezone(): string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): static
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skill>
+     */
+    public function getSkills(): Collection
+    {
+        return $this->skills;
+    }
+
+    public function addSkill(Skill $skill): static
+    {
+        if (!$this->skills->contains($skill)) {
+            $this->skills->add($skill);
+            $skill->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skill $skill): static
+    {
+        if ($this->skills->removeElement($skill)) {
+            $skill->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PortfolioProject>
+     */
+    public function getPortfolioProjects(): Collection
+    {
+        return $this->portfolioProjects;
+    }
+
+    public function addPortfolioProject(PortfolioProject $portfolioProject): static
+    {
+        if (!$this->portfolioProjects->contains($portfolioProject)) {
+            $this->portfolioProjects->add($portfolioProject);
+            $portfolioProject->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioProject(PortfolioProject $portfolioProject): static
+    {
+        if ($this->portfolioProjects->removeElement($portfolioProject)) {
+            // set the owning side to null (unless already changed)
+            if ($portfolioProject->getUser() === $this) {
+                $portfolioProject->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AssignmentSubmission>
+     */
+    public function getAssignmentSubmissions(): Collection
+    {
+        return $this->assignmentSubmissions;
+    }
+
+    public function addAssignmentSubmission(AssignmentSubmission $assignmentSubmission): static
+    {
+        if (!$this->assignmentSubmissions->contains($assignmentSubmission)) {
+            $this->assignmentSubmissions->add($assignmentSubmission);
+            $assignmentSubmission->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignmentSubmission(AssignmentSubmission $assignmentSubmission): static
+    {
+        if ($this->assignmentSubmissions->removeElement($assignmentSubmission)) {
+            // set the owning side to null (unless already changed)
+            if ($assignmentSubmission->getUser() === $this) {
+                $assignmentSubmission->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PeerReview>
+     */
+    public function getPeerReviews(): Collection
+    {
+        return $this->peerReviews;
+    }
+
+    public function addPeerReview(PeerReview $peerReview): static
+    {
+        if (!$this->peerReviews->contains($peerReview)) {
+            $this->peerReviews->add($peerReview);
+            $peerReview->setReviewer($this);
+        }
+
+        return $this;
+    }
+
+    public function removePeerReview(PeerReview $peerReview): static
+    {
+        if ($this->peerReviews->removeElement($peerReview)) {
+            // set the owning side to null (unless already changed)
+            if ($peerReview->getReviewer() === $this) {
+                $peerReview->setReviewer(null);
+            }
+        }
 
         return $this;
     }

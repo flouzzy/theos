@@ -56,12 +56,16 @@ class Course
     #[ORM\ManyToMany(targetEntity: Cohort::class, mappedBy: 'courses')]
     private Collection $cohorts;
 
+    #[ORM\ManyToMany(targetEntity: Skill::class, mappedBy: 'courses')]
+    private Collection $skills;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->modules = new ArrayCollection();
         $this->completions = new ArrayCollection();
         $this->cohorts = new ArrayCollection();
+        $this->skills = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -270,6 +274,33 @@ class Course
     {
         if ($this->cohorts->removeElement($cohort)) {
             $cohort->removeCourse($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skill>
+     */
+    public function getSkills(): Collection
+    {
+        return $this->skills;
+    }
+
+    public function addSkill(Skill $skill): static
+    {
+        if (!$this->skills->contains($skill)) {
+            $this->skills->add($skill);
+            $skill->addCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skill $skill): static
+    {
+        if ($this->skills->removeElement($skill)) {
+            $skill->removeCourse($this);
         }
 
         return $this;

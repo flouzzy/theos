@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 
+use App\Entity\PortfolioProject;
+use App\Entity\Skill;
 use App\Event\UserUpdatedEvent;
 use App\Form\UserType;
 use App\Service\MediaManager;
@@ -101,5 +103,65 @@ class ProfileController extends AbstractController
         }
 
         return $this->redirectToRoute('login', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/add-skill', name: 'add_skill', methods: ['POST'])]
+    public function addSkill(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('add_skill', $submittedToken)) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('profile_index');
+        }
+
+        $skillName = trim($request->request->get('name'));
+        if ($skillName) {
+            $user = $this->getUser();
+            $skillRepo = $entityManager->getRepository(Skill::class);
+            $skill = $skillRepo->findOneBy(['name' => $skillName]);
+
+            if (!$skill) {
+                $skill = new Skill();
+                $skill->setName($skillName);
+                $entityManager->persist($skill);
+            }
+
+            if (!$user->getSkills()->contains($skill)) {
+                $user->addSkill($skill);
+                $entityManager->flush();
+                $this->addFlash('success', 'Skill added!');
+            }
+        }
+
+        return $this->redirectToRoute('profile_index');
+    }
+
+    #[Route('/add-portfolio', name: 'add_portfolio', methods: ['POST'])]
+    public function addPortfolio(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('add_portfolio', $submittedToken)) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('profile_index');
+        }
+
+        $title = trim($request->request->get('title'));
+        $description = trim($request->request->get('description'));
+        $url = trim($request->request->get('url'));
+
+        if ($title) {
+            $user = $this->getUser();
+            $project = new PortfolioProject();
+            $project->setTitle($title);
+            $project->setDescription($description);
+            $project->setUrl($url);
+            $project->setUser($user);
+
+            $entityManager->persist($project);
+            $entityManager->flush();
+            $this->addFlash('success', 'Project added to portfolio!');
+        }
+
+        return $this->redirectToRoute('profile_index');
     }
 }

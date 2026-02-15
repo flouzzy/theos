@@ -1,0 +1,97 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Discussion - {{ cohort.title }}{% endblock %}
+
+{% block content %}
+<div class="h-[calc(100vh-64px)] flex flex-col max-w-5xl mx-auto bg-background">
+    {# Header #}
+    <div class="flex items-center justify-between p-4 border-b border-border bg-card/50 backdrop-blur sticky top-0 z-10">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                {{ cohort.title|slice(0, 2)|upper }}
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">{{ cohort.title }}</h1>
+                <p class="text-xs text-muted-foreground">{{ cohort.users|length }} {{ 'membres' | trans }}</p>
+            </div>
+        </div>
+        <a href="{{ path('cohort_index') }}" class="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            {{ 'Fermer' | trans }}
+        </a>
+    </div>
+
+    {# Messages #}
+    <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/5 scroll-smooth" id="chat-container">
+        {% if conversation %}
+            {% for message in conversation.messages %}
+                <div class="flex w-full {{ message.sender == app.user ? 'justify-end' : 'justify-start' }} animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div class="max-w-[85%] sm:max-w-[70%] flex flex-col {{ message.sender == app.user ? 'items-end' : 'items-start' }}">
+                        {# Sender Name (Only for others) #}
+                        {% if message.sender != app.user %}
+                            <span class="text-[10px] text-muted-foreground font-medium mb-1 ml-1">{{ message.sender.fullname }}</span>
+                        {% endif %}
+
+                        {# Message Bubble #}
+                        <div class="px-4 py-2 rounded-2xl shadow-sm text-sm break-words
+                                    {{ message.sender == app.user
+                                       ? 'bg-primary text-primary-foreground rounded-tr-sm'
+                                       : 'bg-card border border-border text-foreground rounded-tl-sm' }}">
+                            {{ message.content }}
+                        </div>
+
+                        {# Time #}
+                        <span class="text-[10px] text-muted-foreground mt-1 mx-1 opacity-70">
+                            {{ message.createdAt|date('H:i') }}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="flex flex-col items-center justify-center h-full text-muted-foreground opacity-50">
+                    <svg class="w-16 h-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <p>{{ 'Aucun message pour le moment.' | trans }}</p>
+                    <p>{{ 'Soyez le premier à dire bonjour !' | trans }} 👋</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {# Input Area #}
+    <div class="p-4 bg-card border-t border-border">
+        <form method="POST" class="flex items-end gap-2 max-w-5xl mx-auto relative">
+            <input type="hidden" name="_token" value="{{ csrf_token('chat') }}">
+
+            <div class="flex-1 relative">
+                <input type="text" name="content" required autocomplete="off"
+                       placeholder="{{ 'Écrivez votre message...' | trans }}"
+                       class="w-full rounded-xl border border-input bg-muted/50 px-4 py-3 pr-12 text-sm focus:ring-2 focus:ring-primary focus:border-primary focus:bg-background transition-all shadow-inner"
+                       autofocus>
+                <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-muted">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <button type="submit" class="h-[46px] w-[46px] flex-shrink-0 flex items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                <svg class="w-5 h-5 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9-2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.getElementById('chat-container');
+        if(container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    });
+</script>
+{% endblock %}
