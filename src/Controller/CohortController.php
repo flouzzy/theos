@@ -33,10 +33,10 @@ class CohortController extends AbstractController
         $totalCompletedLessons = 0;
         
         // Optimisation: récupérer tous les IDs des leçons complétées par le user
-        $completedLessonIds = [];
+        $completedLessonMap = [];
         foreach ($user->getCompletions() as $completion) {
             if ($completion->getLesson()) {
-                $completedLessonIds[] = $completion->getLesson()->getId();
+                $completedLessonMap[$completion->getLesson()->getId()] = true;
             }
         }
 
@@ -50,7 +50,7 @@ class CohortController extends AbstractController
                     $courseLessonsCount++;
                     $totalLessons++;
                     
-                    if (in_array($lesson->getId(), $completedLessonIds)) {
+                    if (isset($completedLessonMap[$lesson->getId()])) {
                         $courseCompletedCount++;
                         $totalCompletedLessons++;
                     }
