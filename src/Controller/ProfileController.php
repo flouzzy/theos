@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 
+use App\Event\UserUpdatedEvent;
 use App\Form\UserType;
-use App\Service\BrevoApi;
 use App\Service\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,7 +25,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route('', name: 'index', priority: 3)]
-    public function index(EntityManagerInterface $entityManager, TranslatorInterface $translator, Request $request, BrevoApi $brevoApi): Response
+    public function index(EntityManagerInterface $entityManager, TranslatorInterface $translator, Request $request, EventDispatcherInterface $eventDispatcher): Response
     {
         /**
          * @var \App\Entity\User $user
@@ -46,11 +47,7 @@ class ProfileController extends AbstractController
                 $user->setImage($imageFileName);
             }
 
-            // !! TODO : remplacer par des events !!
-            $user->setFullname($user->getFirstname() . ' ' . $user->getLastname());
-
-            // Maj brevo
-            $brevoApi->addOrUpdateContact($user);
+            $eventDispatcher->dispatch(new UserUpdatedEvent($user));
 
             $entityManager->flush();
             $this->addFlash('success', $translator->trans('Your account has been updated'));
