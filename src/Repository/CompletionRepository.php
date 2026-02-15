@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Completion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Completion>
@@ -31,6 +32,24 @@ class CompletionRepository extends ServiceEntityRepository
             ->andWhere('c.completed = true')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @return int[]
+     */
+    public function findCompletedLessonIdsByUser(?UserInterface $user): array
+    {
+        if (!$user) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.lesson)')
+            ->andWhere('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleColumnResult();
     }
 
     //    /**

@@ -48,12 +48,7 @@ class LessonController extends AbstractController
     ): Response {
 
         // On récupère les leçons déjà complétées par l'utilisateur pour les identifier comme telles depuis le front
-        // @todo A optimiser !!
-        $completedLessons = $this->completionRepository->findBy(['user' => $this->getUser(), 'completed' => true]);
-        $completedLessonIdsByCurrentUser = [];
-        foreach ($completedLessons as $completed) {
-            $completedLessonIdsByCurrentUser[] = $completed->getLesson()->getId();
-        }
+        $completedLessonIdsByCurrentUser = $this->completionRepository->findCompletedLessonIdsByUser($this->getUser());
 
         return $this->render('lesson/show.html.twig', [
             'course' => $course,
