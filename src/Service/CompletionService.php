@@ -166,6 +166,35 @@ class CompletionService
             if (!$user->getBadges()->contains($badge)) {
                 $badge->addUser($user);
             }
+
+            // Check for Early Bird Badge (completed within 7 days of starting)
+            $createdAt = $courseCompletion->getCreatedAt() ?? new \DateTimeImmutable();
+            $now = new \DateTimeImmutable();
+            if ($now->diff($createdAt)->days < 7) {
+                $earlyBirdTitle = 'Early Bird: ' . $course->getTitle();
+                $badge = $badgeRepository->findOneBy(['title' => $earlyBirdTitle]);
+
+                if (!$badge) {
+                    $ebType = $this->entityManager->getRepository(\App\Entity\BadgeType::class)->findOneBy(['code' => 'EARLY_BIRD']);
+                    if (!$ebType) {
+                        $ebType = new \App\Entity\BadgeType();
+                        $ebType->setCode('EARLY_BIRD');
+                        $ebType->setTitle('Early Bird');
+                        $ebType->setDescription('Completed a course within 7 days');
+                        $this->entityManager->persist($ebType);
+                    }
+
+                    $badge = new \App\Entity\Badge();
+                    $badge->setTitle($earlyBirdTitle);
+                    $badge->setDescription('Completed ' . $course->getTitle() . ' within 7 days');
+                    $badge->setBadgeType($ebType);
+                    $this->entityManager->persist($badge);
+                }
+
+                if (!$user->getBadges()->contains($badge)) {
+                    $badge->addUser($user);
+                }
+            }
         }
 
         // MAj du statut du parcours

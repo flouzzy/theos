@@ -1,0 +1,65 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ 'Classement' | trans }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">{{ 'Classement Global' | trans }}</h1>
+
+    <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-border bg-muted/50">
+                    <th class="p-4 font-semibold text-foreground">#</th>
+                    <th class="p-4 font-semibold text-foreground">{{ 'Utilisateur' | trans }}</th>
+                    <th class="p-4 font-semibold text-foreground text-center">XP</th>
+                    <th class="p-4 font-semibold text-foreground text-center">{{ 'Série' | trans }}</th>
+                    <th class="p-4 font-semibold text-foreground text-center">{{ 'Badges' | trans }}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+                {% for user in topUsers %}
+                    <tr class="hover:bg-muted/30 transition-colors {{ app.user == user ? 'bg-indigo-50 dark:bg-indigo-900/20' : '' }}">
+                        <td class="p-4 font-bold text-muted-foreground w-16">
+                            {% if loop.index == 1 %}🥇{% elseif loop.index == 2 %}🥈{% elseif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
+                        </td>
+                        <td class="p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full overflow-hidden bg-muted border border-border">
+                                {% if user.image %}
+                                    <img src="{{ asset(user.image) }}" alt="{{ user.fullname }}" class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center font-bold text-muted-foreground text-xs">
+                                        {{ user.firstname|first }}{{ user.lastname|first }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <span class="font-medium {{ app.user == user ? 'text-indigo-600 dark:text-indigo-400' : 'text-foreground' }}">
+                                {{ user.fullname }}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center font-bold text-indigo-600">{{ user.xp }} XP</td>
+                        <td class="p-4 text-center">
+                            {% if user.streak > 0 %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                                    🔥 {{ user.streak }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted-foreground text-xs">-</span>
+                            {% endif %}
+                        </td>
+                         <td class="p-4 text-center font-medium">
+                            {{ user.badges.count }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="p-8 text-center text-muted-foreground">
+                            {{ 'Aucun utilisateur trouvé.' | trans }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

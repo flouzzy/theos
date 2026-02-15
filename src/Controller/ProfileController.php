@@ -75,6 +75,8 @@ class ProfileController extends AbstractController
                 'completed' => $completedCoursesCount,
                 'hours' => $learningHours,
                 'notes' => $notesCount,
+                'xp' => $user->getXp(),
+                'streak' => $user->getStreak(),
             ],
             'badges' => $user->getBadges(),
         ]);

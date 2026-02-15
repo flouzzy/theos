@@ -118,6 +118,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Comment::class, mappedBy: 'likes')]
     private Collection $likedComments;
 
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $xp = 0;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $streak = 0;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $lastStreakDate = null;
+
     // #[ORM\Column(length: 255, options: ['default' => PaymentStatusEnum::UNPAID])]
     // private ?string $paymentStatus = PaymentStatusEnum::UNPAID;
     #[ORM\Column(type: 'string', enumType: PaymentStatusEnum::class, options: ['default' => PaymentStatusEnum::UNPAID])]
@@ -785,6 +794,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->likedComments->removeElement($likedComment)) {
             $likedComment->removeLike($this);
         }
+
+        return $this;
+    }
+
+    public function getXp(): int
+    {
+        return $this->xp;
+    }
+
+    public function setXp(int $xp): static
+    {
+        $this->xp = $xp;
+
+        return $this;
+    }
+
+    public function addXp(int $amount): static
+    {
+        $this->xp += $amount;
+        return $this;
+    }
+
+    public function getStreak(): int
+    {
+        return $this->streak;
+    }
+
+    public function setStreak(int $streak): static
+    {
+        $this->streak = $streak;
+
+        return $this;
+    }
+
+    public function getLastStreakDate(): ?\DateTimeImmutable
+    {
+        return $this->lastStreakDate;
+    }
+
+    public function setLastStreakDate(?\DateTimeImmutable $lastStreakDate): static
+    {
+        $this->lastStreakDate = $lastStreakDate;
 
         return $this;
     }
