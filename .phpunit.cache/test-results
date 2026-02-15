@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"App\\Tests\\Service\\CompletionServiceTest::testSetModuleCompletionIncomplete":0.018,"App\\Tests\\Service\\CompletionServiceTest::testSetModuleCompletionComplete":0.002,"App\\Tests\\Service\\CompletionServiceTest::testSetCourseCompletionIncomplete":0.003,"App\\Tests\\Service\\CompletionServiceTest::testSetCourseCompletionComplete":0.001}}
