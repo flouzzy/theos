@@ -82,6 +82,7 @@ self.addEventListener("fetch", (event) => {
     }
 
     // Exclude video files from caching (handled by OfflineVideoManager)
+    // This prevents double caching (Service Worker + IndexedDB) and potential storage quota issues.
     if (requestUrl.pathname.match(/\.(mp4|webm|ogg|mov)$/i) || event.request.destination === 'video') {
       return;
     }

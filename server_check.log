@@ -1,0 +1,4 @@
+[Sun Feb 15 17:32:58 2026] PHP 8.3.6 Development Server (http://127.0.0.1:8000) started
+[Sun Feb 15 17:33:05 2026] 127.0.0.1:59712 Accepted
+[Sun Feb 15 17:33:05 2026] 127.0.0.1:59712 [404]: HEAD /assets/lib/OfflineVideoManager.js - No such file or directory
+[Sun Feb 15 17:33:05 2026] 127.0.0.1:59712 Closing
