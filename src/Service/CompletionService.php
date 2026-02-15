@@ -122,6 +122,36 @@ class CompletionService
                 $content,
                 $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
             );
+
+            // Award Badge
+            $badgeTitle = 'Completed ' . $course->getTitle();
+            $badgeRepository = $this->entityManager->getRepository(\App\Entity\Badge::class);
+            $badge = $badgeRepository->findOneBy(['title' => $badgeTitle]);
+
+            if (!$badge) {
+                // Find or create BadgeType
+                $badgeTypeRepository = $this->entityManager->getRepository(\App\Entity\BadgeType::class);
+                $badgeType = $badgeTypeRepository->findOneBy(['code' => 'COURSE_COMPLETION']);
+
+                if (!$badgeType) {
+                    $badgeType = new \App\Entity\BadgeType();
+                    $badgeType->setTitle('Course Completion');
+                    $badgeType->setCode('COURSE_COMPLETION');
+                    $badgeType->setDescription('Badge awarded for completing a course.');
+                    $this->entityManager->persist($badgeType);
+                }
+
+                $badge = new \App\Entity\Badge();
+                $badge->setTitle($badgeTitle);
+                $badge->setDescription('Awarded for completing the course: ' . $course->getTitle());
+                $badge->setBadgeType($badgeType);
+                $this->entityManager->persist($badge);
+            }
+
+            // Use User's badge collection to avoid loading all users of a badge (performance optimization)
+            if (!$user->getBadges()->contains($badge)) {
+                $badge->addUser($user);
+            }
         }
 
         // MAj du statut du parcours

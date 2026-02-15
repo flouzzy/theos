@@ -49,10 +49,21 @@ class CourseController extends AbstractController
             $completedLessonIdsByCurrentUser[] = $completed->getLesson()->getId();
         }
 
+        $isCompleted = false;
+        if ($this->getUser()) {
+            $completion = $courseCompletionRepository->findOneBy([
+                'user' => $this->getUser(),
+                'course' => $course,
+                'completed' => true
+            ]);
+            $isCompleted = (bool) $completion;
+        }
+
         return $this->render('course/show.html.twig', [
             'course' => $course,
             'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false,
-            'completedLessonIds' => $completedLessonIdsByCurrentUser
+            'completedLessonIds' => $completedLessonIdsByCurrentUser,
+            'isCompleted' => $isCompleted
         ]);
     }
 

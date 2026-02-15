@@ -101,8 +101,6 @@ class NoteController extends AbstractController
                 'moduleSlug' => $module->getSlug(),
                 'id' => $lesson->getId()
             ]);
-
-            return $this->redirectToRoute('lesson_show', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('note/_show.html.twig', [

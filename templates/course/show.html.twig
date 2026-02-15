@@ -51,6 +51,16 @@
                     </svg>
                     <span>4h {{ 'de contenu' | trans }}</span>
                 </div>
+
+                {# Certificate #}
+                {% if isCompleted %}
+                    <a href="{{ path('certificate_show', {id: course.id}) }}" class="flex items-center gap-2 text-primary font-medium hover:underline" target="_blank">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{{ 'Télécharger le certificat' | trans }}</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>
