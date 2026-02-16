@@ -51,6 +51,9 @@ class Cohort
     #[ORM\OneToMany(mappedBy: 'cohort', targetEntity: Event::class)]
     private Collection $events;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Conversation $conversation = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -238,6 +241,18 @@ class Cohort
                 $event->setCohort(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getConversation(): ?Conversation
+    {
+        return $this->conversation;
+    }
+
+    public function setConversation(?Conversation $conversation): static
+    {
+        $this->conversation = $conversation;
 
         return $this;
     }

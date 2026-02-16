@@ -9,6 +9,7 @@ use App\Entity\Module;
 use App\Event\LessonCompleteEvent;
 use App\Repository\CompletionRepository;
 use App\Service\CompletionService;
+use App\Service\GamificationService;
 use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +35,7 @@ class LessonController extends AbstractController
         private MessageBusInterface $bus,
         private EventDispatcherInterface $dispatcher,
         private CompletionService $completionService,
+        private GamificationService $gamificationService,
     ) {}
     #[Route('/{id}', name: 'show')]
     public function show(
@@ -98,6 +100,8 @@ class LessonController extends AbstractController
         // Check if completion already exist
         // If not, create it
         $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
+        $wasCompleted = $completion && $completion->isCompleted();
+
         if (!$completion) {
             $completion = new Completion();
         }
@@ -110,6 +114,10 @@ class LessonController extends AbstractController
 
         // Maj du statut de completion d'un parcours
         $this->completionService->setCourseCompletion($course);
+
+        if ($completed && !$wasCompleted) {
+            $this->gamificationService->addXp($user, 10, 'lesson_completed');
+        }
 
         $this->entityManager->persist($completion);
         $this->entityManager->flush();
@@ -204,6 +212,8 @@ class LessonController extends AbstractController
             
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
+
+            $this->gamificationService->addXp($this->getUser(), 5, 'comment_posted');
             
             $this->addFlash('success', 'Commentaire publié !');
         }
