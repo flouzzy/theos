@@ -22,9 +22,17 @@ security:
         check_path: login
         enable_csrf: true
 
+      login_throttling:
+        max_attempts: 5
+        interval: '1 minute'
+
       logout:
         path: /logout
         target: home
+
+      two_factor:
+        auth_form_path: 2fa_login
+        check_path: 2fa_login_check
 
       remember_me:
         secret: "%kernel.secret%" # required

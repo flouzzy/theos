@@ -25,9 +25,11 @@ class SendMail
         array $context
     ): void {
         //On crée le mail
+        $toAddresses = is_array($to) ? $to : [$to];
+
         $email = (new TemplatedEmail())
             ->from($from)
-            ->to($to)
+            ->to(...$toAddresses)
             ->subject($subject)
             ->htmlTemplate($template)
             ->context($context);

@@ -33,3 +33,12 @@ services:
   App\Service\MediaManager:
     arguments:
       $targetDirectory: "%upload_directory%"
+
+  Redis:
+    class: Redis
+    factory: ['Symfony\Component\Cache\Adapter\RedisAdapter', 'createConnection']
+    arguments: ['%env(REDIS_URL)%']
+
+  Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
+    arguments:
+      - '@Redis'

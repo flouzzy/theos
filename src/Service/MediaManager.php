@@ -13,18 +13,18 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class MediaManager
 {
-    private $targetDirectory;
-    private $slugger;
-    private $filesystem;
+    private string $targetDirectory;
+    private SluggerInterface $slugger;
+    private Filesystem $filesystem;
 
-    public function __construct($targetDirectory, SluggerInterface $slugger, private ImageOptimizer $imageOptimizer, private Security $security, private LoggerInterface $logger, private HttpClientInterface $httpClient)
+    public function __construct(string $targetDirectory, SluggerInterface $slugger, private ImageOptimizer $imageOptimizer, private Security $security, private LoggerInterface $logger, private HttpClientInterface $httpClient)
     {
         $this->targetDirectory = $targetDirectory;
         $this->slugger = $slugger;
         $this->filesystem  = new Filesystem();
     }
 
-    public function upload(UploadedFile $file, string $mediaType = 'course', $params = [])
+    public function upload(UploadedFile $file, string $mediaType = 'course', array $params = []): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = strtolower($this->slugger->slug($originalFilename));
@@ -40,7 +40,7 @@ class MediaManager
         } catch (FileException $exception) {
             // ... handle exception if something happens during file upload
             /**
-             * @var $user \App\Entity\User
+             * @var \App\Entity\User|null $user
              */
             $user = $this->security->getUser();
             $this->logger->error(
@@ -62,7 +62,7 @@ class MediaManager
      * @param string $mediaType
      * @return void
      */
-    public function deleteFile(string $fileName, string $mediaType = 'post')
+    public function deleteFile(string $fileName, string $mediaType = 'post'): void
     {
         try {
             $this->filesystem->remove($this->getTargetDirectory($mediaType) . "/$fileName");
@@ -71,12 +71,12 @@ class MediaManager
         }
     }
 
-    public function getTargetDirectory(string $mediaType = null)
+    public function getTargetDirectory(?string $mediaType = null): string
     {
         return $mediaType ? "$this->targetDirectory/$mediaType" : $this->targetDirectory;
     }
 
-    public function downloadFileByUrl($fileUrl, $mediaType = null)
+    public function downloadFileByUrl(string $fileUrl, ?string $mediaType = null): string|false
     {
         // Check for valid protocol
         if (!preg_match('/^https?:\/\//i', $fileUrl)) {
@@ -88,6 +88,7 @@ class MediaManager
             return false;
         }
 
+        $fileFullPath = null;
         try {
             $targetDirectory = $this->getTargetDirectory($mediaType);
 
@@ -140,7 +141,7 @@ class MediaManager
         } catch (FileException $exception) {
             // ... handle exception if something happens during file download
             /**
-             * @var $user \App\Entity\User
+             * @var \App\Entity\User|null $user
              */
             $user = $this->security->getUser();
             $this->logger->error(
@@ -153,7 +154,7 @@ class MediaManager
             );
         } catch (TransportExceptionInterface $e) {
             /**
-             * @var $user \App\Entity\User
+             * @var \App\Entity\User|null $user
              */
             $user = $this->security->getUser();
             $this->logger->error(
@@ -167,7 +168,7 @@ class MediaManager
         } catch (\Throwable $e) {
             // Catch other exceptions
             /**
-             * @var $user \App\Entity\User
+             * @var \App\Entity\User|null $user
              */
             $user = $this->security->getUser();
             $this->logger->error(
@@ -189,7 +190,7 @@ class MediaManager
      * @param string $content
      * @return string
      */
-    public function downloadImageFromContent($content, $mediaType = 'post')
+    public function downloadImageFromContent(string $content, string $mediaType = 'post'): ?string
     {
         // Extract image URL from content
         $fileDownloaded = null;
@@ -201,6 +202,10 @@ class MediaManager
             if (!empty($imageUrl)) {
                 $fileDownloaded = $this->downloadFileByUrl($imageUrl, $mediaType);
             }
+        }
+
+        if ($fileDownloaded === false) {
+            return $imageUrl;
         }
 
         // On retourne l'image téléchargée ou le lien direct (distant) vers l'image
