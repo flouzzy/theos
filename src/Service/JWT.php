@@ -27,8 +27,15 @@ class JWT
         }
 
         // On encode en base64
-        $base64Header = base64_encode(json_encode($header));
-        $base64Payload = base64_encode(json_encode($payload));
+        $headerJson = json_encode($header);
+        $payloadJson = json_encode($payload);
+
+        if ($headerJson === false || $payloadJson === false) {
+            throw new \RuntimeException('Unable to encode JWT payload or header');
+        }
+
+        $base64Header = base64_encode($headerJson);
+        $base64Payload = base64_encode($payloadJson);
 
         // On "nettoie" les valeurs encodées (retrait des +, / et =)
         $base64Header = str_replace(['+', '/', '='], ['-', '_', ''], $base64Header);
@@ -66,6 +73,7 @@ class JWT
         $array = explode('.', $token);
 
         // On décode le Payload
+        /** @var array */
         $payload = json_decode(base64_decode($array[1]), true);
 
         return $payload;
@@ -78,6 +86,7 @@ class JWT
         $array = explode('.', $token);
 
         // On décode le Header
+        /** @var array */
         $header = json_decode(base64_decode($array[0]), true);
 
         return $header;
@@ -90,11 +99,11 @@ class JWT
 
         $now = new DateTimeImmutable();
 
-        return $payload['exp'] < $now->getTimestamp();
+        return (int) $payload['exp'] < $now->getTimestamp();
     }
 
     // On vérifie la signature du Token
-    public function check(string $token, string $secret)
+    public function check(string $token, string $secret): bool
     {
         // On récupère le header et le payload
         $header = $this->getHeader($token);

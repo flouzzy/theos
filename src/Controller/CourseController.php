@@ -27,9 +27,19 @@ class CourseController extends AbstractController
              $cohorts = $this->getUser()->getCohorts();
         }
 
+        $subscribedCourseIds = [];
+        if ($this->getUser()) {
+            /** @var \App\Entity\User $user */
+            $user = $this->getUser();
+            foreach ($user->getCourses() as $course) {
+                $subscribedCourseIds[] = $course->getId();
+            }
+        }
+
         return $this->render('course/index.html.twig', [
-            'courses' => $courseRepository->findBy(['status' => ['published', 'progress']]),
-            'cohorts' => $cohorts
+            'courses' => $courseRepository->findAllPublished(),
+            'cohorts' => $cohorts,
+            'subscribedCourseIds' => $subscribedCourseIds
         ]);
     }
 

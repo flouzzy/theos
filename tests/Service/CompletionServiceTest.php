@@ -65,9 +65,9 @@ class CompletionServiceTest extends TestCase
 
         // Completion not found or not completed
         $completionRepo->expects($this->once())
-            ->method('findOneBy')
-            ->with(['user' => $user, 'lesson' => $lesson])
-            ->willReturn(null);
+            ->method('findBy')
+            ->with(['user' => $user, 'lesson' => [$lesson]])
+            ->willReturn([]);
 
         // ModuleCompletion setup
         $moduleCompletion = new ModuleCompletion();
@@ -100,11 +100,13 @@ class CompletionServiceTest extends TestCase
 
         $completion = $this->createMock(Completion::class);
         $completion->method('isCompleted')->willReturn(true);
+        $completion->method('getLesson')->willReturn($lesson);
+        $lesson->method('getId')->willReturn(1);
 
         $completionRepo = $this->createMock(EntityRepository::class);
-        $completionRepo->method('findOneBy')
-            ->with(['user' => $user, 'lesson' => $lesson])
-            ->willReturn($completion);
+        $completionRepo->method('findBy')
+            ->with(['user' => $user, 'lesson' => [$lesson]])
+            ->willReturn([$completion]);
 
         $moduleCompletionRepo = $this->createMock(EntityRepository::class);
         $moduleCompletion = new ModuleCompletion();
@@ -223,11 +225,22 @@ class CompletionServiceTest extends TestCase
             ->with(['user' => $user, 'course' => $course])
             ->willReturn($courseCompletion);
 
+        $badge = $this->createMock(\App\Entity\Badge::class);
+        $badgeRepo = $this->createMock(EntityRepository::class);
+        $badgeRepo->method('findOneBy')->willReturn($badge);
+
+        $badgeTypeRepo = $this->createMock(EntityRepository::class);
+
         $this->entityManager->method('getRepository')
             ->will($this->returnValueMap([
                 [CourseCompletion::class, $courseCompletionRepo],
                 [Completion::class, $completionRepo],
+                [\App\Entity\Badge::class, $badgeRepo],
+                [\App\Entity\BadgeType::class, $badgeTypeRepo],
             ]));
+
+        $user->method('getBadges')->willReturn(new ArrayCollection());
+        $badge->expects($this->once())->method('addUser')->with($user);
 
         $this->entityManager->expects($this->once())->method('persist')->with($courseCompletion);
 

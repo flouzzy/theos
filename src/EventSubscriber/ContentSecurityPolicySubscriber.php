@@ -1,0 +1,29 @@
+<?php
+
+namespace App\EventSubscriber;
+
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+
+class ContentSecurityPolicySubscriber implements EventSubscriberInterface
+{
+    public function onKernelResponse(ResponseEvent $event): void
+    {
+        $response = $event->getResponse();
+
+        // Define the CSP policy
+        // Note: 'unsafe-inline' and 'unsafe-eval' are allowed here for compatibility with Stimulus/Hotwire/Tailwind as per project requirements.
+        // In a stricter environment, we would use nonces or hashes.
+        $policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none';";
+
+        $response->headers->set('Content-Security-Policy', $policy);
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::RESPONSE => 'onKernelResponse',
+        ];
+    }
+}

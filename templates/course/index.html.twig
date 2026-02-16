@@ -82,8 +82,8 @@
                         </div>
                     {% endif %}
 
-                    {# Inscrit Badge (Mocked logic for now, relies on isUserSubscribed check ideally) #}
-                    {% if app.user and course.isUserSubscribed(app.user) %}
+                    {# Inscrit Badge #}
+                    {% if app.user and course.id in subscribedCourseIds %}
                         <span class="absolute top-4 right-4 bg-success text-success-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-md backdrop-blur-md bg-success/90">
                             {{ 'Inscrit' | trans }}
                         </span>
@@ -125,7 +125,7 @@
 
                     <div class="mt-5">
                         <a href="{{ path('course_show', {slug: course.slug}) }}" class="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-primary/90 hover:shadow-md transition-all active:scale-95">
-                            {% if app.user and course.isUserSubscribed(app.user) %}
+                            {% if app.user and course.id in subscribedCourseIds %}
                                 {{ 'Continuer' | trans }}
                             {% else %}
                                 {{ 'Voir le cours' | trans }}

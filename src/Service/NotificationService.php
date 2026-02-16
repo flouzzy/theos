@@ -21,7 +21,7 @@ class NotificationService
     ) {
     }
 
-    public function createNotification(string $content, string $title = '', User $user = null): Notification
+    public function createNotification(string $content, string $title = '', ?User $user = null): Notification
     {
         // Créer la notification
         $notification = new Notification();
@@ -43,10 +43,16 @@ class NotificationService
 
     private function sendNotification(Notification $notification, User $user): void
     {
+        $userEmail = $user->getEmail();
+        if (!$userEmail) {
+            $this->logger->error('Cannot send notification: User has no email.', ['user_id' => $user->getId()]);
+            return;
+        }
+
         $email = (new TemplatedEmail())
             ->from('no-reply@academie.lerocher.fr')
-            ->to($user->getEmail())
-            ->subject($notification->getTitle())
+            ->to($userEmail)
+            ->subject($notification->getTitle() ?? 'Notification')
             // path of the Twig template to render
             ->htmlTemplate('notification/email.html.twig')
             ->context([
