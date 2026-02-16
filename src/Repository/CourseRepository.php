@@ -21,6 +21,20 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
+    /**
+     * @return Course[] Returns an array of Course objects with modules eager loaded
+     */
+    public function findAllPublished(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.modules', 'm')
+            ->addSelect('m')
+            ->where('c.status IN (:statuses)')
+            ->setParameter('statuses', ['published', 'progress'])
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Course[] Returns an array of Course objects
 //     */

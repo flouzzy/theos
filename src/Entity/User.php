@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
 
     use DateTimeAble;
@@ -147,6 +148,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', enumType: PaymentStatusEnum::class, options: ['default' => PaymentStatusEnum::UNPAID])]
     private PaymentStatusEnum $paymentStatus = PaymentStatusEnum::UNPAID;
 
+    #[ORM\Column(nullable: true)]
+    private ?string $googleAuthenticatorSecret = null;
 
     public function __construct()
     {
@@ -817,173 +820,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getXp(): int
+    public function isTotpAuthenticationEnabled(): bool
     {
-        return $this->xp;
+        return null !== $this->googleAuthenticatorSecret;
     }
 
-    public function setXp(int $xp): static
+    public function getTotpAuthenticationUsername(): string
     {
-        $this->xp = $xp;
-
-        return $this;
+        return (string) $this->email;
     }
 
-    public function addXp(int $amount): static
+    public function getTotpAuthenticationConfiguration(): ?\Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface
     {
-        $this->xp += $amount;
-        return $this;
-    }
-
-    public function getStreak(): int
-    {
-        return $this->streak;
-    }
-
-    public function setStreak(int $streak): static
-    {
-        $this->streak = $streak;
-
-        return $this;
-    }
-
-    public function getLastStreakDate(): ?\DateTimeImmutable
-    {
-        return $this->lastStreakDate;
-    }
-
-    public function setLastStreakDate(?\DateTimeImmutable $lastStreakDate): static
-    {
-        $this->lastStreakDate = $lastStreakDate;
-
-        return $this;
-    }
-
-    public function getTimezone(): string
-    {
-        return $this->timezone;
-    }
-
-    public function setTimezone(string $timezone): static
-    {
-        $this->timezone = $timezone;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Skill>
-     */
-    public function getSkills(): Collection
-    {
-        return $this->skills;
-    }
-
-    public function addSkill(Skill $skill): static
-    {
-        if (!$this->skills->contains($skill)) {
-            $this->skills->add($skill);
-            $skill->addUser($this);
+        if ($this->googleAuthenticatorSecret) {
+            return new \Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration($this->googleAuthenticatorSecret, \Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration::ALGORITHM_SHA1, 30, 6);
         }
-
-        return $this;
+        return null;
     }
 
-    public function removeSkill(Skill $skill): static
+    public function getGoogleAuthenticatorSecret(): ?string
     {
-        if ($this->skills->removeElement($skill)) {
-            $skill->removeUser($this);
-        }
-
-        return $this;
+        return $this->googleAuthenticatorSecret;
     }
 
-    /**
-     * @return Collection<int, PortfolioProject>
-     */
-    public function getPortfolioProjects(): Collection
+    public function setGoogleAuthenticatorSecret(?string $googleAuthenticatorSecret): static
     {
-        return $this->portfolioProjects;
-    }
-
-    public function addPortfolioProject(PortfolioProject $portfolioProject): static
-    {
-        if (!$this->portfolioProjects->contains($portfolioProject)) {
-            $this->portfolioProjects->add($portfolioProject);
-            $portfolioProject->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removePortfolioProject(PortfolioProject $portfolioProject): static
-    {
-        if ($this->portfolioProjects->removeElement($portfolioProject)) {
-            // set the owning side to null (unless already changed)
-            if ($portfolioProject->getUser() === $this) {
-                $portfolioProject->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, AssignmentSubmission>
-     */
-    public function getAssignmentSubmissions(): Collection
-    {
-        return $this->assignmentSubmissions;
-    }
-
-    public function addAssignmentSubmission(AssignmentSubmission $assignmentSubmission): static
-    {
-        if (!$this->assignmentSubmissions->contains($assignmentSubmission)) {
-            $this->assignmentSubmissions->add($assignmentSubmission);
-            $assignmentSubmission->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAssignmentSubmission(AssignmentSubmission $assignmentSubmission): static
-    {
-        if ($this->assignmentSubmissions->removeElement($assignmentSubmission)) {
-            // set the owning side to null (unless already changed)
-            if ($assignmentSubmission->getUser() === $this) {
-                $assignmentSubmission->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, PeerReview>
-     */
-    public function getPeerReviews(): Collection
-    {
-        return $this->peerReviews;
-    }
-
-    public function addPeerReview(PeerReview $peerReview): static
-    {
-        if (!$this->peerReviews->contains($peerReview)) {
-            $this->peerReviews->add($peerReview);
-            $peerReview->setReviewer($this);
-        }
-
-        return $this;
-    }
-
-    public function removePeerReview(PeerReview $peerReview): static
-    {
-        if ($this->peerReviews->removeElement($peerReview)) {
-            // set the owning side to null (unless already changed)
-            if ($peerReview->getReviewer() === $this) {
-                $peerReview->setReviewer(null);
-            }
-        }
+        $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
 
         return $this;
     }
