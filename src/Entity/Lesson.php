@@ -64,6 +64,9 @@ class Lesson
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $itemOrder = null;
 
+    #[ORM\OneToOne(mappedBy: 'lesson', cascade: ['persist', 'remove'])]
+    private ?Assignment $assignment = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -305,6 +308,23 @@ class Lesson
                 $comment->setLesson(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAssignment(): ?Assignment
+    {
+        return $this->assignment;
+    }
+
+    public function setAssignment(Assignment $assignment): static
+    {
+        // set the owning side of the relation if necessary
+        if ($assignment->getLesson() !== $this) {
+            $assignment->setLesson($this);
+        }
+
+        $this->assignment = $assignment;
 
         return $this;
     }

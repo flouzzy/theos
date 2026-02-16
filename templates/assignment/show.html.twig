@@ -1,0 +1,71 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ assignment.title }} - {{ 'Devoir' | trans }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6 space-y-8">
+
+    {# Assignment Header #}
+    <div>
+        <h1 class="text-3xl font-bold mb-2">{{ assignment.title }}</h1>
+        <div class="prose max-w-none text-muted-foreground">
+            {{ assignment.description|raw }}
+        </div>
+    </div>
+
+    {# My Submission Section #}
+    <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+        <div class="px-6 py-4 border-b border-border bg-muted/30 flex justify-between items-center">
+            <h2 class="text-lg font-semibold">{{ 'Ma Soumission' | trans }}</h2>
+            {% if submission %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                    {{ submission.status|capitalize }}
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="p-6">
+            {% if submission %}
+                <div class="bg-muted p-4 rounded-lg mb-4 font-mono text-sm whitespace-pre-wrap">
+                    {{ submission.content }}
+                </div>
+                <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ 'Soumis le' | trans }} {{ submission.createdAt|date('d M Y à H:i') }}</span>
+                </div>
+            {% else %}
+                <form action="{{ path('assignment_submit', {id: assignment.id}) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('submit_assignment' ~ assignment.id) }}">
+                    <div class="mb-4">
+                        <label for="content" class="block text-sm font-medium mb-2">{{ 'Votre réponse' | trans }}</label>
+                        <textarea name="content" id="content" class="w-full h-48 p-3 rounded-md border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary resize-y" placeholder="{{ 'Rédigez votre réponse ici...' | trans }}"></textarea>
+                    </div>
+                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
+                        {{ 'Envoyer le devoir' | trans }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Peer Review Section #}
+    <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+        <div class="px-6 py-4 border-b border-border bg-muted/30">
+            <h2 class="text-lg font-semibold">{{ 'Revue par les pairs' | trans }}</h2>
+        </div>
+        <div class="p-6">
+            <p class="text-muted-foreground mb-4">{{ 'Évaluez le travail de vos pairs pour gagner des XP et les aider à progresser.' | trans }}</p>
+            <a href="{{ path('assignment_review_pool', {id: assignment.id}) }}" class="inline-flex items-center justify-center rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-muted transition-colors gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                {{ 'Trouver un devoir à corriger' | trans }}
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

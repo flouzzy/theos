@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Course;
 use App\Entity\CourseCompletion;
+use App\Event\CourseSubscribedEvent;
 use App\Repository\CohortRepository;
 use App\Repository\CompletionRepository;
 use App\Repository\CourseCompletionRepository;
@@ -11,6 +12,7 @@ use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -78,7 +80,7 @@ class CourseController extends AbstractController
     }
 
     #[Route('/{slug}/subscribe', name: 'subscribe')]
-    public function subscribeToCourse(Course $course, EntityManagerInterface $entityManager): Response
+    public function subscribeToCourse(Course $course, EntityManagerInterface $entityManager, EventDispatcherInterface $dispatcher): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
@@ -90,6 +92,8 @@ class CourseController extends AbstractController
         $currentUser->subscribeToCourse($course);
 
         $entityManager->flush();
+
+        $dispatcher->dispatch(new CourseSubscribedEvent($course, $currentUser));
 
         $this->addFlash('app', 'Congratulations! Your registration has been processed');
 

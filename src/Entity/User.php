@@ -119,6 +119,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\ManyToMany(targetEntity: Comment::class, mappedBy: 'likes')]
     private Collection $likedComments;
 
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $xp = 0;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $streak = 0;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $lastStreakDate = null;
+
+    #[ORM\Column(length: 50, options: ['default' => 'UTC'])]
+    private string $timezone = 'UTC';
+
+    #[ORM\ManyToMany(targetEntity: Skill::class, mappedBy: 'users')]
+    private Collection $skills;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PortfolioProject::class, orphanRemoval: true)]
+    private Collection $portfolioProjects;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: AssignmentSubmission::class, orphanRemoval: true)]
+    private Collection $assignmentSubmissions;
+
+    #[ORM\OneToMany(mappedBy: 'reviewer', targetEntity: PeerReview::class, orphanRemoval: true)]
+    private Collection $peerReviews;
+
     // #[ORM\Column(length: 255, options: ['default' => PaymentStatusEnum::UNPAID])]
     // private ?string $paymentStatus = PaymentStatusEnum::UNPAID;
     #[ORM\Column(type: 'string', enumType: PaymentStatusEnum::class, options: ['default' => PaymentStatusEnum::UNPAID])]
@@ -142,6 +166,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->badges = new ArrayCollection();
         $this->cohorts = new ArrayCollection();
         $this->likedComments = new ArrayCollection();
+        $this->skills = new ArrayCollection();
+        $this->portfolioProjects = new ArrayCollection();
+        $this->assignmentSubmissions = new ArrayCollection();
+        $this->peerReviews = new ArrayCollection();
     }
 
     public function __toString()

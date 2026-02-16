@@ -70,20 +70,48 @@
             </nav>
 
             {# Video Container #}
-            <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-border aspect-video">
-                {% if currentLesson.videoEmbeded %}
-                    {{ currentLesson.videoEmbeded|raw }}
-                {% else %}
-                    <div class="absolute inset-0 flex items-center justify-center text-white/50 bg-slate-900">
-                        <div class="text-center">
-                            <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p>{{ 'Aucune vidéo pour cette leçon' | trans }}</p>
+            <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-border aspect-video group"
+                 data-controller="offline-video"
+                 data-offline-video-url-value="{{ currentLesson.videoUrl }}"
+                 data-offline-video-lesson-id-value="{{ currentLesson.id }}"
+            >
+                <div data-offline-video-target="playerContainer" class="w-full h-full">
+                    {% if currentLesson.videoEmbeded %}
+                        {{ currentLesson.videoEmbeded|raw }}
+                    {% else %}
+                        <div class="absolute inset-0 flex items-center justify-center text-white/50 bg-slate-900">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p>{{ 'Aucune vidéo pour cette leçon' | trans }}</p>
+                            </div>
                         </div>
+                    {% endif %}
+                </div>
+
+                {# Offline Controls #}
+                <div class="absolute top-4 right-4 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" data-offline-video-target="actions">
+                    <button type="button" data-offline-video-target="downloadBtn" data-action="click->offline-video#download" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-3 hidden">
+                        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        {{ 'Download' | trans }}
+                    </button>
+                    <button type="button" data-offline-video-target="playBtn" data-action="click->offline-video#play" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3 hidden">
+                         <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>
+                        {{ 'Play Offline' | trans }}
+                    </button>
+                    <button type="button" data-offline-video-target="deleteBtn" data-action="click->offline-video#delete" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-9 px-3 hidden" title="{{ 'Delete offline video' | trans }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                    <div data-offline-video-target="progressBar" class="hidden text-white text-xs bg-black/50 px-2 py-1 rounded flex items-center">
+                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Downloading...
                     </div>
-                {% endif %}
+                </div>
             </div>
 
             {# Lesson Title & Navigation #}
@@ -102,6 +130,15 @@
                     
                     {# Mark Complete / Next Action #}
                     {% include "lesson/_complete.html.twig" with {'nextButton': true} %}
+
+                    {% if currentLesson.assignment %}
+                         <a href="{{ path('assignment_show', {id: currentLesson.assignment.id}) }}" class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors gap-2 ml-2">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                            {{ 'Devoir' | trans }}
+                        </a>
+                    {% endif %}
                 </div>
             </div>
 
