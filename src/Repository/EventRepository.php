@@ -14,6 +14,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Event|null findOneBy(array $criteria, array $orderBy = null)
  * @method Event[]    findAll()
  * @method Event[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @phpstan-method Event|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
+ * @phpstan-method Event[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, int|null $limit = null, int|null $offset = null)
  */
 class EventRepository extends ServiceEntityRepository
 {
