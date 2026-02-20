@@ -33,7 +33,9 @@ class LessonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Set author
-            $lesson->setAuthor($this->getUser());
+            /** @var \App\Entity\User $user */
+            $user = $this->getUser();
+            $lesson->setAuthor($user);
 
 
             $entityManager->persist($lesson);
@@ -83,7 +85,8 @@ class LessonController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Lesson $lesson, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $lesson->getId(), $request->request->get('_token'))) {
+        $token = $request->request->get('_token');
+        if (is_string($token) && $this->isCsrfTokenValid('delete' . $lesson->getId(), $token)) {
             $entityManager->remove($lesson);
             $entityManager->flush();
 
