@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/courses/{courseSlug}/{moduleSlug}/lesson', name: 'lesson_')]
 #[IsGranted('IS_AUTHENTICATED', message: 'You must be logged in to view this lesson')]
@@ -28,7 +27,6 @@ class LessonController extends AbstractController
     public function __construct(
         private CompletionRepository $completionRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
         private EventDispatcherInterface $dispatcher,
         private CompletionService $completionService,
         private GamificationService $gamificationService,
@@ -88,10 +86,6 @@ class LessonController extends AbstractController
         $completed = !(boolval($completed));
 
 
-        // Dispatch lesson event to notify subscribers
-        $lessonCompleteEvent = new LessonCompleteEvent($lesson, $completed);
-        $this->dispatcher->dispatch($lessonCompleteEvent);
-
         // Save lesson completion status for current user
         // Check if completion already exist
         // If not, create it
@@ -111,12 +105,12 @@ class LessonController extends AbstractController
         // Maj du statut de completion d'un parcours
         $this->completionService->setCourseCompletion($course);
 
-        if ($completed && !$wasCompleted) {
-            $this->gamificationService->addXp($user, 10, 'lesson_completed');
-        }
-
         $this->entityManager->persist($completion);
         $this->entityManager->flush();
+
+        // Dispatch lesson event to notify subscribers
+        $lessonCompleteEvent = new LessonCompleteEvent($lesson, $user, $completed, $wasCompleted);
+        $this->dispatcher->dispatch($lessonCompleteEvent);
 
         if ($completed == false) {
             // Show current lesson
@@ -126,17 +120,6 @@ class LessonController extends AbstractController
                 'moduleSlug' => $module->getSlug(),
                 'id' => $lesson->getId()
             ]);
-        } else {
-            // Send a notification to all users
-            $content = $this->renderView('notification/emails/lesson_completed.html.twig', [
-                'user' => $user,
-                'lesson' => $lesson
-            ]);
-
-            $this->completionService->sendNotificationToAllUsers(
-                $content,
-                $this->translator->trans('Lesson completed for') . ' ' . $user->getFirstname()
-            );
         }
 
         // =====================
@@ -148,7 +131,7 @@ class LessonController extends AbstractController
 
         // On trie les données par itemOrder
         /**
-         * @var \ArrayIterator<int, \App\Entity\Lesson> $iterator
+         * @var \ArrayIterator<int, Lesson> $iterator
          */
         $iterator = $lessons->getIterator();
         $iterator->uasort(function ($first, $second) {
@@ -198,14 +181,16 @@ class LessonController extends AbstractController
         #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
         Module $module
     ): Response {
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('add_comment', (string) $submittedToken)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
 
         $content = $request->request->get('content');
         
         if ($content && is_string($content)) {
             $comment = new \App\Entity\Comment();
-            $comment->setContent($content);
+            $comment->setContent((string) $content);
             $comment->setLesson($lesson);
             $comment->setUser($user);
             

@@ -13,14 +13,20 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BrevoApi
 {
-    private $apiContact;
-    private $apiEmail;
-    private $httpClient;
+    private Api\ContactsApi $apiContact;
+    private BrevoClient\Api\TransactionalEmailsApi $apiEmail;
+    private Client $httpClient;
+
     public function __construct(
         private ParameterBagInterface $parameterBag,
         private LoggerInterface $logger
     ) {
-        $config = BrevoClient\Configuration::getDefaultConfiguration()->setApiKey('api-key', $this->parameterBag->get('brevo_api_key'));
+        $apiKey = $this->parameterBag->get('brevo_api_key');
+        if (!is_string($apiKey)) {
+            $apiKey = '';
+        }
+
+        $config = BrevoClient\Configuration::getDefaultConfiguration()->setApiKey('api-key', $apiKey);
 
         $this->httpClient = new Client();
 
@@ -38,43 +44,54 @@ class BrevoApi
             $config
         );
 
-        // $result = $this->apiContact->getAccount();
-        // dd($result);
     }
 
-    public function addOrUpdateContact(User $user)
+    public function addOrUpdateContact(User $user): void
     {
         // Skip Brevo operations in dev/test environments to avoid polluting data
         $env = $this->parameterBag->get('kernel.environment');
         if (in_array($env, ['dev', 'test'])) {
-            $this->logger->info('Skipping Brevo contact addition in ' . $env . ' environment');
+            $envStr = is_string($env) ? $env : 'unknown';
+            $this->logger->info('Skipping Brevo contact addition in ' . $envStr . ' environment');
+            return;
+        }
+
+        $email = $user->getEmail();
+        if (!$email) {
             return;
         }
 
         $createContact = new BrevoClient\Model\CreateContact();
-        $createContact->setEmail($user->getEmail());
+        $createContact->setEmail($email);
         $createContact->setExtId((string)$user->getId());
         $createContact->setUpdateEnabled(true);
-        $createContact->setListIds(array_map('intval', explode(',', $this->parameterBag->get('brevo_list_id'))));
-        $createContact->setAttributes([
+
+        $listIdConfig = $this->parameterBag->get('brevo_list_id');
+        if (is_string($listIdConfig)) {
+             $createContact->setListIds(array_map('intval', explode(',', $listIdConfig)));
+        }
+
+        $createContact->setAttributes((object) [
             'PRENOM' => $user->getFirstname(),
             'NOM' => $user->getLastname()
         ]);
 
         try {
-            return $this->apiContact->createContact($createContact);
+            $this->apiContact->createContact($createContact);
         } catch (Exception $e) {
             $this->logger->error('Exception when calling ContactsApi->createContact: ' . $e->getMessage());
         }
     }
 
-    public function sendEmail(array $tos, array $params)
+    /**
+     * @param array<int, array<string, string>> $tos
+     * @param array<string, mixed> $params
+     */
+    public function sendEmail(array $tos, array $params): void
     {
         if ($this->parameterBag->get('brevo_api_key') === "null") {
             return;
         }
-
-        // $templateId = $params['templateId'] ?? $this->parameterBag->get('brevo_template_id');
 
         $subject = $params['subject'] ?? $this->parameterBag->get('brevo_subject');
 
@@ -83,31 +100,16 @@ class BrevoApi
                 "name" => $this->parameterBag->get('brevo_from_name'),
                 "email" => $this->parameterBag->get('brevo_from_email')
             ],
-            // "templateId" => (int) $templateId,
             'htmlContent' => '<html><body><h1>This is a transactional email {{params.content}}</h1></body></html>',
             "params" => $params,
-            "to" => [$tos],
+            "to" => $tos,
             'subject' => $subject
         ]);
 
         try {
-            $result = $this->apiEmail->sendTransacEmail($sendSmtpEmail);
-            dump($result);
-            // return $this->httpClient->request('POST', 'https://api.brevo.com/v3/smtp/email', [
-            //     'headers' => [
-            //         // 'http_version' => CURL_HTTP_VERSION_1_1,
-            //         'content-type' => 'application/json',
-            //         'accept'  => 'application/json',
-            //         'api-key'   => $this->parameterBag->get('brevo_api_key'),
-            //         'return_transfer' => true
-            //     ],
-            //     'body'  => json_encode($data, JSON_THROW_ON_ERROR),
-            //     'max_redirects' => 10,
-            //     'timeout'   => 30,
-            // ]);
+            $this->apiEmail->sendTransacEmail($sendSmtpEmail);
         } catch (Exception $e) {
             $this->logger->error('Exception when calling TransactionalEmailsApi->sendTransacEmail: ' . $e->getMessage());
-            dump($e);
         }
     }
 }

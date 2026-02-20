@@ -21,7 +21,7 @@ class NotificationService
     ) {
     }
 
-    public function createNotification(string $content, string $title = '', ?User $user = null): Notification
+    public function createNotification(string $content, string $title = '', ?User $user = null, bool $flush = true): Notification
     {
         // Créer la notification
         $notification = new Notification();
@@ -31,8 +31,15 @@ class NotificationService
         $notification->setTitle($title);
         $notification->setMessage($content);
         $this->entityManager->persist($notification);
-        $this->entityManager->flush();
+        if ($flush) {
+            $this->entityManager->flush();
+        }
         return $notification;
+    }
+
+    public function flush(): void
+    {
+        $this->entityManager->flush();
     }
 
     public function createAndSendNotification(string $content, string $title, User $user): void

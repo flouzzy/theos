@@ -131,6 +131,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 50, options: ['default' => 'UTC'])]
     private string $timezone = 'UTC';
 
+    public function getXp(): int
+    {
+        return $this->xp;
+    }
+
+    public function setXp(int $xp): self
+    {
+        $this->xp = $xp;
+
+        return $this;
+    }
+
+    public function addXp(int $xp): self
+    {
+        $this->xp += $xp;
+
+        return $this;
+    }
+
+    public function getStreak(): int
+    {
+        return $this->streak;
+    }
+
+    public function setStreak(int $streak): self
+    {
+        $this->streak = $streak;
+
+        return $this;
+    }
+
+    public function getLastStreakDate(): ?\DateTimeImmutable
+    {
+        return $this->lastStreakDate;
+    }
+
+    public function setLastStreakDate(?\DateTimeImmutable $lastStreakDate): self
+    {
+        $this->lastStreakDate = $lastStreakDate;
+
+        return $this;
+    }
+
     #[ORM\ManyToMany(targetEntity: Skill::class, mappedBy: 'users')]
     private Collection $skills;
 
@@ -143,8 +186,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'reviewer', targetEntity: PeerReview::class, orphanRemoval: true)]
     private Collection $peerReviews;
 
-    // #[ORM\Column(length: 255, options: ['default' => PaymentStatusEnum::UNPAID])]
-    // private ?string $paymentStatus = PaymentStatusEnum::UNPAID;
     #[ORM\Column(type: 'string', enumType: PaymentStatusEnum::class, options: ['default' => PaymentStatusEnum::UNPAID])]
     private PaymentStatusEnum $paymentStatus = PaymentStatusEnum::UNPAID;
 
@@ -518,7 +559,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     {
         if (!$this->authorCourses->contains($authorCourse)) {
             $this->authorCourses->add($authorCourse);
-            $authorCourse->setUser($this);
+            $authorCourse->setAuthor($this);
         }
 
         return $this;
@@ -528,8 +569,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     {
         if ($this->authorCourses->removeElement($authorCourse)) {
             // set the owning side to null (unless already changed)
-            if ($authorCourse->getUser() === $this) {
-                $authorCourse->setUser(null);
+            if ($authorCourse->getAuthor() === $this) {
+                $authorCourse->setAuthor(null);
             }
         }
 
@@ -846,6 +887,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setGoogleAuthenticatorSecret(?string $googleAuthenticatorSecret): static
     {
         $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
+
+        return $this;
+    }
+
+    public function getXp(): int
+    {
+        return $this->xp;
+    }
+
+    public function setXp(int $xp): static
+    {
+        $this->xp = $xp;
+
+        return $this;
+    }
+
+    public function addXp(int $xp): static
+    {
+        $this->xp += $xp;
+
+        return $this;
+    }
+
+    public function getStreak(): int
+    {
+        return $this->streak;
+    }
+
+    public function setStreak(int $streak): static
+    {
+        $this->streak = $streak;
+
+        return $this;
+    }
+
+    public function getLastStreakDate(): ?\DateTimeImmutable
+    {
+        return $this->lastStreakDate;
+    }
+
+    public function setLastStreakDate(?\DateTimeImmutable $lastStreakDate): static
+    {
+        $this->lastStreakDate = $lastStreakDate;
 
         return $this;
     }
