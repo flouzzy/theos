@@ -2,28 +2,44 @@
 
 namespace App\Tests\Entity;
 
-use App\Entity\Enum\PaymentStatusEnum;
+use App\Entity\Course;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-    public function testPaymentStatus(): void
+    public function testSubscribeToCourse(): void
     {
         $user = new User();
+        $course = new Course();
 
-        // Check default value
-        $this->assertSame(PaymentStatusEnum::UNPAID, $user->getPaymentStatus());
-        $this->assertFalse($user->isPaid());
+        $user->subscribeToCourse($course);
 
-        // Set status to PAID
-        $user->setPaymentStatus(PaymentStatusEnum::PAID);
-        $this->assertSame(PaymentStatusEnum::PAID, $user->getPaymentStatus());
-        $this->assertTrue($user->isPaid());
+        $this->assertTrue($user->getCourses()->contains($course), 'User should contain the course');
+        $this->assertTrue($course->getUsers()->contains($user), 'Course should contain the user');
+    }
 
-        // Set status to IN_PROGRESS
-        $user->setPaymentStatus(PaymentStatusEnum::IN_PROGRESS);
-        $this->assertSame(PaymentStatusEnum::IN_PROGRESS, $user->getPaymentStatus());
-        $this->assertFalse($user->isPaid());
+    public function testSubscribeToCourseIdempotency(): void
+    {
+        $user = new User();
+        $course = new Course();
+
+        $user->subscribeToCourse($course);
+        $user->subscribeToCourse($course);
+
+        $this->assertCount(1, $user->getCourses(), 'User should have only 1 course');
+        $this->assertCount(1, $course->getUsers(), 'Course should have only 1 user');
+    }
+
+    public function testUnsubscribeFromCourse(): void
+    {
+        $user = new User();
+        $course = new Course();
+
+        $user->subscribeToCourse($course);
+        $user->unsubscribeFromCourse($course);
+
+        $this->assertFalse($user->getCourses()->contains($course), 'User should not contain the course');
+        $this->assertFalse($course->getUsers()->contains($user), 'Course should not contain the user');
     }
 }
