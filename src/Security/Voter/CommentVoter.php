@@ -9,6 +9,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
+/**
+ * @extends Voter<string, Comment>
+ */
 class CommentVoter extends Voter
 {
     public const DELETE = 'DELETE';
@@ -35,7 +38,7 @@ class CommentVoter extends Voter
         $comment = $subject;
 
         // 1. Check if owner
-        if ($comment->getUser()->getId() === $user->getId()) {
+        if ($comment->getUser() && $comment->getUser()->getId() === $user->getId()) {
             return true;
         }
 
