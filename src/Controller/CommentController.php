@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/comment')]
 class CommentController extends AbstractController
@@ -51,6 +52,7 @@ class CommentController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('EDIT', subject: 'comment')]
     public function edit(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CommentType::class, $comment);
@@ -69,6 +71,7 @@ class CommentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_comment_delete', methods: ['POST'])]
+    #[IsGranted('DELETE', subject: 'comment')]
     public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('DELETE', $comment);
@@ -81,12 +84,16 @@ class CommentController extends AbstractController
         return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/like', name: 'app_comment_like', methods: ['GET'])]
+    #[Route('/{id}/like', name: 'app_comment_like', methods: ['POST'])]
     public function like(Comment $comment, EntityManagerInterface $entityManager, Request $request): Response
     {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             return $this->redirectToRoute('app_login');
+        }
+
+        if (!$this->isCsrfTokenValid('like_comment_'.$comment->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
         if ($comment->getLikes()->contains($user)) {

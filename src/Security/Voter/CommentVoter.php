@@ -5,15 +5,12 @@ namespace App\Security\Voter;
 use App\Entity\Comment;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
-/**
- * @extends Voter<string, Comment>
- */
 class CommentVoter extends Voter
 {
+    public const EDIT = 'EDIT';
     public const DELETE = 'DELETE';
 
     public function __construct(private RoleHierarchyInterface $roleHierarchy)
@@ -22,14 +19,13 @@ class CommentVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::DELETE
+        return in_array($attribute, [self::EDIT, self::DELETE])
             && $subject instanceof Comment;
     }
 
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-
         if (!$user instanceof User) {
             return false;
         }
@@ -37,19 +33,23 @@ class CommentVoter extends Voter
         /** @var Comment $comment */
         $comment = $subject;
 
-        // 1. Check if owner
-        if ($comment->getUser() && $comment->getUser()->getId() === $user->getId()) {
+        return match($attribute) {
+            self::EDIT, self::DELETE => $this->canEdit($comment, $user),
+            default => false,
+        };
+    }
+
+    private function canEdit(Comment $comment, User $user): bool
+    {
+        // Owner check
+        if ($comment->getUser() === $user) {
             return true;
         }
 
-        // 2. Check if admin
-        // We use reachable roles to account for hierarchy (e.g. SUPER_ADMIN implies ADMIN)
-        $roles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+        // Admin check using hierarchy
+        $roles = $user->getRoles();
+        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($roles);
 
-        if (in_array('ROLE_ADMIN', $roles) || in_array('ROLE_SUPER_ADMIN', $roles)) {
-            return true;
-        }
-
-        return false;
+        return in_array('ROLE_ADMIN', $reachableRoles);
     }
 }

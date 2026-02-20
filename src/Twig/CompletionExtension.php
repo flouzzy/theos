@@ -7,7 +7,6 @@ use App\Entity\Course;
 use App\Entity\User;
 use App\Service\CompletionCalculator;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class CompletionExtension extends AbstractExtension
@@ -15,14 +14,6 @@ class CompletionExtension extends AbstractExtension
 
     public function __construct(private CompletionCalculator $completionCalculator)
     {
-    }
-
-    public function getFilters(): array
-    {
-        return [
-            new TwigFilter('completion_percentage', [$this, 'calculateCompletionPercentage']),
-        ];
-        // Utilisez getFunctions() pour une fonction Twig
     }
 
     public function getFunctions(): array
