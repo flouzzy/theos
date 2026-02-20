@@ -186,8 +186,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'reviewer', targetEntity: PeerReview::class, orphanRemoval: true)]
     private Collection $peerReviews;
 
-    // #[ORM\Column(length: 255, options: ['default' => PaymentStatusEnum::UNPAID])]
-    // private ?string $paymentStatus = PaymentStatusEnum::UNPAID;
     #[ORM\Column(type: 'string', enumType: PaymentStatusEnum::class, options: ['default' => PaymentStatusEnum::UNPAID])]
     private PaymentStatusEnum $paymentStatus = PaymentStatusEnum::UNPAID;
 
