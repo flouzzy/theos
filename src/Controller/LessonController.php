@@ -203,7 +203,7 @@ class LessonController extends AbstractController
         Module $module
     ): Response {
         $submittedToken = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('add_comment', $submittedToken)) {
+        if (!$this->isCsrfTokenValid('add_comment', (string) $submittedToken)) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
@@ -211,7 +211,7 @@ class LessonController extends AbstractController
         
         if ($content) {
             $comment = new \App\Entity\Comment();
-            $comment->setContent($content);
+            $comment->setContent((string) $content);
             $comment->setLesson($lesson);
             $comment->setUser($this->getUser());
             
