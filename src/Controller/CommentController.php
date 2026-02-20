@@ -79,12 +79,16 @@ class CommentController extends AbstractController
         return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/like', name: 'app_comment_like', methods: ['GET'])]
+    #[Route('/{id}/like', name: 'app_comment_like', methods: ['POST'])]
     public function like(Comment $comment, EntityManagerInterface $entityManager, Request $request): Response
     {
         $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('app_login');
+        }
+
+        if (!$this->isCsrfTokenValid('like_comment_'.$comment->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
         if ($comment->getLikes()->contains($user)) {

@@ -54,12 +54,15 @@
                     {# Actions #}
                     <div class="flex items-center gap-4 mt-1 ml-2">
                         {# Like Button #}
-                        <a href="{{ path('app_comment_like', {id: comment.id}) }}" class="flex items-center gap-1.5 text-xs font-semibold transition-colors {{ app.user and comment.likes.contains(app.user) ? 'text-red-500' : 'text-muted-foreground hover:text-red-500' }}">
-                            <svg class="w-4 h-4 {{ app.user and comment.likes.contains(app.user) ? 'fill-current' : 'fill-none' }}" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                            <span>{{ comment.likes|length }}</span>
-                        </a>
+                        <form action="{{ path('app_comment_like', {id: comment.id}) }}" method="post" class="contents">
+                            <input type="hidden" name="_token" value="{{ csrf_token('like_comment_' ~ comment.id) }}">
+                            <button type="submit" class="flex items-center gap-1.5 text-xs font-semibold transition-colors {{ app.user and comment.likes.contains(app.user) ? 'text-red-500' : 'text-muted-foreground hover:text-red-500' }}">
+                                <svg class="w-4 h-4 {{ app.user and comment.likes.contains(app.user) ? 'fill-current' : 'fill-none' }}" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                                <span>{{ comment.likes|length }}</span>
+                            </button>
+                        </form>
 
                         <button class="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors">
                             {{ 'Répondre' | trans }}
