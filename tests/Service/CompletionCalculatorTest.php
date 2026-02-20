@@ -10,10 +10,12 @@ use App\Entity\User;
 use App\Repository\CompletionRepository;
 use App\Service\CompletionCalculator;
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CompletionCalculatorTest extends TestCase
 {
+    /** @var CompletionRepository&MockObject */
     private CompletionRepository $completionRepository;
     private CompletionCalculator $completionCalculator;
 
