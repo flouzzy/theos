@@ -17,14 +17,6 @@ class CompletionExtension extends AbstractExtension
     {
     }
 
-    public function getFilters(): array
-    {
-        return [
-            new TwigFilter('completion_percentage', [$this, 'calculateCompletionPercentage']),
-        ];
-        // Utilisez getFunctions() pour une fonction Twig
-    }
-
     public function getFunctions(): array
     {
         return [
