@@ -29,9 +29,11 @@ class NotificationHandler
                 $this->notificationService->createNotification(
                     $notification->getContent(),
                     $this->translator->trans($notification->getTitle()),
-                    $user
+                    $user,
+                    flush: false
                 );
             }
         }
+        $this->notificationService->flush();
     }
 }
