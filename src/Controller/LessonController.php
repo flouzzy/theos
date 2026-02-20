@@ -54,7 +54,7 @@ class LessonController extends AbstractController
             'course' => $course,
             'module' => $module,
             'currentLesson' => $lesson,
-            'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false,
+            'isSubscribed' => $course->isUserSubscribed($user),
             'completedLessonIds' => $completedLessonIdsByCurrentUser,
         ]);
     }
@@ -71,7 +71,7 @@ class LessonController extends AbstractController
 
         #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
         Module $module,
-        $completed = 0
+        mixed $completed = 0
     ): Response {
 
         /**
@@ -101,7 +101,7 @@ class LessonController extends AbstractController
         if (!$completion) {
             $completion = new Completion();
         }
-        $completion->setUser($this->getUser());
+        $completion->setUser($user);
         $completion->setLesson($lesson);
         $completion->setCompleted($completed);
 
@@ -198,18 +198,21 @@ class LessonController extends AbstractController
         #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
         Module $module
     ): Response {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
         $content = $request->request->get('content');
         
-        if ($content) {
+        if ($content && is_string($content)) {
             $comment = new \App\Entity\Comment();
             $comment->setContent($content);
             $comment->setLesson($lesson);
-            $comment->setUser($this->getUser());
+            $comment->setUser($user);
             
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
 
-            $this->gamificationService->addXp($this->getUser(), 5, 'comment_posted');
+            $this->gamificationService->addXp($user, 5, 'comment_posted');
             
             $this->addFlash('success', 'Commentaire publié !');
         }
