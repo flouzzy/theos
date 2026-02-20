@@ -10,7 +10,6 @@ use App\Event\LessonCompleteEvent;
 use App\Repository\CompletionRepository;
 use App\Service\CompletionService;
 use App\Service\GamificationService;
-use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -18,7 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -30,9 +28,7 @@ class LessonController extends AbstractController
     public function __construct(
         private CompletionRepository $completionRepository,
         private EntityManagerInterface $entityManager,
-        private NotificationService $notificationService,
         private TranslatorInterface $translator,
-        private MessageBusInterface $bus,
         private EventDispatcherInterface $dispatcher,
         private CompletionService $completionService,
         private GamificationService $gamificationService,
@@ -143,10 +139,6 @@ class LessonController extends AbstractController
             );
         }
 
-        /**
-         * @var \App\Entity\Lesson $nextLesson 
-         */
-
         // =====================
         // Go to next lesson
         // =====================
@@ -156,7 +148,7 @@ class LessonController extends AbstractController
 
         // On triee les données par itemOrder
         /**
-         * @var Traversable|array $iterator
+         * @var \ArrayIterator<int, \App\Entity\Lesson> $iterator
          */
         $iterator = $lessons->getIterator();
         $iterator->uasort(function ($first, $second) {
@@ -171,6 +163,7 @@ class LessonController extends AbstractController
         $nextIndex = $sortedLessons->indexOf($lesson) + 1;
 
         // Puis la leçon suivante
+        /** @var \App\Entity\Lesson|null $nextLesson */
         $nextLesson  = $sortedLessons->get($nextIndex);
 
         // Il existe une leçon suivante
@@ -226,130 +219,4 @@ class LessonController extends AbstractController
     }
 
 
-    /**
-     * Mark module as completed
-     *
-     * @param Module $module
-     * @param EntityManagerInterface $entityManager
-     * @return void
-     */
-    // private function setModuleCompletion(Module $module): void
-    // {
-    //     /**
-    //      * @var \App\Entity\User $user
-    //      */
-    //     $user = $this->getUser();
-    //     $allLessonsCompleted = true;
-    //     foreach ($module->getLessons() as $moduleLesson) {
-    //         $lessonCompletion = $this->completionRepository->findOneBy([
-    //             'user' => $user,
-    //             'lesson' => $moduleLesson
-    //         ]);
-
-    //         if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
-    //             $allLessonsCompleted = false;
-    //             break;
-    //         }
-    //     }
-
-    //     $moduleCompletion = $this->entityManager->getRepository(ModuleCompletion::class)->findOneBy([
-    //         'user' => $user,
-    //         'module' => $module
-    //     ]);
-
-    //     if (!$moduleCompletion) {
-    //         $moduleCompletion = new ModuleCompletion();
-    //         $moduleCompletion->setUser($user);
-    //         $moduleCompletion->setModule($module);
-    //     }
-
-    //     // Send notification to all the users if someone complete a course
-    //     if ($allLessonsCompleted) {
-    //         // Render a content based on twig template
-    //         $content = $this->renderView('notification/emails/module_completed.html.twig', [
-    //             'user' => $user,
-    //             'module' => $module
-    //         ]);
-
-    //         $this->sendNotificationToAllUsers(
-    //             $content,
-    //             $this->translator->trans('Module completed for') . ' ' . $user->getFirstname()
-    //         );
-    //     }
-
-    //     // Mise à jour du statut de completion
-    //     $moduleCompletion->setCompleted($allLessonsCompleted);
-
-    //     $this->entityManager->persist($moduleCompletion);
-    //     $this->entityManager->flush();
-    // }
-
-    /**
-     * Mark course as completed
-     */
-    // private function setCourseCompletion($course)
-    // {
-    //     /**
-    //      * @var \App\Entity\User $user
-    //      */
-    //     $user = $this->getUser();
-    //     $courseCompletion = $this->entityManager->getRepository(CourseCompletion::class)->findOneBy([
-    //         'user' => $user,
-    //         'course' => $course
-    //     ]);
-
-    //     if (!$courseCompletion) {
-    //         $courseCompletion = new CourseCompletion();
-    //         $courseCompletion->setUser($user);
-    //         $courseCompletion->setCourse($course);
-    //     }
-
-    //     // On vérifie que tous les modules sont completés (ou non)
-    //     $allModulesCompleted = true;
-    //     $modules = $course->getModules();
-    //     foreach ($modules as $courseModule) {
-    //         // On aurait pu simplement vérifié le statut de completion du module sans passer par les leçons
-    //         // mais dans ce cas on risquerait de passer à côté des modules qui ne sont associés à aucune leçon (cygne noir)
-    //         $moduleLessons = $courseModule->getLessons();
-    //         foreach ($moduleLessons as $lesson) {
-    //             $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
-
-    //             if (!$completion || !$completion->isCompleted()) {
-    //                 $allModulesCompleted = false;
-    //                 break 2; // Sort des deux boucles si une leçon non complétée est trouvée
-    //             }
-    //         }
-    //     }
-
-    //     // Send notification to all the users if someone complete a course
-    //     if ($allModulesCompleted) {
-    //         // Render a content based on twig template
-    //         $content = $this->renderView('notification/emails/course_completed.html.twig', [
-    //             'user' => $user,
-    //             'course' => $course
-    //         ]);
-
-    //         $this->sendNotificationToAllUsers(
-    //             $content,
-    //             $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
-    //         );
-    //     }
-
-    //     // MAj du statut du parcours
-    //     $courseCompletion->setCompleted($allModulesCompleted);
-
-    //     $this->entityManager->persist($courseCompletion);
-    // }
-
-    /**
-     * Send notification to all users, except the current one
-     *
-     * @param string $content
-     * @param string $title
-     * @return void
-     */
-    // private function sendNotificationToAllUsers($content, $title): void
-    // {
-    //     $this->bus->dispatch(new \App\Message\Notification($content, $title));
-    // }
 }
