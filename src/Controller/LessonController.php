@@ -159,12 +159,15 @@ class LessonController extends AbstractController
         $sortedArray = array_values(iterator_to_array($iterator));
         $sortedLessons = new ArrayCollection($sortedArray);
 
-        // On récupère l'index suivant
-        $nextIndex = $sortedLessons->indexOf($lesson) + 1;
+        // On récupère l'index courant
+        $currentIndex = $sortedLessons->indexOf($lesson);
 
-        // Puis la leçon suivante
-        /** @var \App\Entity\Lesson|null $nextLesson */
-        $nextLesson  = $sortedLessons->get($nextIndex);
+        $nextLesson = null;
+        if ($currentIndex !== false) {
+            // Puis la leçon suivante
+            /** @var \App\Entity\Lesson|null $nextLesson */
+            $nextLesson = $sortedLessons->get((int) $currentIndex + 1);
+        }
 
         // Il existe une leçon suivante
         if ($nextLesson) {
