@@ -18,7 +18,7 @@ class LessonController extends AbstractController
     public function index(LessonRepository $lessonRepository): Response
     {
         return $this->render('admin/lesson/index.html.twig', [
-            'lessons' => $lessonRepository->findAll(),
+            'lessons' => $lessonRepository->findAllWithModules(),
         ]);
     }
 

@@ -21,6 +21,18 @@ class LessonRepository extends ServiceEntityRepository
         parent::__construct($registry, Lesson::class);
     }
 
+    /**
+     * @return Lesson[] Returns an array of Lesson objects
+     */
+    public function findAllWithModules(): array
+    {
+        return $this->createQueryBuilder('l')
+            ->addSelect('m')
+            ->leftJoin('l.module', 'm')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Lesson[] Returns an array of Lesson objects
 //     */
