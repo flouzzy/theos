@@ -7,7 +7,6 @@ use App\Entity\User;
 use App\Service\CompletionCalculator;
 use App\Twig\CompletionExtension;
 use PHPUnit\Framework\TestCase;
-use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class CompletionExtensionTest extends TestCase

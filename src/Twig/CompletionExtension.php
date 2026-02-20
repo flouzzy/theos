@@ -7,7 +7,6 @@ use App\Entity\Course;
 use App\Entity\User;
 use App\Service\CompletionCalculator;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class CompletionExtension extends AbstractExtension
