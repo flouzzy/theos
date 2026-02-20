@@ -43,6 +43,7 @@ class BrevoApi
             $this->httpClient,
             $config
         );
+
     }
 
     public function addOrUpdateContact(User $user): void

@@ -10,7 +10,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GamificationServiceTest extends TestCase
 {
-    public function testAddXp()
+    public function testAddXp(): void
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $translator = $this->createMock(TranslatorInterface::class);
@@ -26,7 +26,7 @@ class GamificationServiceTest extends TestCase
         $this->assertEquals(10, $user->getXp());
     }
 
-    public function testUpdateStreakIncrement()
+    public function testUpdateStreakIncrement(): void
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $translator = $this->createMock(TranslatorInterface::class);
@@ -45,10 +45,10 @@ class GamificationServiceTest extends TestCase
         $service->updateStreak($user);
 
         $this->assertEquals(2, $user->getStreak());
-        $this->assertEquals((new \DateTimeImmutable())->format('Y-m-d'), $user->getLastStreakDate()->format('Y-m-d'));
+        $this->assertEquals((new \DateTimeImmutable())->format('Y-m-d'), $user->getLastStreakDate()?->format('Y-m-d'));
     }
 
-    public function testUpdateStreakReset()
+    public function testUpdateStreakReset(): void
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $translator = $this->createMock(TranslatorInterface::class);
@@ -65,10 +65,10 @@ class GamificationServiceTest extends TestCase
         $service->updateStreak($user);
 
         $this->assertEquals(1, $user->getStreak());
-        $this->assertEquals((new \DateTimeImmutable())->format('Y-m-d'), $user->getLastStreakDate()->format('Y-m-d'));
+        $this->assertEquals((new \DateTimeImmutable())->format('Y-m-d'), $user->getLastStreakDate()?->format('Y-m-d'));
     }
 
-    public function testUpdateStreakSameDay()
+    public function testUpdateStreakSameDay(): void
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $translator = $this->createMock(TranslatorInterface::class);

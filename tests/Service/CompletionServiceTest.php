@@ -2,6 +2,8 @@
 
 namespace App\Tests\Service;
 
+use App\Entity\Badge;
+use App\Entity\BadgeType;
 use App\Entity\Completion;
 use App\Entity\Course;
 use App\Entity\CourseCompletion;
@@ -13,6 +15,7 @@ use App\Service\CompletionService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -21,10 +24,15 @@ use Twig\Environment;
 
 class CompletionServiceTest extends TestCase
 {
+    /** @var EntityManagerInterface&MockObject */
     private EntityManagerInterface $entityManager;
+    /** @var MessageBusInterface&MockObject */
     private MessageBusInterface $bus;
+    /** @var TranslatorInterface&MockObject */
     private TranslatorInterface $translator;
+    /** @var Security&MockObject */
     private Security $security;
+    /** @var Environment&MockObject */
     private Environment $twig;
     private CompletionService $completionService;
 
@@ -65,9 +73,9 @@ class CompletionServiceTest extends TestCase
 
         // Completion not found or not completed
         $completionRepo->expects($this->once())
-            ->method('findOneBy')
-            ->with(['user' => $user, 'lesson' => $lesson])
-            ->willReturn(null);
+            ->method('findBy')
+            ->with(['user' => $user, 'lesson' => [$lesson]])
+            ->willReturn([]);
 
         // ModuleCompletion setup
         $moduleCompletion = new ModuleCompletion();
@@ -96,15 +104,17 @@ class CompletionServiceTest extends TestCase
 
         $module = $this->createMock(Module::class);
         $lesson = $this->createMock(Lesson::class);
+        $lesson->method('getId')->willReturn(1);
         $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
 
         $completion = $this->createMock(Completion::class);
         $completion->method('isCompleted')->willReturn(true);
+        $completion->method('getLesson')->willReturn($lesson);
 
         $completionRepo = $this->createMock(EntityRepository::class);
-        $completionRepo->method('findOneBy')
-            ->with(['user' => $user, 'lesson' => $lesson])
-            ->willReturn($completion);
+        $completionRepo->method('findBy')
+            ->with(['user' => $user, 'lesson' => [$lesson]])
+            ->willReturn([$completion]);
 
         $moduleCompletionRepo = $this->createMock(EntityRepository::class);
         $moduleCompletion = new ModuleCompletion();
@@ -212,6 +222,8 @@ class CompletionServiceTest extends TestCase
         $completion = $this->createMock(Completion::class);
         $completion->method('isCompleted')->willReturn(true);
 
+        $user->method('getBadges')->willReturn(new ArrayCollection());
+
         $completionRepo = $this->createMock(EntityRepository::class);
         $completionRepo->method('findOneBy')
             ->with(['user' => $user, 'lesson' => $lesson])
@@ -223,13 +235,18 @@ class CompletionServiceTest extends TestCase
             ->with(['user' => $user, 'course' => $course])
             ->willReturn($courseCompletion);
 
+        $badgeRepo = $this->createMock(EntityRepository::class);
+        $badgeTypeRepo = $this->createMock(EntityRepository::class);
+
         $this->entityManager->method('getRepository')
             ->will($this->returnValueMap([
                 [CourseCompletion::class, $courseCompletionRepo],
                 [Completion::class, $completionRepo],
+                [Badge::class, $badgeRepo],
+                [BadgeType::class, $badgeTypeRepo],
             ]));
 
-        $this->entityManager->expects($this->once())->method('persist')->with($courseCompletion);
+        $this->entityManager->expects($this->atLeastOnce())->method('persist');
 
         // Notification should be sent
         $this->twig->expects($this->once())
