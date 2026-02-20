@@ -146,7 +146,7 @@ class LessonController extends AbstractController
         // On récupère les leçons du module
         $lessons = $module->getLessons();
 
-        // On triee les données par itemOrder
+        // On trie les données par itemOrder
         /**
          * @var \ArrayIterator<int, \App\Entity\Lesson> $iterator
          */
