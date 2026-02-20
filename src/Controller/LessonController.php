@@ -92,10 +92,6 @@ class LessonController extends AbstractController
         $completed = !(boolval($completed));
 
 
-        // Dispatch lesson event to notify subscribers
-        $lessonCompleteEvent = new LessonCompleteEvent($lesson, $completed);
-        $this->dispatcher->dispatch($lessonCompleteEvent);
-
         // Save lesson completion status for current user
         // Check if completion already exist
         // If not, create it
@@ -115,12 +111,12 @@ class LessonController extends AbstractController
         // Maj du statut de completion d'un parcours
         $this->completionService->setCourseCompletion($course);
 
-        if ($completed && !$wasCompleted) {
-            $this->gamificationService->addXp($user, 10, 'lesson_completed');
-        }
-
         $this->entityManager->persist($completion);
         $this->entityManager->flush();
+
+        // Dispatch lesson event to notify subscribers
+        $lessonCompleteEvent = new LessonCompleteEvent($lesson, $user, $completed, $wasCompleted);
+        $this->dispatcher->dispatch($lessonCompleteEvent);
 
         if ($completed == false) {
             // Show current lesson
@@ -130,17 +126,6 @@ class LessonController extends AbstractController
                 'moduleSlug' => $module->getSlug(),
                 'id' => $lesson->getId()
             ]);
-        } else {
-            // Send a notification to all users
-            $content = $this->renderView('notification/emails/lesson_completed.html.twig', [
-                'user' => $user,
-                'lesson' => $lesson
-            ]);
-
-            $this->completionService->sendNotificationToAllUsers(
-                $content,
-                $this->translator->trans('Lesson completed for') . ' ' . $user->getFirstname()
-            );
         }
 
         /**
