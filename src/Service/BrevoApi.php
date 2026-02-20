@@ -37,9 +37,6 @@ class BrevoApi
             $this->httpClient,
             $config
         );
-
-        // $result = $this->apiContact->getAccount();
-        // dd($result);
     }
 
     public function addOrUpdateContact(User $user)
@@ -74,8 +71,6 @@ class BrevoApi
             return;
         }
 
-        // $templateId = $params['templateId'] ?? $this->parameterBag->get('brevo_template_id');
-
         $subject = $params['subject'] ?? $this->parameterBag->get('brevo_subject');
 
         $sendSmtpEmail = new BrevoClient\Model\SendSmtpEmail([
@@ -83,7 +78,6 @@ class BrevoApi
                 "name" => $this->parameterBag->get('brevo_from_name'),
                 "email" => $this->parameterBag->get('brevo_from_email')
             ],
-            // "templateId" => (int) $templateId,
             'htmlContent' => '<html><body><h1>This is a transactional email {{params.content}}</h1></body></html>',
             "params" => $params,
             "to" => [$tos],
@@ -91,23 +85,9 @@ class BrevoApi
         ]);
 
         try {
-            $result = $this->apiEmail->sendTransacEmail($sendSmtpEmail);
-            dump($result);
-            // return $this->httpClient->request('POST', 'https://api.brevo.com/v3/smtp/email', [
-            //     'headers' => [
-            //         // 'http_version' => CURL_HTTP_VERSION_1_1,
-            //         'content-type' => 'application/json',
-            //         'accept'  => 'application/json',
-            //         'api-key'   => $this->parameterBag->get('brevo_api_key'),
-            //         'return_transfer' => true
-            //     ],
-            //     'body'  => json_encode($data, JSON_THROW_ON_ERROR),
-            //     'max_redirects' => 10,
-            //     'timeout'   => 30,
-            // ]);
+            $this->apiEmail->sendTransacEmail($sendSmtpEmail);
         } catch (Exception $e) {
             $this->logger->error('Exception when calling TransactionalEmailsApi->sendTransacEmail: ' . $e->getMessage());
-            dump($e);
         }
     }
 }
