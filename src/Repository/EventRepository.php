@@ -27,12 +27,13 @@ class EventRepository extends ServiceEntityRepository
      */
     public function findUpdatedEvents(?Cohort $cohort, int $limit = 5): array
     {
-        $qb = $this->createQueryBuilder('e')
-            ->where('e.cohort IS NULL'); // Public events
+        $qb = $this->createQueryBuilder('e');
 
         if ($cohort) {
-            $qb->orWhere('e.cohort = :cohort')
+            $qb->where('e.cohort IS NULL OR e.cohort = :cohort')
                ->setParameter('cohort', $cohort);
+        } else {
+            $qb->where('e.cohort IS NULL');
         }
 
         return $qb
