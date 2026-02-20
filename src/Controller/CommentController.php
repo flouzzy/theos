@@ -74,7 +74,9 @@ class CommentController extends AbstractController
     #[IsGranted('DELETE', subject: 'comment')]
     public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
+        $this->denyAccessUnlessGranted('DELETE', $comment);
+
+        if ($this->isCsrfTokenValid('delete'.$comment->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($comment);
             $entityManager->flush();
         }
@@ -86,7 +88,7 @@ class CommentController extends AbstractController
     public function like(Comment $comment, EntityManagerInterface $entityManager, Request $request): Response
     {
         $user = $this->getUser();
-        if (!$user) {
+        if (!$user instanceof \App\Entity\User) {
             return $this->redirectToRoute('app_login');
         }
 
