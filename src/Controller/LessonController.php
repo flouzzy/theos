@@ -10,7 +10,6 @@ use App\Event\LessonCompleteEvent;
 use App\Repository\CompletionRepository;
 use App\Service\CompletionService;
 use App\Service\GamificationService;
-use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -18,10 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/courses/{courseSlug}/{moduleSlug}/lesson', name: 'lesson_')]
 #[IsGranted('IS_AUTHENTICATED', message: 'You must be logged in to view this lesson')]
@@ -30,9 +27,6 @@ class LessonController extends AbstractController
     public function __construct(
         private CompletionRepository $completionRepository,
         private EntityManagerInterface $entityManager,
-        private NotificationService $notificationService,
-        private TranslatorInterface $translator,
-        private MessageBusInterface $bus,
         private EventDispatcherInterface $dispatcher,
         private CompletionService $completionService,
         private GamificationService $gamificationService,
@@ -141,7 +135,7 @@ class LessonController extends AbstractController
 
         // On triee les données par itemOrder
         /**
-         * @var Traversable|array $iterator
+         * @var \ArrayIterator<int, Lesson> $iterator
          */
         $iterator = $lessons->getIterator();
         $iterator->uasort(function ($first, $second) {
