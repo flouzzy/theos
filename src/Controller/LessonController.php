@@ -202,6 +202,11 @@ class LessonController extends AbstractController
         #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
         Module $module
     ): Response {
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('add_comment', $submittedToken)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
         $content = $request->request->get('content');
         
         if ($content) {
