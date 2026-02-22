@@ -39,7 +39,9 @@ class CourseController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Set course author
-            $course->setAuthor($this->getUser());
+            /** @var \App\Entity\User|null $user */
+            $user = $this->getUser();
+            $course->setAuthor($user);
 
             // Sauvegarde l'image associée à la leçon
             $this->handleImageUpload($form, $course);
@@ -95,7 +97,8 @@ class CourseController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Course $course, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $course->getId(), $request->request->get('_token'))) {
+        $token = $request->request->get('_token');
+        if (is_string($token) && $this->isCsrfTokenValid('delete' . $course->getId(), $token)) {
             $entityManager->remove($course);
             $entityManager->flush();
 
