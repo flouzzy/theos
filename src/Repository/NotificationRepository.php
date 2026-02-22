@@ -23,6 +23,9 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
+    /**
+     * @return Notification[]
+     */
     public function findAllUnread(): array
     {
         // Find all notification attached with current user and unread
@@ -46,7 +49,7 @@ class NotificationRepository extends ServiceEntityRepository
             return 0;
         }
 
-        return $this->createQueryBuilder('n')
+        return (int) $this->createQueryBuilder('n')
             ->select('count(n.id)')
             ->andWhere('n.user = :user OR n.user IS NULL')
             ->andWhere('n.isRead = :isRead')
@@ -56,7 +59,10 @@ class NotificationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findAllByUser(User $user, $limit = null): array
+    /**
+     * @return Notification[]
+     */
+    public function findAllByUser(User $user, ?int $limit = null): array
     {
         // return $this->findBy(['user' => $user], $orderBy, $limit, $offset);
         return $this->createQueryBuilder('n')
