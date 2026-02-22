@@ -28,7 +28,13 @@ class MediaManager
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = strtolower($this->slugger->slug($originalFilename));
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $extension = $file->guessExtension();
+
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+            throw new FileException('Invalid file extension: ' . $extension);
+        }
+
+        $fileName = $safeFilename . '-' . uniqid() . '.' . $extension;
         $targetDirectory = $this->getTargetDirectory($mediaType);
 
         // On récupère uniquement le chemin après dossier public
