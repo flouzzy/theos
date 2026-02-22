@@ -68,4 +68,16 @@ class NotificationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function markAllAsRead(User $user): void
+    {
+        $this->createQueryBuilder('n')
+            ->update()
+            ->set('n.isRead', ':isRead')
+            ->where('n.user = :user')
+            ->setParameter('isRead', true)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
+    }
 }
