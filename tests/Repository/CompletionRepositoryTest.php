@@ -13,15 +13,6 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
 
-class CompletionRepositoryTestQueryMock extends \Doctrine\ORM\Query
-{
-    public function __construct() {}
-    public function getSingleScalarResult(): mixed
-    {
-        return 120;
-    }
-}
-
 class CompletionRepositoryTest extends TestCase
 {
     public function testCountTotalDurationByUser(): void
@@ -31,7 +22,11 @@ class CompletionRepositoryTest extends TestCase
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $classMetadata = $this->createMock(ClassMetadata::class);
         $qb = $this->createMock(QueryBuilder::class);
-        $query = new CompletionRepositoryTestQueryMock();
+
+        // Mock Query using createMock to avoid extending @final class manually
+        // We need to use a partial mock or configure it properly if createMock fails
+        $query = $this->createMock(\Doctrine\ORM\Query::class);
+        $query->method('getSingleScalarResult')->willReturn(120);
 
         // Mock User
         $user = $this->createMock(User::class);
