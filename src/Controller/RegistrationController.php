@@ -72,7 +72,7 @@ class RegistrationController extends AbstractController
 
             // Force user login
             $redirectResponse = $security->login($user, 'form_login');
-            return $redirectResponse;
+            return $redirectResponse ?? $this->redirectToRoute('home');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -85,13 +85,15 @@ class RegistrationController extends AbstractController
     {
 
         //On vérifie si le token est valide, n'a pas expiré et n'a pas été modifié
-        if ($this->jwt->isValid($token) && !$this->jwt->isExpired($token) && $this->jwt->check($token, (string) $this->getParameter('app.jwtsecret'))) {
+        /** @var string $jwtSecret */
+        $jwtSecret = $this->getParameter('app.jwtsecret');
+        if ($this->jwt->isValid($token) && !$this->jwt->isExpired($token) && $this->jwt->check($token, $jwtSecret)) {
             // On récupère le payload
             $payload = $this->jwt->getPayload($token);
 
             // On récupère le user du token
             /**
-             * @var \App\Entity\User $user
+             * @var \App\Entity\User|null $user
              */
             $user = $userRepository->find($payload['user_id']);
 
@@ -153,7 +155,9 @@ class RegistrationController extends AbstractController
         ];
 
         // On génère le token
-        $token = $this->jwt->generate($header, $payload, (string) $this->getParameter('app.jwtsecret'));
+        /** @var string $jwtSecret */
+        $jwtSecret = $this->getParameter('app.jwtsecret');
+        $token = $this->jwt->generate($header, $payload, $jwtSecret);
 
         $signedUrl = $this->generateUrl('verify_email', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
 
