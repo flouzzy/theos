@@ -73,7 +73,8 @@ class PaymentController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, PaymentSetting $paymentSetting, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $paymentSetting->getId(), $request->request->get('_token'))) {
+        $token = $request->request->get('_token');
+        if (is_string($token) && $this->isCsrfTokenValid('delete' . $paymentSetting->getId(), $token)) {
             $entityManager->remove($paymentSetting);
             $entityManager->flush();
         }
