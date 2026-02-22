@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -60,7 +61,7 @@ class NotificationService
         }
 
         $email = (new TemplatedEmail())
-            ->from(new \Symfony\Component\Mime\Address($this->senderEmail, $this->senderName))
+            ->from(new Address($this->senderEmail, $this->senderName))
             ->to($userEmail)
             ->subject($notification->getTitle() ?? 'Notification')
             // path of the Twig template to render
