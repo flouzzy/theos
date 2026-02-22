@@ -54,6 +54,17 @@ class CompletionRepository extends ServiceEntityRepository
             ->getSingleColumnResult();
     }
 
+    public function countTotalDurationByUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('SUM(l.duration)')
+            ->join('c.lesson', 'l')
+            ->where('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Completion[] Returns an array of Completion objects
     //     */
