@@ -131,48 +131,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 50, options: ['default' => 'UTC'])]
     private string $timezone = 'UTC';
 
-    public function getXp(): int
-    {
-        return $this->xp;
-    }
-
-    public function setXp(int $xp): self
-    {
-        $this->xp = $xp;
-
-        return $this;
-    }
-
-    public function addXp(int $xp): self
-    {
-        $this->xp += $xp;
-
-        return $this;
-    }
-
-    public function getStreak(): int
-    {
-        return $this->streak;
-    }
-
-    public function setStreak(int $streak): self
-    {
-        $this->streak = $streak;
-
-        return $this;
-    }
-
-    public function getLastStreakDate(): ?\DateTimeImmutable
-    {
-        return $this->lastStreakDate;
-    }
-
-    public function setLastStreakDate(?\DateTimeImmutable $lastStreakDate): self
-    {
-        $this->lastStreakDate = $lastStreakDate;
-
-        return $this;
-    }
 
     #[ORM\ManyToMany(targetEntity: Skill::class, mappedBy: 'users')]
     private Collection $skills;
