@@ -8,6 +8,7 @@ use App\Repository\CourseRepository;
 use App\Service\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -41,12 +42,7 @@ class CourseController extends AbstractController
             $course->setAuthor($this->getUser());
 
             // Sauvegarde l'image associée à la leçon
-            $imageFile = $form->get('imageFile')->getData();
-            if ($imageFile) {
-                $imageFileName = $this->mediaManager->upload($imageFile, 'course', ['maxWidth' => 1000, 'maxHeight' => 1000]);
-                $course->setImage($imageFileName);
-            }
-
+            $this->handleImageUpload($form, $course);
 
             $entityManager->persist($course);
             $entityManager->flush();
@@ -81,11 +77,7 @@ class CourseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             // Sauvegarde l'image associée à la leçon
-            $imageFile = $form->get('imageFile')->getData();
-            if ($imageFile) {
-                $imageFileName = $this->mediaManager->upload($imageFile, 'course', ['maxWidth' => 1000, 'maxHeight' => 1000]);
-                $course->setImage($imageFileName);
-            }
+            $this->handleImageUpload($form, $course);
 
             $entityManager->flush();
 
@@ -111,5 +103,14 @@ class CourseController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_course_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    private function handleImageUpload(FormInterface $form, Course $course): void
+    {
+        $imageFile = $form->get('imageFile')->getData();
+        if ($imageFile) {
+            $imageFileName = $this->mediaManager->upload($imageFile, 'course', ['maxWidth' => 1000, 'maxHeight' => 1000]);
+            $course->setImage($imageFileName);
+        }
     }
 }
