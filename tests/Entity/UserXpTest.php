@@ -5,7 +5,7 @@ namespace App\Tests\Entity;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
-class UserTest extends TestCase
+class UserXpTest extends TestCase
 {
     public function testXp(): void
     {

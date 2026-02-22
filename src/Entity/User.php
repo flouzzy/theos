@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Entity\Enum\PaymentStatusEnum;
 use App\Entity\Trait\DateTimeAble;
 use App\Repository\UserRepository;
-use App\Service\Payment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
