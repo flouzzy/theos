@@ -2,44 +2,39 @@
 
 namespace App\Tests\Entity;
 
-use App\Entity\Course;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-    public function testSubscribeToCourse(): void
+    public function testXp(): void
     {
         $user = new User();
-        $course = new Course();
+        $this->assertEquals(0, $user->getXp());
 
-        $user->subscribeToCourse($course);
+        $user->setXp(10);
+        $this->assertEquals(10, $user->getXp());
 
-        $this->assertTrue($user->getCourses()->contains($course), 'User should contain the course');
-        $this->assertTrue($course->getUsers()->contains($user), 'Course should contain the user');
+        $user->addXp(5);
+        $this->assertEquals(15, $user->getXp());
     }
 
-    public function testSubscribeToCourseIdempotency(): void
+    public function testStreak(): void
     {
         $user = new User();
-        $course = new Course();
+        $this->assertEquals(0, $user->getStreak());
 
-        $user->subscribeToCourse($course);
-        $user->subscribeToCourse($course);
-
-        $this->assertCount(1, $user->getCourses(), 'User should have only 1 course');
-        $this->assertCount(1, $course->getUsers(), 'Course should have only 1 user');
+        $user->setStreak(5);
+        $this->assertEquals(5, $user->getStreak());
     }
 
-    public function testUnsubscribeFromCourse(): void
+    public function testLastStreakDate(): void
     {
         $user = new User();
-        $course = new Course();
+        $this->assertNull($user->getLastStreakDate());
 
-        $user->subscribeToCourse($course);
-        $user->unsubscribeFromCourse($course);
-
-        $this->assertFalse($user->getCourses()->contains($course), 'User should not contain the course');
-        $this->assertFalse($course->getUsers()->contains($user), 'Course should not contain the user');
+        $date = new \DateTimeImmutable();
+        $user->setLastStreakDate($date);
+        $this->assertSame($date, $user->getLastStreakDate());
     }
 }
