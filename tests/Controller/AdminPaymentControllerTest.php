@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class AdminPaymentControllerTest extends WebTestCase
@@ -12,8 +13,11 @@ class AdminPaymentControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $container = $client->getContainer();
+
+        /** @var ManagerRegistry $doctrine */
+        $doctrine = $container->get('doctrine');
         /** @var EntityManagerInterface $entityManager */
-        $entityManager = $container->get('doctrine')->getManager();
+        $entityManager = $doctrine->getManager();
 
         // Create a user
         $user = new User();
@@ -38,6 +42,7 @@ class AdminPaymentControllerTest extends WebTestCase
         $entityManager->clear();
         $refreshedUser = $entityManager->getRepository(User::class)->find($user->getId());
 
+        $this->assertNotNull($refreshedUser, 'User should exist.');
         $this->assertTrue($refreshedUser->isPaid(), 'User should be marked as paid.');
     }
 }
