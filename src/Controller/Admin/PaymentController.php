@@ -73,7 +73,7 @@ class PaymentController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, PaymentSetting $paymentSetting, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $paymentSetting->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $paymentSetting->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($paymentSetting);
             $entityManager->flush();
         }
@@ -82,8 +82,11 @@ class PaymentController extends AbstractController
     }
 
     #[Route('/payment/{id}', name: 'validate', methods: ['POST'])]
-    public function validatePayment(User $user, Payment $payment): void
+    public function validatePayment(User $user, Payment $payment): Response
     {
         $payment->validatePayment($user);
+        $this->addFlash('success', 'Payment validated successfully.');
+
+        return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
     }
 }
