@@ -17,3 +17,9 @@
 - **Issue:** Discovered a fatal error in `src/Security/Voter/CommentVoter.php`: `voteOnAttribute` signature mismatch with Symfony 8 `Voter` class.
 - **Resolution:** Updated `voteOnAttribute` to include the optional `$vote` argument and imported the `Vote` class.
 - **Lesson:** Local verification is crucial even when CI is down. It revealed a critical application error that would have been missed if I solely relied on CI status.
+
+## [2024-05-21] Environment constraints and isolated verification
+- **Context:** Adding unit tests for Payment Service in an environment with network timeouts.
+- **Issue:** `composer install` failed due to timeouts to Packagist and GitHub, preventing full PHPUnit execution.
+- **Resolution:** Verified code syntax with `php -l` and logic with a standalone verification script using manual mocks.
+- **Lesson:** When standard testing tools are unavailable due to environment constraints, use creative isolated verification methods (like standalone scripts) to ensure logic correctness.
