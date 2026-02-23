@@ -85,6 +85,7 @@ class UserTest extends TestCase
         $user->setUserDetails();
         $this->assertEquals('Doe', $user->getLastname());
         $this->assertEquals('John', $user->getFirstname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringStartsWith('doe-john-', $user->getUsername());
 
         // 2. Fullname with extra spaces
@@ -93,6 +94,7 @@ class UserTest extends TestCase
         $user->setUserDetails();
         $this->assertEquals('Doe', $user->getLastname());
         $this->assertEquals('John', $user->getFirstname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringStartsWith('doe-john-', $user->getUsername());
 
         // 3. Single name
@@ -101,6 +103,7 @@ class UserTest extends TestCase
         $user->setUserDetails();
         $this->assertEquals('Cher', $user->getLastname());
         $this->assertEquals('', $user->getFirstname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringStartsWith('cher-', $user->getUsername());
 
         // 4. Missing fullname, firstname/lastname provided
@@ -109,6 +112,7 @@ class UserTest extends TestCase
         $user->setFirstname('John');
         $user->setUserDetails();
         $this->assertEquals('Doe John', $user->getFullname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringStartsWith('doe-john-', $user->getUsername());
 
         // 5. Missing fullname, only lastname provided
@@ -116,6 +120,7 @@ class UserTest extends TestCase
         $user->setLastname('Doe');
         $user->setUserDetails();
         $this->assertEquals('Doe', $user->getFullname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringStartsWith('doe-', $user->getUsername());
 
         // 6. Missing fullname, only firstname provided
@@ -123,6 +128,7 @@ class UserTest extends TestCase
         $user->setFirstname('John');
         $user->setUserDetails();
         $this->assertEquals('John', $user->getFullname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringStartsWith('john-', $user->getUsername());
 
         // 7. Precedence: Fullname vs Individual Names
@@ -132,6 +138,7 @@ class UserTest extends TestCase
         $user->setUserDetails();
         $this->assertEquals('Doe', $user->getLastname()); // Kept manually set lastname
         $this->assertEquals('Jane', $user->getFirstname()); // Derived firstname
+        $this->assertNotNull($user->getUsername());
         $this->assertStringStartsWith('smith-jane-', $user->getUsername()); // Username derived from fullname
     }
 }
