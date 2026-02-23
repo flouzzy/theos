@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Course;
 use App\Entity\CourseCompletion;
+use App\Entity\User;
 use App\Event\CourseSubscribedEvent;
 use App\Repository\CohortRepository;
 use App\Repository\CompletionRepository;
@@ -26,7 +27,9 @@ class CourseController extends AbstractController
         if ($this->isGranted('ROLE_ADMIN')) {
              $cohorts = $cohortRepository->findAll();
         } elseif ($this->getUser()) {
-             $cohorts = $this->getUser()->getCohorts();
+             /** @var User $user */
+             $user = $this->getUser();
+             $cohorts = $user->getCohorts();
         }
 
         $subscribedCourseIds = [];
@@ -55,10 +58,11 @@ class CourseController extends AbstractController
         }
 
         // Récupérations des leçons terminées
-        $completedLessons = $completionRepository->findBy(['user' => $this->getUser(), 'completed' => true]);
         $completedLessonIdsByCurrentUser = [];
-        foreach ($completedLessons as $completed) {
-            $completedLessonIdsByCurrentUser[] = $completed->getLesson()->getId();
+        if ($this->getUser()) {
+            /** @var User $user */
+            $user = $this->getUser();
+            $completedLessonIdsByCurrentUser = $completionRepository->findCompletedLessonIdsByCourse($user, $course);
         }
 
         $isCompleted = false;
@@ -71,9 +75,12 @@ class CourseController extends AbstractController
             $isCompleted = (bool) $completion;
         }
 
+        /** @var User|null $user */
+        $user = $this->getUser();
+
         return $this->render('course/show.html.twig', [
             'course' => $course,
-            'isSubscribed' => $this->getUser() ? $course->isUserSubscribed($this->getUser()) : false,
+            'isSubscribed' => $user ? $course->isUserSubscribed($user) : false,
             'completedLessonIds' => $completedLessonIdsByCurrentUser,
             'isCompleted' => $isCompleted
         ]);

@@ -6,15 +6,16 @@ use App\Entity\Completion;
 use App\Entity\Course;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Completion>
  *
  * @method Completion|null find($id, $lockMode = null, $lockVersion = null)
- * @method Completion|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Completion|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method Completion[]    findAll()
- * @method Completion[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Completion[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, int|null $limit = null, int|null $offset = null)
  */
 class CompletionRepository extends ServiceEntityRepository
 {
@@ -25,6 +26,7 @@ class CompletionRepository extends ServiceEntityRepository
 
     /**
      * Retourne le total des leçons completétés (completion à true) par les utilisateurs
+     * @return int|string|float|bool|null
      */
     public function countLessonsCompletions()
     {
@@ -92,4 +94,21 @@ class CompletionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * @return Paginator<Completion>
+     */
+    public function findPaginated(int $page, int $limit = 50): Paginator
+    {
+        $query = $this->createQueryBuilder('c')
+            ->orderBy('c.id', 'DESC')
+            ->getQuery();
+
+        $paginator = new Paginator($query);
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit);
+
+        return $paginator;
+    }
 }

@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +31,9 @@ class ResetPasswordController extends AbstractController
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
         private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        #[Autowire('%default_from_email%')] private string $senderEmail,
+        #[Autowire('%default_from_name%')] private string $senderName,
     ) {
     }
 
@@ -80,7 +83,7 @@ class ResetPasswordController extends AbstractController
      * Validates and process the reset URL that the user clicked in their email.
      */
     #[Route('/reset/{token}', name: 'reset_password')]
-    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ?string $token = null): Response
     {
         if ($token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
@@ -97,6 +100,7 @@ class ResetPasswordController extends AbstractController
         }
 
         try {
+            /** @var User $user */
             $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
         } catch (ResetPasswordExceptionInterface $e) {
             $this->addFlash('reset_password_error', sprintf(
@@ -165,16 +169,16 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('check_email');
         }
 
-        try {
-            $email = (new TemplatedEmail())
-                ->from(new Address('no-reply@academie.lerocher.fr', 'Le Rocher Academie'))
-                ->to($user->getEmail())
-                ->subject($translator->trans('Your password reset request'))
-                ->htmlTemplate('reset_password/email.html.twig')
-                ->context([
-                    'resetToken' => $resetToken,
-                ]);
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->senderEmail, $this->senderName))
+            ->to((string) $user->getEmail())
+            ->subject($translator->trans('Your password reset request'))
+            ->htmlTemplate('reset_password/email.html.twig')
+            ->context([
+                'resetToken' => $resetToken,
+            ]);
 
+        try {
             $mailer->send($email);
         } catch (TransportExceptionInterface $e) {
             // some error prevented the email sending; display an
