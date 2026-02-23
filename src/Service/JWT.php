@@ -10,8 +10,8 @@ class JWT
 
     /**
      * Génération du JWT
-     * @param array $header 
-     * @param array $payload 
+     * @param array<string, mixed> $header
+     * @param array<string, mixed> $payload
      * @param string $secret 
      * @param int $validity 
      * @return string 
@@ -67,26 +67,32 @@ class JWT
     }
 
     // On récupère le Payload
+    /**
+     * @return array<string, mixed>
+     */
     public function getPayload(string $token): array
     {
         // On démonte le token
         $array = explode('.', $token);
 
         // On décode le Payload
-        /** @var array */
+        /** @var array<string, mixed> */
         $payload = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], $array[1])), true);
 
         return $payload;
     }
 
     // On récupère le Header
+    /**
+     * @return array<string, mixed>
+     */
     public function getHeader(string $token): array
     {
         // On démonte le token
         $array = explode('.', $token);
 
         // On décode le Header
-        /** @var array */
+        /** @var array<string, mixed> */
         $header = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], $array[0])), true);
 
         return $header;
