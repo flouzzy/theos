@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ModuleCompletion;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -31,6 +32,22 @@ class ModuleCompletionRepository extends ServiceEntityRepository
             ->andWhere('m.completed = true')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @return ModuleCompletion[]
+     */
+    public function findByUserWithModuleAndCourses(User $user): array
+    {
+        return $this->createQueryBuilder('mc')
+            ->addSelect('m', 'c')
+            ->join('mc.module', 'm')
+            ->leftJoin('m.courses', 'c')
+            ->where('mc.user = :user')
+            ->andWhere('mc.completed = true')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

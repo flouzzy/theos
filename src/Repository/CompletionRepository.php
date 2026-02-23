@@ -54,6 +54,22 @@ class CompletionRepository extends ServiceEntityRepository
             ->getSingleColumnResult();
     }
 
+    /**
+     * @return Completion[]
+     */
+    public function findByUserWithLessonAndModule(User $user): array
+    {
+        return $this->createQueryBuilder('lc')
+            ->addSelect('l', 'm')
+            ->join('lc.lesson', 'l')
+            ->leftJoin('l.module', 'm')
+            ->where('lc.user = :user')
+            ->andWhere('lc.completed = true')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Completion[] Returns an array of Completion objects
     //     */

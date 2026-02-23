@@ -23,12 +23,9 @@ class EvaluationController extends AbstractController
         }
 
         // Fetch completions with scores
-        // We need to define custom repository methods or filter in PHP if the dataset is small.
-        // For efficiency, we should add custom methods findWithScoreByUser().
-        // For now, let's fetch all completeds for the user and filter.
-        
-        $moduleCompletions = $moduleCompletionRepository->findBy(['user' => $user, 'completed' => true]);
-        $lessonCompletions = $completionRepository->findBy(['user' => $user, 'completed' => true]);
+        /** @var \App\Entity\User $user */
+        $moduleCompletions = $moduleCompletionRepository->findByUserWithModuleAndCourses($user);
+        $lessonCompletions = $completionRepository->findByUserWithLessonAndModule($user);
 
         $evaluations = [];
         $scores = [];

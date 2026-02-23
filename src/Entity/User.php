@@ -891,46 +891,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    public function getXp(): int
-    {
-        return $this->xp;
-    }
-
-    public function setXp(int $xp): static
-    {
-        $this->xp = $xp;
-
-        return $this;
-    }
-
-    public function addXp(int $xp): static
-    {
-        $this->xp += $xp;
-
-        return $this;
-    }
-
-    public function getStreak(): int
-    {
-        return $this->streak;
-    }
-
-    public function setStreak(int $streak): static
-    {
-        $this->streak = $streak;
-
-        return $this;
-    }
-
-    public function getLastStreakDate(): ?\DateTimeImmutable
-    {
-        return $this->lastStreakDate;
-    }
-
-    public function setLastStreakDate(?\DateTimeImmutable $lastStreakDate): static
-    {
-        $this->lastStreakDate = $lastStreakDate;
-
-        return $this;
-    }
 }
