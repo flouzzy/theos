@@ -115,7 +115,8 @@ class MediaManagerSSRFTest extends TestCase
 
     public function testValidPublicUrlAllowed()
     {
-        $url = 'http://example.com/image.jpg';
+        // Use a known public IP to avoid external DNS dependency in tests
+        $url = 'http://8.8.8.8/image.jpg';
         $content = 'fake_image_content';
 
         // Mock a successful response
