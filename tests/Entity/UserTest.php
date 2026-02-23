@@ -76,4 +76,62 @@ class UserTest extends TestCase
         $user->setLastStreakDate($date);
         $this->assertEquals($date, $user->getLastStreakDate(), 'Last streak date should be set correctly');
     }
+
+    public function testSetUserDetails(): void
+    {
+        // 1. Fullname provided (Last First)
+        $user = new User();
+        $user->setFullname('Doe John');
+        $user->setUserDetails();
+        $this->assertEquals('Doe', $user->getLastname());
+        $this->assertEquals('John', $user->getFirstname());
+        $this->assertStringStartsWith('doe-john-', $user->getUsername());
+
+        // 2. Fullname with extra spaces
+        $user = new User();
+        $user->setFullname('  Doe   John  ');
+        $user->setUserDetails();
+        $this->assertEquals('Doe', $user->getLastname());
+        $this->assertEquals('John', $user->getFirstname());
+        $this->assertStringStartsWith('doe-john-', $user->getUsername());
+
+        // 3. Single name
+        $user = new User();
+        $user->setFullname('Cher');
+        $user->setUserDetails();
+        $this->assertEquals('Cher', $user->getLastname());
+        $this->assertEquals('', $user->getFirstname());
+        $this->assertStringStartsWith('cher-', $user->getUsername());
+
+        // 4. Missing fullname, firstname/lastname provided
+        $user = new User();
+        $user->setLastname('Doe');
+        $user->setFirstname('John');
+        $user->setUserDetails();
+        $this->assertEquals('Doe John', $user->getFullname());
+        $this->assertStringStartsWith('doe-john-', $user->getUsername());
+
+        // 5. Missing fullname, only lastname provided
+        $user = new User();
+        $user->setLastname('Doe');
+        $user->setUserDetails();
+        $this->assertEquals('Doe', $user->getFullname());
+        $this->assertStringStartsWith('doe-', $user->getUsername());
+
+        // 6. Missing fullname, only firstname provided
+        $user = new User();
+        $user->setFirstname('John');
+        $user->setUserDetails();
+        $this->assertEquals('John', $user->getFullname());
+        $this->assertStringStartsWith('john-', $user->getUsername());
+
+        // 7. Precedence: Fullname vs Individual Names
+        $user = new User();
+        $user->setFullname('Smith Jane');
+        $user->setLastname('Doe'); // Manually set
+        $user->setUserDetails();
+        $this->assertEquals('Doe', $user->getLastname()); // Kept manually set lastname
+        $this->assertEquals('Jane', $user->getFirstname()); // Derived firstname
+        $this->assertStringStartsWith('smith-jane-', $user->getUsername()); // Username derived from fullname
+    }
 }
