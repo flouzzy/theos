@@ -149,6 +149,11 @@ class ProfileController extends AbstractController
         $description = trim($request->request->get('description'));
         $url = trim($request->request->get('url'));
 
+        if ($url && (!filter_var($url, FILTER_VALIDATE_URL) || !in_array(parse_url($url, PHP_URL_SCHEME), ['http', 'https']))) {
+            $this->addFlash('error', 'Invalid URL. Only http and https are allowed.');
+            return $this->redirectToRoute('profile_index');
+        }
+
         if ($title) {
             $user = $this->getUser();
             $project = new PortfolioProject();
