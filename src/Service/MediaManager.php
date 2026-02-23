@@ -24,11 +24,20 @@ class MediaManager
         $this->filesystem  = new Filesystem();
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function upload(UploadedFile $file, string $mediaType = 'course', array $params = []): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = strtolower($this->slugger->slug($originalFilename));
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $extension = $file->guessExtension();
+
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+            throw new FileException('Invalid file extension: ' . $extension);
+        }
+
+        $fileName = $safeFilename . '-' . uniqid() . '.' . $extension;
         $targetDirectory = $this->getTargetDirectory($mediaType);
 
         // On récupère uniquement le chemin après dossier public
@@ -46,7 +55,7 @@ class MediaManager
             $this->logger->error(
                 'Failed to upload file ' . $file->getClientOriginalName() . ': ' . $exception->getMessage(),
                 [
-                    'user_email' => $user->getEmail(),
+                    'user_email' => $user?->getEmail(),
                     'error_message' => $exception->getMessage()
                 ]
             );
@@ -111,17 +120,17 @@ class MediaManager
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $mimeType = $finfo->buffer($content);
 
-            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (!in_array($mimeType, $allowedMimeTypes)) {
-                return false;
-            }
-
             $extensions = [
                 'image/jpeg' => 'jpg',
                 'image/png' => 'png',
                 'image/gif' => 'gif',
                 'image/webp' => 'webp'
             ];
+
+            if (!is_string($mimeType) || !array_key_exists($mimeType, $extensions)) {
+                return false;
+            }
+
             $extension = $extensions[$mimeType];
 
             // Generate safe filename
@@ -149,7 +158,7 @@ class MediaManager
                 [
                     'user_email' => $user ? $user->getEmail() : 'anonymous',
                     'error_message' => $exception->getMessage(),
-                    'fileUrl' => $fileUrl, 'fileFullPath' => $fileFullPath ?? 'unknown'
+                    'fileUrl' => $fileUrl, 'fileFullPath' => (string) $fileFullPath
                 ]
             );
         } catch (TransportExceptionInterface $e) {
