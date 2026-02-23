@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -17,11 +18,18 @@ class MediaManager
     private SluggerInterface $slugger;
     private Filesystem $filesystem;
 
-    public function __construct(string $targetDirectory, SluggerInterface $slugger, private ImageOptimizer $imageOptimizer, private Security $security, private LoggerInterface $logger, private HttpClientInterface $httpClient)
-    {
+    public function __construct(
+        string $targetDirectory,
+        SluggerInterface $slugger,
+        private ImageOptimizer $imageOptimizer,
+        private Security $security,
+        private LoggerInterface $logger,
+        private HttpClientInterface $httpClient,
+        ?Filesystem $filesystem = null
+    ) {
         $this->targetDirectory = $targetDirectory;
         $this->slugger = $slugger;
-        $this->filesystem  = new Filesystem();
+        $this->filesystem = $filesystem ?? new Filesystem();
     }
 
     public function upload(UploadedFile $file, string $mediaType = 'course', array $params = []): ?string
@@ -66,7 +74,7 @@ class MediaManager
     {
         try {
             $this->filesystem->remove($this->getTargetDirectory($mediaType) . "/$fileName");
-        } catch (FileException $e) {
+        } catch (IOException $e) {
             // ... handle exception if something happens during file removal
         }
     }
