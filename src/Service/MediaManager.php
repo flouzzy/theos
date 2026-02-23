@@ -46,7 +46,7 @@ class MediaManager
             $this->logger->error(
                 'Failed to upload file ' . $file->getClientOriginalName() . ': ' . $exception->getMessage(),
                 [
-                    'user_email' => $user->getEmail(),
+                    'user_email' => $user ? $user->getEmail() : 'anonymous',
                     'error_message' => $exception->getMessage()
                 ]
             );
