@@ -5,6 +5,10 @@ namespace App\Tests\Service;
 use App\Service\JWT;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Unit tests for JWT Service.
+ * Covers generation, validation, expiration, and signature verification.
+ */
 class JWTTest extends TestCase
 {
     private JWT $jwt;
