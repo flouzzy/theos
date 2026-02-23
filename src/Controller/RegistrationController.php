@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
-use App\Security\EmailVerifier;
 use App\Service\BrevoApi;
 use App\Service\JWT;
 use App\Service\SendMail;
@@ -26,8 +25,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class RegistrationController extends AbstractController
 {
 
-    public function __construct(private EmailVerifier $emailVerifier, private EntityManagerInterface $entityManager, private TranslatorInterface $translator, private JWT $jwt, private SendMail $mailer)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator,
+        private JWT $jwt,
+        private SendMail $mailer,
+        #[Autowire('%default_from_email%')] private string $senderEmail,
+        #[Autowire('%default_from_name%')] private string $senderName,
+    ) {
     }
 
     #[Route('/register', name: 'register', priority: 3)]
@@ -67,7 +72,7 @@ class RegistrationController extends AbstractController
 
             // Force user login
             $redirectResponse = $security->login($user, 'form_login');
-            return $redirectResponse;
+            return $redirectResponse ?? $this->redirectToRoute('home');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -76,24 +81,26 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email/{token}', name: 'verify_email', priority: 3)]
-    public function verifyUserEmail($token, UserRepository $userRepository, BrevoApi $brevoApi): Response
+    public function verifyUserEmail(string $token, UserRepository $userRepository, BrevoApi $brevoApi): Response
     {
 
         //On vérifie si le token est valide, n'a pas expiré et n'a pas été modifié
-        if ($this->jwt->isValid($token) && !$this->jwt->isExpired($token) && $this->jwt->check($token, $this->getParameter('app.jwtsecret'))) {
+        /** @var string $jwtSecret */
+        $jwtSecret = $this->getParameter('app.jwtsecret');
+        if ($this->jwt->isValid($token) && !$this->jwt->isExpired($token) && $this->jwt->check($token, $jwtSecret)) {
             // On récupère le payload
             $payload = $this->jwt->getPayload($token);
 
             // On récupère le user du token
             /**
-             * @var \App\Entity\User $user
+             * @var \App\Entity\User|null $user
              */
             $user = $userRepository->find($payload['user_id']);
 
             //On vérifie que l'utilisateur existe et n'a pas encore activé son compte
             if ($user && !$user->isVerified()) {
                 $user->setIsVerified(true);
-                $this->entityManager->flush($user);
+                $this->entityManager->flush();
 
                 // Maj brevo
                 $brevoApi->addOrUpdateContact($user);
@@ -148,14 +155,16 @@ class RegistrationController extends AbstractController
         ];
 
         // On génère le token
-        $token = $this->jwt->generate($header, $payload, $this->getParameter('app.jwtsecret'));
+        /** @var string $jwtSecret */
+        $jwtSecret = $this->getParameter('app.jwtsecret');
+        $token = $this->jwt->generate($header, $payload, $jwtSecret);
 
         $signedUrl = $this->generateUrl('verify_email', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
 
         // On envoie un mail        
         $this->mailer->send(
-            new Address('no-reply@academie.lerocher.fr', 'Le Rocher Academie'),
-            $user->getEmail(),
+            new Address($this->senderEmail, $this->senderName),
+            (string) $user->getEmail(),
             $this->translator->trans('Please confirm your email'),
             'registration/confirmation_email.html.twig',
             [
