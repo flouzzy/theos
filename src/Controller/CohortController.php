@@ -11,8 +11,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class CohortController extends AbstractController
 {
     #[Route('/', name: 'index', priority: 3)]
-    public function index(\App\Repository\EventRepository $eventRepository): Response
-    {
+    public function index(
+        \App\Repository\EventRepository $eventRepository,
+        \App\Repository\CourseRepository $courseRepository,
+        \App\Repository\CompletionRepository $completionRepository
+    ): Response {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
         
@@ -25,7 +28,7 @@ class CohortController extends AbstractController
         $cohort = $user->getCohorts()->first() ?: null;
         
         // Récupère les cours et calcule la progression
-        $myCoursesEntities = $user->getCourses();
+        $myCoursesEntities = $courseRepository->findCoursesWithModulesAndLessonsForUser($user);
         $myCoursesData = [];
         
         $totalMinutes = 0;
@@ -33,12 +36,8 @@ class CohortController extends AbstractController
         $totalCompletedLessons = 0;
         
         // Optimisation: récupérer tous les IDs des leçons complétées par le user
-        $completedLessonMap = [];
-        foreach ($user->getCompletions() as $completion) {
-            if ($completion->getLesson()) {
-                $completedLessonMap[$completion->getLesson()->getId()] = true;
-            }
-        }
+        $completedLessonIds = $completionRepository->findCompletedLessonIdsByUser($user);
+        $completedLessonMap = array_flip($completedLessonIds);
 
         foreach ($myCoursesEntities as $course) {
             $courseLessonsCount = 0;
