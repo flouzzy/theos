@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\BadgeType;
 use App\Entity\Completion;
 use App\Entity\CourseCompletion;
 use App\Entity\Module;
@@ -144,13 +145,13 @@ class CompletionService
 
             if (!$badge) {
                 // Find or create BadgeType
-                $badgeTypeRepository = $this->entityManager->getRepository(\App\Entity\BadgeType::class);
-                $badgeType = $badgeTypeRepository->findOneBy(['code' => 'COURSE_COMPLETION']);
+                $badgeTypeRepository = $this->entityManager->getRepository(BadgeType::class);
+                $badgeType = $badgeTypeRepository->findOneBy(['code' => BadgeType::CODE_COURSE_COMPLETION]);
 
                 if (!$badgeType) {
-                    $badgeType = new \App\Entity\BadgeType();
+                    $badgeType = new BadgeType();
                     $badgeType->setTitle('Course Completion');
-                    $badgeType->setCode('COURSE_COMPLETION');
+                    $badgeType->setCode(BadgeType::CODE_COURSE_COMPLETION);
                     $badgeType->setDescription('Badge awarded for completing a course.');
                     $this->entityManager->persist($badgeType);
                 }
@@ -175,10 +176,10 @@ class CompletionService
                 $badge = $badgeRepository->findOneBy(['title' => $earlyBirdTitle]);
 
                 if (!$badge) {
-                    $ebType = $this->entityManager->getRepository(\App\Entity\BadgeType::class)->findOneBy(['code' => 'EARLY_BIRD']);
+                    $ebType = $this->entityManager->getRepository(BadgeType::class)->findOneBy(['code' => BadgeType::CODE_EARLY_BIRD]);
                     if (!$ebType) {
-                        $ebType = new \App\Entity\BadgeType();
-                        $ebType->setCode('EARLY_BIRD');
+                        $ebType = new BadgeType();
+                        $ebType->setCode(BadgeType::CODE_EARLY_BIRD);
                         $ebType->setTitle('Early Bird');
                         $ebType->setDescription('Completed a course within 7 days');
                         $this->entityManager->persist($ebType);
