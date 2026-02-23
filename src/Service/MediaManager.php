@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 // src/Service/MediaManager.php
 namespace App\Service;
 
