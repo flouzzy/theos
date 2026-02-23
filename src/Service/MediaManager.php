@@ -24,6 +24,9 @@ class MediaManager
         $this->filesystem  = new Filesystem();
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function upload(UploadedFile $file, string $mediaType = 'course', array $params = []): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -52,7 +55,7 @@ class MediaManager
             $this->logger->error(
                 'Failed to upload file ' . $file->getClientOriginalName() . ': ' . $exception->getMessage(),
                 [
-                    'user_email' => $user->getEmail(),
+                    'user_email' => $user ? $user->getEmail() : 'anonymous',
                     'error_message' => $exception->getMessage()
                 ]
             );
@@ -110,6 +113,7 @@ class MediaManager
             return false;
         }
 
+        /** @var string|null $fileFullPath */
         $fileFullPath = null;
         try {
             $targetDirectory = $this->getTargetDirectory($mediaType);
@@ -198,6 +202,11 @@ class MediaManager
                 'image/gif' => 'gif',
                 'image/webp' => 'webp'
             ];
+
+            if (!isset($extensions[$mimeType])) {
+                return false;
+            }
+
             $extension = $extensions[$mimeType];
 
             // Generate safe filename
