@@ -28,7 +28,6 @@ class AppFixtures extends Fixture
                     'email' => 'charles@edounze.com',
                     'firstname' => 'Charles',
                     'lastname' => 'Edounze',
-                    'fullname'
                 ],
                 ['ROLE_ADMIN']
             );
