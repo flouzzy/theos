@@ -18,6 +18,27 @@
 				</ion-item>
 			{% endfor %}
 		</ion-list>
+		{% if totalPages is defined and totalPages > 1 %}
+			<div class="ion-padding ion-text-center">
+				{% if currentPage > 1 %}
+					<ion-button href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': currentPage - 1})) }}" fill="outline">
+						<ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+						{{ 'Previous'|trans }}
+					</ion-button>
+				{% endif %}
+
+				<ion-note class="ion-padding-horizontal">
+					{{ 'Page %current% of %total%'|trans({'%current%': currentPage, '%total%': totalPages}) }}
+				</ion-note>
+
+				{% if currentPage < totalPages %}
+					<ion-button href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': currentPage + 1})) }}" fill="outline">
+						{{ 'Next'|trans }}
+						<ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+					</ion-button>
+				{% endif %}
+			</div>
+		{% endif %}
 	</div>
 {% endblock %}
 

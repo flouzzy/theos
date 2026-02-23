@@ -35,17 +35,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[Assert\NotBlank]
     private ?string $email = null;
 
+    /**
+     * @var list<string>
+     */
     #[ORM\Column]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string|null The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
 
     #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
+    private bool $isVerified = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
@@ -65,36 +68,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
+    /**
+     * @var Collection<int, Course>
+     */
     #[ORM\ManyToMany(targetEntity: Course::class, mappedBy: 'users')]
     private Collection $courses;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = 'images/default-user.png';
 
+    /**
+     * @var Collection<int, Module>
+     */
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Module::class, orphanRemoval: true)]
     private Collection $modules;
 
+    /**
+     * @var Collection<int, Lesson>
+     */
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Lesson::class, orphanRemoval: true)]
     private Collection $lessons;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 
+    /**
+     * @var Collection<int, Note>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Note::class, orphanRemoval: true)]
     private Collection $notes;
 
+    /**
+     * @var Collection<int, Course>
+     */
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Course::class, orphanRemoval: true)]
     private Collection $authorCourses;
 
+    /**
+     * @var Collection<int, Completion>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Completion::class, orphanRemoval: true)]
     private Collection $completions;
 
+    /**
+     * @var Collection<int, CourseCompletion>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: CourseCompletion::class)]
     private Collection $courseCompletions;
 
+    /**
+     * @var Collection<int, ModuleCompletion>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ModuleCompletion::class)]
     private Collection $moduleCompletions;
 
+    /**
+     * @var Collection<int, Notification>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
     private Collection $notifications;
 
@@ -104,18 +134,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $address = null;
 
+    /**
+     * @var Collection<int, Comment>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, Badge>
+     */
     #[ORM\ManyToMany(targetEntity: Badge::class, mappedBy: 'users')]
     private Collection $badges;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $score = null;
 
+    /**
+     * @var Collection<int, Cohort>
+     */
     #[ORM\ManyToMany(targetEntity: Cohort::class, inversedBy: 'users')]
     private Collection $cohorts;
 
+    /**
+     * @var Collection<int, Comment>
+     */
     #[ORM\ManyToMany(targetEntity: Comment::class, mappedBy: 'likes')]
     private Collection $likedComments;
 
@@ -131,16 +173,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 50, options: ['default' => 'UTC'])]
     private string $timezone = 'UTC';
 
-
+    /**
+     * @var Collection<int, Skill>
+     */
     #[ORM\ManyToMany(targetEntity: Skill::class, mappedBy: 'users')]
     private Collection $skills;
 
+    /**
+     * @var Collection<int, PortfolioProject>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: PortfolioProject::class, orphanRemoval: true)]
     private Collection $portfolioProjects;
 
+    /**
+     * @var Collection<int, AssignmentSubmission>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: AssignmentSubmission::class, orphanRemoval: true)]
     private Collection $assignmentSubmissions;
 
+    /**
+     * @var Collection<int, PeerReview>
+     */
     #[ORM\OneToMany(mappedBy: 'reviewer', targetEntity: PeerReview::class, orphanRemoval: true)]
     private Collection $peerReviews;
 
@@ -173,7 +226,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function __toString()
     {
-        return $this->fullname;
+        return (string) $this->fullname;
     }
 
     #[ORM\PreUpdate]
@@ -189,7 +242,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     {
         if ($this->fullname) {
             $details = explode(' ', $this->fullname);
-            $this->lastname = $this->lastname ?? ($details[0] ?? '');
+            $this->lastname = $this->lastname ?? $details[0];
             $this->firstname = $this->firstname ?? ($details[1] ?? '');
         } else {
             $this->fullname = trim($this->lastname . ' ' . $this->firstname);
@@ -261,6 +314,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return array_unique($roles);
     }
 
+    /**
+     * @param list<string> $roles
+     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -273,7 +329,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     public function getPassword(): string
     {
-        return $this->password;
+        return (string) $this->password;
     }
 
     public function setPassword(string $password): static
@@ -888,6 +944,135 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setLastStreakDate(?\DateTimeImmutable $lastStreakDate): static
     {
         $this->lastStreakDate = $lastStreakDate;
+
+        return $this;
+    }
+
+    public function getTimezone(): string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): static
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skill>
+     */
+    public function getSkills(): Collection
+    {
+        return $this->skills;
+    }
+
+    public function addSkill(Skill $skill): static
+    {
+        if (!$this->skills->contains($skill)) {
+            $this->skills->add($skill);
+            $skill->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skill $skill): static
+    {
+        if ($this->skills->removeElement($skill)) {
+            $skill->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PortfolioProject>
+     */
+    public function getPortfolioProjects(): Collection
+    {
+        return $this->portfolioProjects;
+    }
+
+    public function addPortfolioProject(PortfolioProject $portfolioProject): static
+    {
+        if (!$this->portfolioProjects->contains($portfolioProject)) {
+            $this->portfolioProjects->add($portfolioProject);
+            $portfolioProject->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioProject(PortfolioProject $portfolioProject): static
+    {
+        if ($this->portfolioProjects->removeElement($portfolioProject)) {
+            // set the owning side to null (unless already changed)
+            if ($portfolioProject->getUser() === $this) {
+                $portfolioProject->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AssignmentSubmission>
+     */
+    public function getAssignmentSubmissions(): Collection
+    {
+        return $this->assignmentSubmissions;
+    }
+
+    public function addAssignmentSubmission(AssignmentSubmission $assignmentSubmission): static
+    {
+        if (!$this->assignmentSubmissions->contains($assignmentSubmission)) {
+            $this->assignmentSubmissions->add($assignmentSubmission);
+            $assignmentSubmission->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignmentSubmission(AssignmentSubmission $assignmentSubmission): static
+    {
+        if ($this->assignmentSubmissions->removeElement($assignmentSubmission)) {
+            // set the owning side to null (unless already changed)
+            if ($assignmentSubmission->getUser() === $this) {
+                $assignmentSubmission->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PeerReview>
+     */
+    public function getPeerReviews(): Collection
+    {
+        return $this->peerReviews;
+    }
+
+    public function addPeerReview(PeerReview $peerReview): static
+    {
+        if (!$this->peerReviews->contains($peerReview)) {
+            $this->peerReviews->add($peerReview);
+            $peerReview->setReviewer($this);
+        }
+
+        return $this;
+    }
+
+    public function removePeerReview(PeerReview $peerReview): static
+    {
+        if ($this->peerReviews->removeElement($peerReview)) {
+            // set the owning side to null (unless already changed)
+            if ($peerReview->getReviewer() === $this) {
+                $peerReview->setReviewer(null);
+            }
+        }
 
         return $this;
     }
