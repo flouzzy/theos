@@ -97,15 +97,85 @@ class MediaManager
                 mkdir($targetDirectory, 0777, true);
             }
 
-            $response = $this->httpClient->request('GET', $fileUrl, [
-                'timeout' => 30,
-            ]);
+            $maxRedirects = 3;
+            $currentUrl = $fileUrl;
+            $content = null;
 
-            if ($response->getStatusCode() !== 200) {
+            for ($i = 0; $i <= $maxRedirects; $i++) {
+                $host = parse_url($currentUrl, PHP_URL_HOST);
+                if (!$host) {
+                    return false;
+                }
+
+                // Resolve DNS and validate IP to prevent SSRF
+                $ips = null;
+                if (filter_var($host, FILTER_VALIDATE_IP)) {
+                    $ips = [$host];
+                } else {
+                    $ips = gethostbynamel($host);
+                }
+
+                if ($ips === false || !is_array($ips)) {
+                    return false;
+                }
+
+                $resolvedIp = null;
+                foreach ($ips as $ip) {
+                    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                        $resolvedIp = $ip;
+                        break;
+                    }
+                }
+
+                if (!$resolvedIp) {
+                    return false;
+                }
+
+                $response = $this->httpClient->request('GET', $currentUrl, [
+                    'timeout' => 30,
+                    'max_redirects' => 0,
+                    'resolve' => [$host => $resolvedIp],
+                ]);
+
+                $statusCode = $response->getStatusCode();
+
+                if ($statusCode >= 300 && $statusCode < 400) {
+                    $headers = $response->getHeaders(false);
+                    if (!isset($headers['location'][0])) {
+                        return false;
+                    }
+                    $location = $headers['location'][0];
+
+                    // Handle relative URLs
+                    if (!preg_match('/^https?:\/\//i', $location)) {
+                        $parsed = parse_url($currentUrl);
+                        $scheme = $parsed['scheme'] ?? 'http';
+
+                        if (str_starts_with($location, '//')) {
+                             $location = "$scheme:$location";
+                        } elseif (str_starts_with($location, '/')) {
+                             $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
+                             $location = "$scheme://$host$port$location";
+                        } else {
+                            // Fail for relative paths without leading slash to avoid complexity
+                            return false;
+                        }
+                    }
+                    $currentUrl = $location;
+                    continue;
+                }
+
+                if ($statusCode === 200) {
+                    $content = $response->getContent();
+                    break;
+                }
+
                 return false;
             }
 
-            $content = $response->getContent();
+            if ($content === null) {
+                return false;
+            }
 
             // Verify content type
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
