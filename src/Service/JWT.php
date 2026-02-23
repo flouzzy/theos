@@ -74,7 +74,7 @@ class JWT
 
         // On décode le Payload
         /** @var array */
-        $payload = json_decode(base64_decode($array[1]), true);
+        $payload = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], $array[1])), true);
 
         return $payload;
     }
@@ -87,7 +87,7 @@ class JWT
 
         // On décode le Header
         /** @var array */
-        $header = json_decode(base64_decode($array[0]), true);
+        $header = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], $array[0])), true);
 
         return $header;
     }
