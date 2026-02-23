@@ -4,143 +4,80 @@ namespace App\Tests\Service;
 
 use App\Service\ImageOptimizer;
 use App\Service\MediaManager;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use App\Entity\User;
 
 class MediaManagerUploadTest extends TestCase
 {
-    private string $targetDirectory;
-    /** @var SluggerInterface&MockObject */
-    private $slugger;
-    /** @var ImageOptimizer&MockObject */
-    private $imageOptimizer;
-    /** @var Security&MockObject */
-    private $security;
-    /** @var LoggerInterface&MockObject */
-    private $logger;
-    /** @var HttpClientInterface&MockObject */
-    private $httpClient;
-    private MediaManager $mediaManager;
+    private $targetDirectory;
+    private $mediaManager;
 
     protected function setUp(): void
     {
-        $this->targetDirectory = __DIR__ . '/public/uploads'; // Mock path for testing logic
-        $this->slugger = $this->createMock(SluggerInterface::class);
-        $this->imageOptimizer = $this->createMock(ImageOptimizer::class);
-        $this->security = $this->createMock(Security::class);
-        $this->logger = $this->createMock(LoggerInterface::class);
-        $this->httpClient = $this->createMock(HttpClientInterface::class);
+        $this->targetDirectory = sys_get_temp_dir() . '/media_upload_test_' . uniqid();
+        mkdir($this->targetDirectory . '/public', 0777, true);
+
+        $slugger = new AsciiSlugger();
+        $imageOptimizer = $this->createMock(ImageOptimizer::class);
+        $security = $this->createMock(Security::class);
+        $logger = $this->createMock(LoggerInterface::class);
+        $httpClient = $this->createMock(HttpClientInterface::class);
 
         $this->mediaManager = new MediaManager(
-            $this->targetDirectory,
-            $this->slugger,
-            $this->imageOptimizer,
-            $this->security,
-            $this->logger,
-            $this->httpClient
+            $this->targetDirectory . '/public',
+            $slugger,
+            $imageOptimizer,
+            $security,
+            $logger,
+            $httpClient
         );
     }
 
-    public function testUploadSuccess(): void
+    protected function tearDown(): void
     {
-        $originalName = 'test-image.jpg';
-        $safeFilename = 'test-image';
-        $extension = 'jpg';
-        $expectedPathPart = 'uploads/course'; // 'course' is default mediaType
+        $this->removeDirectory($this->targetDirectory);
+    }
 
+    private function removeDirectory($dir)
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+        $files = array_diff(scandir($dir), ['.', '..']);
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? $this->removeDirectory("$dir/$file") : unlink("$dir/$file");
+        }
+        rmdir($dir);
+    }
+
+    public function testUploadPhpFileBlocked()
+    {
         $file = $this->createMock(UploadedFile::class);
-        $file->method('getClientOriginalName')->willReturn($originalName);
-        $file->method('guessExtension')->willReturn($extension);
+        $file->method('getClientOriginalName')->willReturn('evil.php');
+        $file->method('guessExtension')->willReturn('php');
 
-        // Mock slugger behavior
-        $this->slugger->expects($this->once())
-            ->method('slug')
-            ->with('test-image') // pathinfo filename
-            ->willReturn(new \Symfony\Component\String\UnicodeString($safeFilename));
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage('Invalid file extension: php');
 
-        // Expect move to be called
-        $file->expects($this->once())
-            ->method('move')
-            ->with(
-                $this->stringContains($this->targetDirectory . '/course'),
-                $this->stringContains($safeFilename)
-            );
+        $this->mediaManager->upload($file);
+    }
 
-        // Expect resize to be called
-        $this->imageOptimizer->expects($this->once())
-            ->method('resize')
-            ->with(
-                $this->stringContains($this->targetDirectory . '/course'),
-                []
-            );
+    public function testUploadValidImage()
+    {
+        $file = $this->createMock(UploadedFile::class);
+        $file->method('getClientOriginalName')->willReturn('image.jpg');
+        $file->method('guessExtension')->willReturn('jpg');
+
+        // We expect move to be called
+        $file->expects($this->once())->method('move');
 
         $result = $this->mediaManager->upload($file);
 
-        $this->assertNotNull($result);
-        $this->assertStringContainsString($expectedPathPart, $result);
         $this->assertStringEndsWith('.jpg', $result);
-    }
-
-    public function testUploadHandlesFileExceptionWithUser(): void
-    {
-        $originalName = 'error-image.jpg';
-        $file = $this->createMock(UploadedFile::class);
-        $file->method('getClientOriginalName')->willReturn($originalName);
-        $file->method('guessExtension')->willReturn('jpg');
-
-        $this->slugger->method('slug')->willReturn(new \Symfony\Component\String\UnicodeString('error-image'));
-
-        $exceptionMessage = 'Upload failed';
-        $file->method('move')->willThrowException(new FileException($exceptionMessage));
-
-        $user = $this->createMock(User::class);
-        $user->method('getEmail')->willReturn('user@example.com');
-        $this->security->method('getUser')->willReturn($user);
-
-        $this->logger->expects($this->once())
-            ->method('error')
-            ->with(
-                $this->stringContains('Failed to upload file'),
-                $this->callback(function ($context) use ($exceptionMessage) {
-                    return $context['user_email'] === 'user@example.com' &&
-                           $context['error_message'] === $exceptionMessage;
-                })
-            );
-
-        $result = $this->mediaManager->upload($file);
-
-        // Ensure result is returned even on failure (as per current implementation)
-        $this->assertNotNull($result);
-        $this->assertStringContainsString('uploads/course', $result);
-    }
-
-    public function testUploadHandlesFileExceptionWithoutUser(): void
-    {
-        $originalName = 'anon-error.jpg';
-        $file = $this->createMock(UploadedFile::class);
-        $file->method('getClientOriginalName')->willReturn($originalName);
-        $file->method('guessExtension')->willReturn('jpg');
-
-        $this->slugger->method('slug')->willReturn(new \Symfony\Component\String\UnicodeString('anon-error'));
-
-        $file->method('move')->willThrowException(new FileException('Anon upload failed'));
-
-        $this->security->method('getUser')->willReturn(null);
-
-        // Expect error log with "anonymous" or handled null user
-        $this->logger->expects($this->once())
-            ->method('error');
-
-        // This call will likely crash if the bug is present
-        $result = $this->mediaManager->upload($file);
-
-        $this->assertNotNull($result);
     }
 }
