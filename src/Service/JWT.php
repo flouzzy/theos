@@ -112,6 +112,6 @@ class JWT
         // On régénère un token
         $verifToken = $this->generate($header, $payload, $secret, 0);
 
-        return $token === $verifToken;
+        return hash_equals($verifToken, $token);
     }
 }

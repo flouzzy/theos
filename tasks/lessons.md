@@ -17,3 +17,9 @@
 - **Issue:** Discovered a fatal error in `src/Security/Voter/CommentVoter.php`: `voteOnAttribute` signature mismatch with Symfony 8 `Voter` class.
 - **Resolution:** Updated `voteOnAttribute` to include the optional `$vote` argument and imported the `Vote` class.
 - **Lesson:** Local verification is crucial even when CI is down. It revealed a critical application error that would have been missed if I solely relied on CI status.
+
+## [2025-02-22] Timing Attack on JWT Signature
+- **Context:** Fixing a security vulnerability in JWT signature verification.
+- **Issue:** The code used `===` for signature comparison, which is vulnerable to timing attacks.
+- **Resolution:** Replaced `===` with `hash_equals()` to ensure constant-time comparison.
+- **Lesson:** Always use `hash_equals()` when comparing cryptographic hashes or signatures to prevent timing attacks.
