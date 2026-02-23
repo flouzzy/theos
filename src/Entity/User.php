@@ -242,8 +242,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     {
         if ($this->fullname) {
             $details = preg_split('/\s+/', trim($this->fullname));
-            $this->lastname = $this->lastname ?? $details[0];
-            $this->firstname = $this->firstname ?? ($details[1] ?? '');
+            if (false !== $details) {
+                $this->lastname = $this->lastname ?? $details[0];
+                $this->firstname = $this->firstname ?? ($details[1] ?? '');
+            }
         } else {
             $this->fullname = trim($this->lastname . ' ' . $this->firstname);
         }

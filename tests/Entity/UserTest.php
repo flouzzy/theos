@@ -85,6 +85,7 @@ class UserTest extends TestCase
         $user->setUserDetails();
         $this->assertEquals('Doe', $user->getLastname());
         $this->assertEquals('John', $user->getFirstname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringContainsString('doe-john', $user->getUsername());
 
         // 2. Fullname with extra spaces
@@ -94,6 +95,7 @@ class UserTest extends TestCase
         // Expecting trimmed and correct parsing despite extra spaces
         $this->assertEquals('Smith', $user->getLastname());
         $this->assertEquals('Jane', $user->getFirstname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringContainsString('smith-jane', $user->getUsername());
 
         // 3. Single name in fullname
@@ -102,6 +104,7 @@ class UserTest extends TestCase
         $user->setUserDetails();
         $this->assertEquals('Cher', $user->getLastname());
         $this->assertEquals('', $user->getFirstname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringContainsString('cher', $user->getUsername());
 
         // 4. Empty fullname, but firstname/lastname provided
@@ -110,6 +113,7 @@ class UserTest extends TestCase
         $user->setFirstname('Harry');
         $user->setUserDetails();
         $this->assertEquals('Potter Harry', $user->getFullname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringContainsString('potter-harry', $user->getUsername());
 
         // 5. Only lastname provided
@@ -117,6 +121,7 @@ class UserTest extends TestCase
         $user->setLastname('Potter');
         $user->setUserDetails();
         $this->assertEquals('Potter', $user->getFullname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringContainsString('potter', $user->getUsername());
 
         // 6. Only firstname provided
@@ -124,6 +129,7 @@ class UserTest extends TestCase
         $user->setFirstname('Harry');
         $user->setUserDetails();
         $this->assertEquals('Harry', $user->getFullname());
+        $this->assertNotNull($user->getUsername());
         $this->assertStringContainsString('harry', $user->getUsername());
     }
 }
