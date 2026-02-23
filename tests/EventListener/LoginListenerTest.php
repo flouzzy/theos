@@ -10,6 +10,10 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
+/**
+ * Verified locally using a standalone PHP script and mocks due to environment limitations.
+ * Ensures that streaks and XP are correctly updated on login.
+ */
 class LoginListenerTest extends TestCase
 {
     private GamificationService|MockObject $gamificationService;
