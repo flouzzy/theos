@@ -99,6 +99,12 @@ class RegistrationController extends AbstractController
                 $brevoApi->addOrUpdateContact($user);
 
                 $this->addFlash('success', 'Your email address has been verified');
+                return $this->redirectToRoute('home');
+            }
+
+            if ($user && $user->isVerified()) {
+                $this->addFlash('success', 'Your email address has been verified');
+                return $this->redirectToRoute('home');
             }
         }
         // Ici un problème se pose dans le token
