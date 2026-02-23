@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Service\ImageOptimizer;
 use App\Service\MediaManager;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -14,13 +15,13 @@ use Symfony\Component\Filesystem\Exception\IOException;
 
 class MediaManagerTest extends TestCase
 {
-    private $slugger;
-    private $imageOptimizer;
-    private $security;
-    private $logger;
-    private $httpClient;
-    private $filesystem;
-    private $mediaManager;
+    private SluggerInterface&MockObject $slugger;
+    private ImageOptimizer&MockObject $imageOptimizer;
+    private Security&MockObject $security;
+    private LoggerInterface&MockObject $logger;
+    private HttpClientInterface&MockObject $httpClient;
+    private Filesystem&MockObject $filesystem;
+    private MediaManager $mediaManager;
 
     protected function setUp(): void
     {
@@ -42,7 +43,7 @@ class MediaManagerTest extends TestCase
         );
     }
 
-    public function testDeleteFileRemovesFile()
+    public function testDeleteFileRemovesFile(): void
     {
         $fileName = 'test.jpg';
         $mediaType = 'post';
@@ -55,7 +56,7 @@ class MediaManagerTest extends TestCase
         $this->mediaManager->deleteFile($fileName, $mediaType);
     }
 
-    public function testDeleteFileHandlesException()
+    public function testDeleteFileHandlesException(): void
     {
         $fileName = 'test.jpg';
         $mediaType = 'post';
