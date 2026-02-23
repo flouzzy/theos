@@ -241,9 +241,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setUserDetails(): void
     {
         if ($this->fullname) {
-            $details = explode(' ', $this->fullname);
-            $this->lastname = $this->lastname ?? $details[0];
-            $this->firstname = $this->firstname ?? ($details[1] ?? '');
+            $details = preg_split('/\s+/', trim($this->fullname));
+            if (false !== $details) {
+                $this->lastname = $this->lastname ?? $details[0];
+                $this->firstname = $this->firstname ?? ($details[1] ?? '');
+            }
         } else {
             $this->fullname = trim($this->lastname . ' ' . $this->firstname);
         }
