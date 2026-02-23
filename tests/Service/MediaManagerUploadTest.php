@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Service\ImageOptimizer;
 use App\Service\MediaManager;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -15,13 +16,18 @@ use App\Entity\User;
 
 class MediaManagerUploadTest extends TestCase
 {
-    private $targetDirectory;
+    private string $targetDirectory;
+    /** @var SluggerInterface&MockObject */
     private $slugger;
+    /** @var ImageOptimizer&MockObject */
     private $imageOptimizer;
+    /** @var Security&MockObject */
     private $security;
+    /** @var LoggerInterface&MockObject */
     private $logger;
+    /** @var HttpClientInterface&MockObject */
     private $httpClient;
-    private $mediaManager;
+    private MediaManager $mediaManager;
 
     protected function setUp(): void
     {
@@ -42,7 +48,7 @@ class MediaManagerUploadTest extends TestCase
         );
     }
 
-    public function testUploadSuccess()
+    public function testUploadSuccess(): void
     {
         $originalName = 'test-image.jpg';
         $safeFilename = 'test-image';
@@ -77,11 +83,12 @@ class MediaManagerUploadTest extends TestCase
 
         $result = $this->mediaManager->upload($file);
 
+        $this->assertNotNull($result);
         $this->assertStringContainsString($expectedPathPart, $result);
         $this->assertStringEndsWith('.jpg', $result);
     }
 
-    public function testUploadHandlesFileExceptionWithUser()
+    public function testUploadHandlesFileExceptionWithUser(): void
     {
         $originalName = 'error-image.jpg';
         $file = $this->createMock(UploadedFile::class);
@@ -114,7 +121,7 @@ class MediaManagerUploadTest extends TestCase
         $this->assertStringContainsString('uploads/course', $result);
     }
 
-    public function testUploadHandlesFileExceptionWithoutUser()
+    public function testUploadHandlesFileExceptionWithoutUser(): void
     {
         $originalName = 'anon-error.jpg';
         $file = $this->createMock(UploadedFile::class);
