@@ -15,8 +15,10 @@ class ImageOptimizer
 
     private Imagine $imagine;
 
-    public function __construct(private LoggerInterface $logger, private Security $security)
-    {
+    public function __construct(
+        private LoggerInterface $logger,
+        private Security $security
+    ) {
         $this->imagine = new Imagine();
     }
 
@@ -47,9 +49,8 @@ class ImageOptimizer
             $photo = $this->imagine->open($filename);
             $photo->resize(new Box($width, $height))->save($filename);
         } catch (Exception $exception) {
-            /**
-             * @var \App\Entity\User|null $user
-             */
+            //throw $th;
+            /** @var \App\Entity\User|null $user */
             $user = $this->security->getUser();
             $this->logger->error(
                 'Failed to upload file ' . $filename . ': ' . $exception->getMessage(),

@@ -56,8 +56,8 @@
 							</twig:Table:Cell>
 							<twig:Table:Cell>
 								<div class="text-sm">
-									<div>{{ user.courseCompletions|filter(c => c.completed)|length }} Courses</div>
-									<div>{{ user.moduleCompletions|filter(c => c.completed)|length }} Modules</div>
+									<div>{{ completionCounts[user.id]['courses'] ?? 0 }} Courses</div>
+									<div>{{ completionCounts[user.id]['modules'] ?? 0 }} Modules</div>
 								</div>
 							</twig:Table:Cell>
 							<twig:Table:Cell class="text-right">
