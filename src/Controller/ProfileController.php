@@ -7,6 +7,7 @@ use App\Entity\PortfolioProject;
 use App\Entity\Skill;
 use App\Event\UserUpdatedEvent;
 use App\Form\UserType;
+use App\Repository\CompletionRepository;
 use App\Service\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,8 +28,13 @@ class ProfileController extends AbstractController
     }
 
     #[Route('', name: 'index', priority: 3)]
-    public function index(EntityManagerInterface $entityManager, TranslatorInterface $translator, Request $request, EventDispatcherInterface $eventDispatcher): Response
-    {
+    public function index(
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator,
+        Request $request,
+        EventDispatcherInterface $eventDispatcher,
+        CompletionRepository $completionRepository
+    ): Response {
         /**
          * @var \App\Entity\User $user
          */
@@ -62,12 +68,7 @@ class ProfileController extends AbstractController
         $completedCoursesCount = $user->getCourseCompletions()->filter(fn($cc) => $cc->isCompleted())->count();
         $notesCount = $user->getNotes()->count();
 
-        $totalMinutes = 0;
-        foreach ($user->getCompletions() as $completion) {
-            if ($lesson = $completion->getLesson()) {
-                $totalMinutes += $lesson->getDuration() ?? 0;
-            }
-        }
+        $totalMinutes = $completionRepository->countTotalDurationByUser($user);
         $learningHours = floor($totalMinutes / 60);
 
         return $this->render('profile/show.html.twig', [
