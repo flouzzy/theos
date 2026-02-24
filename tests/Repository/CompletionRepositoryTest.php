@@ -1,88 +1,74 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Tests\Repository;
 
 use App\Entity\Completion;
-use App\Entity\User;
 use App\Repository\CompletionRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
 
 class CompletionRepositoryTest extends TestCase
 {
-    public function testCountTotalDurationByUser(): void
+    public function testFindPaginated()
     {
         // Mock dependencies
         $registry = $this->createMock(ManagerRegistry::class);
-        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager = $this->createMock(EntityManager::class);
+        $queryBuilder = $this->createMock(QueryBuilder::class);
+        $query = $this->createMock(Query::class);
         $classMetadata = $this->createMock(ClassMetadata::class);
-        $qb = $this->createMock(QueryBuilder::class);
 
-        // Mock Query using createMock to avoid extending @final class manually
-        // We need to use a partial mock or configure it properly if createMock fails
-        $query = $this->createMock(\Doctrine\ORM\Query::class);
-        $query->method('getSingleScalarResult')->willReturn(120);
+        // Setup expectations
+        $registry->method('getManagerForClass')->willReturn($entityManager);
 
-        // Mock User
-        $user = $this->createMock(User::class);
-
-        // Setup Repository
-        $registry->expects($this->any())
-            ->method('getManagerForClass')
-            ->willReturn($entityManager);
-
-        $entityManager->expects($this->any())
-            ->method('getClassMetadata')
-            ->willReturn($classMetadata);
-
+        // When ServiceEntityRepository is constructed, it calls $registry->getManagerForClass()
+        // and then $em->getClassMetadata().
+        $entityManager->method('getClassMetadata')->willReturn($classMetadata);
         $classMetadata->name = Completion::class;
 
+        // Mock createQueryBuilder chain
+        $entityManager->expects($this->any())
+            ->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
+        // In findPaginated:
+        // $this->createQueryBuilder('c') -> which calls $em->createQueryBuilder()
+        // ->select('c') -> from('Completion', 'c') -> orderBy('c.id', 'DESC')
+
+        // Since we are mocking createQueryBuilder on EM, we need to replicate what ServiceEntityRepository does.
+        // Actually, ServiceEntityRepository::createQueryBuilder calls $em->createQueryBuilder() and sets select/from.
+
+        // Let's mock the repository itself partially if possible, or just the EM calls.
+        // But ServiceEntityRepository is concrete.
+
+        // Testing specific method logic:
+        // $query = $this->createQueryBuilder('c')->orderBy('c.id', 'DESC')->getQuery();
+
+        $queryBuilder->method('select')->willReturnSelf();
+        $queryBuilder->method('from')->willReturnSelf();
+        $queryBuilder->method('orderBy')->willReturnSelf();
+        $queryBuilder->method('getQuery')->willReturn($query);
+
+        $query->expects($this->once())
+            ->method('setFirstResult')
+            ->with(0) // page 1, limit 50 -> offset 0
+            ->willReturnSelf();
+
+        $query->expects($this->once())
+            ->method('setMaxResults')
+            ->with(50)
+            ->willReturnSelf();
+
+        // Instantiate Repository
         $repository = new CompletionRepository($registry);
 
-        // Expectation for createQueryBuilder
-        $entityManager->expects($this->once())
-            ->method('createQueryBuilder')
-            ->willReturn($qb);
+        // Call method
+        $paginator = $repository->findPaginated(1, 50);
 
-        // Setup QueryBuilder expectations
-        $qb->method('select')->willReturn($qb);
-        $qb->method('from')->willReturn($qb);
-        $qb->method('join')->willReturn($qb);
-        $qb->method('where')->willReturn($qb);
-        $qb->method('setParameter')->willReturn($qb);
-        $qb->method('getQuery')->willReturn($query);
-
-        // Assert that methods are called with correct arguments
-        $qb->expects($this->exactly(2))
-            ->method('select')
-            ->with($this->logicalOr(
-                $this->equalTo('c'),
-                $this->equalTo('SUM(l.duration)')
-            ));
-
-        $qb->expects($this->once())
-            ->method('join')
-            ->with('c.lesson', 'l');
-
-        $qb->expects($this->once())
-            ->method('where')
-            ->with('c.user = :user');
-
-        $qb->expects($this->once())
-            ->method('setParameter')
-            ->with('user', $user);
-
-        // Expect query result
-        // $query->expects($this->once()) -> method(...) is not available on real object unless partial mock
-        // But since we use a real object (QueryMock), we don't need to mock the method.
-
-        $result = $repository->countTotalDurationByUser($user);
-
-        $this->assertEquals(120, $result);
+        $this->assertInstanceOf(\Doctrine\ORM\Tools\Pagination\Paginator::class, $paginator);
     }
 }

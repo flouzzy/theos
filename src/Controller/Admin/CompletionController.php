@@ -8,6 +8,7 @@ use App\Repository\ModuleCompletionRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -29,12 +30,21 @@ class CompletionController extends AbstractController
 
     #[Route('/lesson', name: 'lesson', methods: ['GET'])]
     public function showLessons(
+        Request $request,
         CompletionRepository $completionRepository,
     ): Response {
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = 50;
+        $paginator = $completionRepository->findPaginated($page, $limit);
+        $totalItems = count($paginator);
+        $totalPages = (int) ceil($totalItems / $limit);
+
         return $this->render('admin/completion/show.html.twig', [
-            'completions' => $completionRepository->findBy([], ['id' => 'DESC']),
+            'completions' => $paginator,
             'title' => 'Lessons completions',
-            'completionType' => 'lesson'
+            'completionType' => 'lesson',
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 

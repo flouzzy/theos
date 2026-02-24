@@ -11,6 +11,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Twig\Environment;
+use App\Service\GamificationService;
 
 class CompletionService
 {
@@ -20,6 +21,7 @@ class CompletionService
         private TranslatorInterface $translator,
         private Security $security,
         private Environment $twig,
+        private GamificationService $gamificationService,
     ) {}
 
     public function setModuleCompletion(Module $module): void
@@ -137,64 +139,15 @@ class CompletionService
                 $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
             );
 
-            // Award Badge
-            $badgeTitle = 'Completed ' . $course->getTitle();
-            $badgeRepository = $this->entityManager->getRepository(\App\Entity\Badge::class);
-            $badge = $badgeRepository->findOneBy(['title' => $badgeTitle]);
-
-            if (!$badge) {
-                // Find or create BadgeType
-                $badgeTypeRepository = $this->entityManager->getRepository(\App\Entity\BadgeType::class);
-                $badgeType = $badgeTypeRepository->findOneBy(['code' => 'COURSE_COMPLETION']);
-
-                if (!$badgeType) {
-                    $badgeType = new \App\Entity\BadgeType();
-                    $badgeType->setTitle('Course Completion');
-                    $badgeType->setCode('COURSE_COMPLETION');
-                    $badgeType->setDescription('Badge awarded for completing a course.');
-                    $this->entityManager->persist($badgeType);
-                }
-
-                $badge = new \App\Entity\Badge();
-                $badge->setTitle($badgeTitle);
-                $badge->setDescription('Awarded for completing the course: ' . $course->getTitle());
-                $badge->setBadgeType($badgeType);
-                $this->entityManager->persist($badge);
-            }
-
-            // Use User's badge collection to avoid loading all users of a badge (performance optimization)
-            if (!$user->getBadges()->contains($badge)) {
-                $badge->addUser($user);
-            }
-
-            // Check for Early Bird Badge (completed within 7 days of starting)
-            $createdAt = $courseCompletion->getCreatedAt() ?? new \DateTimeImmutable();
-            $now = new \DateTimeImmutable();
-            if ($now->diff($createdAt)->days < 7) {
-                $earlyBirdTitle = 'Early Bird: ' . $course->getTitle();
-                $badge = $badgeRepository->findOneBy(['title' => $earlyBirdTitle]);
-
-                if (!$badge) {
-                    $ebType = $this->entityManager->getRepository(\App\Entity\BadgeType::class)->findOneBy(['code' => 'EARLY_BIRD']);
-                    if (!$ebType) {
-                        $ebType = new \App\Entity\BadgeType();
-                        $ebType->setCode('EARLY_BIRD');
-                        $ebType->setTitle('Early Bird');
-                        $ebType->setDescription('Completed a course within 7 days');
-                        $this->entityManager->persist($ebType);
-                    }
-
-                    $badge = new \App\Entity\Badge();
-                    $badge->setTitle($earlyBirdTitle);
-                    $badge->setDescription('Completed ' . $course->getTitle() . ' within 7 days');
-                    $badge->setBadgeType($ebType);
-                    $this->entityManager->persist($badge);
-                }
-
-                if (!$user->getBadges()->contains($badge)) {
-                    $badge->addUser($user);
-                }
-            }
+            // Award Badges via GamificationService
+            // Flush is false to allow atomic transaction commit by caller (or later flush)
+            $this->gamificationService->awardCourseCompletionBadge($user, $course, false);
+            $this->gamificationService->awardEarlyBirdBadge(
+                $user,
+                $course,
+                $courseCompletion->getCreatedAt() ?? new \DateTimeImmutable(),
+                false
+            );
         }
 
         // MAj du statut du parcours
