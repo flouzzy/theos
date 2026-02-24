@@ -35,6 +35,9 @@ class BadgeType
     #[ORM\Column(length: 20)]
     private ?string $code = null;
 
+    public const CODE_COURSE_COMPLETION = 'COURSE_COMPLETION';
+    public const CODE_EARLY_BIRD = 'EARLY_BIRD';
+
     public function __construct()
     {
         $this->badges = new ArrayCollection();

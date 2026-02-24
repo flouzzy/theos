@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\BadgeType;
 use App\Entity\Completion;
 use App\Entity\CourseCompletion;
 use App\Entity\Module;
