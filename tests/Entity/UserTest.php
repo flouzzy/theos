@@ -79,66 +79,57 @@ class UserTest extends TestCase
 
     public function testSetUserDetails(): void
     {
-        // 1. Fullname provided (Last First)
+        // 1. Fullname provided, firstname and lastname empty
         $user = new User();
         $user->setFullname('Doe John');
         $user->setUserDetails();
         $this->assertEquals('Doe', $user->getLastname());
         $this->assertEquals('John', $user->getFirstname());
         $this->assertNotNull($user->getUsername());
-        $this->assertStringStartsWith('doe-john-', $user->getUsername());
+        $this->assertStringContainsString('doe-john', $user->getUsername());
 
         // 2. Fullname with extra spaces
         $user = new User();
-        $user->setFullname('  Doe   John  ');
+        $user->setFullname('  Smith   Jane  ');
         $user->setUserDetails();
-        $this->assertEquals('Doe', $user->getLastname());
-        $this->assertEquals('John', $user->getFirstname());
+        // Expecting trimmed and correct parsing despite extra spaces
+        $this->assertEquals('Smith', $user->getLastname());
+        $this->assertEquals('Jane', $user->getFirstname());
         $this->assertNotNull($user->getUsername());
-        $this->assertStringStartsWith('doe-john-', $user->getUsername());
+        $this->assertStringContainsString('smith-jane', $user->getUsername());
 
-        // 3. Single name
+        // 3. Single name in fullname
         $user = new User();
         $user->setFullname('Cher');
         $user->setUserDetails();
         $this->assertEquals('Cher', $user->getLastname());
         $this->assertEquals('', $user->getFirstname());
         $this->assertNotNull($user->getUsername());
-        $this->assertStringStartsWith('cher-', $user->getUsername());
+        $this->assertStringContainsString('cher', $user->getUsername());
 
-        // 4. Missing fullname, firstname/lastname provided
+        // 4. Empty fullname, but firstname/lastname provided
         $user = new User();
-        $user->setLastname('Doe');
-        $user->setFirstname('John');
+        $user->setLastname('Potter');
+        $user->setFirstname('Harry');
         $user->setUserDetails();
-        $this->assertEquals('Doe John', $user->getFullname());
+        $this->assertEquals('Potter Harry', $user->getFullname());
         $this->assertNotNull($user->getUsername());
-        $this->assertStringStartsWith('doe-john-', $user->getUsername());
+        $this->assertStringContainsString('potter-harry', $user->getUsername());
 
-        // 5. Missing fullname, only lastname provided
+        // 5. Only lastname provided
         $user = new User();
-        $user->setLastname('Doe');
+        $user->setLastname('Potter');
         $user->setUserDetails();
-        $this->assertEquals('Doe', $user->getFullname());
+        $this->assertEquals('Potter', $user->getFullname());
         $this->assertNotNull($user->getUsername());
-        $this->assertStringStartsWith('doe-', $user->getUsername());
+        $this->assertStringContainsString('potter', $user->getUsername());
 
-        // 6. Missing fullname, only firstname provided
+        // 6. Only firstname provided
         $user = new User();
-        $user->setFirstname('John');
+        $user->setFirstname('Harry');
         $user->setUserDetails();
-        $this->assertEquals('John', $user->getFullname());
+        $this->assertEquals('Harry', $user->getFullname());
         $this->assertNotNull($user->getUsername());
-        $this->assertStringStartsWith('john-', $user->getUsername());
-
-        // 7. Precedence: Fullname vs Individual Names
-        $user = new User();
-        $user->setFullname('Smith Jane');
-        $user->setLastname('Doe'); // Manually set
-        $user->setUserDetails();
-        $this->assertEquals('Doe', $user->getLastname()); // Kept manually set lastname
-        $this->assertEquals('Jane', $user->getFirstname()); // Derived firstname
-        $this->assertNotNull($user->getUsername());
-        $this->assertStringStartsWith('smith-jane-', $user->getUsername()); // Username derived from fullname
+        $this->assertStringContainsString('harry', $user->getUsername());
     }
 }

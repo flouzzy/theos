@@ -35,6 +35,22 @@ class CourseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Course[] Returns an array of Course objects with modules and lessons eager loaded
+     */
+    public function findCoursesWithModulesAndLessonsForUser(\App\Entity\User $user): array
+    {
+        return $this->createQueryBuilder('c', 'c.id')
+            ->join('c.users', 'u')
+            ->leftJoin('c.modules', 'm')
+            ->leftJoin('m.lessons', 'l')
+            ->addSelect('m', 'l')
+            ->where('u = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Course[] Returns an array of Course objects
 //     */
