@@ -12,6 +12,7 @@ use App\Entity\Module;
 use App\Entity\ModuleCompletion;
 use App\Entity\User;
 use App\Service\CompletionService;
+use App\Service\GamificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -34,6 +35,9 @@ class CompletionServiceTest extends TestCase
     private Security $security;
     /** @var Environment&MockObject */
     private Environment $twig;
+    /** @var GamificationService&MockObject */
+    private GamificationService $gamificationService;
+
     private CompletionService $completionService;
 
     protected function setUp(): void
@@ -43,13 +47,15 @@ class CompletionServiceTest extends TestCase
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->security = $this->createMock(Security::class);
         $this->twig = $this->createMock(Environment::class);
+        $this->gamificationService = $this->createMock(GamificationService::class);
 
         $this->completionService = new CompletionService(
             $this->entityManager,
             $this->bus,
             $this->translator,
             $this->security,
-            $this->twig
+            $this->twig,
+            $this->gamificationService
         );
     }
 
@@ -235,18 +241,13 @@ class CompletionServiceTest extends TestCase
             ->with(['user' => $user, 'course' => $course])
             ->willReturn($courseCompletion);
 
-        $badgeRepo = $this->createMock(EntityRepository::class);
-        $badgeTypeRepo = $this->createMock(EntityRepository::class);
-
         $this->entityManager->method('getRepository')
             ->will($this->returnValueMap([
                 [CourseCompletion::class, $courseCompletionRepo],
                 [Completion::class, $completionRepo],
-                [Badge::class, $badgeRepo],
-                [BadgeType::class, $badgeTypeRepo],
             ]));
 
-        $this->entityManager->expects($this->atLeastOnce())->method('persist');
+        $this->entityManager->expects($this->once())->method('persist')->with($courseCompletion);
 
         // Notification should be sent
         $this->twig->expects($this->once())
@@ -271,6 +272,15 @@ class CompletionServiceTest extends TestCase
                     && str_contains($message->getTitle(), 'John');
             }))
             ->willReturn(new \Symfony\Component\Messenger\Envelope(new \stdClass()));
+
+        // Expect calls to GamificationService with flush=false
+        $this->gamificationService->expects($this->once())
+            ->method('awardCourseCompletionBadge')
+            ->with($user, $course, false);
+
+        $this->gamificationService->expects($this->once())
+            ->method('awardEarlyBirdBadge')
+            ->with($user, $course, $this->isInstanceOf(\DateTimeImmutable::class), false);
 
         $this->completionService->setCourseCompletion($course);
 
