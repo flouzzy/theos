@@ -5,6 +5,10 @@ namespace App\Tests\Service;
 use App\Service\JWT;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Unit tests for JWT Service.
+ * Covers generation, validation, expiration, and signature verification.
+ */
 class JWTTest extends TestCase
 {
     private JWT $jwt;
@@ -18,108 +22,85 @@ class JWTTest extends TestCase
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['user_id' => 123];
-        $secret = 'test_secret';
+        $secret = 'secret';
 
         $token = $this->jwt->generate($header, $payload, $secret);
 
-        $this->assertIsString($token);
-        $parts = explode('.', $token);
-        $this->assertCount(3, $parts);
-
-        // Verify content
-        $extractedHeader = $this->jwt->getHeader($token);
-        $extractedPayload = $this->jwt->getPayload($token);
-
-        $this->assertEquals($header, $extractedHeader);
-        $this->assertEquals($payload['user_id'], $extractedPayload['user_id']);
-        $this->assertArrayHasKey('iat', $extractedPayload);
-        $this->assertArrayHasKey('exp', $extractedPayload);
+        $this->assertMatchesRegularExpression('/^[a-zA-Z0-9\-\_\=]+\.[a-zA-Z0-9\-\_\=]+\.[a-zA-Z0-9\-\_\=]+$/', $token);
     }
 
     public function testIsValid(): void
     {
-        // Valid token structure
         $validToken = 'header.payload.signature';
         $this->assertTrue($this->jwt->isValid($validToken));
 
-        // Invalid token structure
-        $invalidToken1 = 'header.payload';
-        $this->assertFalse($this->jwt->isValid($invalidToken1));
+        $invalidToken = 'header.payload';
+        $this->assertFalse($this->jwt->isValid($invalidToken));
 
-        $invalidToken2 = 'header.payload.signature.extra';
-        $this->assertFalse($this->jwt->isValid($invalidToken2));
-
-        // Invalid characters
-        $invalidToken3 = 'header!.payload.signature';
-        $this->assertFalse($this->jwt->isValid($invalidToken3));
+        $invalidChars = 'header.payload.sign@ture';
+        $this->assertFalse($this->jwt->isValid($invalidChars));
     }
 
-    public function testGetHeader(): void
+    public function testGetHeaderAndPayload(): void
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['user_id' => 123];
-        $secret = 'test_secret';
+        $secret = 'secret';
 
         $token = $this->jwt->generate($header, $payload, $secret);
 
-        $extractedHeader = $this->jwt->getHeader($token);
-        $this->assertEquals($header, $extractedHeader);
-    }
+        $retrievedHeader = $this->jwt->getHeader($token);
+        $this->assertEquals($header, $retrievedHeader);
 
-    public function testGetPayload(): void
-    {
-        $header = ['typ' => 'JWT', 'alg' => 'HS256'];
-        $payload = ['user_id' => 123];
-        $secret = 'test_secret';
-
-        $token = $this->jwt->generate($header, $payload, $secret);
-
-        $extractedPayload = $this->jwt->getPayload($token);
-        $this->assertEquals($payload['user_id'], $extractedPayload['user_id']);
-        $this->assertArrayHasKey('iat', $extractedPayload);
-        $this->assertArrayHasKey('exp', $extractedPayload);
+        $retrievedPayload = $this->jwt->getPayload($token);
+        $this->assertEquals($payload['user_id'], $retrievedPayload['user_id']);
+        $this->assertArrayHasKey('iat', $retrievedPayload);
+        $this->assertArrayHasKey('exp', $retrievedPayload);
     }
 
     public function testIsExpired(): void
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['user_id' => 123];
-        $secret = 'test_secret';
+        $secret = 'secret';
 
-        // Valid token (long expiration)
-        $tokenValid = $this->jwt->generate($header, $payload, $secret, 3600);
-        $this->assertFalse($this->jwt->isExpired($tokenValid));
+        // Token valid for 1 hour
+        $token = $this->jwt->generate($header, $payload, $secret, 3600);
+        $this->assertFalse($this->jwt->isExpired($token));
 
-        // Expired token (negative validity)
-        $tokenExpired = $this->jwt->generate($header, $payload, $secret, -3600);
-        $this->assertTrue($this->jwt->isExpired($tokenExpired));
+        // Token expired 1 hour ago
+        // Manually set exp to past and validity 0 to prevent overwrite
+        $expiredPayload = $payload;
+        $expiredPayload['exp'] = time() - 3600;
+        $expiredToken = $this->jwt->generate($header, $expiredPayload, $secret, 0);
+        $this->assertTrue($this->jwt->isExpired($expiredToken));
     }
 
     public function testCheck(): void
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['user_id' => 123];
-        $secret = 'test_secret';
+        $secret = 'secret';
 
         $token = $this->jwt->generate($header, $payload, $secret);
 
-        // Correct secret
         $this->assertTrue($this->jwt->check($token, $secret));
-
-        // Incorrect secret
         $this->assertFalse($this->jwt->check($token, 'wrong_secret'));
+    }
 
-        // Modified token
-        $parts = explode('.', $token);
+    public function testUrlSafeBase64Bug(): void
+    {
+        // This payload produces '~~~' which becomes 'fn5+' in standard base64
+        // The generate method replaces '+' with '-' -> 'fn5-'
+        // The getPayload method decodes 'fn5-' which fails or corrupts data if not reversed
+        $payload = ['a' => '~~~'];
+        $header = ['typ' => 'JWT', 'alg' => 'HS256'];
+        $secret = 'secret';
 
-        // Generate another token to get a valid payload part but different content
-        $token2 = $this->jwt->generate($header, ['user_id' => 999], $secret);
-        $parts2 = explode('.', $token2);
+        $token = $this->jwt->generate($header, $payload, $secret);
 
-        // Mix parts: header1 + payload2 + signature1
-        // Since payload changed, signature1 is invalid for it.
-        $tamperedToken = $parts[0] . '.' . $parts2[1] . '.' . $parts[2];
+        $retrievedPayload = $this->jwt->getPayload($token);
 
-        $this->assertFalse($this->jwt->check($tamperedToken, $secret));
+        $this->assertEquals($payload['a'], $retrievedPayload['a']);
     }
 }

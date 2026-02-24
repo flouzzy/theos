@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -17,18 +18,34 @@ class MediaManager
     private SluggerInterface $slugger;
     private Filesystem $filesystem;
 
-    public function __construct(string $targetDirectory, SluggerInterface $slugger, private ImageOptimizer $imageOptimizer, private Security $security, private LoggerInterface $logger, private HttpClientInterface $httpClient)
-    {
+    public function __construct(
+        string $targetDirectory,
+        SluggerInterface $slugger,
+        private ImageOptimizer $imageOptimizer,
+        private Security $security,
+        private LoggerInterface $logger,
+        private HttpClientInterface $httpClient,
+        ?Filesystem $filesystem = null
+    ) {
         $this->targetDirectory = $targetDirectory;
         $this->slugger = $slugger;
-        $this->filesystem  = new Filesystem();
+        $this->filesystem = $filesystem ?? new Filesystem();
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function upload(UploadedFile $file, string $mediaType = 'course', array $params = []): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = strtolower($this->slugger->slug($originalFilename));
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $extension = $file->guessExtension();
+
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+            throw new FileException('Invalid file extension: ' . $extension);
+        }
+
+        $fileName = $safeFilename . '-' . uniqid() . '.' . $extension;
         $targetDirectory = $this->getTargetDirectory($mediaType);
 
         // On récupère uniquement le chemin après dossier public
@@ -46,7 +63,7 @@ class MediaManager
             $this->logger->error(
                 'Failed to upload file ' . $file->getClientOriginalName() . ': ' . $exception->getMessage(),
                 [
-                    'user_email' => $user->getEmail(),
+                    'user_email' => $user ? $user->getEmail() : 'anonymous',
                     'error_message' => $exception->getMessage()
                 ]
             );
@@ -66,7 +83,7 @@ class MediaManager
     {
         try {
             $this->filesystem->remove($this->getTargetDirectory($mediaType) . "/$fileName");
-        } catch (FileException $e) {
+        } catch (IOException $e) {
             // ... handle exception if something happens during file removal
         }
     }
@@ -74,6 +91,22 @@ class MediaManager
     public function getTargetDirectory(?string $mediaType = null): string
     {
         return $mediaType ? "$this->targetDirectory/$mediaType" : $this->targetDirectory;
+    }
+
+    private function getSafeIp(string $host): ?string
+    {
+        $ips = gethostbynamel($host);
+        if ($ips === false || empty($ips)) {
+            return null;
+        }
+
+        foreach ($ips as $ip) {
+            if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                return null;
+            }
+        }
+
+        return $ips[0];
     }
 
     public function downloadFileByUrl(string $fileUrl, ?string $mediaType = null): string|false
@@ -88,6 +121,7 @@ class MediaManager
             return false;
         }
 
+        /** @var string|null $fileFullPath */
         $fileFullPath = null;
         try {
             $targetDirectory = $this->getTargetDirectory($mediaType);
@@ -97,24 +131,73 @@ class MediaManager
                 mkdir($targetDirectory, 0777, true);
             }
 
-            $response = $this->httpClient->request('GET', $fileUrl, [
-                'timeout' => 30,
-            ]);
+            $content = null;
+            $url = $fileUrl;
+            $maxRedirects = 3;
 
-            if ($response->getStatusCode() !== 200) {
+            for ($i = 0; $i <= $maxRedirects; $i++) {
+                $parts = parse_url($url);
+                if (!$parts || !isset($parts['host'])) {
+                    return false;
+                }
+
+                $host = $parts['host'];
+                // Default ports: 80 for http, 443 for https
+                $scheme = $parts['scheme'] ?? 'http';
+                $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
+
+                // Allow only standard ports to reduce attack surface
+                if (!in_array($port, [80, 443, 8080])) {
+                    return false;
+                }
+
+                $safeIp = $this->getSafeIp($host);
+                if (!$safeIp) {
+                    return false;
+                }
+
+                $response = $this->httpClient->request('GET', $url, [
+                    'timeout' => 30,
+                    'max_redirects' => 0,
+                    'resolve' => [$host => $safeIp],
+                ]);
+
+                $statusCode = $response->getStatusCode();
+
+                if ($statusCode >= 200 && $statusCode < 300) {
+                    $content = $response->getContent();
+                    break;
+                }
+
+                if ($statusCode >= 300 && $statusCode < 400) {
+                    $headers = $response->getHeaders(false);
+                    $location = $headers['location'][0] ?? null;
+                    if (!$location) {
+                        return false;
+                    }
+
+                    // Handle relative redirects
+                    if (str_starts_with($location, '/')) {
+                        $location = $scheme . '://' . $host . ($parts['port'] ?? '' ? ':' . $parts['port'] : '') . $location;
+                    } elseif (!preg_match('/^https?:\/\//i', $location)) {
+                        // Reject complex relative paths for safety
+                        return false;
+                    }
+
+                    $url = $location;
+                    continue;
+                }
+
                 return false;
             }
 
-            $content = $response->getContent();
+            if (!$content) {
+                return false;
+            }
 
             // Verify content type
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $mimeType = $finfo->buffer($content);
-
-            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (!in_array($mimeType, $allowedMimeTypes)) {
-                return false;
-            }
 
             $extensions = [
                 'image/jpeg' => 'jpg',
@@ -122,6 +205,11 @@ class MediaManager
                 'image/gif' => 'gif',
                 'image/webp' => 'webp'
             ];
+
+            if (!isset($extensions[$mimeType])) {
+                return false;
+            }
+
             $extension = $extensions[$mimeType];
 
             // Generate safe filename
@@ -149,7 +237,7 @@ class MediaManager
                 [
                     'user_email' => $user ? $user->getEmail() : 'anonymous',
                     'error_message' => $exception->getMessage(),
-                    'fileUrl' => $fileUrl, 'fileFullPath' => $fileFullPath ?? 'unknown'
+                    'fileUrl' => $fileUrl, 'fileFullPath' => $fileFullPath
                 ]
             );
         } catch (TransportExceptionInterface $e) {
