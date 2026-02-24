@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Notification;
@@ -21,8 +23,11 @@ class NotificationController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(NotificationRepository $notificationRepository): Response
     {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
         return $this->render('notification/index.html.twig', [
-            'notifications' => $notificationRepository->findAllByUser($this->getUser(), 12),
+            'notifications' => $notificationRepository->findAllByUser($user, 12),
         ]);
     }
 
@@ -62,17 +67,13 @@ class NotificationController extends AbstractController
     }
 
     #[Route('/read/all', name: 'read_all')]
-    public function markAllAsRead(EntityManagerInterface $entityManager): Response
+    public function markAllAsRead(NotificationRepository $notificationRepository): Response
     {
         /**
          * @var \App\Entity\User $currentUser
          */
         $currentUser = $this->getUser();
-        $notifications = $currentUser->getNotifications();
-        foreach ($notifications as $notification) {
-            $notification->setIsRead(true);
-        }
-        $entityManager->flush();
+        $notificationRepository->markAllAsRead($currentUser);
 
         $this->addFlash('success', 'All notifications have been marked as read');
         return $this->redirectToRoute('notification_index');
