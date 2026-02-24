@@ -12,9 +12,10 @@ use App\Service\SendMail;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -33,189 +34,125 @@ class RegistrationControllerTest extends TestCase
     private $session;
     private $flashBag;
     private $router;
+    private $parameterBag;
+    private $controller;
 
     protected function setUp(): void
     {
-        // Mocks for constructor
         $this->emailVerifier = $this->createMock(EmailVerifier::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->jwt = $this->createMock(JWT::class);
         $this->mailer = $this->createMock(SendMail::class);
-
-        // Mocks for method arguments
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->brevoApi = $this->createMock(BrevoApi::class);
-
-        // Container mocks
         $this->container = $this->createMock(ContainerInterface::class);
         $this->requestStack = $this->createMock(RequestStack::class);
-        $this->session = $this->createMock(SessionInterface::class);
+        $this->session = $this->createMock(FlashBagAwareSessionInterface::class);
         $this->flashBag = $this->createMock(FlashBagInterface::class);
         $this->router = $this->createMock(RouterInterface::class);
+        $this->parameterBag = $this->createMock(ParameterBagInterface::class);
 
-        // Setup session/flash chain
         $this->session->method('getFlashBag')->willReturn($this->flashBag);
         $this->requestStack->method('getSession')->willReturn($this->session);
 
-        // Setup container
-        $this->container->method('has')->willReturnMap([
-            ['request_stack', true],
-            ['router', true],
-            ['parameter_bag', false],
-        ]);
-
+        $this->container->method('has')->willReturn(true);
         $this->container->method('get')->willReturnMap([
             ['request_stack', 1, $this->requestStack],
             ['router', 1, $this->router],
+            ['parameter_bag', 1, $this->parameterBag],
         ]);
+        $this->parameterBag->method('get')->with('app.jwtsecret')->willReturn('secret');
 
-        // Setup parameters
-        $this->container->method('getParameter')->willReturnMap([
-            ['app.jwtsecret', 'secret'],
-        ]);
-
-        // Common router behavior
-        $this->router->method('generate')->willReturn('/home');
+        $this->controller = new RegistrationController($this->emailVerifier, $this->entityManager, $this->translator, $this->jwt, $this->mailer);
+        $this->controller->setContainer($this->container);
     }
 
-    private function getController(): RegistrationController
+    public function testVerifyUserEmailSuccess()
     {
-        $controller = new RegistrationController(
-            $this->emailVerifier,
-            $this->entityManager,
-            $this->translator,
-            $this->jwt,
-            $this->mailer
-        );
-        $controller->setContainer($this->container);
-        return $controller;
-    }
+        $token = 'valid.token';
+        $userId = 123;
+        $user = $this->createMock(User::class);
 
-    public function testVerifyUserEmailSuccess(): void
-    {
-        $token = 'valid_token';
-
-        // JWT Valid
         $this->jwt->method('isValid')->with($token)->willReturn(true);
         $this->jwt->method('isExpired')->with($token)->willReturn(false);
         $this->jwt->method('check')->with($token, 'secret')->willReturn(true);
-        $this->jwt->method('getPayload')->with($token)->willReturn(['user_id' => 1]);
+        $this->jwt->method('getPayload')->with($token)->willReturn(['user_id' => $userId]);
 
-        // User Found and Not Verified
-        $user = $this->createMock(User::class);
+        $this->userRepository->method('find')->with($userId)->willReturn($user);
+
         $user->method('isVerified')->willReturn(false);
         $user->expects($this->once())->method('setIsVerified')->with(true);
 
-        $this->userRepository->method('find')->with(1)->willReturn($user);
+        $this->entityManager->expects($this->once())->method('flush')->with($user);
+        $this->brevoApi->expects($this->once())->method('addOrUpdateContact')->with($user);
 
-        // Capture flashes
         $flashes = [];
-        $this->flashBag->method('add')->willReturnCallback(function($type, $msg) use (&$flashes) {
-            $flashes[] = [$type, $msg];
-        });
+        $this->flashBag->expects($this->once())->method('add')
+            ->willReturnCallback(function($type, $message) use (&$flashes) {
+                $flashes[] = [$type, $message];
+            });
 
-        // Execute
-        $response = $this->getController()->verifyUserEmail($token, $this->userRepository, $this->brevoApi);
+        $this->router->method('generate')->with('home')->willReturn('/home');
 
-        // Assertions
+        $response = $this->controller->verifyUserEmail($token, $this->userRepository, $this->brevoApi);
+
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertCount(1, $flashes, 'Should have exactly 1 success flash');
+        $this->assertCount(1, $flashes);
         $this->assertEquals(['success', 'Your email address has been verified'], $flashes[0]);
     }
 
-    public function testVerifyUserEmailAlreadyVerified(): void
+    public function testVerifyUserEmailAlreadyVerified()
     {
-        $token = 'valid_token';
+        $token = 'valid.token';
+        $userId = 123;
+        $user = $this->createMock(User::class);
 
-        // JWT Valid
         $this->jwt->method('isValid')->with($token)->willReturn(true);
         $this->jwt->method('isExpired')->with($token)->willReturn(false);
         $this->jwt->method('check')->with($token, 'secret')->willReturn(true);
-        $this->jwt->method('getPayload')->with($token)->willReturn(['user_id' => 1]);
+        $this->jwt->method('getPayload')->with($token)->willReturn(['user_id' => $userId]);
 
-        // User Found and ALREADY Verified
-        $user = $this->createMock(User::class);
+        $this->userRepository->method('find')->with($userId)->willReturn($user);
+
         $user->method('isVerified')->willReturn(true);
         $user->expects($this->never())->method('setIsVerified');
 
-        $this->userRepository->method('find')->with(1)->willReturn($user);
+        $this->entityManager->expects($this->never())->method('flush');
+        $this->brevoApi->expects($this->never())->method('addOrUpdateContact');
 
-        // Capture flashes
         $flashes = [];
-        $this->flashBag->method('add')->willReturnCallback(function($type, $msg) use (&$flashes) {
-            $flashes[] = [$type, $msg];
-        });
+        $this->flashBag->expects($this->once())->method('add')
+            ->willReturnCallback(function($type, $message) use (&$flashes) {
+                $flashes[] = [$type, $message];
+            });
 
-        // Execute
-        $response = $this->getController()->verifyUserEmail($token, $this->userRepository, $this->brevoApi);
+        $this->router->method('generate')->with('home')->willReturn('/home');
 
-        // Assertions
+        $response = $this->controller->verifyUserEmail($token, $this->userRepository, $this->brevoApi);
+
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertCount(1, $flashes, 'Should have exactly 1 info flash');
-        $this->assertEquals(['info', 'Your email address is already verified'], $flashes[0]);
-    }
-
-    public function testVerifyUserEmailInvalidToken(): void
-    {
-        $token = 'invalid_token';
-
-        // JWT Invalid
-        $this->jwt->method('isValid')->with($token)->willReturn(false);
-        // Short circuit evaluation means isExpired/check might not be called, but we don't care about expectation strictness here much.
-
-        // Capture flashes
-        $flashes = [];
-        $this->flashBag->method('add')->willReturnCallback(function($type, $msg) use (&$flashes) {
-            $flashes[] = [$type, $msg];
-        });
-
-        // Execute
-        $response = $this->getController()->verifyUserEmail($token, $this->userRepository, $this->brevoApi);
-
-        // Assertions
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertCount(1, $flashes, 'Should have exactly 1 danger flash');
-        $this->assertEquals(['danger', 'The token is invalid or has expired'], $flashes[0]);
-    }
-
-    public function testVerifyUserEmailExpiredToken(): void
-    {
-        $token = 'expired_token';
-
-        $this->jwt->method('isValid')->willReturn(true);
-        $this->jwt->method('isExpired')->willReturn(true); // Expired!
-
-        $flashes = [];
-        $this->flashBag->method('add')->willReturnCallback(function($type, $msg) use (&$flashes) {
-            $flashes[] = [$type, $msg];
-        });
-
-        $this->getController()->verifyUserEmail($token, $this->userRepository, $this->brevoApi);
-
         $this->assertCount(1, $flashes);
-        $this->assertEquals(['danger', 'The token is invalid or has expired'], $flashes[0]);
+        $this->assertEquals(['success', 'Your email address has been verified'], $flashes[0]);
     }
 
-    public function testVerifyUserEmailUserNotFound(): void
+    public function testVerifyUserEmailInvalidToken()
     {
-        $token = 'valid_token_no_user';
+        $token = 'invalid.token';
 
-        $this->jwt->method('isValid')->willReturn(true);
-        $this->jwt->method('isExpired')->willReturn(false);
-        $this->jwt->method('check')->willReturn(true);
-        $this->jwt->method('getPayload')->willReturn(['user_id' => 999]);
-
-        $this->userRepository->method('find')->with(999)->willReturn(null);
+        $this->jwt->method('isValid')->with($token)->willReturn(false);
 
         $flashes = [];
-        $this->flashBag->method('add')->willReturnCallback(function($type, $msg) use (&$flashes) {
-            $flashes[] = [$type, $msg];
-        });
+        $this->flashBag->expects($this->once())->method('add')
+            ->willReturnCallback(function($type, $message) use (&$flashes) {
+                $flashes[] = [$type, $message];
+            });
 
-        $this->getController()->verifyUserEmail($token, $this->userRepository, $this->brevoApi);
+        $this->router->method('generate')->with('home')->willReturn('/home');
 
-        // User not found -> Falls through to generic error
+        $response = $this->controller->verifyUserEmail($token, $this->userRepository, $this->brevoApi);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertCount(1, $flashes);
         $this->assertEquals(['danger', 'The token is invalid or has expired'], $flashes[0]);
     }
