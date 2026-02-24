@@ -24,8 +24,12 @@ class UserController extends AbstractController
         $totalUsers = count($paginator);
         $totalPages = ceil($totalUsers / $limit);
 
+        $users = iterator_to_array($paginator);
+        $completionCounts = $userRepository->getCompletionCounts($users);
+
         return $this->render('admin/user/index.html.twig', [
-            'users' => $paginator,
+            'users' => $users,
+            'completionCounts' => $completionCounts,
             'currentPage' => $page,
             'totalPages' => $totalPages,
         ]);
