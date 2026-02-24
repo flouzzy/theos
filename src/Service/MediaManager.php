@@ -27,11 +27,20 @@ class MediaManager
         $this->filesystem  = new Filesystem();
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function upload(UploadedFile $file, string $mediaType = 'course', array $params = []): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = strtolower($this->slugger->slug($originalFilename));
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $extension = $file->guessExtension();
+
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+            throw new FileException('Invalid file extension: ' . $extension);
+        }
+
+        $fileName = $safeFilename . '-' . uniqid() . '.' . $extension;
         $targetDirectory = $this->getTargetDirectory($mediaType);
 
         // On récupère uniquement le chemin après dossier public
@@ -49,7 +58,7 @@ class MediaManager
             $this->logger->error(
                 'Failed to upload file ' . $file->getClientOriginalName() . ': ' . $exception->getMessage(),
                 [
-                    'user_email' => $user->getEmail(),
+                    'user_email' => $user ? $user->getEmail() : 'anonymous',
                     'error_message' => $exception->getMessage()
                 ]
             );
@@ -79,6 +88,22 @@ class MediaManager
         return $mediaType ? "$this->targetDirectory/$mediaType" : $this->targetDirectory;
     }
 
+    private function getSafeIp(string $host): ?string
+    {
+        $ips = gethostbynamel($host);
+        if ($ips === false || empty($ips)) {
+            return null;
+        }
+
+        foreach ($ips as $ip) {
+            if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                return null;
+            }
+        }
+
+        return $ips[0];
+    }
+
     public function downloadFileByUrl(string $fileUrl, ?string $mediaType = null): string|false
     {
         // Check for valid protocol
@@ -91,6 +116,7 @@ class MediaManager
             return false;
         }
 
+        /** @var string|null $fileFullPath */
         $fileFullPath = null;
         try {
             $targetDirectory = $this->getTargetDirectory($mediaType);
@@ -100,83 +126,67 @@ class MediaManager
                 mkdir($targetDirectory, 0777, true);
             }
 
-            $maxRedirects = 3;
-            $currentUrl = $fileUrl;
             $content = null;
+            $url = $fileUrl;
+            $maxRedirects = 3;
 
             for ($i = 0; $i <= $maxRedirects; $i++) {
-                $host = parse_url($currentUrl, PHP_URL_HOST);
-                if (!$host) {
+                $parts = parse_url($url);
+                if (!$parts || !isset($parts['host'])) {
                     return false;
                 }
 
-                // Resolve DNS and validate IP to prevent SSRF
-                $ips = null;
-                if (filter_var($host, FILTER_VALIDATE_IP)) {
-                    $ips = [$host];
-                } else {
-                    $ips = gethostbynamel($host);
-                }
+                $host = $parts['host'];
+                // Default ports: 80 for http, 443 for https
+                $scheme = $parts['scheme'] ?? 'http';
+                $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
 
-                if ($ips === false || !is_array($ips)) {
+                // Allow only standard ports to reduce attack surface
+                if (!in_array($port, [80, 443, 8080])) {
                     return false;
                 }
 
-                $resolvedIp = null;
-                foreach ($ips as $ip) {
-                    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-                        $resolvedIp = $ip;
-                        break;
-                    }
-                }
-
-                if (!$resolvedIp) {
+                $safeIp = $this->getSafeIp($host);
+                if (!$safeIp) {
                     return false;
                 }
 
-                $response = $this->httpClient->request('GET', $currentUrl, [
+                $response = $this->httpClient->request('GET', $url, [
                     'timeout' => 30,
                     'max_redirects' => 0,
-                    'resolve' => [$host => $resolvedIp],
+                    'resolve' => [$host => $safeIp],
                 ]);
 
                 $statusCode = $response->getStatusCode();
 
-                if ($statusCode >= 300 && $statusCode < 400) {
-                    $headers = $response->getHeaders(false);
-                    if (!isset($headers['location'][0])) {
-                        return false;
-                    }
-                    $location = $headers['location'][0];
-
-                    // Handle relative URLs
-                    if (!preg_match('/^https?:\/\//i', $location)) {
-                        $parsed = parse_url($currentUrl);
-                        $scheme = $parsed['scheme'] ?? 'http';
-
-                        if (str_starts_with($location, '//')) {
-                             $location = "$scheme:$location";
-                        } elseif (str_starts_with($location, '/')) {
-                             $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
-                             $location = "$scheme://$host$port$location";
-                        } else {
-                            // Fail for relative paths without leading slash to avoid complexity
-                            return false;
-                        }
-                    }
-                    $currentUrl = $location;
-                    continue;
-                }
-
-                if ($statusCode === 200) {
+                if ($statusCode >= 200 && $statusCode < 300) {
                     $content = $response->getContent();
                     break;
+                }
+
+                if ($statusCode >= 300 && $statusCode < 400) {
+                    $headers = $response->getHeaders(false);
+                    $location = $headers['location'][0] ?? null;
+                    if (!$location) {
+                        return false;
+                    }
+
+                    // Handle relative redirects
+                    if (str_starts_with($location, '/')) {
+                        $location = $scheme . '://' . $host . ($parts['port'] ?? '' ? ':' . $parts['port'] : '') . $location;
+                    } elseif (!preg_match('/^https?:\/\//i', $location)) {
+                        // Reject complex relative paths for safety
+                        return false;
+                    }
+
+                    $url = $location;
+                    continue;
                 }
 
                 return false;
             }
 
-            if ($content === null) {
+            if (!$content) {
                 return false;
             }
 
@@ -195,6 +205,11 @@ class MediaManager
                 'image/gif' => 'gif',
                 'image/webp' => 'webp'
             ];
+
+            if (!isset($extensions[$mimeType])) {
+                return false;
+            }
+
             $extension = $extensions[$mimeType];
 
             // Generate safe filename

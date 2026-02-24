@@ -84,6 +84,54 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    /**
+     * @param User[] $users
+     * @return array<int, array<string, int>>
+     */
+    public function getCompletionCounts(array $users): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $userIds = array_map(fn(User $user) => $user->getId(), $users);
+
+        $qb1 = $this->getEntityManager()->createQueryBuilder();
+        $courseCounts = $qb1->select('IDENTITY(cc.user) as userId, COUNT(cc.id) as count')
+            ->from('App\Entity\CourseCompletion', 'cc')
+            ->where('cc.user IN (:userIds)')
+            ->andWhere('cc.completed = true')
+            ->setParameter('userIds', $userIds)
+            ->groupBy('cc.user')
+            ->getQuery()
+            ->getResult();
+
+        $qb2 = $this->getEntityManager()->createQueryBuilder();
+        $moduleCounts = $qb2->select('IDENTITY(mc.user) as userId, COUNT(mc.id) as count')
+            ->from('App\Entity\ModuleCompletion', 'mc')
+            ->where('mc.user IN (:userIds)')
+            ->andWhere('mc.completed = true')
+            ->setParameter('userIds', $userIds)
+            ->groupBy('mc.user')
+            ->getQuery()
+            ->getResult();
+
+        $counts = [];
+        foreach ($users as $user) {
+            $counts[$user->getId()] = ['courses' => 0, 'modules' => 0];
+        }
+
+        foreach ($courseCounts as $row) {
+            $counts[$row['userId']]['courses'] = (int) $row['count'];
+        }
+
+        foreach ($moduleCounts as $row) {
+            $counts[$row['userId']]['modules'] = (int) $row['count'];
+        }
+
+        return $counts;
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

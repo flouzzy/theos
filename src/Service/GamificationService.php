@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\Badge;
 use App\Entity\BadgeType;
+use App\Entity\Course;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -76,26 +77,59 @@ class GamificationService
         }
     }
 
-    private function awardBadge(User $user, string $code, string $title, string $desc): void
+    public function awardCourseCompletionBadge(User $user, Course $course, bool $flush = true): void
     {
+        $badgeTitle = 'Completed ' . $course->getTitle();
+        $badgeDesc = 'Awarded for completing the course: ' . $course->getTitle();
+        $typeTitle = 'Course Completion';
+        $typeDesc = 'Badge awarded for completing a course.';
+
+        $this->awardBadge($user, 'COURSE_COMPLETION', $badgeTitle, $badgeDesc, $typeTitle, $typeDesc, $flush);
+    }
+
+    public function awardEarlyBirdBadge(User $user, Course $course, \DateTimeInterface $startDate, bool $flush = true): void
+    {
+        $now = new \DateTimeImmutable();
+        $diff = $now->diff($startDate);
+
+        // Ensure comparison accounts for absolute difference in days
+        if ($diff->days < 7) {
+            $badgeTitle = 'Early Bird: ' . $course->getTitle();
+            $badgeDesc = 'Completed ' . $course->getTitle() . ' within 7 days';
+            $typeTitle = 'Early Bird';
+            $typeDesc = 'Completed a course within 7 days';
+
+            $this->awardBadge($user, 'EARLY_BIRD', $badgeTitle, $badgeDesc, $typeTitle, $typeDesc, $flush);
+        }
+    }
+
+    public function awardBadge(
+        User $user,
+        string $code,
+        string $badgeTitle,
+        string $badgeDesc,
+        ?string $typeTitle = null,
+        ?string $typeDesc = null,
+        bool $flush = true
+    ): void {
         $badgeTypeRepo = $this->entityManager->getRepository(BadgeType::class);
         $badgeType = $badgeTypeRepo->findOneBy(['code' => $code]);
 
         if (!$badgeType) {
             $badgeType = new BadgeType();
             $badgeType->setCode($code);
-            $badgeType->setTitle($title);
-            $badgeType->setDescription($desc);
+            $badgeType->setTitle($typeTitle ?? $badgeTitle);
+            $badgeType->setDescription($typeDesc ?? $badgeDesc);
             $this->entityManager->persist($badgeType);
         }
 
         $badgeRepo = $this->entityManager->getRepository(Badge::class);
-        $badge = $badgeRepo->findOneBy(['title' => $title, 'badgeType' => $badgeType]);
+        $badge = $badgeRepo->findOneBy(['title' => $badgeTitle, 'badgeType' => $badgeType]);
 
         if (!$badge) {
             $badge = new Badge();
-            $badge->setTitle($title);
-            $badge->setDescription($desc);
+            $badge->setTitle($badgeTitle);
+            $badge->setDescription($badgeDesc);
             $badge->setBadgeType($badgeType);
             $this->entityManager->persist($badge);
         }
@@ -103,7 +137,10 @@ class GamificationService
         if (!$user->getBadges()->contains($badge)) {
             $user->addBadge($badge);
             $this->entityManager->persist($user);
-            $this->entityManager->flush();
+
+            if ($flush) {
+                $this->entityManager->flush();
+            }
         }
     }
 }

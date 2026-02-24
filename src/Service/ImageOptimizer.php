@@ -6,6 +6,7 @@ use Exception;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class ImageOptimizer
 {
@@ -14,8 +15,10 @@ class ImageOptimizer
 
     private $imagine;
 
-    public function __construct(private LoggerInterface $logger)
-    {
+    public function __construct(
+        private LoggerInterface $logger,
+        private Security $security
+    ) {
         $this->imagine = new Imagine();
     }
 
@@ -36,11 +39,12 @@ class ImageOptimizer
             $photo->resize(new Box($width, $height))->save($filename);
         } catch (Exception $exception) {
             //throw $th;
+            /** @var \App\Entity\User|null $user */
             $user = $this->security->getUser();
             $this->logger->error(
                 'Failed to upload file ' . $filename . ': ' . $exception->getMessage(),
                 [
-                    'user_email' => $user->getEmail(),
+                    'user_email' => $user ? $user->getEmail() : 'anonymous',
                     'error_message' => $exception->getMessage()
                 ]
             );
