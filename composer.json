@@ -75,9 +75,9 @@
         },
         "sort-packages": true,
         "platform": {
-            "ext-xml": "8.3.6",
-            "ext-xsl": "8.3.6",
-            "php": "8.4"
+            "ext-xml": "8.4.17",
+            "ext-xsl": "8.4.17",
+            "ext-session": "8.4.17"
         }
     },
     "autoload": {

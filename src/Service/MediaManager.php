@@ -41,7 +41,7 @@ class MediaManager
     public function upload(UploadedFile $file, string $mediaType = 'course', array $params = []): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = strtolower($this->slugger->slug($originalFilename));
+        $safeFilename = strtolower((string) $this->slugger->slug($originalFilename));
         $extension = $file->guessExtension();
 
         if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
@@ -112,6 +112,87 @@ class MediaManager
         return $ips[0];
     }
 
+    private function fetchUrlContent(string $url): string|false
+    {
+        $maxRedirects = 3;
+
+        for ($i = 0; $i <= $maxRedirects; $i++) {
+            $parts = parse_url($url);
+            if (!$parts || !isset($parts['host'])) {
+                return false;
+            }
+
+            $host = $parts['host'];
+            // Default ports: 80 for http, 443 for https
+            $scheme = $parts['scheme'] ?? 'http';
+            $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
+
+            // Allow only standard ports to reduce attack surface
+            if (!in_array($port, [80, 443, 8080])) {
+                return false;
+            }
+
+            $safeIp = $this->getSafeIp($host);
+            if (!$safeIp) {
+                return false;
+            }
+
+            $response = $this->httpClient->request('GET', $url, [
+                'timeout' => 30,
+                'max_redirects' => 0,
+                'resolve' => [$host => $safeIp],
+            ]);
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode >= 200 && $statusCode < 300) {
+                return $response->getContent();
+            }
+
+            if ($statusCode >= 300 && $statusCode < 400) {
+                $headers = $response->getHeaders(false);
+                $location = $headers['location'][0] ?? null;
+                if (!$location) {
+                    return false;
+                }
+
+                // Handle relative redirects
+                if (str_starts_with($location, '/')) {
+                    $location = $scheme . '://' . $host . ($parts['port'] ?? '' ? ':' . $parts['port'] : '') . $location;
+                } elseif (!preg_match('/^https?:\/\//i', $location)) {
+                    // Reject complex relative paths for safety
+                    return false;
+                }
+
+                $url = $location;
+                continue;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+    private function verifyAndGetExtension(string $content): string|false
+    {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($content);
+
+        $extensions = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp'
+        ];
+
+        if (!isset($extensions[$mimeType])) {
+            return false;
+        }
+
+        return $extensions[$mimeType];
+    }
+
     public function downloadFileByUrl(string $fileUrl, ?string $mediaType = null): string|false
     {
         // Check for valid protocol
@@ -134,86 +215,17 @@ class MediaManager
                 mkdir($targetDirectory, 0777, true);
             }
 
-            $content = null;
-            $url = $fileUrl;
-            $maxRedirects = 3;
-
-            for ($i = 0; $i <= $maxRedirects; $i++) {
-                $parts = parse_url($url);
-                if (!$parts || !isset($parts['host'])) {
-                    return false;
-                }
-
-                $host = $parts['host'];
-                // Default ports: 80 for http, 443 for https
-                $scheme = $parts['scheme'] ?? 'http';
-                $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
-
-                // Allow only standard ports to reduce attack surface
-                if (!in_array($port, [80, 443, 8080])) {
-                    return false;
-                }
-
-                $safeIp = $this->getSafeIp($host);
-                if (!$safeIp) {
-                    return false;
-                }
-
-                $response = $this->httpClient->request('GET', $url, [
-                    'timeout' => 30,
-                    'max_redirects' => 0,
-                    'resolve' => [$host => $safeIp],
-                ]);
-
-                $statusCode = $response->getStatusCode();
-
-                if ($statusCode >= 200 && $statusCode < 300) {
-                    $content = $response->getContent();
-                    break;
-                }
-
-                if ($statusCode >= 300 && $statusCode < 400) {
-                    $headers = $response->getHeaders(false);
-                    $location = $headers['location'][0] ?? null;
-                    if (!$location) {
-                        return false;
-                    }
-
-                    // Handle relative redirects
-                    if (str_starts_with($location, '/')) {
-                        $location = $scheme . '://' . $host . ($parts['port'] ?? '' ? ':' . $parts['port'] : '') . $location;
-                    } elseif (!preg_match('/^https?:\/\//i', $location)) {
-                        // Reject complex relative paths for safety
-                        return false;
-                    }
-
-                    $url = $location;
-                    continue;
-                }
-
-                return false;
-            }
+            $content = $this->fetchUrlContent($fileUrl);
 
             if (!$content) {
                 return false;
             }
 
-            // Verify content type
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $mimeType = $finfo->buffer($content);
+            $extension = $this->verifyAndGetExtension($content);
 
-            $extensions = [
-                'image/jpeg' => 'jpg',
-                'image/png' => 'png',
-                'image/gif' => 'gif',
-                'image/webp' => 'webp'
-            ];
-
-            if (!isset($extensions[$mimeType])) {
+            if (!$extension) {
                 return false;
             }
-
-            $extension = $extensions[$mimeType];
 
             // Generate safe filename
             $filename = uniqid('media_', true) . '.' . $extension;
