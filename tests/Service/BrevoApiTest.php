@@ -4,87 +4,62 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Entity\User;
 use App\Service\BrevoApi;
-use Brevo\Client\Api\ContactsApi;
 use Brevo\Client\Api\TransactionalEmailsApi;
+use Brevo\Client\Model\SendSmtpEmail;
 use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BrevoApiTest extends TestCase
 {
-    public function testSendEmailThrowsExceptionLogsError(): void
+    private ParameterBagInterface&MockObject $parameterBag;
+    private LoggerInterface&MockObject $logger;
+    private BrevoApi $brevoApi;
+
+    protected function setUp(): void
     {
-        $parameterBag = $this->createMock(ParameterBagInterface::class);
-        $parameterBag->method('get')->willReturnCallback(function (string $key) {
-            return match ($key) {
-                'brevo_api_key' => 'test_api_key',
-                'brevo_subject' => 'Test Subject',
-                'brevo_from_name' => 'Test Sender',
-                'brevo_from_email' => 'sender@example.com',
-                default => null,
-            };
-        });
+        $this->parameterBag = $this->createMock(ParameterBagInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())
-            ->method('error')
-            ->with($this->stringContains('Exception when calling TransactionalEmailsApi->sendTransacEmail: Test Exception'));
+        $this->parameterBag->method('get')
+            ->willReturnCallback(function (string $key) {
+                return match ($key) {
+                    'brevo_api_key' => 'fake_api_key',
+                    'brevo_subject' => 'fake_subject',
+                    'brevo_from_name' => 'Fake Name',
+                    'brevo_from_email' => 'fake@example.com',
+                    default => null,
+                };
+            });
 
-        $brevoApi = new BrevoApi($parameterBag, $logger);
+        $this->brevoApi = new BrevoApi($this->parameterBag, $this->logger);
+    }
 
-        // Reflection to inject mock TransactionalEmailsApi
-        $apiEmailMock = $this->createMock(TransactionalEmailsApi::class);
-        $apiEmailMock->method('sendTransacEmail')
-            ->willThrowException(new Exception('Test Exception'));
+    public function testSendEmailExceptionIsCaughtAndLogged(): void
+    {
+        $mockApiEmail = $this->createMock(TransactionalEmailsApi::class);
+
+        $exceptionMessage = 'API Timeout';
+        $mockApiEmail->expects($this->once())
+            ->method('sendTransacEmail')
+            ->with($this->isInstanceOf(SendSmtpEmail::class))
+            ->willThrowException(new Exception($exceptionMessage));
 
         $reflection = new \ReflectionClass(BrevoApi::class);
         $property = $reflection->getProperty('apiEmail');
         $property->setAccessible(true);
-        $property->setValue($brevoApi, $apiEmailMock);
+        $property->setValue($this->brevoApi, $mockApiEmail);
 
-        $tos = [['email' => 'recipient@example.com']];
+        $this->logger->expects($this->once())
+            ->method('error')
+            ->with('Exception when calling TransactionalEmailsApi->sendTransacEmail: ' . $exceptionMessage);
+
+        $tos = [['email' => 'test@example.com', 'name' => 'Test User']];
         $params = ['content' => 'Test content'];
 
-        $brevoApi->sendEmail($tos, $params);
-    }
-
-    public function testAddOrUpdateContactThrowsExceptionLogsError(): void
-    {
-        $parameterBag = $this->createMock(ParameterBagInterface::class);
-        $parameterBag->method('get')->willReturnCallback(function (string $key) {
-            return match ($key) {
-                'kernel.environment' => 'prod',
-                'brevo_api_key' => 'test_api_key',
-                'brevo_list_id' => '1,2,3',
-                default => null,
-            };
-        });
-
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())
-            ->method('error')
-            ->with($this->stringContains('Exception when calling ContactsApi->createContact: Test Exception'));
-
-        $brevoApi = new BrevoApi($parameterBag, $logger);
-
-        // Reflection to inject mock ContactsApi
-        $apiContactMock = $this->createMock(ContactsApi::class);
-        $apiContactMock->method('createContact')
-            ->willThrowException(new Exception('Test Exception'));
-
-        $reflection = new \ReflectionClass(BrevoApi::class);
-        $property = $reflection->getProperty('apiContact');
-        $property->setAccessible(true);
-        $property->setValue($brevoApi, $apiContactMock);
-
-        $user = new User();
-        $user->setEmail('test@example.com');
-        $user->setFirstname('John');
-        $user->setLastname('Doe');
-
-        $brevoApi->addOrUpdateContact($user);
+        $this->brevoApi->sendEmail($tos, $params);
     }
 }

@@ -26,6 +26,12 @@ services:
     tty: true
     depends_on:
       - database
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2019/metrics"]
+      start_period: 180s
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
