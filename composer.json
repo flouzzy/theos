@@ -73,8 +73,9 @@
         },
         "sort-packages": true,
         "platform": {
-            "ext-xsl": "1.0.0",
-            "ext-xml": "1.0.0"
+            "ext-xml": "8.4.17",
+            "ext-xsl": "8.4.17",
+            "ext-session": "8.4.17"
         }
     },
     "autoload": {
