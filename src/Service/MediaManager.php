@@ -41,7 +41,7 @@ class MediaManager
     public function upload(UploadedFile $file, string $mediaType = 'course', array $params = []): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = strtolower($this->slugger->slug($originalFilename));
+        $safeFilename = strtolower((string) $this->slugger->slug($originalFilename));
         $extension = $file->guessExtension();
 
         if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
