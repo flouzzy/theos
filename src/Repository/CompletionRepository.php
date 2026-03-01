@@ -57,6 +57,20 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Completion[]
+     */
+    public function findWithScoreByUser(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->andWhere('c.score IS NOT NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return int[]
      */
     public function findCompletedLessonIdsByUser(User $user): array
@@ -69,31 +83,6 @@ class CompletionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleColumnResult();
     }
-
-    //    /**
-    //     * @return Completion[] Returns an array of Completion objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Completion
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 
     /**
      * @return Paginator<Completion>
