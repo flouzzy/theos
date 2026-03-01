@@ -71,36 +71,6 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Completion[]
-     */
-    public function findWithScoreByUser(User $user): array
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.user = :user')
-            ->andWhere('c.completed = true')
-            ->andWhere('c.score IS NOT NULL')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
-    }
-
-    //    /**
-    //     * @return Completion[] Returns an array of Completion objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-
-    /**
      * @return Paginator<Completion>
      */
     public function findPaginated(int $page, int $limit = 50): Paginator
