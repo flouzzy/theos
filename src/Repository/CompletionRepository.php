@@ -70,6 +70,8 @@ class CompletionRepository extends ServiceEntityRepository
             ->getSingleColumnResult();
     }
 
+
+
     /**
      * @return Paginator<Completion>
      */
