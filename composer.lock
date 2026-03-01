@@ -12974,7 +12974,9 @@
     "platform": {
         "php": ">=8.2",
         "ext-ctype": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "ext-xml": "*",
+        "ext-xsl": "*"
     },
     "platform-dev": {},
     "platform-overrides": {
