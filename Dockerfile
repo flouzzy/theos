@@ -29,7 +29,6 @@ RUN set -eux; \
 	intl \
 	opcache \
 	pdo_pgsql \
-	xml \
 	xsl \
 	zip \
 	gd \
