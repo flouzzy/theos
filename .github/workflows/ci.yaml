@@ -78,5 +78,6 @@ jobs:
         env:
           GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHP_COMPOSER_INSTALL_OPTS: "--ignore-platform-reqs --no-scripts"
           VALIDATE_CHECKOV: false
           VALIDATE_TRIVY: false
