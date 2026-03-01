@@ -176,7 +176,6 @@ class LessonController extends AbstractController
 
         if ($currentIndex !== false) {
             // Puis la leçon suivante
-            /** @var \App\Entity\Lesson|null $nextLesson */
             return $sortedLessons->get((int) $currentIndex + 1);
         }
 
@@ -200,6 +199,9 @@ class LessonController extends AbstractController
         $content = $request->request->get('content');
         
         if ($content && is_string($content)) {
+            /** @var \App\Entity\User $user */
+            $user = $this->getUser();
+
             $comment = new \App\Entity\Comment();
             $comment->setContent((string) $content);
             $comment->setLesson($lesson);
