@@ -71,6 +71,7 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
 
+
     /**
      * @return Paginator<Completion>
      */

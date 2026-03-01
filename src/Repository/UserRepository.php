@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\User;
@@ -53,6 +55,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->where('u.isVerified = true')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @return iterable<User>
+     */
+    public function findVerifiedUsersIterator(): iterable
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isVerified = true')
+            ->getQuery()
+            ->toIterable();
     }
 
     /**
@@ -131,5 +144,4 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $counts;
     }
-
 }
