@@ -20,6 +20,4 @@ class BadgeTypeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, BadgeType::class);
     }
-
-
 }
