@@ -23,7 +23,7 @@ class NotificationHandler
     public function __invoke(Notification $notification)
     {
         // Envoie d'une notification à tous les utilisateurs
-        $users = $this->userRepository->findBy(['isVerified' => true]);
+        $users = $this->userRepository->iterateVerifiedUsers();
         foreach ($users as $user) {
             if ($user !== $this->security->getUser()) {
                 $this->notificationService->createNotification(

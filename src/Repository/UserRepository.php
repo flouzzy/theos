@@ -56,6 +56,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Iterate over verified users to avoid memory leaks
+     *
+     * @return iterable<User>
+     */
+    public function iterateVerifiedUsers(): iterable
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.isVerified = true')
+            ->getQuery()
+            ->toIterable();
+    }
+
+    /**
      * @return Paginator<User>
      */
     public function findPaginatedUsers(int $page, int $limit = 20): Paginator
