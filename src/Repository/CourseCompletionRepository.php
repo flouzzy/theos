@@ -40,7 +40,7 @@ class CourseCompletionRepository extends ServiceEntityRepository
     {
         return (int) $this->createQueryBuilder('c')
             ->select('COUNT(c.id)')
-            ->where('c.user = :user')
+            ->andWhere('c.user = :user')
             ->andWhere('c.completed = true')
             ->setParameter('user', $user)
             ->getQuery()
