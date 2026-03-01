@@ -80,5 +80,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_CHECKOV: false
           VALIDATE_TRIVY: false
-          # Avoid running composer install inside the slim image which lacks ext-xml and ext-xsl
-          VALIDATE_PHP_COMPOSER: false
+          # Bypass platform requirement errors for missing PHP extensions in super-linter
+          COMPOSER_IGNORE_PLATFORM_REQS: "1"
