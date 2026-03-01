@@ -34,6 +34,7 @@ RUN set -eux; \
 	zip \
 	gd \
 	redis \
+	session \
 	;
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
