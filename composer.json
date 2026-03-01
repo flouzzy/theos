@@ -71,7 +71,11 @@
             "symfony/runtime": true,
             "endroid/installer": true
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "ext-xml": "8.4",
+            "ext-xsl": "8.4"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -119,6 +123,8 @@
         }
     },
     "require-dev": {
+        "ext-xml": "*",
+        "ext-xsl": "*",
         "doctrine/doctrine-fixtures-bundle": "^3.5 || ^4.0",
         "phpstan/phpstan": "*",
         "phpunit/phpunit": "^9.5 || ^10.0 || ^11.0",
