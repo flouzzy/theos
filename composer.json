@@ -73,6 +73,7 @@
         },
         "sort-packages": true,
         "platform": {
+            "ext-session": "8.4.0",
             "ext-xml": "8.4.0",
             "ext-xsl": "8.4.0"
         }
