@@ -33,6 +33,21 @@ class ModuleCompletionRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+
+    /**
+     * @return ModuleCompletion[]
+     */
+    public function findWithScoreByUser(\App\Entity\User $user): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.user = :user')
+            ->andWhere('m.completed = true')
+            ->andWhere('m.score IS NOT NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return ModuleCompletion[] Returns an array of ModuleCompletion objects
     //     */
