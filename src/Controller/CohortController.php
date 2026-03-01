@@ -14,7 +14,8 @@ class CohortController extends AbstractController
     public function index(
         \App\Repository\EventRepository $eventRepository,
         \App\Repository\CourseRepository $courseRepository,
-        \App\Repository\CompletionRepository $completionRepository
+        \App\Repository\CompletionRepository $completionRepository,
+        \App\Repository\CourseCompletionRepository $courseCompletionRepository
     ): Response {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -66,7 +67,7 @@ class CohortController extends AbstractController
 
         // Stats Globales
         $globalProgress = $totalLessons > 0 ? round(($totalCompletedLessons / $totalLessons) * 100) : 0;
-        $completedCoursesCount = $user->getCourseCompletions()->filter(fn($cc) => $cc->isCompleted())->count();
+        $completedCoursesCount = $courseCompletionRepository->countCompletedCoursesByUser($user);
         $ongoingCoursesCount = count($myCoursesEntities) - $completedCoursesCount;
         $totalHours = floor($totalMinutes / 60);
 

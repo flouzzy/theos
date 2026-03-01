@@ -33,6 +33,20 @@ class CourseCompletionRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * Retourne le nombre de cours complétés par un utilisateur spécifique
+     */
+    public function countCompletedCoursesByUser(\App\Entity\User $user): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->andWhere('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return CourseCompletion[] Returns an array of CourseCompletion objects
     //     */
