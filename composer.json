@@ -71,7 +71,12 @@
             "symfony/runtime": true,
             "endroid/installer": true
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "8.4.17",
+            "ext-xml": "1.0.0",
+            "ext-xsl": "1.0.0"
+        }
     },
     "autoload": {
         "psr-4": {
