@@ -25,7 +25,7 @@ class UserRepositoryOptimizationTest extends TestCase
         $users = [$user1, $user2];
 
         // Mock QueryBuilder and Query for Courses
-        $queryCourse = $this->createMock(\Doctrine\ORM\Query::class);
+        $queryCourse = $this->createMock(AbstractQuery::class);
         $queryCourse->method('getResult')->willReturn([
             ['userId' => 1, 'count' => 5],
             ['userId' => 2, 'count' => 3],
@@ -41,7 +41,7 @@ class UserRepositoryOptimizationTest extends TestCase
         $qbCourse->method('getQuery')->willReturn($queryCourse);
 
         // Mock QueryBuilder and Query for Modules
-        $queryModule = $this->createMock(\Doctrine\ORM\Query::class);
+        $queryModule = $this->createMock(AbstractQuery::class);
         $queryModule->method('getResult')->willReturn([
             ['userId' => 1, 'count' => 10],
             // User 2 has no completed modules, so not in result set
