@@ -35,8 +35,8 @@ class NotificationServiceTest extends TestCase
             $this->mailer,
             $this->router,
             $this->logger,
-            'test@example.com',
-            'Test Name'
+            'sender@example.com',
+            'Sender Name'
         );
     }
 
