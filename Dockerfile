@@ -30,6 +30,7 @@ RUN set -eux; \
 	opcache \
 	pdo_pgsql \
 	xsl \
+	xml \
 	zip \
 	gd \
 	redis \
