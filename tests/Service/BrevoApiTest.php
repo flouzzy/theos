@@ -8,14 +8,15 @@ use App\Service\BrevoApi;
 use Brevo\Client\Api\TransactionalEmailsApi;
 use Brevo\Client\Model\SendSmtpEmail;
 use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BrevoApiTest extends TestCase
 {
-    private ParameterBagInterface $parameterBag;
-    private LoggerInterface $logger;
+    private ParameterBagInterface&MockObject $parameterBag;
+    private LoggerInterface&MockObject $logger;
     private BrevoApi $brevoApi;
 
     protected function setUp(): void
