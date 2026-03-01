@@ -74,7 +74,9 @@
         "sort-packages": true,
         "platform": {
             "ext-xml": "8.4.1",
-            "ext-xsl": "8.4.1"
+            "ext-xsl": "8.4.1",
+            "ext-session": "8.4.1",
+            "ext-dom": "8.4.1"
         }
     },
     "autoload": {
