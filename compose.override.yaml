@@ -26,6 +26,8 @@ services:
     tty: true
     depends_on:
       - database
+    healthcheck:
+      start_period: 180s
 
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
