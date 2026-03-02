@@ -2,16 +2,16 @@
 
 Ce guide détaille les étapes pour tester et basculer de l'ancienne infrastructure (serveur web classique sur le port 80/443, MySQL sur le port 3306) vers la nouvelle infrastructure Dockerisée (FrankenPHP sur le port 8095, MySQL 8 sur le port 3307).
 
-## Pourquoi cette approche est-elle excellente ?
+## Pourquoi cette approach est-elle excellente ?
 
-1. **Isolation Totale :** L'application Dockerisée utilise sa propre instance MySQL (sur le port 3307). Si vous cassez quelque chose dans la base Docker pendant les tests sur `-v2`, la version de production reste intacte sur le port 3306.
-2. **Test de montée en version :** PHP 8.4 apporte des changements. En testant sur `-v2` avec une copie de la vraie base de données, vous verrez tout de suite si vos entités Doctrine ou vos services Symfony ont besoin d'ajustements.
+1. **Isolation Totale :** L'application Dockerisée utilise sa propre instance MySQL (sur le port 3307). Si vous cassez quelque chose dans la base Docker pendant les tests sur `-v2`, la version de production rest intacte sur le port 3306.
+2. **Test de montée en version :** PHP 8.4 apporte des changements. En testant sur `-v2` avec une copy de la vraie base de données, vous verrez tout de suite si vos entités Doctrine ou vos services Symfony ont besoin d'ajustements.
 3. **Bascule instantanée :** Le jour où vous êtes prêt, la "bascule" ne prend que 10 secondes : c'est juste une modification de l'adresse `proxy_pass` dans la configuration Nginx principale.
 
 ## Étape 1 : Tests sur l'environnement V2 (`academie-v2.lerocher.fr`)
 
 1. **Préparation des fichiers et uploads**
-   L'ancienne version stocke probablement des fichiers uploadés par les utilisateurs sur le disque du VPS (par exemple, dans `/var/www/academie/public/uploads`).
+   L'ancienne version stocke probablement des fichiers uploadés par les utilisateurs sur le disque du VPS (par example, dans `/var/www/academie/public/uploads`).
    Pour que la version Docker puisse lire et écrire ces fichiers de manière transparente sans les perdre lors de la bascule, un volume a été configuré dans `compose.yaml` :
    ```yaml
    volumes:
@@ -19,7 +19,7 @@ Ce guide détaille les étapes pour tester et basculer de l'ancienne infrastruct
    ```
    *Assurez-vous que le chemin `/var/www/academie/public/uploads` correspond au chemin réel de vos uploads sur le VPS actuel.*
 
-2. **Lancement de l'environnement de test et copie de la base de données**
+2. **Lancement de l'environnement de test et copy de la base de données**
    Utilisez la commande Makefile prévue pour lancer l'environnement et copier les données à la volée :
    ```bash
    make deploy-v2
@@ -31,7 +31,7 @@ Ce guide détaille les étapes pour tester et basculer de l'ancienne infrastruct
    - Installer les dépendances et vider le cache.
 
 3. **Vérification**
-   Rendez-vous sur `https://academie-v2.lerocher.fr`. Naviguez, testez l'upload de fichiers, la connexion, etc.
+   Rendez-vous sur `https://academie-v2.lerocher.fr`. Naviguez, testez l'upload de fichiers, la connection, etc.
 
 ## Étape 2 : Le jour de la bascule vers la production (`academie.lerocher.fr`)
 
@@ -47,9 +47,9 @@ Une fois que tout fonctionne parfaitement sur l'environnement de test V2, suivez
 2. **Modification du Vhost Nginx Principal**
    Ouvrez le fichier de configuration Nginx de l'environnement de production principal (ex: `/etc/nginx/sites-available/academie.lerocher.fr`).
 
-   Modifiez l'endroit où Nginx redirige le trafic (la directive `proxy_pass` ou `fastcgi_pass` si vous utilisiez PHP-FPM) pour pointer vers le conteneur FrankenPHP :
+   Modifiez l'endroit où Nginx redirige le traffic (la directive `proxy_pass` ou `fastcgi_pass` si vous utilisiez PHP-FPM) pour pointer vers le conteneur FrankenPHP :
 
-   **Ancienne configuration (exemple PHP-FPM) :**
+   **Ancienne configuration (example PHP-FPM) :**
    ```nginx
    location / {
        try_files $uri /index.php$is_args$args;
@@ -86,4 +86,4 @@ Une fois que tout fonctionne parfaitement sur l'environnement de test V2, suivez
    ```
 
 4. **Validation**
-   Rendez-vous sur `https://academie.lerocher.fr`. Le trafic est désormais géré par votre toute nouvelle stack Docker FrankenPHP ultra-rapide ! Vous pouvez ensuite désactiver/supprimer l'ancienne base MySQL sur le port 3306 et l'ancien code.
+   Rendez-vous sur `https://academie.lerocher.fr`. Le traffic est désormais géré par votre toute nouvelle stack Docker FrankenPHP ultra-rapide ! Vous pouvez ensuite désactiver/supprimer l'ancienne base MySQL sur le port 3306 et l'ancien code.

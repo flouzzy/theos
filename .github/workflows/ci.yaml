@@ -74,7 +74,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Disable post-install scripts for linter
-        run: jq '.scripts."auto-scripts" = ["true"]' composer.json > composer.tmp && mv composer.tmp composer.json
+        run: jq '.scripts."auto-scripts" = {}' composer.json > composer.tmp && mv composer.tmp composer.json
       - name: Lint Code Base
         uses: super-linter/super-linter/slim@v8
         env:

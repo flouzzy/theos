@@ -27,7 +27,11 @@ services:
     depends_on:
       - database
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:2019/metrics"]
+      test:
+        - "CMD"
+        - "curl"
+        - "-f"
+        - "http://localhost:2019/metrics"
       start_period: 180s
       interval: 10s
       timeout: 3s
@@ -41,7 +45,12 @@ services:
       MYSQL_USER: ${MYSQL_USER:-app}
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      test:
+        - "CMD"
+        - "mysqladmin"
+        - "ping"
+        - "-h"
+        - "localhost"
       timeout: 5s
       retries: 5
       start_period: 60s
