@@ -25,7 +25,7 @@
                         {% set isCurrent = (less.id == currentLesson.id) %}
                         {% set isCompleted = less.id in completedLessonIds %}
                         
-                        <a href="{{ path('lesson_show', {courseSlug: course.slug, moduleSlug: mod.slug, id: less.id}) }}" 
+                        <a href="{{ path('lesson_show', {courseSlug: course.slug, moduleSlug: mod.slug, lessonId: less.id}) }}" 
                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors {{ isCurrent ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
                             
                             <div class="flex-shrink-0">

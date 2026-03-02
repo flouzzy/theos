@@ -71,6 +71,21 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
     /**
+     * Calcule la durée totale des leçons complétées par un utilisateur (en minutes)
+     */
+    public function countTotalDurationByUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('SUM(l.duration)')
+            ->join('c.lesson', 'l')
+            ->where('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * @return int[]
      */
     public function findCompletedLessonIdsByUser(User $user): array

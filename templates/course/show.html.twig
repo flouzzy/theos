@@ -88,7 +88,7 @@
                         {% set isCompleted = lesson.id in completedLessonIds %}
                         {% set isLocked = not isSubscribed and lesson.itemOrder > 1 %} {# Simple logic: lock if not subscribed #}
 
-                        <a href="{{ path('lesson_show', {slug: lesson.slug, moduleSlug: module.slug, courseSlug: course.slug}) }}" 
+                        <a href="{{ path('lesson_show', {lessonId: lesson.id, moduleSlug: module.slug, courseSlug: course.slug}) }}" 
                            class="flex items-center justify-between p-4 hover:bg-muted/40 transition-colors group {{ isLocked ? 'opacity-60 pointer-events-none' : '' }}">
                             
                             <div class="flex items-center gap-4">

@@ -123,7 +123,7 @@
                                 {{ course.title }}
                             </h3>
                             <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
-                                {{ course.shortDescription ?: 'Apprenez avec les experts du Rocher.' }}
+                                {{ course.description|striptags|u.truncate(100, '...') ?: 'Apprenez avec les experts du Rocher.' }}
                             </p>
                             
                             <div class="mt-auto space-y-3">

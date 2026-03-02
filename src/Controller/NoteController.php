@@ -60,7 +60,7 @@ class NoteController extends AbstractController
         ]);
     }
 
-    #[Route('/{courseSlug}/{moduleSlug}/{id}', name: 'show_lesson', methods: ['GET', 'POST'])]
+    #[Route('/{courseSlug}/{moduleSlug}/{lessonId}', name: 'show_lesson', methods: ['GET', 'POST'])]
     public function showOrAdd(
 
         #[MapEntity(mapping: ['courseSlug' => 'slug'])]
@@ -69,7 +69,7 @@ class NoteController extends AbstractController
         #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
         Module $module,
 
-        #[MapEntity(mapping: ['id' => 'id'])]
+        #[MapEntity(mapping: ['lessonId' => 'id'])]
         Lesson $lesson,
 
         Request $request,
@@ -82,7 +82,7 @@ class NoteController extends AbstractController
             'action' => $this->generateUrl('note_show_lesson', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
-                'id' => $lesson->getId()
+                'lessonId' => $lesson->getId()
             ]),
         ]);
         $form->handleRequest($request);
@@ -99,7 +99,7 @@ class NoteController extends AbstractController
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
-                'id' => $lesson->getId()
+                'lessonId' => $lesson->getId()
             ]);
         }
 

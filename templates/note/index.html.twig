@@ -37,7 +37,7 @@
                      <span class="text-xs text-yellow-600 font-medium">
                         {{ note.createdAt|date('d M Y') }}
                      </span>
-                     <a href="{{ path('lesson_show', {slug: note.lesson.slug, moduleSlug: note.lesson.module.slug, courseSlug: note.lesson.module.course.slug}) }}" class="text-xs font-bold text-yellow-700 hover:text-yellow-900 flex items-center gap-1">
+                     <a href="{{ path('lesson_show', {lessonId: note.lesson.id, moduleSlug: note.lesson.module.slug, courseSlug: note.lesson.module.course.slug}) }}" class="text-xs font-bold text-yellow-700 hover:text-yellow-900 flex items-center gap-1">
                         {{ 'Voir la leçon' | trans }} ->
                      </a>
                 </div>

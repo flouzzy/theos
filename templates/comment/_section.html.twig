@@ -7,7 +7,7 @@
     {# Comment Form #}
     {% if is_granted('IS_AUTHENTICATED') %}
         <div class="bg-muted/30 rounded-2xl p-4 mb-8">
-            <form action="{{ path('lesson_add_comment', {id: currentLesson.id, courseSlug: course.slug, moduleSlug: module.slug}) }}" method="post" class="flex gap-4">
+            <form action="{{ path('lesson_add_comment', {lessonId: currentLesson.id, courseSlug: course.slug, moduleSlug: module.slug}) }}" method="post" class="flex gap-4">
                 <input type="hidden" name="_token" value="{{ csrf_token('add_comment') }}">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold shadow-sm">

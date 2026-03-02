@@ -100,6 +100,11 @@ class Module
         return $this->courses;
     }
 
+    public function getCourse(): ?Course
+    {
+        return $this->courses->first() ?: null;
+    }
+
     public function addCourse(Course $course): static
     {
         if (!$this->courses->contains($course)) {

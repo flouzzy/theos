@@ -143,6 +143,23 @@ class Course
         return $this->modules;
     }
 
+    /**
+     * @return Collection<int, Lesson>
+     */
+    public function getLessons(): Collection
+    {
+        $lessons = new ArrayCollection();
+        foreach ($this->modules as $module) {
+            foreach ($module->getLessons() as $lesson) {
+                if (!$lessons->contains($lesson)) {
+                    $lessons->add($lesson);
+                }
+            }
+        }
+
+        return $lessons;
+    }
+
     public function addModule(Module $module): static
     {
         if (!$this->modules->contains($module)) {

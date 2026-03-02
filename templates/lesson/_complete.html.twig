@@ -3,14 +3,14 @@
 {% if currentLesson.status == 'published' %}
 	{% if completed %}
 		<twig:Button asChild variant="default" class="bg-green-600 hover:bg-green-700">
-			<a href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id, completed:0})}}">
+			<a href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, lessonId:currentLesson.id, completed:0})}}">
 				<twig:ux:icon name="lucide:check-circle" class="mr-2 h-4 w-4" />
 				<span class="hidden md:inline">{{'Mark the lesson as unread' | trans}}</span>
 			</a>
 		</twig:Button>
 	{% else %}
 		<twig:Button asChild variant="outline">
-			<a href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, id:currentLesson.id, completed:1})}}">
+			<a href="{{path('lesson_complete', {courseSlug:course.slug, moduleSlug:module.slug, lessonId:currentLesson.id, completed:1})}}">
 				<twig:ux:icon name="lucide:circle" class="mr-2 h-4 w-4" />
 				<span class="hidden md:inline">{{'Complete and continue' | trans}}</span>
 			</a>

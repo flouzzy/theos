@@ -31,8 +31,9 @@ class LessonController extends AbstractController
         private CompletionService $completionService,
         private GamificationService $gamificationService,
     ) {}
-    #[Route('/{id}', name: 'show')]
+    #[Route('/{lessonId}', name: 'show')]
     public function show(
+        #[MapEntity(mapping: ['lessonId' => 'id'])]
         Lesson $lesson,
 
         #[MapEntity(mapping: ['courseSlug' => 'slug'])]
@@ -60,8 +61,9 @@ class LessonController extends AbstractController
     /**
      * Mark lesson as completed or uncompleted depending on $completed value
      */
-    #[Route('/{id}/complete/{completed}', name: 'complete')]
+    #[Route('/{lessonId}/complete/{completed}', name: 'complete')]
     public function markLessonAsCompleted(
+        #[MapEntity(mapping: ['lessonId' => 'id'])]
         Lesson $lesson,
 
         #[MapEntity(mapping: ['courseSlug' => 'slug'])]
@@ -95,7 +97,7 @@ class LessonController extends AbstractController
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
-                'id' => $lesson->getId()
+                'lessonId' => $lesson->getId()
             ]);
         }
 
@@ -108,7 +110,7 @@ class LessonController extends AbstractController
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
-                'id' => $nextLesson->getId()
+                'lessonId' => $nextLesson->getId()
             ]);
         } else {
             // C'était la dernière leçon du module
@@ -182,9 +184,10 @@ class LessonController extends AbstractController
         return null;
     }
 
-    #[Route('/{id}/comment', name: 'add_comment', methods: ['POST'])]
+    #[Route('/{lessonId}/comment', name: 'add_comment', methods: ['POST'])]
     public function addComment(
         Request $request,
+        #[MapEntity(mapping: ['lessonId' => 'id'])]
         Lesson $lesson,
         #[MapEntity(mapping: ['courseSlug' => 'slug'])]
         Course $course,
@@ -218,7 +221,7 @@ class LessonController extends AbstractController
         return $this->redirectToRoute('lesson_show', [
             'courseSlug' => $course->getSlug(),
             'moduleSlug' => $module->getSlug(),
-            'id' => $lesson->getId()
+            'lessonId' => $lesson->getId()
         ]);
     }
 

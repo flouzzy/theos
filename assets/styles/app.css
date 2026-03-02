@@ -204,33 +204,7 @@
         opacity: 0.4;
     }
 
-    /* Sidebar nav item styles */
-    .nav-item {
-        @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all;
-        @apply text-foreground/70 hover:text-foreground hover:bg-muted font-sans;
-    }
 
-    .nav-item svg {
-        @apply flex-shrink-0 w-5 h-5;
-    }
-
-    .nav-item.active {
-        @apply bg-primary text-primary-foreground shadow-sm;
-    }
-
-    /* Bottom tab styles (mobile) */
-    .tab-item {
-        @apply flex flex-col items-center gap-1 text-xs font-medium transition-all;
-        @apply text-foreground/60 hover:text-foreground font-sans;
-    }
-
-    .tab-item svg {
-        @apply flex-shrink-0 w-6 h-6;
-    }
-
-    .tab-item.active {
-        @apply text-primary;
-    }
 
     /* Badge styles */
     .badge {
@@ -416,41 +390,7 @@
         opacity: 0.4;
     }
 
-    /* Sidebar nav item styles - Better icon alignment */
-    .nav-item {
-        @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all;
-        @apply text-foreground/70 hover:text-foreground hover:bg-muted;
-    }
 
-    .nav-item svg {
-        @apply flex-shrink-0;
-        /* Prevent icon from shrinking */
-        width: 1.25rem;
-        /* Fixed width for consistency */
-        height: 1.25rem;
-        /* Fixed height for consistency */
-    }
-
-    .nav-item.active {
-        @apply bg-primary text-primary-foreground;
-    }
-
-    /* Bottom tab styles (mobile) */
-    .tab-item {
-        @apply flex flex-col items-center gap-1 text-xs font-medium transition-all;
-        @apply text-foreground/60 hover:text-foreground;
-    }
-
-    .tab-item svg {
-        @apply flex-shrink-0;
-        width: 1.5rem;
-        /* Slightly larger for bottom nav */
-        height: 1.5rem;
-    }
-
-    .tab-item.active {
-        @apply text-primary;
-    }
 
     /* Badge styles */
     .badge {

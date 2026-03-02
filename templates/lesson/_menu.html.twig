@@ -14,7 +14,7 @@
 		<div class="space-y-1">
 			{% for lesson in module.lessons|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
 				{% set isActive = currentLesson == lesson %}
-				<a href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, id:lesson.id})}}" 
+				<a href="{{path('lesson_show', {courseSlug:course.slug, moduleSlug:module.slug, lessonId:lesson.id})}}" 
 				   class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all {{ isActive ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:text-primary hover:bg-muted' }}">
 					{% set completedIcon = lesson.id in completedLessonIds ? 'lucide:check-circle': 'lucide:circle' %}
 					<twig:ux:icon name="{{completedIcon}}" class="h-4 w-4" />
