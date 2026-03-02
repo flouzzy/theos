@@ -195,25 +195,57 @@ class MediaManager
 
     public function downloadFileByUrl(string $fileUrl, ?string $mediaType = null): string|false
     {
-        // Check for valid protocol
-        if (!preg_match('/^https?:\/\//i', $fileUrl)) {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($content);
+
+        $extensions = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp'
+        ];
+
+        if (!isset($extensions[$mimeType])) {
             return false;
         }
 
-        // Validate mediaType to prevent directory traversal
-        if ($mediaType && !preg_match('/^[a-zA-Z0-9_-]+$/', $mediaType)) {
-            return false;
-        }
+        return $extensions[$mimeType];
+    }
 
-        /** @var string|null $fileFullPath */
-        $fileFullPath = null;
-        try {
-            $targetDirectory = $this->getTargetDirectory($mediaType);
+    private function saveAndProcessFile(string $content, string $extension, string $targetDirectory): string|false
+    {
+        // Generate safe filename
+        $filename = uniqid('media_', true) . '.' . $extension;
+        $fileFullPath = $targetDirectory . '/' . $filename;
 
-            // Get current directory
-            if (!is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0777, true);
+        $fileDownloaded = file_put_contents($fileFullPath, $content);
+
+        if ($fileDownloaded) {
+            try {
+                $this->imageOptimizer->resize($fileFullPath, ['maxWidth' => 800, 'maxHeight' => 600]);
+            } catch (\Throwable $e) {
+                // Ignore resize error, keep the file as it's a valid image
             }
+            return explode('public/', $fileFullPath)[1];
+        }
+
+        return false;
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    private function fetchUrlContent(string $url): string|false
+    {
+        $maxRedirects = 3;
+
+        for ($i = 0; $i <= $maxRedirects; $i++) {
+            $parts = parse_url($url);
+            if (!$parts || !isset($parts['host'])) {
+                return false;
+            }
+
+            $content = $this->fetchUrlContent($fileUrl);
 
             $content = $this->fetchUrlContent($fileUrl);
 
