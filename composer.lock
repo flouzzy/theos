@@ -12979,5 +12979,10 @@
         "ext-xsl": "*"
     },
     "platform-dev": {},
+    "platform-overrides": {
+        "ext-xml": "8.4.17",
+        "ext-xsl": "8.4.17",
+        "ext-session": "8.4.17"
+    },
     "plugin-api-version": "2.9.0"
 }
