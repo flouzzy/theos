@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // src/MessageHandler/NotificationHandler.php
 namespace App\MessageHandler;
 
@@ -20,10 +22,10 @@ class NotificationHandler
         private Security $security
     ) {
     }
-    public function __invoke(Notification $notification)
+    public function __invoke(Notification $notification): void
     {
         // Envoie d'une notification à tous les utilisateurs
-        $users = $this->userRepository->iterateVerifiedUsers();
+        $users = $this->userRepository->findVerifiedUsersIterator();
         foreach ($users as $user) {
             if ($user !== $this->security->getUser()) {
                 $this->notificationService->createNotification(
