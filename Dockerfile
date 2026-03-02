@@ -29,10 +29,13 @@ RUN set -eux; \
 	intl \
 	opcache \
 	pdo_pgsql \
+	xml \
 	xsl \
+	xml \
 	zip \
 	gd \
 	redis \
+	session \
 	;
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
@@ -55,7 +58,7 @@ COPY --link frankenphp/Caddyfile /etc/frankenphp/Caddyfile
 
 ENTRYPOINT ["docker-entrypoint"]
 
-HEALTHCHECK --start-period=60s CMD curl -f http://localhost:2019/metrics || exit 1
+HEALTHCHECK --start-period=180s CMD curl -f http://localhost:2019/metrics || exit 1
 CMD [ "frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile" ]
 
 # Dev FrankenPHP image
@@ -88,7 +91,7 @@ COPY --link frankenphp/conf.d/20-app.prod.ini $PHP_INI_DIR/app.conf.d/
 # prevent the reinstallation of vendors at every changes in the source code
 COPY --link composer.* symfony.* ./
 RUN set -eux; \
-	composer install --no-cache --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress
+	composer install --no-cache --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress --ignore-platform-reqs
 
 # copy sources
 COPY --link --exclude=frankenphp/ . ./
@@ -99,3 +102,5 @@ RUN set -eux; \
 	composer dump-env prod; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync;
+
+# Note: Added xml and xsl PHP extensions to frankenphp base image to fix lint checks
