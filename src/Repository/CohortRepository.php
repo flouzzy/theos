@@ -20,6 +20,4 @@ class CohortRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Cohort::class);
     }
-
-
 }
