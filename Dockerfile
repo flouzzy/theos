@@ -43,7 +43,7 @@ RUN set -eux; \
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Transport to use by Mercure (default to Bolt)
-ENV MERCURE_TRANSPORT_URL=bolt:///data/mercure.db
+# ENV MERCURE_TRANSPORT_URL=bolt:///data/mercure.db
 
 ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 
@@ -101,6 +101,8 @@ RUN set -eux; \
 	mkdir -p var/cache var/log var/share; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	composer dump-env prod; \
+	php bin/console tailwind:build; \
+	php bin/console asset-map:compile; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync;
 

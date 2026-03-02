@@ -269,8 +269,9 @@ prod-deploy:
 	$(DK_COMPOSE) exec -u root php composer install --no-dev --no-interaction --optimize-autoloader
 	@echo "🗄️  Running database migrations..."
 	$(MAKE) db-migrate ENV=prod
-	@echo "🎨 Building assets (Tailwind)..."
+	@echo "🎨 Building assets (Tailwind + AssetMapper)..."
 	$(DK_COMPOSE) exec php bin/console tailwind:build
+	$(DK_COMPOSE) exec php bin/console asset-map:compile
 	@echo "✨ Clearing cache..."
 	$(MAKE) cc ENV=prod
 	@echo "✅ Production Deployment Complete!"
