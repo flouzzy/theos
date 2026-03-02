@@ -247,7 +247,7 @@ db-migrate:
 db-diff:
 	$(SYMFONY) doctrine:migrations:diff
 
-# --- Deployment ---
+# --- Production ---
 deploy:
 	@echo "🚀 Deploying..."
 	git pull
@@ -257,8 +257,26 @@ deploy:
 	$(MAKE) cc
 	$(MAKE) db-migrate
 
+prod-deploy:
+	@echo "🚀 Starting Production Deployment..."
+	@echo "📥 Pulling latest changes from git..."
+	git pull origin main
+	@echo "🏗️  Rebuilding production images..."
+	$(MAKE) build ENV=prod
+	@echo "⬆️  Restarting production containers..."
+	$(MAKE) up ENV=prod
+	@echo "📦 Installing production dependencies..."
+	$(DK_COMPOSE) exec -u root php composer install --no-dev --no-interaction --optimize-autoloader
+	@echo "🗄️  Running database migrations..."
+	$(MAKE) db-migrate ENV=prod
+	@echo "🎨 Building assets (Tailwind)..."
+	$(DK_COMPOSE) exec php bin/console tailwind:build
+	@echo "✨ Clearing cache..."
+	$(MAKE) cc ENV=prod
+	@echo "✅ Production Deployment Complete!"
+
 # --- Tests ---
 tests:
-	$(MAKE) up ENV=test
-	$(DK_COMPOSE_CMD) -f compose.yaml --env-file .env.test exec --user root php composer install --no-interaction --no-progress --optimize-autoloader
-	$(DK_COMPOSE_CMD) -f compose.yaml --env-file .env.test exec --user root php bin/phpunit
+	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test up -d --remove-orphans
+	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php composer install --no-interaction --no-progress --optimize-autoloader
+	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php bin/phpunit
