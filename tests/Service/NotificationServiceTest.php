@@ -34,7 +34,9 @@ class NotificationServiceTest extends TestCase
             $this->entityManager,
             $this->mailer,
             $this->router,
-            $this->logger
+            $this->logger,
+            'sender@example.com',
+            'Sender Name'
         );
     }
 
@@ -173,7 +175,7 @@ class NotificationServiceTest extends TestCase
 
         $this->logger->expects($this->once())
             ->method('error')
-            ->with($exception->getMessage());
+            ->with($exception->getDebug());
 
         $this->notificationService->createAndSendNotification($content, $title, $user);
     }
