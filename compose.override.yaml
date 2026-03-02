@@ -24,33 +24,38 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:2019/metrics" ]
-      start_period: 180s
     depends_on:
       - database
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:2019/metrics"]
+      test:
+        - "CMD"
+        - "curl"
+        - "-f"
+        - "http://localhost:2019/metrics"
       start_period: 180s
       interval: 10s
       timeout: 3s
       retries: 3
 
   database:
-    image: postgres:${POSTGRES_VERSION:-15}-alpine
+    image: mysql:${MYSQL_VERSION:-8.0}
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
+      MYSQL_DATABASE: ${MYSQL_DB:-app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
+      MYSQL_USER: ${MYSQL_USER:-app}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
     healthcheck:
-      test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}" ]
+      test:
+        - "CMD"
+        - "mysqladmin"
+        - "ping"
+        - "-h"
+        - "localhost"
       timeout: 5s
       retries: 5
       start_period: 60s
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
-    ports:
-      - "5432"
+      - database_data:/var/lib/mysql:rw
 
   ###> symfony/mailer ###
   mailer:

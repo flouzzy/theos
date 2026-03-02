@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1
 
 # Versions
-FROM dunglas/frankenphp:1-php8.4 AS frankenphp_upstream
+FROM dunglas/frankenphp:1-php8.4-alpine AS frankenphp_upstream
 
 # The different stages of this Dockerfile are meant to be built into separate images
 # https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
@@ -16,11 +16,13 @@ WORKDIR /app
 VOLUME /app/var/
 
 # persistent / runtime deps
-# hadolint ignore=DL3008
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# hadolint ignore=DL3018
+RUN apk add --no-cache \
+	acl \
 	file \
+	gettext \
 	git \
-	&& rm -rf /var/lib/apt/lists/*
+	;
 
 RUN set -eux; \
 	install-php-extensions \
@@ -28,10 +30,9 @@ RUN set -eux; \
 	apcu \
 	intl \
 	opcache \
-	pdo_pgsql \
+	pdo_mysql \
 	xml \
 	xsl \
-	xml \
 	zip \
 	gd \
 	redis \
@@ -48,7 +49,7 @@ ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 
 ###> recipes ###
 ###> doctrine/doctrine-bundle ###
-RUN install-php-extensions pdo_pgsql
+RUN install-php-extensions pdo_mysql
 ###< doctrine/doctrine-bundle ###
 ###< recipes ###
 
