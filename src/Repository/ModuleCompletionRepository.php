@@ -10,9 +10,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @extends ServiceEntityRepository<ModuleCompletion>
  *
  * @method ModuleCompletion|null find($id, $lockMode = null, $lockVersion = null)
- * @method ModuleCompletion|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ModuleCompletion|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method ModuleCompletion[]    findAll()
- * @method ModuleCompletion[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ModuleCompletion[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, int|null $limit = null, int|null $offset = null)
  */
 class ModuleCompletionRepository extends ServiceEntityRepository
 {
@@ -23,6 +23,7 @@ class ModuleCompletionRepository extends ServiceEntityRepository
 
     /**
      * Retourne le total des modules completétés par les utilisateurs
+     * @return int|string|float|bool|null
      */
     public function countModuleCompletions()
     {

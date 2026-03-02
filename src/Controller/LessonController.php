@@ -77,36 +77,13 @@ class LessonController extends AbstractController
          */
         $user = $this->getUser();
 
-        if (!$course->isUserSubscribed($user)) {
-            // Si on est pas inscrit au cours, on le devient automatiquement
-            $user->subscribeToCourse($course);
-        }
+        $this->ensureUserIsSubscribed($course, $user);
 
-        // Toogle completion status
+        // Toggle completion status
         $completed = !(boolval($completed));
 
-
         // Save lesson completion status for current user
-        // Check if completion already exist
-        // If not, create it
-        $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
-        $wasCompleted = $completion && $completion->isCompleted();
-
-        if (!$completion) {
-            $completion = new Completion();
-        }
-        $completion->setUser($user);
-        $completion->setLesson($lesson);
-        $completion->setCompleted($completed);
-
-        // Maj du statut de completion d'un module
-        $this->completionService->setModuleCompletion($module);
-
-        // Maj du statut de completion d'un parcours
-        $this->completionService->setCourseCompletion($course);
-
-        $this->entityManager->persist($completion);
-        $this->entityManager->flush();
+        $wasCompleted = $this->updateCompletionStatus($user, $lesson, $course, $module, $completed);
 
         // Dispatch lesson event to notify subscribers
         $lessonCompleteEvent = new LessonCompleteEvent($lesson, $user, $completed, $wasCompleted);
@@ -122,35 +99,7 @@ class LessonController extends AbstractController
             ]);
         }
 
-        // =====================
-        // Go to next lesson
-        // =====================
-
-        // On récupère les leçons du module
-        $lessons = $module->getLessons();
-
-        // On trie les données par itemOrder
-        /**
-         * @var \ArrayIterator<int, Lesson> $iterator
-         */
-        $iterator = $lessons->getIterator();
-        $iterator->uasort(function ($first, $second) {
-            return (int) $first->getItemOrder() > (int) $second->getItemOrder() ? 1 : -1;
-        });
-
-        // On transforme les données en ArrayCollection en mettant à jour les index (grâce à array_values)
-        $sortedArray = array_values(iterator_to_array($iterator));
-        $sortedLessons = new ArrayCollection($sortedArray);
-
-        // On récupère l'index courant
-        $currentIndex = $sortedLessons->indexOf($lesson);
-
-        $nextLesson = null;
-        if ($currentIndex !== false) {
-            // Puis la leçon suivante
-            /** @var \App\Entity\Lesson|null $nextLesson */
-            $nextLesson = $sortedLessons->get((int) $currentIndex + 1);
-        }
+        $nextLesson = $this->getNextLesson($module, $lesson);
 
         // Il existe une leçon suivante
         if ($nextLesson) {
@@ -172,6 +121,67 @@ class LessonController extends AbstractController
         }
     }
 
+    private function ensureUserIsSubscribed(Course $course, \App\Entity\User $user): void
+    {
+        if (!$course->isUserSubscribed($user)) {
+            // Si on est pas inscrit au cours, on le devient automatiquement
+            $user->subscribeToCourse($course);
+        }
+    }
+
+    private function updateCompletionStatus(\App\Entity\User $user, Lesson $lesson, Course $course, Module $module, bool $completed): bool
+    {
+        $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
+        $wasCompleted = $completion && $completion->isCompleted();
+
+        if (!$completion) {
+            $completion = new Completion();
+        }
+        $completion->setUser($user);
+        $completion->setLesson($lesson);
+        $completion->setCompleted($completed);
+
+        // Maj du statut de completion d'un module
+        $this->completionService->setModuleCompletion($module);
+
+        // Maj du statut de completion d'un parcours
+        $this->completionService->setCourseCompletion($course);
+
+        $this->entityManager->persist($completion);
+        $this->entityManager->flush();
+
+        return $wasCompleted;
+    }
+
+    private function getNextLesson(Module $module, Lesson $lesson): ?Lesson
+    {
+        // On récupère les leçons du module
+        $lessons = $module->getLessons();
+
+        // On trie les données par itemOrder
+        /**
+         * @var \ArrayIterator<int, Lesson> $iterator
+         */
+        $iterator = $lessons->getIterator();
+        $iterator->uasort(function ($first, $second) {
+            return (int) $first->getItemOrder() > (int) $second->getItemOrder() ? 1 : -1;
+        });
+
+        // On transforme les données en ArrayCollection en mettant à jour les index (grâce à array_values)
+        $sortedArray = array_values(iterator_to_array($iterator));
+        $sortedLessons = new ArrayCollection($sortedArray);
+
+        // On récupère l'index courant
+        $currentIndex = $sortedLessons->indexOf($lesson);
+
+        if ($currentIndex !== false) {
+            // Puis la leçon suivante
+            return $sortedLessons->get((int) $currentIndex + 1);
+        }
+
+        return null;
+    }
+
     #[Route('/{id}/comment', name: 'add_comment', methods: ['POST'])]
     public function addComment(
         Request $request,
@@ -189,6 +199,9 @@ class LessonController extends AbstractController
         $content = $request->request->get('content');
         
         if ($content && is_string($content)) {
+            /** @var \App\Entity\User $user */
+            $user = $this->getUser();
+
             $comment = new \App\Entity\Comment();
             $comment->setContent((string) $content);
             $comment->setLesson($lesson);

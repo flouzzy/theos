@@ -57,6 +57,20 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Completion[]
+     */
+    public function findWithScoreByUser(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->andWhere('c.score IS NOT NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return int[]
      */
     public function findCompletedLessonIdsByUser(User $user): array
@@ -78,12 +92,10 @@ class CompletionRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('c')
             ->orderBy('c.id', 'DESC')
             ->getQuery();
-
         $paginator = new Paginator($query);
         $paginator->getQuery()
             ->setFirstResult($limit * ($page - 1))
             ->setMaxResults($limit);
-
         return $paginator;
     }
 }
