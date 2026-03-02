@@ -6,43 +6,60 @@ namespace App\Tests\Service;
 
 use App\Service\BrevoApi;
 use Brevo\Client\Api\TransactionalEmailsApi;
+use Brevo\Client\Model\SendSmtpEmail;
+use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BrevoApiTest extends TestCase
 {
-    public function testSendEmailThrowsExceptionLogsError(): void
+    private ParameterBagInterface&MockObject $parameterBag;
+    private LoggerInterface&MockObject $logger;
+    private BrevoApi $brevoApi;
+
+    protected function setUp(): void
     {
-        $parameterBag = $this->createMock(ParameterBagInterface::class);
-        $logger = $this->createMock(LoggerInterface::class);
+        $this->parameterBag = $this->createMock(ParameterBagInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
-        $parameterBag->method('get')
-            ->willReturnMap([
-                ['brevo_api_key', 'test_api_key'],
-                ['brevo_subject', 'Default Subject'],
-                ['brevo_from_name', 'Test Sender'],
-                ['brevo_from_email', 'sender@example.com'],
-            ]);
+        $this->parameterBag->method('get')
+            ->willReturnCallback(function (string $key) {
+                return match ($key) {
+                    'brevo_api_key' => 'fake_api_key',
+                    'brevo_subject' => 'fake_subject',
+                    'brevo_from_name' => 'Fake Name',
+                    'brevo_from_email' => 'fake@example.com',
+                    default => null,
+                };
+            });
 
-        $brevoApi = new BrevoApi($parameterBag, $logger);
+        $this->brevoApi = new BrevoApi($this->parameterBag, $this->logger);
+    }
 
-        $exceptionMessage = 'Test exception from TransactionalEmailsApi';
-
+    public function testSendEmailExceptionIsCaughtAndLogged(): void
+    {
         $mockApiEmail = $this->createMock(TransactionalEmailsApi::class);
+
+        $exceptionMessage = 'API Timeout';
         $mockApiEmail->expects($this->once())
             ->method('sendTransacEmail')
-            ->willThrowException(new \Exception($exceptionMessage));
+            ->with($this->isInstanceOf(SendSmtpEmail::class))
+            ->willThrowException(new Exception($exceptionMessage));
 
         $reflection = new \ReflectionClass(BrevoApi::class);
-        $apiEmailProperty = $reflection->getProperty('apiEmail');
-        $apiEmailProperty->setAccessible(true);
-        $apiEmailProperty->setValue($brevoApi, $mockApiEmail);
+        $property = $reflection->getProperty('apiEmail');
+        $property->setAccessible(true);
+        $property->setValue($this->brevoApi, $mockApiEmail);
 
-        $logger->expects($this->once())
+        $this->logger->expects($this->once())
             ->method('error')
             ->with('Exception when calling TransactionalEmailsApi->sendTransacEmail: ' . $exceptionMessage);
 
-        $brevoApi->sendEmail([['email' => 'recipient@example.com']], ['content' => 'Test Content']);
+        $tos = [['email' => 'test@example.com', 'name' => 'Test User']];
+        $params = ['content' => 'Test content'];
+
+        $this->brevoApi->sendEmail($tos, $params);
     }
 }

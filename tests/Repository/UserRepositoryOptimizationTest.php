@@ -4,9 +4,9 @@ namespace App\Tests\Repository;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class UserRepositoryOptimizationTest extends TestCase
         $users = [$user1, $user2];
 
         // Mock QueryBuilder and Query for Courses
-        $queryCourse = $this->createMock(AbstractQuery::class);
+        $queryCourse = $this->createMock(Query::class);
         $queryCourse->method('getResult')->willReturn([
             ['userId' => 1, 'count' => 5],
             ['userId' => 2, 'count' => 3],
@@ -41,7 +41,7 @@ class UserRepositoryOptimizationTest extends TestCase
         $qbCourse->method('getQuery')->willReturn($queryCourse);
 
         // Mock QueryBuilder and Query for Modules
-        $queryModule = $this->createMock(AbstractQuery::class);
+        $queryModule = $this->createMock(Query::class);
         $queryModule->method('getResult')->willReturn([
             ['userId' => 1, 'count' => 10],
             // User 2 has no completed modules, so not in result set
