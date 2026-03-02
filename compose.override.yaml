@@ -24,13 +24,17 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:2019/metrics" ]
+      start_period: 180s
     depends_on:
       - database
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:2019/metrics"]
-      timeout: 5s
-      retries: 5
       start_period: 180s
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine

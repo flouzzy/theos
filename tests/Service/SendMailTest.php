@@ -6,13 +6,10 @@ namespace App\Tests\Service;
 
 use App\Service\BrevoApi;
 use App\Service\SendMail;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class SendMailTest extends TestCase
 {
@@ -34,7 +31,7 @@ class SendMailTest extends TestCase
         );
     }
 
-    public function testSendSuccessfullyCallsBrevoApi(): void
+    public function testSendSingleStringEmail(): void
     {
         $from = 'sender@example.com';
         $to = 'recipient@example.com';
@@ -42,20 +39,68 @@ class SendMailTest extends TestCase
         $template = 'test/template.html.twig';
         $context = ['key' => 'value'];
 
+        $expectedToList = [['email' => $to]];
+
         $this->brevoApi->expects($this->once())
             ->method('sendEmail')
-            ->with([['email' => $to]], $context);
+            ->with($expectedToList, $context);
 
-        $this->mailer->expects($this->never())
-            ->method('send');
-
-        $this->logger->expects($this->never())
-            ->method('error');
+        $this->logger->expects($this->never())->method('error');
+        $this->mailer->expects($this->never())->method('send');
 
         $this->sendMail->send($from, $to, $subject, $template, $context);
     }
 
-    public function testSendCatchesTransportExceptionAndUsesAlternativeTransport(): void
+    public function testSendArrayStringEmails(): void
+    {
+        $from = 'sender@example.com';
+        $to = ['recipient1@example.com', 'recipient2@example.com'];
+        $subject = 'Test Subject';
+        $template = 'test/template.html.twig';
+        $context = ['key' => 'value'];
+
+        $expectedToList = [
+            ['email' => 'recipient1@example.com'],
+            ['email' => 'recipient2@example.com'],
+        ];
+
+        $this->brevoApi->expects($this->once())
+            ->method('sendEmail')
+            ->with($expectedToList, $context);
+
+        $this->logger->expects($this->never())->method('error');
+        $this->mailer->expects($this->never())->method('send');
+
+        $this->sendMail->send($from, $to, $subject, $template, $context);
+    }
+
+    public function testSendAddressObjects(): void
+    {
+        $from = 'sender@example.com';
+        $to = [
+            new \Symfony\Component\Mime\Address('recipient1@example.com', 'Recipient 1'),
+            new \Symfony\Component\Mime\Address('recipient2@example.com'),
+        ];
+        $subject = 'Test Subject';
+        $template = 'test/template.html.twig';
+        $context = ['key' => 'value'];
+
+        $expectedToList = [
+            ['email' => 'recipient1@example.com', 'name' => 'Recipient 1'],
+            ['email' => 'recipient2@example.com', 'name' => ''],
+        ];
+
+        $this->brevoApi->expects($this->once())
+            ->method('sendEmail')
+            ->with($expectedToList, $context);
+
+        $this->logger->expects($this->never())->method('error');
+        $this->mailer->expects($this->never())->method('send');
+
+        $this->sendMail->send($from, $to, $subject, $template, $context);
+    }
+
+    public function testSendThrowsTransportException(): void
     {
         $from = 'sender@example.com';
         $to = 'recipient@example.com';
@@ -63,34 +108,25 @@ class SendMailTest extends TestCase
         $template = 'test/template.html.twig';
         $context = ['key' => 'value'];
 
-        $exceptionMessage = 'Transport failed';
-        $exception = $this->createMock(TransportExceptionInterface::class);
-        $exception->method('getDebug')->willReturn($exceptionMessage);
-
+        $exception = new \Symfony\Component\Mailer\Exception\TransportException('Transport error');
         $this->brevoApi->expects($this->once())
             ->method('sendEmail')
             ->willThrowException($exception);
 
         $this->logger->expects($this->once())
             ->method('error')
-            ->with($exceptionMessage);
+            ->with($exception->getDebug());
 
         $this->mailer->expects($this->once())
             ->method('send')
-            ->with($this->callback(function (TemplatedEmail $email) use ($from, $to, $subject, $template, $context) {
-                // Verify basic email properties
-                $this->assertEquals([new Address($from)], $email->getFrom());
-                $this->assertEquals([new Address($to)], $email->getTo());
-                $this->assertEquals($subject, $email->getSubject());
-                $this->assertEquals($template, $email->getHtmlTemplate());
-                $this->assertEquals($context, $email->getContext());
-
-                // Most importantly, verify the X-Transport header is set to 'alternative'
-                $headers = $email->getHeaders();
-                $this->assertTrue($headers->has('X-Transport'));
-                $this->assertEquals('alternative', $headers->get('X-Transport')->getBodyAsString());
-
-                return true;
+            ->with($this->callback(function (\Symfony\Bridge\Twig\Mime\TemplatedEmail $email) use ($from, $to, $subject, $template, $context) {
+                return $email->getFrom()[0]->getAddress() === $from
+                    && $email->getTo()[0]->getAddress() === $to
+                    && $email->getSubject() === $subject
+                    && $email->getHtmlTemplate() === $template
+                    && $email->getContext() === $context
+                    && $email->getHeaders()->has('X-Transport')
+                    && $email->getHeaders()->get('X-Transport')->getBody() === 'alternative';
             }));
 
         $this->sendMail->send($from, $to, $subject, $template, $context);
