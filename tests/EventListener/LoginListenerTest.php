@@ -30,8 +30,8 @@ class LoginListenerTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn(null); // Or some other object
 
-        $event = $this->createMock(InteractiveLoginEvent::class);
-        $event->method('getAuthenticationToken')->willReturn($token);
+        $request = $this->createMock(\Symfony\Component\HttpFoundation\Request::class);
+        $event = new InteractiveLoginEvent($request, $token);
 
         $this->gamificationService->expects($this->never())->method('updateStreak');
         $this->gamificationService->expects($this->never())->method('addXp');
@@ -47,8 +47,8 @@ class LoginListenerTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
 
-        $event = $this->createMock(InteractiveLoginEvent::class);
-        $event->method('getAuthenticationToken')->willReturn($token);
+        $request = $this->createMock(\Symfony\Component\HttpFoundation\Request::class);
+        $event = new InteractiveLoginEvent($request, $token);
 
         $this->gamificationService->expects($this->once())->method('updateStreak')->with($user);
         $this->gamificationService->expects($this->once())->method('addXp')->with($user, 20, 'daily_login');
@@ -69,8 +69,8 @@ class LoginListenerTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
 
-        $event = $this->createMock(InteractiveLoginEvent::class);
-        $event->method('getAuthenticationToken')->willReturn($token);
+        $request = $this->createMock(\Symfony\Component\HttpFoundation\Request::class);
+        $event = new InteractiveLoginEvent($request, $token);
 
         $this->gamificationService->expects($this->once())->method('updateStreak')->with($user);
         // Should NOT add XP because it's not the first login today
@@ -89,8 +89,8 @@ class LoginListenerTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
 
-        $event = $this->createMock(InteractiveLoginEvent::class);
-        $event->method('getAuthenticationToken')->willReturn($token);
+        $request = $this->createMock(\Symfony\Component\HttpFoundation\Request::class);
+        $event = new InteractiveLoginEvent($request, $token);
 
         $this->gamificationService->expects($this->once())->method('updateStreak')->with($user);
         // Should add XP because last login was yesterday (diff > 0)
