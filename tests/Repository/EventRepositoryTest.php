@@ -61,12 +61,17 @@ class EventRepositoryTest extends TestCase
             ->method('orWhere');
 
         // Ensure where/andWhere return $qb
-        $qb->expects($this->atLeastOnce())
-            ->method('where')
-            ->willReturn($qb);
+        $qb->method('where')->willReturn($qb);
 
         $qb->expects($this->atLeastOnce())
             ->method('andWhere')
+            ->with($this->callback(function($condition) {
+                // Verify that if it contains OR, it must be parenthesized
+                if (str_contains($condition, ' OR ')) {
+                    return str_starts_with($condition, '(') && str_ends_with($condition, ')');
+                }
+                return true;
+            }))
             ->willReturn($qb);
 
         $cohort = new Cohort();

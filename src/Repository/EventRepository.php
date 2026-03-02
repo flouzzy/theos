@@ -33,10 +33,10 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
 
         if ($cohort) {
-            $qb->where('e.cohort IS NULL OR e.cohort = :cohort')
+            $qb->andWhere('(e.cohort IS NULL OR e.cohort = :cohort)')
                ->setParameter('cohort', $cohort);
         } else {
-            $qb->where('e.cohort IS NULL');
+            $qb->andWhere('e.cohort IS NULL');
         }
 
         return $qb
