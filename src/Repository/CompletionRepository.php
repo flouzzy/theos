@@ -78,12 +78,10 @@ class CompletionRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('c')
             ->orderBy('c.id', 'DESC')
             ->getQuery();
-
         $paginator = new Paginator($query);
         $paginator->getQuery()
             ->setFirstResult($limit * ($page - 1))
             ->setMaxResults($limit);
-
         return $paginator;
     }
 }

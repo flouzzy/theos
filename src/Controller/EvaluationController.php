@@ -23,48 +23,40 @@ class EvaluationController extends AbstractController
         }
 
         // Fetch completions with scores
-        // We need to define custom repository methods or filter in PHP if the dataset is small.
-        // For efficiency, we should add custom methods findWithScoreByUser().
-        // For now, let's fetch all completeds for the user and filter.
-        
-        $moduleCompletions = $moduleCompletionRepository->findBy(['user' => $user, 'completed' => true]);
-        $lessonCompletions = $completionRepository->findBy(['user' => $user, 'completed' => true]);
+        $moduleCompletions = $moduleCompletionRepository->findWithScoreByUser($user);
+        $lessonCompletions = $completionRepository->findWithScoreByUser($user);
 
         $evaluations = [];
         $scores = [];
 
         // Process Module Completions
         foreach ($moduleCompletions as $mc) {
-            if ($mc->getScore() !== null) {
-                $scores[] = $mc->getScore();
-                $evaluations[] = [
-                    'title' => $mc->getModule()->getTitle(),
-                    'course' => $mc->getModule()->getCourses()->first() ? $mc->getModule()->getCourses()->first()->getTitle() : 'Module',
-                    'score' => $mc->getScore(),
-                    'total' => 20, // Assumed default
-                    'grade' => $this->calculateGrade($mc->getScore()),
-                    'date' => $mc->getUpdatedAt() ?? $mc->getCreatedAt(),
-                    'duration' => '30 min', // Placeholder or add duration to Completion
-                    'type' => 'module'
-                ];
-            }
+            $scores[] = $mc->getScore();
+            $evaluations[] = [
+                'title' => $mc->getModule()->getTitle(),
+                'course' => $mc->getModule()->getCourses()->first() ? $mc->getModule()->getCourses()->first()->getTitle() : 'Module',
+                'score' => $mc->getScore(),
+                'total' => 20, // Assumed default
+                'grade' => $this->calculateGrade($mc->getScore()),
+                'date' => $mc->getUpdatedAt() ?? $mc->getCreatedAt(),
+                'duration' => '30 min', // Placeholder or add duration to Completion
+                'type' => 'module'
+            ];
         }
 
         // Process Lesson Completions (Quizzes)
         foreach ($lessonCompletions as $lc) {
-             if ($lc->getScore() !== null) {
-                $scores[] = $lc->getScore();
-                $evaluations[] = [
-                    'title' => $lc->getLesson()->getTitle(),
-                    'course' => $lc->getLesson()->getModule() ? $lc->getLesson()->getModule()->getTitle() : 'Lesson',
-                    'score' => $lc->getScore(),
-                    'total' => 20,
-                    'grade' => $this->calculateGrade($lc->getScore()),
-                    'date' => $lc->getUpdatedAt() ?? $lc->getCreatedAt(),
-                    'duration' => $lc->getLesson()->getDuration() ? $lc->getLesson()->getDuration() . ' min' : '10 min',
-                    'type' => 'lesson'
-                ];
-            }
+            $scores[] = $lc->getScore();
+            $evaluations[] = [
+                'title' => $lc->getLesson()->getTitle(),
+                'course' => $lc->getLesson()->getModule() ? $lc->getLesson()->getModule()->getTitle() : 'Lesson',
+                'score' => $lc->getScore(),
+                'total' => 20,
+                'grade' => $this->calculateGrade($lc->getScore()),
+                'date' => $lc->getUpdatedAt() ?? $lc->getCreatedAt(),
+                'duration' => $lc->getLesson()->getDuration() ? $lc->getLesson()->getDuration() . ' min' : '10 min',
+                'type' => 'lesson'
+            ];
         }
 
         // Sort by date desc
