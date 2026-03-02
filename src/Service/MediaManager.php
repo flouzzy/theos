@@ -132,9 +132,46 @@ class MediaManager
                 return false;
             }
 
+            $content = $this->fetchFileContent($fileUrl);
+            if (!$content) {
+                return false;
+            }
+
+            return $this->saveDownloadedContent($content, $targetDirectory, $fileFullPath);
+        } catch (FileException $e) {
+            $this->logDownloadError('Erreur lors du téléchargement du fichier', $e, $fileUrl, $fileFullPath);
+        } catch (TransportExceptionInterface $e) {
+            $this->logDownloadError('Error downloading file (Transport)', $e, $fileUrl);
+        } catch (\Throwable $e) {
+            $this->logDownloadError('Error downloading file', $e, $fileUrl);
+        }
+
+        return false;
+    }
+
+    private function fetchFileContent(string $url): ?string
+    {
+        $maxRedirects = 3;
+
+        for ($i = 0; $i <= $maxRedirects; $i++) {
+            $parts = parse_url($url);
+            if (!$parts || !isset($parts['host'])) {
+                return null;
+            }
+
+            $host = $parts['host'];
+            // Default ports: 80 for http, 443 for https
+            $scheme = $parts['scheme'] ?? 'http';
+            $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
+
+            // Allow only standard ports to reduce attack surface
+            if (!in_array($port, [80, 443, 8080])) {
+                return null;
+            }
+
             $safeIp = $this->getSafeIp($host);
             if (!$safeIp) {
-                return false;
+                return null;
             }
 
             $response = $this->httpClient->request('GET', $url, [
@@ -153,7 +190,7 @@ class MediaManager
                 $headers = $response->getHeaders(false);
                 $location = $headers['location'][0] ?? null;
                 if (!$location) {
-                    return false;
+                    return null;
                 }
 
                 // Handle relative redirects
@@ -161,21 +198,22 @@ class MediaManager
                     $location = $scheme . '://' . $host . ($parts['port'] ?? '' ? ':' . $parts['port'] : '') . $location;
                 } elseif (!preg_match('/^https?:\/\//i', $location)) {
                     // Reject complex relative paths for safety
-                    return false;
+                    return null;
                 }
 
                 $url = $location;
                 continue;
             }
 
-            return false;
+            return null;
         }
 
-        return false;
+        return null;
     }
 
-    private function verifyAndGetExtension(string $content): string|false
+    private function saveDownloadedContent(string $content, string $targetDirectory, ?string &$fileFullPath): string|false
     {
+        // Verify content type
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->buffer($content);
 
@@ -190,30 +228,8 @@ class MediaManager
             return false;
         }
 
-        return $extensions[$mimeType];
-    }
+        $extension = $extensions[$mimeType];
 
-    public function downloadFileByUrl(string $fileUrl, ?string $mediaType = null): string|false
-    {
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mimeType = $finfo->buffer($content);
-
-        $extensions = [
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
-            'image/webp' => 'webp'
-        ];
-
-        if (!isset($extensions[$mimeType])) {
-            return false;
-        }
-
-        return $extensions[$mimeType];
-    }
-
-    private function saveAndProcessFile(string $content, string $extension, string $targetDirectory): string|false
-    {
         // Generate safe filename
         $filename = uniqid('media_', true) . '.' . $extension;
         $fileFullPath = $targetDirectory . '/' . $filename;
@@ -232,91 +248,23 @@ class MediaManager
         return false;
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     */
-    private function fetchUrlContent(string $url): string|false
+    private function logDownloadError(string $message, \Throwable $exception, string $fileUrl, ?string $fileFullPath = null): void
     {
-        $maxRedirects = 3;
+        /**
+         * @var \App\Entity\User|null $user
+         */
+        $user = $this->security->getUser();
+        $context = [
+            'user_email' => $user ? $user->getEmail() : 'anonymous',
+            'error_message' => $exception->getMessage(),
+            'fileUrl' => $fileUrl,
+        ];
 
-        for ($i = 0; $i <= $maxRedirects; $i++) {
-            $parts = parse_url($url);
-            if (!$parts || !isset($parts['host'])) {
-                return false;
-            }
-
-            $content = $this->fetchUrlContent($fileUrl);
-
-            $content = $this->fetchUrlContent($fileUrl);
-
-            if (!$content) {
-                return false;
-            }
-
-            $extension = $this->verifyAndGetExtension($content);
-
-            if (!$extension) {
-                return false;
-            }
-
-            // Generate safe filename
-            $filename = uniqid('media_', true) . '.' . $extension;
-            $fileFullPath = $targetDirectory . '/' . $filename;
-
-            $fileDownloaded = file_put_contents($fileFullPath, $content);
-
-            if ($fileDownloaded) {
-                try {
-                    $this->imageOptimizer->resize($fileFullPath, ['maxWidth' => 800, 'maxHeight' => 600]);
-                } catch (\Throwable $e) {
-                    // Ignore resize error, keep the file as it's a valid image
-                }
-                return explode('public/', $fileFullPath)[1];
-            }
-        } catch (FileException $exception) {
-            // ... handle exception if something happens during file download
-            /**
-             * @var \App\Entity\User|null $user
-             */
-            $user = $this->security->getUser();
-            $this->logger->error(
-                'Erreur lors du téléchargement du fichier',
-                [
-                    'user_email' => $user ? $user->getEmail() : 'anonymous',
-                    'error_message' => $exception->getMessage(),
-                    'fileUrl' => $fileUrl, 'fileFullPath' => $fileFullPath
-                ]
-            );
-        } catch (TransportExceptionInterface $e) {
-            /**
-             * @var \App\Entity\User|null $user
-             */
-            $user = $this->security->getUser();
-            $this->logger->error(
-                'Error downloading file (Transport)',
-                [
-                    'user_email' => $user ? $user->getEmail() : 'anonymous',
-                    'error_message' => $e->getMessage(),
-                    'fileUrl' => $fileUrl
-                ]
-            );
-        } catch (\Throwable $e) {
-            // Catch other exceptions
-            /**
-             * @var \App\Entity\User|null $user
-             */
-            $user = $this->security->getUser();
-            $this->logger->error(
-                'Error downloading file',
-                [
-                    'user_email' => $user ? $user->getEmail() : 'anonymous',
-                    'error_message' => $e->getMessage(),
-                    'fileUrl' => $fileUrl
-                ]
-            );
+        if ($fileFullPath !== null) {
+            $context['fileFullPath'] = $fileFullPath;
         }
 
-        return false;
+        $this->logger->error($message, $context);
     }
 
     /**
