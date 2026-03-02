@@ -50,6 +50,4 @@ class CourseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
 }

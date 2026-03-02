@@ -33,5 +33,4 @@ class CourseCompletionRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-
 }

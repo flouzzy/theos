@@ -32,6 +32,4 @@ class ModuleCompletionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-
-
 }

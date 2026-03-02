@@ -32,6 +32,4 @@ class NoteRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
 }

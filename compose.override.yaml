@@ -12,7 +12,7 @@ services:
       - ./frankenphp/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint:ro
       # If you develop on Mac or Windows you can remove the vendor/ directory
       #  from the bind-mount for better performance by enabling the next line:
-      #- /app/vendor
+      - /app/vendor
     environment:
       # FRANKENPHP_WORKER_CONFIG: watch
       SERVER_NAME: localhost
@@ -24,8 +24,17 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:2019/metrics" ]
+      start_period: 180s
     depends_on:
       - database
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2019/metrics"]
+      start_period: 180s
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine

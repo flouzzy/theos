@@ -33,7 +33,8 @@ class ProfileController extends AbstractController
         TranslatorInterface $translator,
         Request $request,
         EventDispatcherInterface $eventDispatcher,
-        CompletionRepository $completionRepository
+        CompletionRepository $completionRepository,
+        \App\Repository\CourseCompletionRepository $courseCompletionRepository
     ): Response {
         /**
          * @var \App\Entity\User $user
@@ -65,7 +66,7 @@ class ProfileController extends AbstractController
 
         // Calculate Stats
         $coursesEnrolled = $user->getCourses();
-        $completedCoursesCount = $user->getCourseCompletions()->filter(fn($cc) => $cc->isCompleted())->count();
+        $completedCoursesCount = $courseCompletionRepository->countCompletedCoursesForUser($user);
         $notesCount = $user->getNotes()->count();
 
         $totalMinutes = $completionRepository->countTotalDurationByUser($user);

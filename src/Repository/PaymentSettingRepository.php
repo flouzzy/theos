@@ -20,6 +20,4 @@ class PaymentSettingRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, PaymentSetting::class);
     }
-
-
 }
