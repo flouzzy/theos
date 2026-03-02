@@ -67,7 +67,7 @@ class CohortController extends AbstractController
 
         // Stats Globales
         $globalProgress = $totalLessons > 0 ? round(($totalCompletedLessons / $totalLessons) * 100) : 0;
-        $completedCoursesCount = $courseCompletionRepository->countCompletedCoursesByUser($user);
+        $completedCoursesCount = $courseCompletionRepository->countCompletedCoursesForUser($user);
         $ongoingCoursesCount = count($myCoursesEntities) - $completedCoursesCount;
         $totalHours = floor($totalMinutes / 60);
 
