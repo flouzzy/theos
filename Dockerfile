@@ -31,6 +31,7 @@ RUN set -eux; \
 	pdo_pgsql \
 	xml \
 	xsl \
+	xml \
 	zip \
 	gd \
 	redis \
