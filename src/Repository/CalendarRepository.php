@@ -20,5 +20,4 @@ class CalendarRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Calendar::class);
     }
-
 }
