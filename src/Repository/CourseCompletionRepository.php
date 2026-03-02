@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CourseCompletion;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -33,4 +34,17 @@ class CourseCompletionRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * Retourne le nombre de cours complétés par un utilisateur
+     */
+    public function countCompletedCoursesForUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
