@@ -23,12 +23,10 @@ class EvaluationController extends AbstractController
         }
 
         // Fetch completions with scores
-        // We need to define custom repository methods or filter in PHP if the dataset is small.
-        // For efficiency, we should add custom methods findWithScoreByUser().
-        // For now, let's fetch all completeds for the user and filter.
         
-        $moduleCompletions = $moduleCompletionRepository->findBy(['user' => $user, 'completed' => true]);
-        $lessonCompletions = $completionRepository->findBy(['user' => $user, 'completed' => true]);
+        /** @var \App\Entity\User $user */
+        $moduleCompletions = $moduleCompletionRepository->findWithScoreByUser($user);
+        $lessonCompletions = $completionRepository->findWithScoreByUser($user);
 
         $evaluations = [];
         $scores = [];
@@ -38,8 +36,8 @@ class EvaluationController extends AbstractController
             if ($mc->getScore() !== null) {
                 $scores[] = $mc->getScore();
                 $evaluations[] = [
-                    'title' => $mc->getModule()->getTitle(),
-                    'course' => $mc->getModule()->getCourses()->first() ? $mc->getModule()->getCourses()->first()->getTitle() : 'Module',
+                    'title' => $mc->getModule() ? $mc->getModule()->getTitle() : 'Module',
+                    'course' => $mc->getModule() && $mc->getModule()->getCourses()->first() ? $mc->getModule()->getCourses()->first()->getTitle() : 'Module',
                     'score' => $mc->getScore(),
                     'total' => 20, // Assumed default
                     'grade' => $this->calculateGrade($mc->getScore()),
@@ -52,16 +50,16 @@ class EvaluationController extends AbstractController
 
         // Process Lesson Completions (Quizzes)
         foreach ($lessonCompletions as $lc) {
-             if ($lc->getScore() !== null) {
+            if ($lc->getScore() !== null) {
                 $scores[] = $lc->getScore();
                 $evaluations[] = [
-                    'title' => $lc->getLesson()->getTitle(),
-                    'course' => $lc->getLesson()->getModule() ? $lc->getLesson()->getModule()->getTitle() : 'Lesson',
+                    'title' => $lc->getLesson() ? $lc->getLesson()->getTitle() : 'Lesson',
+                    'course' => $lc->getLesson() && $lc->getLesson()->getModule() ? $lc->getLesson()->getModule()->getTitle() : 'Lesson',
                     'score' => $lc->getScore(),
                     'total' => 20,
                     'grade' => $this->calculateGrade($lc->getScore()),
                     'date' => $lc->getUpdatedAt() ?? $lc->getCreatedAt(),
-                    'duration' => $lc->getLesson()->getDuration() ? $lc->getLesson()->getDuration() . ' min' : '10 min',
+                    'duration' => $lc->getLesson() && $lc->getLesson()->getDuration() ? $lc->getLesson()->getDuration() . ' min' : '10 min',
                     'type' => 'lesson'
                 ];
             }
@@ -73,7 +71,7 @@ class EvaluationController extends AbstractController
         // Calculate Stats
         $count = count($scores);
         $average = $count > 0 ? array_sum($scores) / $count : 0;
-        $bestScore = $count > 0 ? max($scores) : 0;
+        $bestScore = $count > 0 ? (float) max($scores) : 0.0;
         $bestGrade = $count > 0 ? $this->calculateGrade($bestScore) : '-';
 
         $stats = [

@@ -113,16 +113,38 @@ class CompletionService
         // On vérifie que tous les modules sont completés (ou non)
         $allModulesCompleted = true;
         $modules = $course->getModules();
-        foreach ($modules as $courseModule) {
-            // On aurait pu simplement vérifié le statut de completion du module sans passer par les leçons
-            // mais dans ce cas on risquerait de passer à côté des modules qui ne sont associés à aucune leçon (cygne noir)
-            $moduleLessons = $courseModule->getLessons();
-            foreach ($moduleLessons as $lesson) {
-                $completion = $this->entityManager->getRepository(Completion::class)->findOneBy(['user' => $user, 'lesson' => $lesson]);
 
-                if (!$completion || !$completion->isCompleted()) {
-                    $allModulesCompleted = false;
-                    break 2; // Sort des deux boucles si une leçon non complétée est trouvée
+        $allLessons = [];
+        foreach ($modules as $courseModule) {
+            foreach ($courseModule->getLessons() as $lesson) {
+                $allLessons[] = $lesson;
+            }
+        }
+
+        if (count($allLessons) > 0) {
+            $completions = $this->entityManager->getRepository(Completion::class)->findBy([
+                'user' => $user,
+                'lesson' => $allLessons
+            ]);
+
+            $completionMap = [];
+            foreach ($completions as $completion) {
+                if ($completion->getLesson()) {
+                    $completionMap[$completion->getLesson()->getId()] = $completion;
+                }
+            }
+
+            foreach ($modules as $courseModule) {
+                // On aurait pu simplement vérifié le statut de completion du module sans passer par les leçons
+                // mais dans ce cas on risquerait de passer à côté des modules qui ne sont associés à aucune leçon (cygne noir)
+                $moduleLessons = $courseModule->getLessons();
+                foreach ($moduleLessons as $lesson) {
+                    $completion = $completionMap[$lesson->getId()] ?? null;
+
+                    if (!$completion || !$completion->isCompleted()) {
+                        $allModulesCompleted = false;
+                        break 2; // Sort des deux boucles si une leçon non complétée est trouvée
+                    }
                 }
             }
         }

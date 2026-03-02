@@ -112,26 +112,24 @@ class MediaManager
         return $ips[0];
     }
 
-    public function downloadFileByUrl(string $fileUrl, ?string $mediaType = null): string|false
+    private function fetchUrlContent(string $url): string|false
     {
-        // Check for valid protocol
-        if (!preg_match('/^https?:\/\//i', $fileUrl)) {
-            return false;
-        }
+        $maxRedirects = 3;
 
-        // Validate mediaType to prevent directory traversal
-        if ($mediaType && !preg_match('/^[a-zA-Z0-9_-]+$/', $mediaType)) {
-            return false;
-        }
+        for ($i = 0; $i <= $maxRedirects; $i++) {
+            $parts = parse_url($url);
+            if (!$parts || !isset($parts['host'])) {
+                return false;
+            }
 
-        /** @var string|null $fileFullPath */
-        $fileFullPath = null;
-        try {
-            $targetDirectory = $this->getTargetDirectory($mediaType);
+            $host = $parts['host'];
+            // Default ports: 80 for http, 443 for https
+            $scheme = $parts['scheme'] ?? 'http';
+            $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
 
-            // Get current directory
-            if (!is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0777, true);
+            // Allow only standard ports to reduce attack surface
+            if (!in_array($port, [80, 443, 8080])) {
+                return false;
             }
 
             $content = $this->fetchFileContent($fileUrl);
