@@ -71,39 +71,63 @@
       "symfony/runtime": true,
       "endroid/installer": true
     },
-    "sort-packages": true,
-    "platform": {
-      "ext-xml": "8.4",
-      "ext-xsl": "8.4"
-    }
-  },
-  "autoload": {
-    "psr-4": {
-      "App\\": "src/",
-      "Sysil\\SysilBundle\\": "sysil/src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "App\\Tests\\": "tests/",
-      "Sysil\\SysilBundle\\Tests\\": "sysil/tests/"
-    }
-  },
-  "replace": {
-    "symfony/polyfill-ctype": "*",
-    "symfony/polyfill-iconv": "*",
-    "symfony/polyfill-php72": "*",
-    "symfony/polyfill-php73": "*",
-    "symfony/polyfill-php74": "*",
-    "symfony/polyfill-php80": "*",
-    "symfony/polyfill-php81": "*",
-    "symfony/polyfill-php82": "*"
-  },
-  "scripts": {
-    "auto-scripts": {
-      "cache:clear": "symfony-cmd",
-      "assets:install %PUBLIC_DIR%": "symfony-cmd",
-      "importmap:install": "symfony-cmd"
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "symfony/flex": true,
+            "symfony/runtime": true,
+            "endroid/installer": true
+        },
+        "sort-packages": true,
+        "platform": {
+            "ext-xml": "8.4",
+            "ext-xsl": "8.4"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "Sysil\\SysilBundle\\": "sysil/src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/",
+            "Sysil\\SysilBundle\\Tests\\": "sysil/tests/"
+        }
+    },
+    "replace": {
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php72": "*",
+        "symfony/polyfill-php73": "*",
+        "symfony/polyfill-php74": "*",
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php81": "*",
+        "symfony/polyfill-php82": "*"
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "importmap:install": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ]
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": false,
+            "require": "8.0.*",
+            "docker": true
+        }
     },
     "post-install-cmd": [
       "@auto-scripts"
