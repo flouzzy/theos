@@ -7,6 +7,8 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-xml": "*",
+        "ext-xsl": "*",
         "doctrine/doctrine-bundle": "^2.13 || ^3.0",
         "doctrine/doctrine-migrations-bundle": "^3.3 || ^4.0",
         "doctrine/orm": "^3.0",
@@ -73,8 +75,9 @@
         },
         "sort-packages": true,
         "platform": {
-            "ext-xsl": "1.0.0",
-            "ext-xml": "1.0.0"
+            "ext-xml": "8.4.17",
+            "ext-xsl": "8.4.17",
+            "ext-session": "8.4.17"
         }
     },
     "autoload": {
