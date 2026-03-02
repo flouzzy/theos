@@ -1,0 +1,29 @@
+<div {{ attributes }}>
+    {% set notifications = this.notifications %}
+
+    {% if notifications is empty %}
+        <div class="text-center text-muted-foreground p-8">
+            {{ 'Aucune notification pour le moment.' | trans }}
+        </div>
+    {% else %}
+        <ion-list>
+            {% for notification in notifications %}
+                <ion-item {% if notification.isRead %} color="light" {% endif %} button {% if not notification.isRead %} data-action="click->live#action" data-live-action-param="markAsRead" data-live-id-param="{{ notification.id }}" {% endif %} {% if notification.isRead %}href="{{ path('notification_show', { id:notification.id }) }}"{% endif %}>
+                    <ion-label class="ion-text-wrap">
+                        <ion-text {% if not notification.isRead %} color="danger" {% endif %} class="{% if not notification.isRead %}font-semibold{% endif %}">
+                            {{ notification.message | raw }}
+                        </ion-text>
+                        <p class="text-xs mt-1 text-muted-foreground">
+                            {{ notification.createdAt ? notification.createdAt|date('d/m/Y H:i') : '' }}
+                        </p>
+                    </ion-label>
+                    {% if not notification.isRead %}
+                        <ion-button slot="end" fill="clear" color="danger" title="{{ 'Marquer comme lu' | trans }}">
+                            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+                        </ion-button>
+                    {% endif %}
+                </ion-item>
+            {% endfor %}
+        </ion-list>
+    {% endif %}
+</div>

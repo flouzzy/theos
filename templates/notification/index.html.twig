@@ -5,19 +5,10 @@
 {% endblock %}
 
 {% block content %}
-	<div class="ion-padding">
-		<ion-list>
-			{% for notification in notifications %}
-				<ion-item href="{{ path('notification_show', { id:notification.id }) }}">
-					<ion-text {% if not notification.isRead %} color="danger" {% endif %}>
-						{{notification.message | raw}}
-					</ion-text>
-				</ion-item>
-			{% endfor %}
-		</ion-list>
+	<div class="ion-padding max-w-4xl mx-auto">
+		{{ component('NotificationList') }}
 	</div>
 {% endblock %}
-
 
 {% block menuBackButton %}
 	<ion-button href="{{path('home')}}">
