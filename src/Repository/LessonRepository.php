@@ -32,5 +32,4 @@ class LessonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
 }

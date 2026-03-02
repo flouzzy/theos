@@ -20,5 +20,4 @@ class PageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Page::class);
     }
-
 }
