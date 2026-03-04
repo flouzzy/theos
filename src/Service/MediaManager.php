@@ -99,7 +99,7 @@ class MediaManager
     private function getSafeIp(string $host): ?string
     {
         $ips = gethostbynamel($host);
-        if ($ips === false || empty($ips)) {
+        if ($ips === false || count($ips) === 0) {
             return null;
         }
 
@@ -112,7 +112,7 @@ class MediaManager
         return $ips[0];
     }
 
-    public function downloadFileByUrl(string $fileUrl, string $mediaType = 'course'): string|false
+    public function downloadFileByUrl(string $fileUrl, string $mediaType = 'post'): string|false
     {
         $targetDirectory = $this->getTargetDirectory($mediaType);
         $fileFullPath = null;
@@ -148,15 +148,15 @@ class MediaManager
             $host = $parts['host'];
             // Default ports: 80 for http, 443 for https
             $scheme = $parts['scheme'] ?? 'http';
-            $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
+            $port = isset($parts['port']) ? (int) $parts['port'] : ($scheme === 'https' ? 443 : 80);
 
             // Allow only standard ports to reduce attack surface
-            if (!in_array($port, [80, 443, 8080])) {
+            if (!in_array($port, [80, 443, 8080], true)) {
                 return null;
             }
 
             $safeIp = $this->getSafeIp($host);
-            if (!$safeIp) {
+            if ($safeIp === null) {
                 return null;
             }
 
@@ -181,7 +181,8 @@ class MediaManager
 
                 // Handle relative redirects
                 if (str_starts_with($location, '/')) {
-                    $location = $scheme . '://' . $host . ($parts['port'] ?? '' ? ':' . $parts['port'] : '') . $location;
+                    $portString = isset($parts['port']) ? ':' . $parts['port'] : '';
+                    $location = $scheme . '://' . $host . $portString . $location;
                 } elseif (!preg_match('/^https?:\/\//i', $location)) {
                     // Reject complex relative paths for safety
                     return null;
@@ -197,9 +198,16 @@ class MediaManager
         return null;
     }
 
-    private function saveDownloadedContent(string $content, string $targetDirectory, ?string &$fileFullPath): string|false
+    private function saveDownloadedContent(
+        string $content,
+        string $targetDirectory,
+        ?string &$fileFullPath
+    ): string|false
     {
         // Verify content type
+        if (!class_exists(\finfo::class) || !defined('FILEINFO_MIME_TYPE')) {
+            return false; // Fallback if finfo is missing, though it's standard.
+        }
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->buffer($content);
 
@@ -222,7 +230,7 @@ class MediaManager
 
         $fileDownloaded = file_put_contents($fileFullPath, $content);
 
-        if ($fileDownloaded) {
+        if ($fileDownloaded !== false) {
             try {
                 $this->imageOptimizer->resize($fileFullPath, ['maxWidth' => 800, 'maxHeight' => 600]);
             } catch (\Throwable $e) {
@@ -234,7 +242,12 @@ class MediaManager
         return false;
     }
 
-    private function logDownloadError(string $message, \Throwable $exception, string $fileUrl, ?string $fileFullPath = null): void
+    private function logDownloadError(
+        string $message,
+        \Throwable $exception,
+        string $fileUrl,
+        ?string $fileFullPath = null
+    ): void
     {
         /**
          * @var \App\Entity\User|null $user
@@ -277,7 +290,7 @@ class MediaManager
             return $imageUrl;
         }
 
-        // On retourne l'image téléchargée ou le lien direct (distant) vers l'image
+        // On retourne l'image téléchargée ou la ligne directe (distante) vers l'image
         return $fileDownloaded ?? $imageUrl;
     }
 }
