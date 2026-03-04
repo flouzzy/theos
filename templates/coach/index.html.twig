@@ -37,7 +37,7 @@
             <div class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
                 <span class="text-lg">🏆</span>
                 <div class="flex flex-col leading-none">
-                    <span class="font-bold text-lg">12</span>
+                    <span class="font-bold text-lg">{{ badgesCount }}</span>
                     <span class="text-[10px] uppercase font-bold">{{ 'Badges' | trans }}</span>
                 </div>
             </div>
@@ -80,7 +80,7 @@
             {# Recommendations #}
             <div>
                 <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-                    <span class="text-xl">✨</span> {{ 'Pour toi aujourd\'hui' | trans }}
+                    <span class="text-xl">✨</span> {{ 'Pour toi aujourd\'hui' | trans }} {# codespell-ignore #}
                 </h3>
                 
                 <div class="space-y-4">
