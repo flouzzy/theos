@@ -112,26 +112,12 @@ class MediaManager
         return $ips[0];
     }
 
-    private function fetchUrlContent(string $url): string|false
+    public function downloadFileByUrl(string $fileUrl, string $mediaType = 'course'): string|false
     {
-        $maxRedirects = 3;
+        $targetDirectory = $this->getTargetDirectory($mediaType);
+        $fileFullPath = null;
 
-        for ($i = 0; $i <= $maxRedirects; $i++) {
-            $parts = parse_url($url);
-            if (!$parts || !isset($parts['host'])) {
-                return false;
-            }
-
-            $host = $parts['host'];
-            // Default ports: 80 for http, 443 for https
-            $scheme = $parts['scheme'] ?? 'http';
-            $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
-
-            // Allow only standard ports to reduce attack surface
-            if (!in_array($port, [80, 443, 8080])) {
-                return false;
-            }
-
+        try {
             $content = $this->fetchFileContent($fileUrl);
             if (!$content) {
                 return false;
