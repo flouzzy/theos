@@ -13,6 +13,7 @@ services:
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       SYMFONY_VERSION: ${SYMFONY_VERSION:-}
       STABILITY: ${STABILITY:-stable}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -42,8 +43,6 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    ports:
-      - "6379:6379"
 ###< doctrine/doctrine-bundle ###
 
 volumes:
