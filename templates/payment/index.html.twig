@@ -18,47 +18,50 @@
 {% block content %}
 	<ion-card>
 		<ion-card-content>
-			<ion-card-header>
-				<ion-card-title>
-					{{'Training fees' | trans}}
-					:
-					{{payment.pricing}}
-					€
-				</ion-card-title>
-			</ion-card-header>
-			{% if payment.rib %}
-				<p>
-					<strong>
-						{{'RIB' | trans}}
-					</strong>
-					:
-					{{payment.rib}}
-				</p>
-			{% endif %}
-
-			{% if payment.checkOrder %}
-				<p>
-					<strong>
-						{{'Check order' | trans}}
-					</strong>
-					:
-					{{payment.checkOrder}}
-					{% if payment.receptionAddress %}
-						(
-						<strong>{{'Reception address' | trans}}</strong>
+			{% if payment %}
+				<ion-card-header>
+					<ion-card-title>
+						{{'Training fees' | trans}}
 						:
-						{{payment.receptionAddress}})
-					{% endif %}
+						{{payment.pricing}}
+						€
+					</ion-card-title>
+				</ion-card-header>
+				{% if payment.rib %}
+					<p>
+						<strong>
+							{{'RIB' | trans}}
+						</strong>
+						:
+						{{payment.rib}}
+					</p>
+				{% endif %}
 
-				</p>
+				{% if payment.checkOrder %}
+					<p>
+						<strong>
+							{{'Check order' | trans}}
+						</strong>
+						:
+						{{payment.checkOrder}}
+						{% if payment.receptionAddress %}
+							(
+							<strong>{{'Reception address' | trans}}</strong>
+							:
+							{{payment.receptionAddress}})
+						{% endif %}
+
+					</p>
+				{% endif %}
+
+				{% if payment.note %}
+					<p>
+						{{payment.note}}
+					</p>
+				{% endif %}
+			{% else %}
+				<p>Aucun abonnement ou plan de paiement n'a été rattaché à votre compte.</p>
 			{% endif %}
-
-			{% if payment.note %}
-				<p>
-					{{payment.note}}
-				</p>
-			{% endif %}
-
 		</ion-card-content>
 	</ion-card>
 {% endblock %}

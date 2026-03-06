@@ -21,12 +21,25 @@ services:
       - /var/www/academie/public/uploads:/app/public/uploads
     ports:
       - "8095:80"
+      - "8096:443"
+      - "8096:443/udp"
 
-# Mercure is installed as a Caddy module, prevent Flex from installing it
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
+  worker:
+    image: ${IMAGES_PREFIX:-}app-php
+    restart: unless-stopped
+    command: php bin/console messenger:consume async --time-limit=3600 --memory-limit=128M
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@database:3306/${MYSQL_DB:-app}?serverVersion=${MYSQL_VERSION:-8.0}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+    depends_on:
+      - database
+      - redis
 
-###> doctrine/doctrine-bundle ###
+  # Mercure is installed as a Caddy module, prevent Flex from installing it
+  ###> symfony/mercure-bundle ###
+  ###< symfony/mercure-bundle ###
+
+  ###> doctrine/doctrine-bundle ###
   database:
     image: mysql:${MYSQL_VERSION:-8.0}
     environment:
@@ -47,10 +60,9 @@ services:
 
 volumes:
   caddy_data:
-  caddy_config:
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
+  caddy_config: ###> symfony/mercure-bundle ###
 
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###
+  ###< symfony/mercure-bundle ###
+
+  ###> doctrine/doctrine-bundle ###
+  database_data: ###< doctrine/doctrine-bundle ###

@@ -89,7 +89,7 @@ class CommentController extends AbstractController
     {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('login');
         }
 
         if (!$this->isCsrfTokenValid('like_comment_'.$comment->getId(), $request->request->get('_token'))) {

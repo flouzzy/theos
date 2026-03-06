@@ -1,0 +1,81 @@
+ ✘ Authenticated routes are accessible with data set "Profile"
+   │ <!DOCTYPE html>
+ ✘ Authenticated routes are accessible with data set "Notes"
+   │ <!DOCTYPE html>
+ ✘ Authenticated routes are accessible with data set "Notifications"
+   │ <!DOCTYPE html>
+ ✘ Authenticated routes are accessible with data set "Cohorts"
+   │ <!DOCTYPE html>
+ ✘ Authenticated routes are accessible with data set "Payment"
+ ✘ Authenticated routes are accessible with data set "Coach"
+   │ <!DOCTYPE html>
+ ✘ Authenticated routes are accessible with data set "Evaluations"
+   │ <!DOCTYPE html>
+ ✘ Authenticated routes are accessible with data set "Settings"
+   │ <!DOCTYPE html>
+ ✘ Unauthenticated users redirected to login with data set "Calendar"
+   │     'content' => '<!DOCTYPE html>\n
+   │ if (!HTMLScriptElement.supports || !HTMLScriptElement.supports('importmap')) (function () {\n
+   │         <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 py-6" :class="!desktopSidebarOpen && 'px-3'">\n
+   │                     <div class="transition-opacity duration-200" :class="!desktopSidebarOpen && 'opacity-0 w-0'">\n
+   │                 <button @click="desktopSidebarOpen = !desktopSidebarOpen" class="hidden lg:flex p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">\n
+   │                     <svg class="w-5 h-5 transition-transform duration-300" :class="!desktopSidebarOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor">\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Accueil</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Cours</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Coach</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Bloc-notes</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Évaluations</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Classement</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Notifications</span>\n
+   │         <div class="mt-6 mb-2 px-3" :class="{'hidden': !desktopSidebarOpen}">\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Profil</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Accueil</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Cours</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Coach</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Bloc-notes</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Évaluations</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Classement</span>\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Notifications</span>\n
+   │         <div class="mt-6 mb-2 px-3" :class="{'hidden': !desktopSidebarOpen}">\n
+   │         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">Profil</span>\n
+ ✘ Unauthenticated users redirected to login with data set "Notes"
+   │     'content' => '<!DOCTYPE html>\n
+ ✘ Unauthenticated users redirected to login with data set "Payment"
+ ✘ Index
+   │ <!DOCTYPE html>
+ ✘ Index
+   │ <!DOCTYPE html>
+ ✘ Like comment security
+ ✘ New
+ ✘ Edit
+ ✘ Resize handles exception gracefully
+ ✘ Index
+   │ <!DOCTYPE html>
+ ✘ Show lesson with completion
+ ✘ Private ip is blocked
+ ✘ Localhost is blocked
+ ✘ Loopback ip is blocked
+ ✘ Public ip is allowed
+ ✘ Arbitrary file write is blocked
+ ✘ Non image content is blocked
+ ✘ Valid image download
+ ✘ Index
+   │ <!DOCTYPE html>
+ ✘ Index
+   │ <!DOCTYPE html>
+ ✘ Index
+   │ <!DOCTYPE html>
+ ✘ Index
+   │ <!DOCTYPE html>
+ ✘ Verify user email success
+ ✘ Verify user email already verified
+ ✘ Verify user email invalid token
+ ✘ Registration
+ ✘ Send single string email
+ ✘ Send array string emails
+ ✘ Send address objects
+ ✘ Send throws transport exception
+ ✘ Public pages request with data set "Register"
+ ✘ Index
+   │ <!DOCTYPE html>
+ERRORS!

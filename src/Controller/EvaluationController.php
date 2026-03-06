@@ -19,7 +19,7 @@ class EvaluationController extends AbstractController
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('login');
         }
 
         // Fetch completions with scores

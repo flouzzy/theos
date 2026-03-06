@@ -1,47 +1,70 @@
 {% extends 'landing.html.twig' %}
 
 {% block title %}
-	{{'Reset your password' | trans}}
+    {{ 'Réinitialiser votre mot de passe' | trans }}
 {% endblock %}
 
 {% block content %}
-	{% for flash_error in app.flashes('reset_password_error') %}
-		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-	{% endfor %}
+    <div class="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-100px)]">
+        <div class="w-full max-w-md">
+            {# Logo and Header #}
+            <div class="text-center mb-8">
+                <div class="inline-flex h-14 w-14 rounded-xl bg-primary items-center justify-center text-white font-bold text-2xl mb-4">
+                    🔑
+                </div>
+                <h1 class="text-3xl font-bold mb-2">{{ block('title') }}</h1>
+                <p class="text-muted-foreground">{{ 'Entrez votre adresse email' | trans }}</p>
+            </div>
 
-	<ion-grid class="form-signin">
-		<ion-row class="ion-justify-content-center">
-			<ion-col size="12" size-sm="6">
-				{{ form_start(requestForm) }}
-				<ion-list>
-					<ion-list-header>
-						<ion-label class="ion-text-center">
-							<h1>
-								{{block('title')}}
-							</h1>
-						</ion-label>
-					</ion-list-header>
+            {# Main Form Card #}
+            <div class="bg-white rounded-xl shadow-sm border border-border p-8">
+                {% for flash_error in app.flashes('reset_password_error') %}
+                    <div class="mb-6 p-4 rounded-lg bg-destructive/10 text-destructive border border-destructive/20" role="alert">
+                        {{ flash_error }}
+                    </div>
+                {% endfor %}
 
-					<ion-item lines="none">
-						<ion-label>
-							{{ form_label(requestForm.email) }}
-							{{ form_widget(requestForm.email) }}
-							<ion-note>
-								{{'Enter your email address, and we will send you a link to reset your password' | trans}}.
-							</ion-note>
-						</ion-label>
-						<ion-text color="danger">
-							{{ form_errors(requestForm.email) }}
-						</ion-text>
-					</ion-item>
-				</ion-list>
-			</ion-col>
-			<ion-col>
-				<ion-button color="success" type="submit">
-					{{'Send password reset email' | trans}}
-				</ion-button>
-			</ion-col>
-			{{ form_end(requestForm) }}
-		</ion-row>
-	</ion-grid>
+                {{ form_start(requestForm) }}
+                    {# Email Field with Icon #}
+                    <div class="mb-6">
+                        <label for="{{ requestForm.email.vars.id }}" class="block text-sm font-medium mb-2">{{ form_label(requestForm.email) }}</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            {{ form_widget(requestForm.email, {
+                                'attr': {
+                                    'class': 'w-full pl-10 pr-3 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary',
+                                    'placeholder': 'votre@email.fr'
+                                }
+                            }) }}
+                        </div>
+                        <div class="mt-2 text-sm text-destructive">
+                            {{ form_errors(requestForm.email) }}
+                        </div>
+                        <p class="mt-2 text-sm text-muted-foreground">
+                            {{ 'Saisissez votre adresse électronique et nous vous enverrons un lien pour réinitialiser votre mot de passe.' | trans }}
+                        </p>
+                    </div>
+
+                    {# Submit Button #}
+                    <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 rounded-lg transition-colors">
+                        {{ 'Envoyer l\'email' | trans }}
+                    </button>
+                {{ form_end(requestForm) }}
+            </div>
+
+            {# Back to Login Link #}
+            <div class="text-center py-4">
+                <a href="{{ path('login') }}" class="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    {{ 'Retour à la connexion' | trans }}
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

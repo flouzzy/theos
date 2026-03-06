@@ -1,11 +1,11 @@
-{% extends 'app.html.twig' %}
+{% extends app.user ? 'app.html.twig' : 'landing.html.twig' %}
 
 {% block title %}
-	{{page.title}}
+	{{ page.title }}
 {% endblock %}
 
 {% block content %}
-	<div class="ion-padding">
-		{{page.content | raw}}
+	<div class="max-w-4xl mx-auto p-6 md:p-10 space-y-8 prose prose-slate dark:prose-invert">
+		{{ page.content | raw }}
 	</div>
 {% endblock %}

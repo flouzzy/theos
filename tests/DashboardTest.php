@@ -23,7 +23,6 @@ class DashboardTest extends WebTestCase
         $client->request('GET', '/cohort/'); 
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('body', 'Mes cours en cours'); // Check availability in body
-        $this->assertSelectorTextContains('body', 'Actions rapides');
+        $this->assertSelectorTextContains('body', 'Mes Cours'); // Check availability in body
     }
 }

@@ -10,12 +10,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class SendMailTest extends TestCase
 {
     private MailerInterface&MockObject $mailer;
     private LoggerInterface&MockObject $logger;
     private BrevoApi&MockObject $brevoApi;
+    private ParameterBagInterface&MockObject $parameterBag;
     private SendMail $sendMail;
 
     protected function setUp(): void
@@ -23,11 +25,19 @@ class SendMailTest extends TestCase
         $this->mailer = $this->createMock(MailerInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->brevoApi = $this->createMock(BrevoApi::class);
+        $this->parameterBag = $this->createMock(ParameterBagInterface::class);
+
+        // Assert 'prod' environment to bypass dev/test override and test Brevo behaviour
+        $this->parameterBag->method('get')->willReturnMap([
+            ['brevo_api_key', 'valid-api-key'],
+            ['kernel.environment', 'prod'],
+        ]);
 
         $this->sendMail = new SendMail(
             $this->mailer,
             $this->logger,
-            $this->brevoApi
+            $this->brevoApi,
+            $this->parameterBag
         );
     }
 
