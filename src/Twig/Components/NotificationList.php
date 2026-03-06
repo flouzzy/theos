@@ -56,4 +56,15 @@ final class NotificationList
         $notification->setIsRead(true);
         $this->entityManager->flush();
     }
+
+    #[LiveAction]
+    public function markAllAsRead(): void
+    {
+        /** @var \App\Entity\User|null $user */
+        $user = $this->security->getUser();
+        
+        if ($user) {
+            $this->notificationRepository->markAllAsRead($user);
+        }
+    }
 }

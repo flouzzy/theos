@@ -85,47 +85,16 @@
                 {# Lessons List #}
                 <div class="divide-y divide-border">
                     {% for lesson in module.lessons|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
-                        {% set isCompleted = lesson.id in completedLessonIds %}
-                        {% set isLocked = not isSubscribed and lesson.itemOrder > 1 %} {# Simple logic: lock if not subscribed #}
+                        {% set isLessonCompleted = lesson.id in completedLessonIds %}
+                        {% set isLessonLocked = not isSubscribed and lesson.itemOrder > 1 %}
 
-                        <a href="{{ path('lesson_show', {lessonId: lesson.id, moduleSlug: module.slug, courseSlug: course.slug}) }}" 
-                           class="flex items-center justify-between p-4 hover:bg-muted/40 transition-colors group {{ isLocked ? 'opacity-60 pointer-events-none' : '' }}">
-                            
-                            <div class="flex items-center gap-4">
-                                {# Status Icon #}
-                                <div class="flex-shrink-0">
-                                    {% if isCompleted %}
-                                        <div class="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                    {% elseif isLocked %}
-                                         <div class="w-6 h-6 rounded-full border-2 border-muted-foreground text-muted-foreground flex items-center justify-center">
-                                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                        </div>
-                                    {% else %}
-                                        <div class="w-6 h-6 rounded-full border-2 border-muted-foreground group-hover:border-primary transition-colors"></div>
-                                    {% endif %}
-                                </div>
-
-                                <div>
-                                    <h4 class="text-sm font-medium group-hover:text-primary transition-colors">{{ lesson.title }}</h4>
-                                </div>
-                            </div>
-
-                            {# Duration / Arrow #}
-                            <div class="flex items-center gap-4 text-xs text-muted-foreground">
-                                <span>15 min</span>
-                                {% if not isLocked %}
-                                    <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                    </svg>
-                                {% endif %}
-                            </div>
-                        </a>
+                        {{ component('LessonItem', {
+                            lesson: lesson,
+                            module: module,
+                            course: course,
+                            isCompleted: isLessonCompleted,
+                            isLocked: isLessonLocked
+                        }) }}
                     {% endfor %}
                 </div>
             </div>

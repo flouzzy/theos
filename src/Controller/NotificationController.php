@@ -51,31 +51,4 @@ class NotificationController extends AbstractController
             'notification' => $notification,
         ]);
     }
-
-    #[Route('/{id}/read', name: 'read')]
-    public function markAsRead(Notification $notification, EntityManagerInterface $entityManager): Response
-    {
-        // We can't see other people notification
-        if ($notification->getUser() !== $this->getUser()) {
-            return $this->redirectToRoute('notification_index');
-        }
-
-        $notification->setIsRead(true);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('notification_index');
-    }
-
-    #[Route('/read/all', name: 'read_all')]
-    public function markAllAsRead(NotificationRepository $notificationRepository): Response
-    {
-        /**
-         * @var \App\Entity\User $currentUser
-         */
-        $currentUser = $this->getUser();
-        $notificationRepository->markAllAsRead($currentUser);
-
-        $this->addFlash('success', 'All notifications have been marked as read');
-        return $this->redirectToRoute('notification_index');
-    }
 }

@@ -15,14 +15,3 @@
 		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-button>
 {% endblock %}
-
-{% block menuHeaderButtons %}
-	<ion-buttons slot="end">
-		<ion-button href="{{path('notification_read_all')}}" fill="clear">
-			<span class="ion-hide-md-down">
-				{{'Mark all as read' | trans}}
-			</span>
-			<ion-icon name="checkmark-done-outline"></ion-icon>
-		</ion-button>
-	</ion-buttons>
-{% endblock %}
