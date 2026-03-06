@@ -92,11 +92,14 @@
 
                 {# Card Content #}
                 <div class="p-6 flex-1 flex flex-col">
-                    <div class="mb-4">
-                         <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-primary/10 text-primary">
-                            {{ 'Promo 2024' }} {# Placeholder dynamic tag #}
-                        </span>
-                    </div>
+                    {% set activeCohort = active_cohort() %}
+                    {% if activeCohort %}
+                        <div class="mb-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-primary/10 text-primary">
+                                {{ activeCohort.title }}
+                            </span>
+                        </div>
+                    {% endif %}
 
                     <h3 class="font-bold text-xl mb-3 line-clamp-1 group-hover:text-primary transition-colors">
                         <a href="{{ path('course_show', {slug: course.slug}) }}">

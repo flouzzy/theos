@@ -19,21 +19,18 @@ class CohortFixtures extends Fixture implements DependentFixtureInterface
                 'title' => 'Promotion 2026 - Web Development',
                 'slug' => 'promo-2026-web-dev',
                 'startAt' => new \DateTimeImmutable('+7 days'),
-                'capacity' => 30,
                 'status' => 'published',
             ],
             [
                 'title' => 'Promotion 2026 - Data Science',
                 'slug' => 'promo-2026-data-science',
                 'startAt' => new \DateTimeImmutable('+14 days'),
-                'capacity' => 25,
                 'status' => 'published',
             ],
             [
                 'title' => 'Promotion 2026 - Mobile Development',
                 'slug' => 'promo-2026-mobile-dev',
                 'startAt' => new \DateTimeImmutable('+21 days'),
-                'capacity' => 20,
                 'status' => 'draft',
             ],
         ];
@@ -43,7 +40,6 @@ class CohortFixtures extends Fixture implements DependentFixtureInterface
             $cohort->setTitle($data['title']);
             $cohort->setSlug($data['slug']);
             $cohort->setStartAt($data['startAt']);
-            // $cohort->setCapacity($data['capacity']); // Property removed or missing
             $cohort->setStatus($data['status']);
 
             // Add some courses to cohort

@@ -8,12 +8,15 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+
 class SendMail
 {
     public function __construct(
         private MailerInterface $mailer,
         private LoggerInterface $logger,
-        private BrevoApi $brevoApi
+        private BrevoApi $brevoApi,
+        private ParameterBagInterface $parameterBag
     ) {
     }
 
@@ -36,7 +39,14 @@ class SendMail
 
         // On envoie le mail
         try {
-            // $this->mailer->send($email);
+            $apiKey = $this->parameterBag->get('brevo_api_key');
+            
+            // Si pas de clé Brevo ou environnement dev/test, on utilise le mailer classique
+            if (!$apiKey || $apiKey === 'null' || in_array($this->parameterBag->get('kernel.environment'), ['dev', 'test'])) {
+                 $this->mailer->send($email);
+                 return;
+            }
+
             $toList = [];
             if (is_string($to)) {
                 $toList[] = ['email' => $to];
