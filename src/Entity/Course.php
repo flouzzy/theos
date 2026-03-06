@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Trait\DateTimeAble;
 use App\Repository\CourseRepository;
+use App\Entity\Enum\CourseVisibilityEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -46,6 +47,9 @@ class Course
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $status = 'draft';
+
+    #[ORM\Column(type: 'string', enumType: CourseVisibilityEnum::class, options: ['default' => CourseVisibilityEnum::PUBLIC])]
+    private CourseVisibilityEnum $visibility = CourseVisibilityEnum::PUBLIC;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $itemOrder = null;
@@ -223,6 +227,18 @@ class Course
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getVisibility(): CourseVisibilityEnum
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(CourseVisibilityEnum $visibility): static
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }

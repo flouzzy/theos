@@ -6,7 +6,6 @@ import { Controller } from "@hotwired/stimulus";
  */
 export default class extends Controller {
   connect() {
-    console.log("tinymce", tinymce);
     tinymce.init({
       selector: ".text-editor",
       a11y_advanced_options: true,

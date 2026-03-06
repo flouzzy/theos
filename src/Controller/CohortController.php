@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Cohort;
+use App\Service\CohortSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,7 +16,8 @@ class CohortController extends AbstractController
         \App\Repository\EventRepository $eventRepository,
         \App\Repository\CourseRepository $courseRepository,
         \App\Repository\CompletionRepository $completionRepository,
-        \App\Repository\CourseCompletionRepository $courseCompletionRepository
+        \App\Repository\CourseCompletionRepository $courseCompletionRepository,
+        CohortSession $cohortSession
     ): Response {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -25,11 +27,11 @@ class CohortController extends AbstractController
             return $this->redirectToRoute('login');
         }
         
-        // Récupère la première cohorte du user (ou null)
-        $cohort = $user->getCohorts()->first() ?: null;
+        // Récupère la cohorte active via le service
+        $cohort = $cohortSession->getSelectedCohort();
         
-        // Récupère les cours et calcule la progression
-        $myCoursesEntities = $courseRepository->findCoursesWithModulesAndLessonsForUser($user);
+        // Récupère les cours disponibles pour cette cohorte (Public + Restreint à cette cohorte)
+        $myCoursesEntities = $courseRepository->findCoursesByVisibilityAndCohort($cohort);
         $myCoursesData = [];
         
         $totalMinutes = 0;
@@ -97,5 +99,19 @@ class CohortController extends AbstractController
         return $this->render('cohort/show.html.twig', [
             'cohort' => [$cohort],
         ]);
+    }
+
+    #[Route('/switch/{id}', name: 'switch')]
+    public function switch(Cohort $cohort, CohortSession $cohortSession): Response
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        // Vérifier que l'utilisateur appartient bien à cette cohorte
+        if ($user && $user->getCohorts()->contains($cohort)) {
+            $cohortSession->setSelectedCohort($cohort);
+        }
+
+        return $this->redirectToRoute('cohort_index');
     }
 }
