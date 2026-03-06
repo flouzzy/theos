@@ -85,10 +85,6 @@ export default class extends Controller {
         .catch((error) => {
           console.error("Échec de l'enregistrement du Service Worker :", error);
         });
-      // window.addEventListener("load", () => {
-      //   console.log("window::load fired");
-
-      // });
     } else {
       console.log("Service Worker non disponible");
     }
