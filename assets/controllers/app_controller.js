@@ -40,10 +40,6 @@ export default class extends Controller {
   }
 
   initTurboEvents() {
-    document.addEventListener("turbo:before-visit", function (event) {
-      console.log("turbo:before-visit : ", event);
-    });
-
     document.addEventListener("turbo:before-frame-render", (event) => {
       document.body.classList.add("turbo-loading");
     });
