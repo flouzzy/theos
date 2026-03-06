@@ -1,0 +1,7 @@
+framework:
+    html_sanitizer:
+        sanitizers:
+            app.notification_sanitizer:
+                allow_safe_elements: true
+                allow_elements:
+                    callout: '*'
