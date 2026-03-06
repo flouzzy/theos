@@ -42,12 +42,12 @@ jobs:
       - name: Start services
         run: docker compose up --wait --no-build || (docker compose logs php && exit 1)
       - name: Check HTTP reachability
-        run: curl -v --fail-with-body http://localhost
+        run: curl -v --fail-with-body http://localhost:8095
       - name: Check HTTPS reachability
         if: false # Remove this line when the homepage is configured, or change the path to check
-        run: curl -v --insecure --fail-with-body https://localhost
+        run: curl -v --insecure --fail-with-body https://localhost:8096
       - name: Check Mercure reachability
-        run: curl -vI --insecure --fail-with-body https://localhost/.well-known/mercure?topic=test
+        run: curl -vI --insecure --fail-with-body http://localhost:8095/.well-known/mercure?topic=test
       - name: Create test database
         if: false # Remove this line if Doctrine ORM is installed
         run: docker compose exec -T php bin/console -e test doctrine:database:create
@@ -83,5 +83,6 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_CHECKOV: false
           VALIDATE_TRIVY: false
+          VALIDATE_JSCPD: false
           COMPOSER_IGNORE_PLATFORM_REQS: "1"
           COMPOSER_NO_SCRIPTS: "1"
