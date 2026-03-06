@@ -6,7 +6,7 @@
 
 {% block content %}
 	<div class="ion-padding">
-		{{notification.message | raw}}
+		{{notification.message | sanitize_html('app.notification_sanitizer')}}
 	</div>
 
 
