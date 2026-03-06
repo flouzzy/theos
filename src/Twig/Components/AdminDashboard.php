@@ -6,6 +6,8 @@ use App\Repository\CompletionRepository;
 use App\Repository\CourseCompletionRepository;
 use App\Repository\ModuleCompletionRepository;
 use App\Repository\UserRepository;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
@@ -18,27 +20,40 @@ class AdminDashboard
         private UserRepository $userRepository,
         private ModuleCompletionRepository $moduleCompletionRepository,
         private CompletionRepository $completionRepository,
-        private CourseCompletionRepository $courseCompletionRepository
+        private CourseCompletionRepository $courseCompletionRepository,
+        private CacheInterface $cache
     ) {
     }
 
     public function getUsersTotal(): int
     {
-        return $this->userRepository->countVerifiedUsers();
+        return (int) $this->cache->get('admin_dashboard_users_total', function (ItemInterface $item) {
+            $item->expiresAfter(300);
+            return $this->userRepository->countVerifiedUsers();
+        });
     }
 
     public function getCoursesTotal(): int
     {
-        return $this->courseCompletionRepository->countCoursesCompletions();
+        return (int) $this->cache->get('admin_dashboard_courses_total', function (ItemInterface $item) {
+            $item->expiresAfter(300);
+            return $this->courseCompletionRepository->countCoursesCompletions();
+        });
     }
 
     public function getModulesTotal(): int
     {
-        return $this->moduleCompletionRepository->countModuleCompletions();
+        return (int) $this->cache->get('admin_dashboard_modules_total', function (ItemInterface $item) {
+            $item->expiresAfter(300);
+            return $this->moduleCompletionRepository->countModuleCompletions();
+        });
     }
 
     public function getLessonsTotal(): int
     {
-        return $this->completionRepository->countLessonsCompletions();
+        return (int) $this->cache->get('admin_dashboard_lessons_total', function (ItemInterface $item) {
+            $item->expiresAfter(300);
+            return $this->completionRepository->countLessonsCompletions();
+        });
     }
 }
