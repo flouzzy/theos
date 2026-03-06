@@ -159,7 +159,7 @@
 
                 {# Tab Panels #}
                 <div x-show="tab === 'overview'" class="prose prose-slate dark:prose-invert max-w-none animate-in fade-in slide-in-from-bottom-2">
-                    {{ currentLesson.content|raw }}
+                    {{ currentLesson.content|sanitize_html('app.default_sanitizer') }}
                 </div>
 
                 <div x-show="tab === 'resources'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
