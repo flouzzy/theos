@@ -45,3 +45,9 @@
 * **Correction:** Created a unified `partials/_sidebar_navigation.html.twig`. Added base classes `lg:w-64`, `lg:pl-64`, and `z-40` to the asides and main content areas in `app.html.twig` and `appWithBottomTabs.html.twig` to ensure layout stability before Alpine.js initialization.
 * **Rule:** Factorize UI components into partials and use static CSS classes for core layout dimensions to prevent "Flicker of Unstyled Content" (FOUC) or layout breaking during JS hydration.
 * **Testing:** Verified by inspecting rendering across multiple pages (Home, Courses, Notifications) and confirming the sidebar no longer overlaps the main content.
+
+## 2026-03-06 - Intégration AI Agent - Gemini API via Symfony HttpClient
+* **Feature:** Remplacement du mock du Coach par une véritable interaction avec le LLM Google Gemini.
+* **Correction:** Installation de `gemini-api-php/client` couplée à `symfony/http-client`. Création d'un Service `CoachAIAgent` encapsulant l'appel vers le modèle `gemini-1.5-flash` avec un *System Instruction* pédagogique.
+* **Rule:** Ne pas embarquer Guzzle si Symfony HttpClient est pré-existant/recommandé. Câbler les appels LLM en asynchrone (AJAX/Fetch) sur le Front pour ne pas bloquer le thread PHP principal lors de la génération (Streaming).
+* **Testing:** Vérification du Endpoint JSON via `fetch` JS. Validation du loader dynamique et du parsing de la réponse texte.
