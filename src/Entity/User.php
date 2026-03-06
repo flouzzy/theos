@@ -155,6 +155,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\ManyToMany(targetEntity: Cohort::class, inversedBy: 'users')]
     private Collection $cohorts;
 
+    #[ORM\ManyToOne(targetEntity: Cohort::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Cohort $currentCohort = null;
+
     /**
      * @var Collection<int, Comment>
      */
@@ -830,7 +834,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     {
         if ($this->cohorts->removeElement($cohort)) {
             $cohort->removeUser($this);
+            if ($this->currentCohort === $cohort) {
+                $this->currentCohort = null;
+            }
         }
+
+        return $this;
+    }
+
+    public function getCurrentCohort(): ?Cohort
+    {
+        return $this->currentCohort;
+    }
+
+    public function setCurrentCohort(?Cohort $currentCohort): static
+    {
+        $this->currentCohort = $currentCohort;
 
         return $this;
     }
