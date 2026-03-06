@@ -168,7 +168,7 @@
                     <span class="font-bold text-sm">{{ 'Coach en ligne' | trans }}</span>
                  </div>
                  
-                 <div class="flex-1 overflow-y-auto space-y-4 mb-4">
+                 <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 mb-4 scrollbar-thin">
                      <div class="flex gap-3">
                          <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
                          <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm">
@@ -178,9 +178,9 @@
                  </div>
 
                  <div class="relative">
-                     <input type="text" placeholder="..." 
-                        class="w-full bg-muted/30 border-transparent hover:border-border focus:border-primary rounded-xl pl-3 pr-10 py-2 text-sm transition-all outline-none">
-                     <button class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors">
+                     <input type="text" id="chat-input" placeholder="..." 
+                        class="w-full bg-muted/30 border border-border focus:border-primary rounded-xl pl-3 pr-10 py-2 text-sm transition-all outline-none">
+                     <button id="chat-submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                         </svg>
@@ -190,6 +190,114 @@
 
         </div>
     </div>
-
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const chatInput = document.getElementById('chat-input');
+    const chatSubmit = document.getElementById('chat-submit');
+    const chatMessages = document.getElementById('chat-messages');
+    let history = []; // Stockage de l'historique Gemini
+    
+    // Fonction d'ajout de message UI
+    const addMessageToUI = (text, isUser = false) => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'flex gap-3 justify-' + (isUser ? 'end' : 'start');
+        
+        let innerHtml = '';
+        if (isUser) {
+            innerHtml = `
+                <div class="bg-primary text-primary-foreground rounded-2xl rounded-tr-none p-3 text-sm max-w-[85%]">
+                    <p>${text}</p>
+                </div>
+            `;
+        } else {
+            innerHtml = `
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
+                <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm max-w-[85%] prose-sm">
+                    <p>${text}</p>
+                </div>
+            `;
+        }
+        
+        msgDiv.innerHTML = innerHtml;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    // Animation ou Loader pendant le temps de réflexion de l'IA
+    const toggleTypingIndicator = (show) => {
+        if (show) {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'flex gap-3 justify-start opacity-50';
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
+                <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse delay-75"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse delay-150"></span>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            const typingDiv = document.getElementById('typing-indicator');
+            if (typingDiv) typingDiv.remove();
+        }
+    };
+
+    const sendMessage = async () => {
+        const message = chatInput.value.trim();
+        if (!message) return;
+        
+        // 1. Affiche le message de l'utilisateur
+        addMessageToUI(message, true);
+        chatInput.value = '';
+        chatInput.disabled = true;
+        
+        // 2. Affiche le loader d'IA
+        toggleTypingIndicator(true);
+
+        // 3. Appel de notre Endpoint Symfony AI
+        try {
+            const response = await fetch('{{ path("coach_chat") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ message: message, history: history })
+            });
+
+            const data = await response.json();
+            toggleTypingIndicator(false);
+            
+            if (data.reply) {
+                // Affiche la réponse dans l'interface
+                addMessageToUI(data.reply, false);
+                
+                // Sauvegarde de l'historique de conversation
+                history.push({ role: 'user', content: message });
+                history.push({ role: 'model', content: data.reply });
+            } else {
+                addMessageToUI("Désolé, mais je n'arrive pas à me concentrer. Vérifie ton API KEY !", false);
+            }
+        } catch (e) {
+            toggleTypingIndicator(false);
+            addMessageToUI("Aïe, erreur réseau !", false);
+            console.error(e);
+        }
+        
+        chatInput.disabled = false;
+        chatInput.focus();
+    };
+
+    chatSubmit.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+});
+</script>
+
 {% endblock %}

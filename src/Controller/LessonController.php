@@ -47,13 +47,20 @@ class LessonController extends AbstractController
         // On récupère les leçons déjà complétées par l'utilisateur pour les identifier comme telles depuis le front
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
+
+        if (!$course->isUserSubscribed($user)) {
+            $user->subscribeToCourse($course);
+            $this->entityManager->flush();
+            $this->dispatcher->dispatch(new \App\Event\CourseSubscribedEvent($course, $user));
+        }
+
         $completedLessonIdsByCurrentUser = $this->completionRepository->findCompletedLessonIdsByCourse($user, $course);
 
         return $this->render('lesson/show.html.twig', [
             'course' => $course,
             'module' => $module,
             'currentLesson' => $lesson,
-            'isSubscribed' => $course->isUserSubscribed($user),
+            'isSubscribed' => true,
             'completedLessonIds' => $completedLessonIdsByCurrentUser,
         ]);
     }

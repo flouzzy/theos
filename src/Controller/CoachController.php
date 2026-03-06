@@ -23,4 +23,19 @@ class CoachController extends AbstractController
             'badgesCount' => count($user->getBadges()),
         ]);
     }
+    #[Route('/chat', name: 'chat', methods: ['POST'])]
+    public function chat(\Symfony\Component\HttpFoundation\Request $request, \App\Service\CoachAIAgent $agent): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $message = $data['message'] ?? '';
+        $history = $data['history'] ?? [];
+
+        if (empty($message)) {
+            return $this->json(['error' => 'Message is empty'], 400);
+        }
+
+        $reply = $agent->generateResponse($history, $message);
+
+        return $this->json(['reply' => $reply]);
+    }
 }

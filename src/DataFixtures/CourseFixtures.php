@@ -46,6 +46,7 @@ class CourseFixtures extends Fixture
         $course->setDescription(AppFixtures::LOREM_IPSUM);
         $course->setAuthor($author);
         $course->setStatus('published');
+        $course->setVisibility($index % 3 === 0 ? \App\Entity\Enum\CourseVisibilityEnum::RESTRICTED : \App\Entity\Enum\CourseVisibilityEnum::PUBLIC);
         $course->setItemOrder($index);
         return $course;
     }

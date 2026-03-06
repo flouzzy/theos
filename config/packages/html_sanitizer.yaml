@@ -1,6 +1,8 @@
 framework:
     html_sanitizer:
         sanitizers:
+            app.default_sanitizer:
+                allow_safe_elements: true
             app.notification_sanitizer:
                 allow_safe_elements: true
                 allow_elements:

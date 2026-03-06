@@ -10,4 +10,4 @@
         - [x] Cohort switcher component (if user has > 1 cohort)
         - [x] Filter course listing based on active cohort
 - [ ] Implement Gold Standard Workflow
-- [ ] Verify Implementation
+- [x] Verify Implementation
