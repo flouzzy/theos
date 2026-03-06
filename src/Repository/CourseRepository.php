@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Cohort;
 use App\Entity\Course;
+use App\Entity\Enum\CourseVisibilityEnum;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,7 +41,7 @@ class CourseRepository extends ServiceEntityRepository
     /**
      * @return Course[] Returns an array of Course objects with modules and lessons eager loaded
      */
-    public function findCoursesWithModulesAndLessonsForUser(\App\Entity\User $user): array
+    public function findCoursesWithModulesAndLessonsForUser(User $user): array
     {
         return $this->createQueryBuilder('c', 'c.id')
             ->join('c.users', 'u')
@@ -49,5 +52,30 @@ class CourseRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Course[] Returns courses based on visibility and cohort
+     */
+    public function findCoursesByVisibilityAndCohort(?Cohort $cohort = null): array
+    {
+        $qb = $this->createQueryBuilder('c', 'c.id')
+            ->leftJoin('c.modules', 'm')
+            ->leftJoin('m.lessons', 'l')
+            ->leftJoin('c.cohorts', 'co')
+            ->addSelect('m', 'l')
+            ->where('c.status IN (:statuses)')
+            ->setParameter('statuses', ['published', 'progress']);
+
+        if ($cohort) {
+            $qb->andWhere('c.visibility = :public OR co = :cohort')
+                ->setParameter('public', CourseVisibilityEnum::PUBLIC)
+                ->setParameter('cohort', $cohort);
+        } else {
+            $qb->andWhere('c.visibility = :public')
+                ->setParameter('public', CourseVisibilityEnum::PUBLIC);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

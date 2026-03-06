@@ -37,7 +37,11 @@
                         </div>
                         <div class="flex-1 min-w-0 transition-opacity duration-200" :class="!desktopSidebarOpen && 'opacity-0 w-0'">
                             <p class="text-sm font-semibold truncate">{{ app.user.firstname }} {{ app.user.lastname }}</p>
-                            <p class="text-xs text-muted-foreground truncate">Promo 2024</p>
+                            {% set activeCohort = active_cohort() %}
+                            {% if activeCohort %}
+                                <p class="text-xs text-muted-foreground truncate">{{ activeCohort.title }}</p>
+                            {% endif %}
+
                         </div>
                     </div>
                     <a href="{{ path('_logout_main') }}" class="mt-2 flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">

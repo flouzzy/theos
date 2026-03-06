@@ -10,6 +10,7 @@ use App\Repository\CohortRepository;
 use App\Repository\CompletionRepository;
 use App\Repository\CourseCompletionRepository;
 use App\Repository\CourseRepository;
+use App\Service\CohortSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +22,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CourseController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(CourseRepository $courseRepository, CohortRepository $cohortRepository): Response
+    public function index(CourseRepository $courseRepository, CohortRepository $cohortRepository, CohortSession $cohortSession): Response
     {
         $cohorts = [];
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -41,8 +42,11 @@ class CourseController extends AbstractController
             }
         }
 
+        // Récupère la cohorte active via le service
+        $activeCohort = $cohortSession->getSelectedCohort();
+
         return $this->render('course/index.html.twig', [
-            'courses' => $courseRepository->findAllPublished(),
+            'courses' => $courseRepository->findCoursesByVisibilityAndCohort($activeCohort),
             'cohorts' => $cohorts,
             'subscribedCourseIds' => $subscribedCourseIds
         ]);
