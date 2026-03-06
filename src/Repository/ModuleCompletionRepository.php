@@ -40,6 +40,9 @@ class ModuleCompletionRepository extends ServiceEntityRepository
     public function findWithScoreByUser(\App\Entity\User $user): array
     {
         return $this->createQueryBuilder('m')
+            ->select('m', 'mod', 'c')
+            ->join('m.module', 'mod')
+            ->leftJoin('mod.courses', 'c')
             ->andWhere('m.user = :user')
             ->andWhere('m.completed = true')
             ->andWhere('m.score IS NOT NULL')
