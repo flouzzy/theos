@@ -77,7 +77,7 @@
             >
                 <div data-offline-video-target="playerContainer" class="w-full h-full">
                     {% if currentLesson.videoEmbeded %}
-                        {{ currentLesson.videoEmbeded|raw }}
+                        {{ currentLesson.videoEmbeded|sanitize_html('app.video_sanitizer') }}
                     {% else %}
                         <div class="absolute inset-0 flex items-center justify-center text-white/50 bg-slate-900">
                             <div class="text-center">
