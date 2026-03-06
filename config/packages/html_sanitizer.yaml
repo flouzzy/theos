@@ -1,5 +1,7 @@
 framework:
     html_sanitizer:
         sanitizers:
-            default:
+            app.default_sanitizer:
                 allow_safe_elements: true
+                allow_elements:
+                    iframe: ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen']
