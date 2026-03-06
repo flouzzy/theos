@@ -21,18 +21,22 @@ class CompletionCalculator
 
         $modules = $course->getModules();
         foreach ($modules as $module) {
-            $lessons = $module->getLessons();
-            foreach ($lessons as $lesson) {
-                $totalLessons++;
-                $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
-                if ($completion && $completion->isCompleted()) {
-                    $completedLessons++;
-                }
-            }
+            $totalLessons += $module->getLessons()->count();
         }
 
         if ($totalLessons === 0) {
             return 0; // Pour éviter la division par zéro
+        }
+
+        $completedLessonIds = $this->completionRepository->findCompletedLessonIdsByCourse($user, $course);
+
+        foreach ($modules as $module) {
+            $lessons = $module->getLessons();
+            foreach ($lessons as $lesson) {
+                if (in_array($lesson->getId(), $completedLessonIds, true)) {
+                    $completedLessons++;
+                }
+            }
         }
 
         return round(($completedLessons / $totalLessons) * 100, 2);

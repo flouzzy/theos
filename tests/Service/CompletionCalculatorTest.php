@@ -60,9 +60,9 @@ class CompletionCalculatorTest extends TestCase
         $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
 
-        $this->completionRepository->method('findOneBy')
-            ->with(['user' => $user, 'lesson' => $lesson])
-            ->willReturn(null);
+        $this->completionRepository->method('findCompletedLessonIdsByCourse')
+            ->with($user, $course)
+            ->willReturn([]);
 
         $result = $this->completionCalculator->calculateCompletionPercentage($course, $user);
 
@@ -75,24 +75,16 @@ class CompletionCalculatorTest extends TestCase
         $course = $this->createMock(Course::class);
         $module = $this->createMock(Module::class);
         $lesson1 = $this->createMock(Lesson::class);
+        $lesson1->method('getId')->willReturn(1);
         $lesson2 = $this->createMock(Lesson::class);
+        $lesson2->method('getId')->willReturn(2);
 
         $module->method('getLessons')->willReturn(new ArrayCollection([$lesson1, $lesson2]));
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
 
-        $completion1 = $this->createMock(Completion::class);
-        $completion1->method('isCompleted')->willReturn(true);
-
-        $this->completionRepository->method('findOneBy')
-            ->willReturnCallback(function ($criteria) use ($user, $lesson1, $lesson2, $completion1) {
-                if ($criteria['user'] === $user && $criteria['lesson'] === $lesson1) {
-                    return $completion1;
-                }
-                if ($criteria['user'] === $user && $criteria['lesson'] === $lesson2) {
-                    return null;
-                }
-                return null;
-            });
+        $this->completionRepository->method('findCompletedLessonIdsByCourse')
+            ->with($user, $course)
+            ->willReturn([1]);
 
         $result = $this->completionCalculator->calculateCompletionPercentage($course, $user);
 
@@ -105,16 +97,14 @@ class CompletionCalculatorTest extends TestCase
         $course = $this->createMock(Course::class);
         $module = $this->createMock(Module::class);
         $lesson = $this->createMock(Lesson::class);
+        $lesson->method('getId')->willReturn(1);
 
         $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
 
-        $completion = $this->createMock(Completion::class);
-        $completion->method('isCompleted')->willReturn(true);
-
-        $this->completionRepository->method('findOneBy')
-            ->with(['user' => $user, 'lesson' => $lesson])
-            ->willReturn($completion);
+        $this->completionRepository->method('findCompletedLessonIdsByCourse')
+            ->with($user, $course)
+            ->willReturn([1]);
 
         $result = $this->completionCalculator->calculateCompletionPercentage($course, $user);
 
@@ -131,12 +121,9 @@ class CompletionCalculatorTest extends TestCase
         $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
 
-        $completion = $this->createMock(Completion::class);
-        $completion->method('isCompleted')->willReturn(false);
-
-        $this->completionRepository->method('findOneBy')
-            ->with(['user' => $user, 'lesson' => $lesson])
-            ->willReturn($completion);
+        $this->completionRepository->method('findCompletedLessonIdsByCourse')
+            ->with($user, $course)
+            ->willReturn([]);
 
         $result = $this->completionCalculator->calculateCompletionPercentage($course, $user);
 
