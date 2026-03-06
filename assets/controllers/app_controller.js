@@ -49,8 +49,6 @@ export default class extends Controller {
     });
 
     document.addEventListener("turbo:frame-render", (event) => {
-      console.log("turbo:frame-render : ", event);
-
       // Refresher
       this.initRefresherEvent();
 
