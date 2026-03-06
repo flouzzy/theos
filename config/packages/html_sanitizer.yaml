@@ -1,7 +1,8 @@
 framework:
     html_sanitizer:
         sanitizers:
-            app.default_sanitizer:
-                allow_safe_elements: true
+            app.video_sanitizer:
                 allow_elements:
-                    iframe: ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen']
+                    iframe: ['src', 'width', 'height', 'title', 'allow', 'allowfullscreen', 'frameborder', 'style', 'class']
+                    div: ['class', 'style']
+                allow_safe_elements: true
