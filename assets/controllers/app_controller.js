@@ -79,10 +79,6 @@ export default class extends Controller {
         .catch((error) => {
           console.error("Échec de l'enregistrement du Service Worker :", error);
         });
-      // window.addEventListener("load", () => {
-      //   console.log("window::load fired");
-
-      // });
     } else {
       console.log("Service Worker non disponible");
     }
@@ -140,9 +136,9 @@ export default class extends Controller {
   responsiveTable() {
     // Étape 1 : Sélection de tous les éléments <table>
     document.querySelectorAll("table").forEach((tableElement) => {
-      // Étape 2 : Création d'un nouvel élément <div> avec une classe responsive
+      // Étape 2 : Création d'un nouvel élément <div> avec une class responsive
       var divWrapper = document.createElement("div");
-      divWrapper.className = "table-responsive"; // Ajouter la classe désirée
+      divWrapper.className = "table-responsive"; // Ajouter la class désirée
 
       // Étape 3 : Insérer l'élément <table> à l'intérieur du nouvel élément <div>
       divWrapper.appendChild(tableElement.cloneNode(true)); // cloneNode(true) pour copier l'élément et ses enfants
