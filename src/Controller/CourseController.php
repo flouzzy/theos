@@ -23,56 +23,20 @@ use Symfony\Component\Routing\Attribute\Route;
 class CourseController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(Request $request, CourseRepository $courseRepository, CohortRepository $cohortRepository, CohortSession $cohortSession): Response
+    public function index(CourseRepository $courseRepository): Response
     {
-        $cohorts = [];
-        if ($this->isGranted('ROLE_ADMIN')) {
-             $cohorts = $cohortRepository->findAll();
-        } elseif ($this->getUser()) {
-             /** @var User $user */
-             $user = $this->getUser();
-             $cohorts = $user->getCohorts();
-        }
-
+        $user = $this->getUser();
         $subscribedCourseIds = [];
-        if ($this->getUser()) {
-            /** @var \App\Entity\User $user */
-            $user = $this->getUser();
-            foreach ($user->getCourses() as $course) {
+        
+        if ($user) {
+            $subscribedCourses = $user->getCourses();
+            foreach ($subscribedCourses as $course) {
                 $subscribedCourseIds[] = $course->getId();
             }
         }
 
-        $isAdmin = $this->isGranted('ROLE_ADMIN');
-
-        $search = $request->query->get('q');
-        $filterCohortId = $request->query->get('cohort');
-
-        $activeCohorts = [];
-        $selectedCohortTitle = 'Toutes les promos';
-
-        if ($filterCohortId) {
-            $selectedCohort = $cohortRepository->find($filterCohortId);
-            if ($selectedCohort) {
-                $activeCohorts = [$selectedCohort];
-                $selectedCohortTitle = $selectedCohort->getTitle();
-            }
-        } else {
-            // Si pas de filtre explicite, on utilise les cohortes de l'utilisateur normal
-            if (!$isAdmin && $this->getUser()) {
-                /** @var User $user */
-                $user = $this->getUser();
-                $activeCohorts = $user->getCohorts()->toArray();
-            }
-        }
-
         return $this->render('course/index.html.twig', [
-            'courses' => $courseRepository->findCatalogCourses($activeCohorts, $isAdmin, $search),
-            'cohorts' => $cohorts,
             'subscribedCourseIds' => $subscribedCourseIds,
-            'search' => $search,
-            'selectedCohortId' => $filterCohortId,
-            'selectedCohortTitle' => $selectedCohortTitle
         ]);
     }
 
