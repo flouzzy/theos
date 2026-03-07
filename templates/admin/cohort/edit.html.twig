@@ -74,15 +74,22 @@
                     {{ 'Partagez ce lien pour permettre l\'auto-inscription dans cette promotion.' | trans }}
                 </p>
                 <div class="space-y-3">
-                    <div class="relative">
-                        <input type="text" readonly value="{{ url('cohort_join', {token: cohort.invitationToken}) }}" class="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-mono text-slate-600 focus:ring-0 outline-none">
-                        <button onclick="navigator.clipboard.writeText('{{ url('cohort_join', {token: cohort.invitationToken}) }}'); alert('Lien copié !')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1">
-                            <twig:ux:icon name="lucide:copy" class="w-4 h-4" />
-                        </button>
-                    </div>
+                    {% if cohort.invitationToken %}
+                        <div class="relative">
+                            <input type="text" readonly value="{{ url('cohort_join', {token: cohort.invitationToken}) }}" class="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-mono text-slate-600 focus:ring-0 outline-none">
+                            <button onclick="navigator.clipboard.writeText('{{ url('cohort_join', {token: cohort.invitationToken}) }}'); alert('Lien copié !')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1">
+                                <twig:ux:icon name="lucide:copy" class="w-4 h-4" />
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="text-xs text-amber-600 bg-amber-50 border border-amber-100 p-3 rounded-lg mb-3">
+                            <twig:ux:icon name="lucide:alert-circle" class="w-4 h-4 inline-block mr-1" />
+                            {{ 'Aucun lien n\'a encore été généré.' | trans }}
+                        </div>
+                    {% endif %}
                     <a href="{{ path('admin_cohort_regenerate_token', {id: cohort.id}) }}" class="text-[10px] font-bold text-primary hover:underline flex items-center gap-1">
                         <twig:ux:icon name="lucide:refresh-cw" class="w-3 h-3" />
-                        {{ 'Régénérer le lien' | trans }}
+                        {{ cohort.invitationToken ? 'Régénérer le lien' : 'Générer un lien' | trans }}
                     </a>
                 </div>
             </div>
