@@ -19,13 +19,31 @@ class CoachAIAgent
         private string $apiKey,
         #[Autowire(env: 'GEMINI_MODEL')]
         private string $geminiModel,
-        private SiteSettingRepository $siteSettingRepo
+        private \App\Repository\SiteSettingRepository $siteSettingRepo,
+        private \Symfony\Contracts\Cache\CacheInterface $cache
     ) {
         $this->client = new Client($this->apiKey);
     }
 
-    public function generateResponse(array $history, string $newMessage): string
+    public function getHistory(\App\Entity\User $user): array
     {
+        return $this->cache->get('ai_coach_history_' . $user->getId(), function () {
+            return [];
+        });
+    }
+
+    public function saveHistory(\App\Entity\User $user, array $history): void
+    {
+        $item = $this->cache->getItem('ai_coach_history_' . $user->getId());
+        $item->set($history);
+        $item->expiresAfter(new \DateInterval('P7D')); // 7 days of persistence
+        $this->cache->save($item);
+    }
+
+    public function generateResponse(\App\Entity\User $user, string $newMessage): string
+    {
+        $history = $this->getHistory($user);
+
         // Setup initial system instructions from Database
         $setting = $this->siteSettingRepo->findOneBy(['name' => 'COACH_PROMPT']);
         $systemPrompt = $setting && $setting->getValue() ? $setting->getValue() : 
@@ -53,8 +71,14 @@ class CoachAIAgent
             }
 
             $response = $chat->sendMessage(new TextPart($newMessage));
+            $reply = $response->text();
 
-            return $response->text();
+            // Update and save history
+            $history[] = ['role' => 'user', 'content' => $newMessage];
+            $history[] = ['role' => 'model', 'content' => $reply];
+            $this->saveHistory($user, $history);
+
+            return $reply;
         } catch (\Exception $e) {
             // Return a fallback message in case the API call fails or the API key isn't provided
             return "Désolé, une erreur est survenue lors de ma réflexion. (Erreur Technique: " . $e->getMessage() . ")";

@@ -51,16 +51,33 @@ class CoachController extends AbstractController
             return $this->json(['error' => 'Coach is not enabled'], 403);
         }
 
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
         $data = json_decode($request->getContent(), true);
         $message = $data['message'] ?? '';
-        $history = $data['history'] ?? [];
 
         if (empty($message)) {
             return $this->json(['error' => 'Message is empty'], 400);
         }
 
-        $reply = $agent->generateResponse($history, $message);
+        $reply = $agent->generateResponse($user, $message);
 
         return $this->json(['reply' => $reply]);
+    }
+
+    #[Route('/history', name: 'history', methods: ['GET'])]
+    public function history(\App\Service\CoachAIAgent $agent): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        if (!$this->coachEnabled) {
+            return $this->json(['error' => 'Coach is not enabled'], 403);
+        }
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        return $this->json([
+            'history' => $agent->getHistory($user)
+        ]);
     }
 }

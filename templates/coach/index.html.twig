@@ -103,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const chatSubmit = document.getElementById('chat-submit');
     const chatMessages = document.getElementById('chat-messages');
-    let history = [];
     
     const addMessageToUI = (text, isUser = false) => {
         const msgDiv = document.createElement('div');
@@ -130,6 +129,22 @@ document.addEventListener('DOMContentLoaded', () => {
         msgDiv.innerHTML = innerHtml;
         chatMessages.appendChild(msgDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const loadHistory = async () => {
+        try {
+            const response = await fetch('{{ path("coach_history") }}');
+            const data = await response.json();
+            if (data.history && data.history.length > 0) {
+                // Clear initial greeting if history exists
+                chatMessages.innerHTML = '';
+                data.history.forEach(msg => {
+                    addMessageToUI(msg.content, msg.role === 'user');
+                });
+            }
+        } catch (e) {
+            console.error("Failed to load history", e);
+        }
     };
 
     const toggleTypingIndicator = (show) => {
@@ -170,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify({ message: message, history: history })
+                body: JSON.stringify({ message: message })
             });
 
             const data = await response.json();
@@ -178,8 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (data.reply) {
                 addMessageToUI(data.reply, false);
-                history.push({ role: 'user', content: message });
-                history.push({ role: 'model', content: data.reply });
             } else {
                 addMessageToUI("Désolé, je n'ai pas pu répondre. Réessaie !", false);
             }
@@ -197,6 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
+
+    // Initial load
+    loadHistory();
 });
 </script>
 

@@ -1,19 +1,97 @@
-{% extends 'app.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}
-	{{'Administration' | trans}}
-{% endblock %}
+{% block body %}
+<div class="min-h-screen bg-slate-50 flex" x-data="{ adminSidebarOpen: true }">
+    
+    {# Admin Sidebar - Fixed Left #}
+    <aside class="fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-slate-900 text-slate-300 transition-transform duration-300 transform" 
+           :class="adminSidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+        
+        <div class="flex items-center justify-between h-16 px-4 bg-slate-950/50 border-b border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded bg-red-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                    <twig:ux:icon name="lucide:shield" class="w-4 h-4" />
+                </div>
+                <span class="text-sm font-bold text-white tracking-wider uppercase">Le Rocher Admin</span>
+            </div>
+            <button @click="adminSidebarOpen = false" class="lg:hidden p-1 text-slate-400 hover:text-white">
+                <twig:ux:icon name="lucide:x" class="w-5 h-5" />
+            </button>
+        </div>
 
-{% block menu %}
-	{% include "admin/_menu.html.twig" %}
-{% endblock %}
-{% block menuFooter %}
-	<ion-list lines="none">
-		<ion-item button href="{{path('home')}}">
-			<ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-			<ion-label>
-				{{'Back to Front-office' | trans}}
-			</ion-label>
-		</ion-item>
-	</ion-list>
+        {# Menu Administration #}
+        <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            {% block menu %}
+                {% include "admin/_menu.html.twig" %}
+            {% endblock %}
+        </div>
+
+        {# Footer Menu (Retour Front) #}
+        <div class="p-4 border-t border-slate-800 bg-slate-950/20">
+            {% block menuFooter %}
+                <a href="{{ path('home') }}" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group">
+                    <twig:ux:icon name="lucide:arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    {{ 'Back to Front-office' | trans }}
+                </a>
+            {% endblock %}
+            
+            {% if app.user %}
+                <a href="{{ path('_logout_main') }}" class="mt-2 flex items-center gap-3 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-950/30 rounded-lg transition-colors">
+                    <twig:ux:icon name="lucide:log-out" class="w-4 h-4" />
+                    {{ 'Déconnexion' | trans }}
+                </a>
+            {% endif %}
+        </div>
+    </aside>
+
+    {# Main Content Area #}
+    <div class="flex-1 flex flex-col min-h-screen transition-all duration-300" 
+         :class="adminSidebarOpen ? 'lg:pl-64' : 'pl-0'">
+        
+        {# Admin Header #}
+        <header class="sticky top-0 z-40 bg-white border-b border-border h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-4">
+                <button @click="adminSidebarOpen = !adminSidebarOpen" class="p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
+                    <twig:ux:icon name="lucide:menu" class="w-5 h-5" />
+                </button>
+                <h1 class="text-lg font-semibold text-slate-900">
+                    {% block title %}{{ 'Administration' | trans }}{% endblock %}
+                </h1>
+            </div>
+            <div class="flex items-center gap-4">
+                 {% if app.user %}
+                    <div class="flex items-center gap-2 cursor-pointer hover:bg-slate-50 px-2 py-1 rounded-md">
+                        <div class="h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 font-medium text-sm">
+                            {{ app.user.firstname|first }}{{ app.user.lastname|first }}
+                        </div>
+                        <span class="text-sm font-medium text-slate-700 hidden sm:block">{{ app.user.firstname }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </header>
+
+        {# Flash Messages #}
+        {% include "partials/_flash.html.twig" %}
+
+        {# Page Content #}
+        <main class="flex-1 p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    
+    {# Overlay mobile #}
+    <div x-show="adminSidebarOpen" 
+         @click="adminSidebarOpen = false"
+         x-transition:enter="transition-opacity ease-linear duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-linear duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden" 
+         style="display: none;">
+    </div>
+</div>
 {% endblock %}
