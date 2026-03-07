@@ -13,8 +13,8 @@
 			{% for completion in completions %}
 				{% set completionData = attribute(completion, completionType) %}
 				<ion-item>
-					<ion-label>{{completionData.title}}</ion-label>
-					<ion-label>{{completion.user.firstname}}</ion-label>
+					<ion-label>{{completionData?.title ?? 'Élément Inconnu'}}</ion-label>
+					<ion-label>{{completion.user?.firstname ?? 'Utilisateur Inconnu'}}</ion-label>
 				</ion-item>
 			{% endfor %}
 		</ion-list>

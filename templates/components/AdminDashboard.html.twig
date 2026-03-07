@@ -1,4 +1,5 @@
 <div{{ attributes }} class="p-6">
+    {% set dashboard = this %}
     <h1 class="text-3xl font-bold text-center mb-8">{{ 'Dashboard'|trans }}</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -13,7 +14,7 @@
                     </twig:Card:Description>
                 </twig:Card:Header>
                 <twig:Card:Content>
-                    <p class="text-4xl font-bold text-primary">{{ this.usersTotal }}</p>
+                    <p class="text-4xl font-bold text-primary">{{ dashboard.usersTotal }}</p>
                 </twig:Card:Content>
             </twig:Card>
         </a>
@@ -28,7 +29,7 @@
                     </twig:Card:Description>
                 </twig:Card:Header>
                 <twig:Card:Content>
-                    <p class="text-4xl font-bold text-primary">{{ this.coursesTotal }}</p>
+                    <p class="text-4xl font-bold text-primary">{{ dashboard.coursesTotal }}</p>
                 </twig:Card:Content>
             </twig:Card>
         </a>
@@ -43,7 +44,7 @@
                     </twig:Card:Description>
                 </twig:Card:Header>
                 <twig:Card:Content>
-                     <p class="text-4xl font-bold text-primary">{{ this.modulesTotal }}</p>
+                     <p class="text-4xl font-bold text-primary">{{ dashboard.modulesTotal }}</p>
                 </twig:Card:Content>
             </twig:Card>
         </a>
@@ -58,7 +59,7 @@
                     </twig:Card:Description>
                 </twig:Card:Header>
                 <twig:Card:Content>
-                     <p class="text-4xl font-bold text-primary">{{ this.lessonsTotal }}</p>
+                     <p class="text-4xl font-bold text-primary">{{ dashboard.lessonsTotal }}</p>
                 </twig:Card:Content>
             </twig:Card>
         </a>

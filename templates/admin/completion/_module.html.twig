@@ -9,8 +9,8 @@
 	</ion-list-header>
 	{% for completion in modulesCompletion %}
 		<ion-item>
-			<ion-label>{{completion.module.title}}</ion-label>
-			<ion-label>{{completion.user.firstname}}</ion-label>
+			<ion-label>{{completion.module?.title ?? 'Module Inconnu'}}</ion-label>
+			<ion-label>{{completion.user?.firstname ?? 'Utilisateur Inconnu'}}</ion-label>
 		</ion-item>
 	{% endfor %}
 </ion-list>
