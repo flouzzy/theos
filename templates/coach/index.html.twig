@@ -4,210 +4,97 @@
 {% block page_title %}{{ 'Coach IA' | trans }}{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
+<div class="max-w-4xl mx-auto space-y-6">
     
-    {# Header Banner (Light) #}
-    <div class="bg-card border border-border rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-        <div class="flex items-center gap-6">
-             <div class="h-16 w-16 flex items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 text-3xl shadow-sm">
+    {# Compact Stats Banner #}
+    <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-bold border border-orange-100">
+            🔥 {{ streak }} {{ 'jours' | trans }}
+        </div>
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold border border-indigo-100">
+            ⚡ {{ xp }} XP
+        </div>
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-bold border border-blue-100">
+            🏆 {{ badgesCount }} {{ 'badges' | trans }}
+        </div>
+        <div class="ml-auto text-sm text-muted-foreground font-medium">
+            {{ weeklyXpTotal }} XP {{ 'cette semaine' | trans }}
+        </div>
+    </div>
+
+    {# Quick Actions — Compact Row #}
+    {% if nextLesson or reviewLesson %}
+    <div class="flex flex-wrap gap-3">
+        {% if nextLesson %}
+        <a href="{{ path('lesson_show', {lessonId: nextLesson.id, moduleSlug: nextLesson.module.slug, courseSlug: nextLesson.module.course.slug}) }}" 
+           class="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3 hover:shadow-md transition-shadow flex-1 min-w-[200px] no-underline text-foreground group">
+            <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center text-lg flex-shrink-0">🔥</div>
+            <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm truncate">{{ streakInfo.message }}</p>
+                <p class="text-xs text-muted-foreground">+10 XP</p>
+            </div>
+            <svg class="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </a>
+        {% endif %}
+
+        {% if reviewLesson %}
+        <a href="{{ path('lesson_show', {lessonId: reviewLesson.id, moduleSlug: reviewLesson.module.slug, courseSlug: reviewLesson.module.course.slug}) }}" 
+           class="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3 hover:shadow-md transition-shadow flex-1 min-w-[200px] no-underline text-foreground group">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-lg flex-shrink-0">🔄</div>
+            <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm truncate">{{ reviewLesson.title }}</p>
+                <p class="text-xs text-muted-foreground">{{ 'Réviser' | trans }}</p>
+            </div>
+            <svg class="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# Chat Interface — Full Width, Main Focus #}
+    <div class="bg-card border border-border rounded-2xl shadow-sm flex flex-col" style="height: calc(100vh - 320px); min-height: 400px;">
+        {# Chat Header #}
+        <div class="flex items-center gap-3 px-6 py-4 border-b border-border">
+            <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 text-xl">
                 🦉
-             </div>
-             <div>
-                <h1 class="text-2xl font-bold mb-1">{{ 'Ton Coach IA' | trans }}</h1>
-                <p class="text-muted-foreground text-sm">{{ 'Prêt à atteindre tes objectifs ?' | trans }}</p>
-             </div>
+            </div>
+            <div class="flex-1">
+                <h2 class="font-bold text-base">{{ 'Coach IA' | trans }}</h2>
+                <p class="text-xs text-muted-foreground flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+                    {{ 'En ligne — Prêt à t\'aider' | trans }}
+                </p>
+            </div>
         </div>
         
-        {# Stats Row (Compact) #}
-        <div class="flex flex-wrap justify-center gap-4">
-            <div class="flex items-center gap-2 px-4 py-2 bg-orange-50 text-orange-600 rounded-xl border border-orange-100">
-                <span class="text-lg">🔥</span>
-                <div class="flex flex-col leading-none">
-                    <span class="font-bold text-lg">{{ streak }}</span>
-                    <span class="text-[10px] uppercase font-bold">{{ 'Série' | trans }}</span>
+        {# Messages Area #}
+        <div id="chat-messages" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 scrollbar-thin">
+            <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
+                <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm max-w-[85%]">
+                    <p>{{ 'Salut ! 👋 Je suis ton coach IA. Pose-moi une question sur tes cours, ou demande-moi des explications !' | trans }}</p>
                 </div>
             </div>
-             <div class="flex items-center gap-2 px-4 py-2 bg-yellow-50 text-yellow-600 rounded-xl border border-yellow-100">
-                <span class="text-lg">⚡</span>
-                <div class="flex flex-col leading-none">
-                    <span class="font-bold text-lg">{{ xp }}</span>
-                    <span class="text-[10px] uppercase font-bold">{{ 'XP' | trans }}</span>
-                </div>
-            </div>
-            <div class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
-                <span class="text-lg">🏆</span>
-                <div class="flex flex-col leading-none">
-                    <span class="font-bold text-lg">{{ badgesCount }}</span>
-                    <span class="text-[10px] uppercase font-bold">{{ 'Badges' | trans }}</span>
-                </div>
+        </div>
+
+        {# Input Area #}
+        <div class="px-6 py-4 border-t border-border">
+            <div class="relative">
+                <input type="text" id="chat-input" placeholder="{{ 'Tape ton message...' | trans }}" 
+                    class="w-full bg-muted/30 border border-border focus:border-primary rounded-xl pl-4 pr-12 py-3 text-sm transition-all outline-none focus:ring-2 focus:ring-primary/20">
+                <button id="chat-submit" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
-        {# Main Column (3/4) #}
-        <div class="lg:col-span-3 space-y-6">
-            
-            {# Quick Actions Grid (Dynamic) #}
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <a href="{{ path('evaluation_index') }}" class="bg-card hover:border-blue-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        🎯
-                    </div>
-                    <span class="font-bold text-sm text-center">{{ 'Évaluations' | trans }}</span>
-                </a>
-                {% if nextLesson %}
-                <a href="{{ path('lesson_show', {lessonId: nextLesson.id, moduleSlug: nextLesson.module.slug, courseSlug: nextLesson.module.course.slug}) }}" class="bg-card hover:border-pink-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
-                    <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        📖
-                    </div>
-                    <span class="font-bold text-sm text-center">{{ 'Reprendre' | trans }}</span>
-                </a>
-                {% else %}
-                <a href="{{ path('course_index') }}" class="bg-card hover:border-pink-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
-                    <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        📖
-                    </div>
-                    <span class="font-bold text-sm text-center">{{ 'Explorer' | trans }}</span>
-                </a>
-                {% endif %}
-                <a href="{{ path('leaderboard_index') }}" class="bg-card hover:border-green-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
-                    <div class="w-10 h-10 rounded-full bg-green-100 text-green-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        🏆
-                    </div>
-                    <span class="font-bold text-sm text-center">{{ 'Classement' | trans }}</span>
-                </a>
-                <a href="{{ path('note_index') }}" class="bg-card hover:border-orange-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
-                    <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        📝
-                    </div>
-                    <span class="font-bold text-sm text-center">{{ 'Mes Notes' | trans }}</span>
-                </a>
-            </div>
-
-            {# Recommendations (Dynamic) #}
-            <div>
-                <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-                    <span class="text-xl">✨</span> {{ 'Pour toi aujourd\'hui' | trans }} {# codespell-ignore #}
-                </h3>
-                
-                <div class="space-y-4">
-                    {# Streak Card (Dynamic) #}
-                    {% if nextLesson %}
-                    <a href="{{ path('lesson_show', {lessonId: nextLesson.id, moduleSlug: nextLesson.module.slug, courseSlug: nextLesson.module.course.slug}) }}" class="bg-card border border-border rounded-2xl p-6 flex flex-col sm:flex-row gap-6 hover:shadow-md transition-shadow no-underline text-foreground block">
-                        <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl flex-shrink-0">
-                            🔥
-                        </div>
-                        <div class="flex-1">
-                             <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <h4 class="font-bold text-lg leading-tight">{{ 'Ne brise pas ta série !' | trans }}</h4>
-                                    <p class="text-sm text-muted-foreground mt-1">
-                                        {{ streakInfo.message }}
-                                    </p>
-                                </div>
-                                <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full">+10 XP</span>
-                             </div>
-                             
-                             <div class="h-2 bg-muted rounded-full overflow-hidden mb-4 mt-2">
-                                <div class="h-full bg-orange-500 rounded-full transition-all" style="width: {{ streakInfo.progress }}%"></div>
-                            </div>
-
-                             <div class="flex justify-between items-center">
-                                 <span class="text-xs text-muted-foreground">{{ 'Objectif :' | trans }} {{ streakInfo.nextTarget }} {{ 'jours' | trans }}</span>
-                                 <span class="btn btn-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg px-6">
-                                     {{ 'Go !' | trans }}
-                                 </span>
-                             </div>
-                        </div>
-                    </a>
-                    {% endif %}
-
-                    {# Review Card (Dynamic) #}
-                    {% if reviewLesson %}
-                    <a href="{{ path('lesson_show', {lessonId: reviewLesson.id, moduleSlug: reviewLesson.module.slug, courseSlug: reviewLesson.module.course.slug}) }}" class="bg-card border border-border rounded-2xl p-6 flex flex-col sm:flex-row gap-6 hover:shadow-md transition-shadow no-underline text-foreground block">
-                        <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl flex-shrink-0">
-                            🔄
-                        </div>
-                        <div class="flex-1">
-                             <h4 class="font-bold text-lg leading-tight mb-1">{{ 'Révision recommandée' | trans }}</h4>
-                             <p class="text-sm text-muted-foreground mb-4">
-                                 {{ 'Rafraîchis tes connaissances sur' | trans }} "<span class="font-medium text-foreground">{{ reviewLesson.title }}</span>"
-                             </p>
-                             
-                             <div class="flex justify-end">
-                                 <span class="btn btn-sm btn-outline hover:bg-purple-50 hover:text-purple-600 rounded-lg px-6">
-                                     {{ 'Réviser' | trans }}
-                                 </span>
-                             </div>
-                        </div>
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        {# Sidebar (1/4) #}
-        <div class="space-y-6">
-            
-            {# Weekly Activity (Dynamic) #}
-            <div class="bg-card border border-border rounded-2xl p-6 shadow-sm">
-                 <h3 class="font-bold text-sm uppercase text-muted-foreground mb-4">
-                    {{ 'Cette semaine' | trans }}
-                 </h3>
-                 
-                 <div class="flex items-baseline gap-1 mb-4">
-                     <span class="text-3xl font-extrabold text-foreground">{{ weeklyXpTotal }}</span>
-                     <span class="text-sm font-bold text-muted-foreground">XP</span>
-                 </div>
-
-                 {# Weekly Graph (Dynamic) #}
-                 {% set maxXp = 1 %}
-                 {% for day, dayXp in weeklyXp %}
-                     {% if dayXp > maxXp %}{% set maxXp = dayXp %}{% endif %}
-                 {% endfor %}
-                 <div class="flex justify-between items-end h-24 gap-1">
-                     {% for day, dayXp in weeklyXp %}
-                        <div class="flex flex-col items-center gap-1 flex-1">
-                            <div class="w-full bg-muted/50 rounded-t-md h-full relative group">
-                                <div class="absolute bottom-0 left-0 right-0 bg-indigo-500 rounded-t-md transition-all group-hover:bg-indigo-600" style="height: {{ maxXp > 0 ? ((dayXp / maxXp) * 100)|round ~ '%' : '0%' }}"></div>
-                            </div>
-                            <span class="text-[10px] font-bold text-muted-foreground">{{ day }}</span>
-                        </div>
-                     {% endfor %}
-                 </div>
-            </div>
-
-            {# Chat Interface #}
-            <div class="bg-card border border-border rounded-2xl p-4 shadow-sm h-[400px] flex flex-col">
-                 <div class="flex items-center gap-2 mb-4 pb-4 border-b border-border">
-                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span class="font-bold text-sm">{{ 'Coach en ligne' | trans }}</span>
-                 </div>
-                 
-                 <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 mb-4 scrollbar-thin">
-                     <div class="flex gap-3">
-                         <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
-                         <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm">
-                             <p>{{ 'Salut ! Prêt pour une session ?' | trans }}</p>
-                         </div>
-                     </div>
-                 </div>
-
-                 <div class="relative">
-                     <input type="text" id="chat-input" placeholder="..." 
-                        class="w-full bg-muted/30 border border-border focus:border-primary rounded-xl pl-3 pr-10 py-2 text-sm transition-all outline-none">
-                     <button id="chat-submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                        </svg>
-                     </button>
-                 </div>
-            </div>
-
-        </div>
-    </div>
 </div>
 
 <script>
@@ -215,9 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const chatSubmit = document.getElementById('chat-submit');
     const chatMessages = document.getElementById('chat-messages');
-    let history = []; // Stockage de l'historique Gemini
+    let history = [];
     
-    // Fonction d'ajout de message UI
     const addMessageToUI = (text, isUser = false) => {
         const msgDiv = document.createElement('div');
         msgDiv.className = 'flex gap-3 justify-' + (isUser ? 'end' : 'start');
@@ -243,18 +129,17 @@ document.addEventListener('DOMContentLoaded', () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
-    // Animation ou Loader pendant le temps de réflexion de l'IA
     const toggleTypingIndicator = (show) => {
         if (show) {
             const typingDiv = document.createElement('div');
             typingDiv.id = 'typing-indicator';
-            typingDiv.className = 'flex gap-3 justify-start opacity-50';
+            typingDiv.className = 'flex gap-3 justify-start opacity-60';
             typingDiv.innerHTML = `
                 <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
-                <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse delay-75"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse delay-150"></span>
+                <div class="bg-muted rounded-2xl rounded-tl-none px-4 py-3 text-sm flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse" style="animation-delay: 75ms"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse" style="animation-delay: 150ms"></span>
                 </div>
             `;
             chatMessages.appendChild(typingDiv);
@@ -269,15 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const message = chatInput.value.trim();
         if (!message) return;
         
-        // 1. Affiche le message de l'utilisateur
         addMessageToUI(message, true);
         chatInput.value = '';
         chatInput.disabled = true;
         
-        // 2. Affiche le loader d'IA
         toggleTypingIndicator(true);
 
-        // 3. Appel de notre Endpoint Symfony AI
         try {
             const response = await fetch('{{ path("coach_chat") }}', {
                 method: 'POST',
@@ -292,18 +174,15 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleTypingIndicator(false);
             
             if (data.reply) {
-                // Affiche la réponse dans l'interface
                 addMessageToUI(data.reply, false);
-                
-                // Sauvegarde de l'historique de conversation
                 history.push({ role: 'user', content: message });
                 history.push({ role: 'model', content: data.reply });
             } else {
-                addMessageToUI("Désolé, mais je n'arrive pas à me concentrer. Vérifie ton API KEY !", false);
+                addMessageToUI("Désolé, je n'ai pas pu répondre. Réessaie !", false);
             }
         } catch (e) {
             toggleTypingIndicator(false);
-            addMessageToUI("Aïe, erreur réseau !", false);
+            addMessageToUI("Erreur de connexion ! Vérifie ta connexion.", false);
             console.error(e);
         }
         
