@@ -1,5 +1,53 @@
 {{ form_start(form, {'attr': {'class': 'divide-y divide-slate-100', 'novalidate': 'novalidate'}}) }}
     
+    {# Header & Image Preview #}
+    <div x-data="{ imageUrl: '{{ form.vars.value.image ? asset('uploads/images/courses/' ~ form.vars.value.image) : '' }}' }" class="mb-10 space-y-6">
+        
+        {# Dynamic Image Preview #}
+        <div x-show="imageUrl" class="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-sm border border-slate-200 relative group" style="display: none;">
+            <img :src="imageUrl" alt="Aperçu du cours" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/80 to-transparent p-6 text-white text-xs font-bold uppercase tracking-wider">
+                Aperçu de la couverture
+            </div>
+            {# Bouton de suppression d'image (visuel) #}
+            <button @click.prevent="imageUrl = ''; $refs.fileInput.value = ''" type="button" class="absolute top-4 right-4 bg-white/90 hover:bg-white text-red-600 p-2 rounded-xl shadow-sm backdrop-blur-sm transition-all hover:scale-105">
+                <twig:ux:icon name="lucide:trash-2" class="w-4 h-4" />
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-6 border-b border-slate-100">
+            <div class="space-y-2">
+                {{ form_label(form.status, 'Visibilité'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.status, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium'}}) }}
+                {{ form_errors(form.status) }}
+            </div>
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'Image de couverture' | trans }}</label>
+                <div class="p-4 rounded-xl border-2 border-dashed border-slate-200 hover:border-primary/50 transition-colors bg-slate-50/50 relative overflow-hidden group">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity">
+                        <twig:ux:icon name="lucide:upload-cloud" class="w-6 h-6 text-primary mb-2" />
+                        <span class="text-xs font-medium text-slate-500">Cliquez ou glissez une image</span>
+                    </div>
+                    {{ form_widget(form.imageFile, {
+                        'attr': {
+                            'class': 'w-full h-full absolute inset-0 opacity-0 cursor-pointer',
+                            'x-ref': 'fileInput',
+                            '@change': "
+                                const file = $event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = (e) => { imageUrl = e.target.result; };
+                                    reader.readAsDataURL(file);
+                                }
+                            "
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(form.imageFile) }}
+            </div>
+        </div>
+    </div>
+
     {# Section 1 : Informations Générales #}
     <div class="pb-10">
         <div class="flex items-center gap-2 mb-6">
@@ -8,45 +56,6 @@
             </div>
             <h2 class="text-lg font-bold text-slate-800">{{ 'Détails du Cours' | trans }}</h2>
         </div>
-        
-        <div class="grid grid-cols-1 gap-8">
-            <div class="space-y-2">
-                {{ form_label(form.title, 'Titre du cours'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
-                {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium', 'placeholder': 'Ex: Théologie Systématique'}}) }}
-                {{ form_errors(form.title) }}
-            </div>
-            <div class="space-y-2">
-                {{ form_label(form.description, 'Description complète'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
-                {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-700 leading-relaxed', 'rows': 5, 'placeholder': 'Présentez le programme de ce cours...'}}) }}
-                {{ form_errors(form.description) }}
-            </div>
-        </div>
-    </div>
-
-    {# Section 2 : Visuel & Paramètres #}
-    <div class="py-10">
-        <div class="flex items-center gap-2 mb-6">
-            <div class="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
-                <twig:ux:icon name="lucide:image" class="w-4 h-4" />
-            </div>
-            <h2 class="text-lg font-bold text-slate-800">{{ 'Médias & Statut' | trans }}</h2>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="space-y-2">
-                {{ form_label(form.status, 'Visibilité'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
-                {{ form_widget(form.status, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium'}}) }}
-                {{ form_errors(form.status) }}
-            </div>
-            <div class="space-y-2">
-                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'Image de couverture' | trans }}</label>
-                <div class="p-4 rounded-xl border-2 border-dashed border-slate-200 hover:border-primary/50 transition-colors bg-slate-50/50">
-                    {{ form_widget(form.imageFile, {'attr': {'class': 'w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white hover:file:bg-primary/90 transition-all pointer-default'}}) }}
-                </div>
-                {{ form_errors(form.imageFile) }}
-            </div>
-        </div>
-    </div>
 
     {# Actions #}
     <div class="pt-10 flex items-center justify-end gap-4">
