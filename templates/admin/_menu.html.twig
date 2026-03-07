@@ -80,6 +80,12 @@
 			{{'Payment settings' | trans}}
 		</ion-label>
 	</ion-item>
+	<ion-item button href="{{path('admin_setting_index')}}" {% if currentroute == 'admin_setting_index' %} color="{{colorActive}}" {% endif %}>
+		<ion-icon slot="start" name="settings-outline" color="app"></ion-icon>
+		<ion-label>
+			{{'Paramètres' | trans}}
+		</ion-label>
+	</ion-item>
 </ion-list>
 
 <ion-list>

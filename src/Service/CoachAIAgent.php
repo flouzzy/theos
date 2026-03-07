@@ -15,18 +15,18 @@ class CoachAIAgent
 
     public function __construct(
         #[Autowire(env: 'GEMINI_API_KEY')]
-        private string $apiKey
+        private string $apiKey,
+        private \App\Repository\SiteSettingRepository $siteSettingRepo
     ) {
         $this->client = new Client($this->apiKey);
     }
 
     public function generateResponse(array $history, string $newMessage): string
     {
-        // Setup initial system instructions
-        $systemPrompt = "Tu es un coach pédagogique francophone travaillant pour Le Rocher Académie. "
-            . "Ton rôle est d'encourager l'étudiant, de répondre à ses questions sur le code ou le développement de façon concise "
-            . "et conviviale. Ne donne pas de réponses longues (> 100 mots par message) sauf si c'est très technique. "
-            . "Utilise des emojis de temps en temps.";
+        // Setup initial system instructions from Database
+        $setting = $this->siteSettingRepo->findOneBy(['name' => 'COACH_PROMPT']);
+        $systemPrompt = $setting && $setting->getValue() ? $setting->getValue() : 
+            "Tu es un coach pédagogique francophone travaillant pour Le Rocher Académie, une école de théologie. Ton rôle est d'encourager l'étudiant de façon concise et conviviale.";
 
         // Format history into Gemini API Content objects
         $geminiHistory = [];

@@ -1,0 +1,38 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}
+	{{'Modifier Paramètre' | trans}}
+{% endblock %}
+
+{% block content %}
+	<div class="container mx-auto py-10 max-w-4xl">
+		<div class="mb-6 flex items-center justify-between">
+			<div class="space-y-1">
+				<h2 class="text-2xl font-bold tracking-tight">
+					{{ 'Modifier le paramètre'|trans }} <span class="bg-muted text-lg px-2 py-1 rounded font-mono ml-2">{{ site_setting.name }}</span>
+				</h2>
+			</div>
+			<div class="flex items-center space-x-2">
+				<twig:Button asChild variant="outline">
+					<a href="{{ path('admin_setting_index') }}">
+						<twig:ux:icon name="lucide:arrow-left" class="mr-2 h-4 w-4" />
+						{{ 'Retour à la liste'|trans }}
+					</a>
+				</twig:Button>
+			</div>
+		</div>
+
+		<div class="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
+			{{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+				{{ form_widget(form) }}
+				
+				<div class="flex justify-end pt-4 border-t border-border mt-6">
+					<twig:Button type="submit">
+						<twig:ux:icon name="lucide:save" class="mr-2 h-4 w-4" />
+						{{ 'Enregistrer les modifications'|trans }}
+					</twig:Button>
+				</div>
+			{{ form_end(form) }}
+		</div>
+	</div>
+{% endblock %}

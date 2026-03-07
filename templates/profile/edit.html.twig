@@ -1,0 +1,158 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ 'Modifier mon profil' | trans }}{% endblock %}
+
+{% block content %}
+<div class="space-y-8 max-w-3xl mx-auto">
+    
+    <div class="flex items-center gap-4">
+        <a href="{{ path('profile_index') }}" class="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold">{{ 'Paramètres du compte' | trans }}</h1>
+    </div>
+
+    {{ form_start(profileForm, {'attr': {'class': 'space-y-8'}}) }}
+        
+        {# Informations Générales #}
+        <div class="bg-card border border-border rounded-xl p-6 shadow-sm">
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                {{ 'Informations générales' | trans }}
+            </h3>
+            
+            <div class="space-y-4">
+                {{ form_row(profileForm.firstname) }}
+                {{ form_row(profileForm.lastname) }}
+                {{ form_row(profileForm.email) }}
+                {{ form_row(profileForm.imageFile) }}
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button type="submit" class="btn btn-primary">
+                    {{ 'Enregistrer les modifications' | trans }}
+                </button>
+            </div>
+        </div>
+        
+    {{ form_end(profileForm) }}
+
+    {# Security (Static from old show.twig) #}
+    <div class="bg-card border border-border rounded-xl p-6 shadow-sm">
+        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            {{ 'Sécurité' | trans }}
+        </h3>
+        <p class="text-sm text-muted-foreground mb-4">{{ 'Gérez votre mot de passe et options de sécurité' | trans }}</p>
+        
+        <div class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium mb-2">{{ 'Mot de passe actuel' | trans }}</label>
+                <div class="relative">
+                    <input type="password" value="********" readonly class="w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm text-muted-foreground" disabled>
+                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-muted-foreground">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                     <label class="block text-sm font-medium mb-2">{{ 'Nouveau mot de passe' | trans }}</label>
+                     <input type="password" placeholder="........" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                     <label class="block text-sm font-medium mb-2">{{ 'Confirmer le mot de passe' | trans }}</label>
+                     <input type="password" placeholder="........" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-border">
+                <div class="flex flex-col">
+                    <span class="text-sm font-medium">{{ 'Authentification à deux facteurs' | trans }}</span>
+                    <span class="text-xs text-muted-foreground">{{ 'Ajoutez une couche de sécurité supplémentaire' | trans }}</span>
+                </div>
+                <button class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-muted transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" role="switch" aria-checked="false">
+                    <span aria-hidden="true" class="translate-x-0 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {# Notifications #}
+    <div class="bg-card border border-border rounded-xl p-6 shadow-sm">
+         <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            {{ 'Notifications' | trans }}
+        </h3>
+        <p class="text-sm text-muted-foreground mb-4">{{ 'Choisissez comment vous souhaitez être notifié' | trans }}</p>
+
+        <div class="divide-y divide-border">
+             {% for item in ['Notifications par email', 'Notifications push', 'Rappels de leçons', 'Résumé hebdomadaire'] %}
+                <div class="flex items-center justify-between py-4">
+                     <div class="flex flex-col">
+                        <span class="text-sm font-medium">{{ item | trans }}</span>
+                        <span class="text-xs text-muted-foreground">Description pour {{ item | lower }}</span>
+                    </div>
+                     <button class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent {{ loop.last ? 'bg-muted' : 'bg-primary' }} transition-colors duration-200 ease-in-out focus:outline-none" role="switch">
+                        <span aria-hidden="true" class="{{ loop.last ? 'translate-x-0' : 'translate-x-5' }} pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+                    </button>
+                </div>
+             {% endfor %}
+        </div>
+    </div>
+    
+     {# Preferences #}
+    <div class="bg-card border border-border rounded-xl p-6 shadow-sm">
+         <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ 'Préférences' | trans }}
+        </h3>
+        <p class="text-sm text-muted-foreground mb-4">{{ 'Personnalisez votre expérience d\'apprentissage' | trans }}</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div>
+                  <label class="block text-sm font-medium mb-2">{{ 'Langue' | trans }}</label>
+                  <select class="block w-full rounded-md border-input bg-background border px-3 py-2 text-sm focus:ring-2 focus:ring-primary">
+                      <option value="fr" selected>Français</option>
+                      <option value="en">English</option>
+                  </select>
+             </div>
+             <div>
+                  <label class="block text-sm font-medium mb-2">{{ 'Fuseau horaire' | trans }}</label>
+                  <select class="block w-full rounded-md border-input bg-background border px-3 py-2 text-sm focus:ring-2 focus:ring-primary">
+                      <option value="gpt+1" selected>Paris (GMT+1)</option>
+                      <option value="utc">UTC</option>
+                  </select>
+             </div>
+         </div>
+    </div>
+
+    {# Zone de Danger #}
+    <div class="bg-destructive/5 border border-destructive/20 rounded-xl p-6 shadow-sm mt-12">
+        <h3 class="font-bold text-lg text-destructive mb-2">{{ 'Zone de danger' | trans }}</h3>
+        <p class="text-sm text-muted-foreground mb-4">{{ 'La suppression de votre compte effacera toutes vos données personnelles. Cette action est irréversible.' | trans }}</p>
+        
+        <form action="{{ path('profile_delete', {'id': app.user.id}) }}" method="post" onsubmit="return confirm('{{ 'Êtes-vous sûr de vouloir supprimer votre compte ?' | trans }}');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ app.user.id) }}">
+            <button type="submit" class="btn btn-outline border-destructive/50 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                {{ 'Supprimer mon compte' | trans }}
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

@@ -4,292 +4,43 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    /* Color Palette - Premium Academic (Gold & Slate) */
-
-    /* Background: White */
-    --background: hsl(0 0% 100%);
-    /* Foreground: Deep Slate */
-    --foreground: hsl(222.2 84% 4.9%);
-
-    /* Primary: Rocher Gold (#D4AF37) */
-    --primary: hsl(45 67% 50%);
-    --primary-foreground: hsl(0 0% 100%);
-
-    /* Secondary: Slate-100 */
-    --secondary: hsl(210 40% 96.1%);
-    --secondary-foreground: hsl(222.2 47.4% 11.2%);
-
-    /* Muted: Light Gray */
-    --muted: hsl(210 40% 96.1%);
-    --muted-foreground: hsl(215.4 16.3% 46.9%);
-
-    /* Card: White */
-    --card: hsl(0 0% 100%);
-    --card-foreground: hsl(222.2 84% 4.9%);
-
-    /* Popover */
-    --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(222.2 84% 4.9%);
-
-    /* Accent */
-    --accent: hsl(210 40% 96.1%);
-    --accent-foreground: hsl(222.2 47.4% 11.2%);
-
-    /* Utility Colors */
-    --destructive: hsl(0 84.2% 60.2%);
-    --destructive-foreground: hsl(210 40% 98%);
-    --border: hsl(214.3 31.8% 91.4%);
-    --input: hsl(214.3 31.8% 91.4%);
-    --ring: hsl(45 67% 50%);
-    /* Match Primary */
-
-    /* Chart Colors */
-    --chart-1: hsl(45 67% 50%);
-    /* Gold */
-    --chart-2: hsl(222.2 84% 4.9%);
-    /* Slate */
-    --chart-3: hsl(142 76% 36%);
-    /* Green */
-    --chart-4: hsl(346 84% 61%);
-    /* Pink */
-    --chart-5: hsl(27 87% 67%);
-    /* Orange */
-
-    /* Sidebar */
-    --sidebar: hsl(0 0% 100%);
-    --sidebar-foreground: hsl(222.2 84% 4.9%);
-    --sidebar-primary: hsl(45 67% 50%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(210 40% 96.1%);
-    --sidebar-accent-foreground: hsl(222.2 84% 4.9%);
-    --sidebar-border: hsl(214.3 31.8% 91.4%);
-    --sidebar-ring: hsl(45 67% 50%);
-
-    /* Radius */
-    --radius: 0.75rem;
-}
-
-.dark {
-    /* Dark Mode - Inverted Slate */
-    --background: hsl(222.2 84% 4.9%);
-    --foreground: hsl(210 40% 98%);
-
-    --primary: hsl(45 67% 50%);
-    --primary-foreground: hsl(0 0% 100%);
-
-    --secondary: hsl(217.2 32.6% 17.5%);
-    --secondary-foreground: hsl(210 40% 98%);
-
-    --muted: hsl(217.2 32.6% 17.5%);
-    --muted-foreground: hsl(215 20.2% 65.1%);
-
-    --card: hsl(222.2 84% 4.9%);
-    /* Or slightly lighter for depth */
-    --card-foreground: hsl(210 40% 98%);
-
-    --popover: hsl(222.2 84% 4.9%);
-    --popover-foreground: hsl(210 40% 98%);
-
-    --accent: hsl(217.2 32.6% 17.5%);
-    --accent-foreground: hsl(210 40% 98%);
-
-    --destructive: hsl(0 62.8% 30.6%);
-    --destructive-foreground: hsl(210 40% 98%);
-
-    --border: hsl(217.2 32.6% 17.5%);
-    --input: hsl(217.2 32.6% 17.5%);
-    --ring: hsl(45 67% 50%);
-
-    --chart-1: hsl(45 67% 50%);
-    --chart-2: hsl(210 40% 98%);
-    --chart-3: hsl(142 70% 50%);
-    --chart-4: hsl(346 80% 60%);
-    --chart-5: hsl(27 85% 65%);
-
-    --sidebar: hsl(222.2 84% 4.9%);
-    --sidebar-foreground: hsl(210 40% 98%);
-    --sidebar-primary: hsl(45 67% 50%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(217.2 32.6% 17.5%);
-    --sidebar-accent-foreground: hsl(210 40% 98%);
-    --sidebar-border: hsl(217.2 32.6% 17.5%);
-    --sidebar-ring: hsl(45 67% 50%);
-}
-
-@theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-card: var(--card);
-    --color-card-foreground: var(--card-foreground);
-    --color-popover: var(--popover);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-destructive: var(--destructive);
-    --color-destructive-foreground: var(--destructive-foreground);
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
-
-    --color-sidebar: var(--sidebar);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
-
-    --font-heading: "Merriweather", serif;
-    --font-sans: "Inter", sans-serif;
-    --font-serif: "Merriweather", serif;
-}
-
-@layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
-
-    body {
-        @apply bg-background text-foreground font-sans;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        @apply font-heading tracking-tight;
-    }
-
-    h1 {
-        @apply text-3xl md:text-4xl font-bold;
-    }
-
-    h2 {
-        @apply text-2xl md:text-3xl font-bold;
-    }
-
-    h3 {
-        @apply text-xl md:text-2xl font-semibold;
-    }
-
-    /* Input placeholders - Better visibility */
-    input::placeholder,
-    textarea::placeholder {
-        color: var(--muted-foreground);
-        opacity: 0.65;
-    }
-
-    input:focus::placeholder,
-    textarea:focus::placeholder {
-        opacity: 0.4;
-    }
-
-
-
-    /* Badge styles */
-    .badge {
-        @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
-    }
-
-    .badge-default {
-        @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
-    }
-
-    .badge-secondary {
-        @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
-    }
-
-    .badge-destructive {
-        @apply border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80;
-    }
-
-    .badge-outline {
-        @apply text-foreground;
-    }
-}
-
-
-@custom-variant dark (&:is(.dark *));
-
-:root {
-    /* Primary - Purple from Figma */
-    --primary: 266 65% 60%;
-    /* #6c5bd9 converted to HSL for better Tailwind compat if needed, or stick to hex/oklch. Let's use the explicit hex or mapped oklch if possible, but simplest is often direct hex in tailwind config. Here in CSS let's use a roughly equivalent OKLCH or just the Hex if the system supports it. 
-    Actually, let's just stick to the requested hex in the tailwind config if possible, but if this is the source of truth, let's calculate oklch for #6c5bd9. 
-    #6c5bd9 is r=108 g=91 b=217. 
-    Approx OKLCH: 0.56 0.21 286. The existing was 0.55 0.20 285. It's extremely close. 
-    Let's explicitly use the requested hex by redefining the variable logic or just keeping the existing one if it matches visual expectations. 
-    However, the user asked to "Update Primary Color to #6c5bd9".
-    I will rely on tailwind.config.js to map 'primary' to this CSS variable. 
-    Let's check tailwind.config.js first before editing CSS. */
+    /* Primary - OKLCH (Purple from Figma #6c5bd9 approx) */
     --primary: oklch(0.56 0.21 286);
-    /* Updated to match #6c5bd9 more precisely */
-    /* #5B4FEF - Violet */
     --primary-foreground: oklch(1 0 0);
     /* White */
 
     /* Background - Very light purple/gray */
     --background: oklch(0.99 0.005 285);
-    /* #FAFAFF */
     --foreground: oklch(0.15 0 0);
-    /* #1A1A1A - Dark text */
 
     /* Card - Pure white */
     --card: oklch(1 0 0);
-    /* #FFFFFF */
     --card-foreground: oklch(0.15 0 0);
 
     /* Muted */
     --muted: oklch(0.96 0 0);
-    /* #F3F4F6 */
     --muted-foreground: oklch(0.50 0 0);
-    /* #6B7280 */
 
     /* Secondary - Lighter purple for accents */
     --secondary: oklch(0.95 0.02 285);
-    /* Very light purple */
     --secondary-foreground: oklch(0.55 0.20 285);
 
-    /* Accent - Same as primary but for special highlights */
+    /* Accent */
     --accent: oklch(0.55 0.20 285);
     --accent-foreground: oklch(1 0 0);
 
     /* Success - Green */
     --success: oklch(0.65 0.18 150);
-    /* #10B981 */
     --success-foreground: oklch(1 0 0);
 
     /* Destructive - Red */
     --destructive: oklch(0.60 0.25 25);
-    /* #EF4444 */
     --destructive-foreground: oklch(1 0 0);
 
     /* Borders */
     --border: oklch(0.92 0 0);
-    /* #E5E7EB */
     --input: oklch(0.92 0 0);
     --ring: oklch(0.55 0.20 285);
-    /* Purple ring for focus */
 
     /* Popover */
     --popover: oklch(1 0 0);
@@ -297,19 +48,13 @@
 
     /* Chart colors */
     --chart-1: oklch(0.55 0.20 285);
-    /* Purple */
     --chart-2: oklch(0.65 0.18 150);
-    /* Green */
     --chart-3: oklch(0.70 0.15 220);
-    /* Blue */
     --chart-4: oklch(0.75 0.12 55);
-    /* Orange */
     --chart-5: oklch(0.80 0.10 330);
-    /* Pink */
 
     /* Sidebar */
     --sidebar: oklch(1 0 0);
-    /* White sidebar */
     --sidebar-foreground: oklch(0.15 0 0);
     --sidebar-primary: oklch(0.55 0.20 285);
     --sidebar-primary-foreground: oklch(1 0 0);
@@ -318,9 +63,8 @@
     --sidebar-border: oklch(0.92 0 0);
     --sidebar-ring: oklch(0.55 0.20 285);
 
-    /* Radius - More moderate for minimal look */
+    /* Radius */
     --radius: 0.75rem;
-    /* 12px */
 }
 
 .dark {
@@ -356,64 +100,6 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
 }
 
-@layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
-
-    body {
-        @apply bg-background text-foreground;
-    }
-
-    h1 {
-        @apply text-3xl md:text-4xl;
-    }
-
-    h2 {
-        @apply text-2xl md:text-3xl;
-    }
-
-    h3 {
-        @apply text-xl md:text-2xl;
-    }
-
-    /* Input placeholders - Better visibility */
-    input::placeholder,
-    textarea::placeholder {
-        color: oklch(0.50 0 0);
-        /* muted-foreground */
-        opacity: 0.65;
-    }
-
-    input:focus::placeholder,
-    textarea:focus::placeholder {
-        opacity: 0.4;
-    }
-
-
-
-    /* Badge styles */
-    .badge {
-        @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
-    }
-
-    .badge-default {
-        @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
-    }
-
-    .badge-secondary {
-        @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
-    }
-
-    .badge-destructive {
-        @apply border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80;
-    }
-
-    .badge-outline {
-        @apply text-foreground;
-    }
-}
-
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -439,10 +125,12 @@
     --color-chart-3: var(--chart-3);
     --color-chart-4: var(--chart-4);
     --color-chart-5: var(--chart-5);
+
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
+
     --color-sidebar: var(--sidebar);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar-primary: var(--sidebar-primary);
@@ -451,6 +139,10 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    --font-heading: "Merriweather", serif;
+    --font-sans: "Inter", sans-serif;
+    --font-serif: "Merriweather", serif;
 }
 
 @layer base {
@@ -459,10 +151,124 @@
     }
 
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background text-foreground font-sans antialiased;
     }
 
-    /* Wave Animation */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-heading tracking-tight;
+    }
+
+    h1 {
+        @apply text-3xl md:text-4xl font-bold;
+    }
+
+    h2 {
+        @apply text-2xl md:text-3xl font-bold;
+    }
+
+    h3 {
+        @apply text-xl md:text-2xl font-semibold;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: oklch(0.50 0 0);
+        /* muted-foreground approx */
+        opacity: 0.65;
+    }
+
+    input:focus::placeholder,
+    textarea:focus::placeholder {
+        opacity: 0.4;
+    }
+}
+
+@layer components {
+
+    /* Boutons génériques */
+    .btn {
+        @apply inline-flex items-center justify-center rounded-xl font-semibold text-sm transition-all px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+    }
+
+    .btn-primary {
+        @apply bg-primary text-primary-foreground hover:opacity-90 shadow-sm shadow-primary/20;
+    }
+
+    .btn-secondary {
+        @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+    }
+
+    .btn-outline {
+        @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+    }
+
+    .btn-ghost {
+        @apply hover:bg-accent hover:text-accent-foreground;
+    }
+
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs rounded-lg;
+    }
+
+    .btn-lg {
+        @apply px-6 py-3 text-base rounded-2xl;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-card border border-border rounded-2xl shadow-sm text-card-foreground;
+    }
+
+    .card-padded {
+        @apply card p-6;
+    }
+
+    .stat-card {
+        @apply card text-center p-6 hover:shadow-md transition-shadow duration-300;
+    }
+
+    /* Typographie Stats */
+    .stat-value {
+        @apply text-3xl font-bold text-foreground mb-1;
+    }
+
+    .stat-label {
+        @apply text-xs flex items-center justify-center gap-1.5 font-medium uppercase text-muted-foreground;
+    }
+
+    /* Titres de section (ex: "Mes Cours", "Modules") */
+    .section-title {
+        @apply text-lg font-bold flex items-center gap-2 text-foreground mb-6;
+    }
+
+    /* Variables utilitaires Tailwind-like pour badges */
+    .badge {
+        @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    }
+
+    .badge-default {
+        @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
+    }
+
+    .badge-secondary {
+        @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+    }
+
+    .badge-destructive {
+        @apply border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80;
+    }
+
+    .badge-outline {
+        @apply text-foreground;
+    }
+}
+
+@layer utilities {
     @keyframes wave {
         0% {
             transform: rotate(0.0deg)

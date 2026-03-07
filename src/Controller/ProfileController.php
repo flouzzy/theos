@@ -29,40 +29,11 @@ class ProfileController extends AbstractController
 
     #[Route('', name: 'index', priority: 3)]
     public function index(
-        EntityManagerInterface $entityManager,
-        TranslatorInterface $translator,
-        Request $request,
-        EventDispatcherInterface $eventDispatcher,
         CompletionRepository $completionRepository,
         \App\Repository\CourseCompletionRepository $courseCompletionRepository
     ): Response {
-        /**
-         * @var \App\Entity\User $user
-         */
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
-
-        $form = $this->createForm(UserType::class, $user, [
-            'action' => $this->generateUrl('profile_index'),
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // Sauvegarde l'image associée à la leçon
-            $imageFile = $form->get('imageFile')->getData();
-            if ($imageFile) {
-                $imageFileName = $this->mediaManager->upload($imageFile, 'user', ['maxWidth' => 350, 'maxHeight' => 350]);
-                $user->setImage($imageFileName);
-            }
-
-            $eventDispatcher->dispatch(new UserUpdatedEvent($user));
-
-            $entityManager->flush();
-            $this->addFlash('success', $translator->trans('Your account has been updated'));
-
-            return $this->redirectToRoute('profile_index');
-        }
 
         // Calculate Stats
         $coursesEnrolled = $user->getCourses();
@@ -73,7 +44,6 @@ class ProfileController extends AbstractController
         $learningHours = floor($totalMinutes / 60);
 
         return $this->render('profile/show.html.twig', [
-            'profileForm' => $form,
             'stats' => [
                 'enrolled' => $coursesEnrolled->count(),
                 'completed' => $completedCoursesCount,
@@ -83,6 +53,43 @@ class ProfileController extends AbstractController
                 'streak' => $user->getStreak(),
             ],
             'badges' => $user->getBadges(),
+        ]);
+    }
+
+    #[Route('/edit', name: 'edit', priority: 3)]
+    public function edit(
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator,
+        Request $request,
+        EventDispatcherInterface $eventDispatcher
+    ): Response {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(UserType::class, $user, [
+            'action' => $this->generateUrl('profile_edit'),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Sauvegarde l'image associée à la leçon
+            $imageFile = $form->get('imageFile')->getData();
+            if ($imageFile) {
+                $imageFileName = $this->mediaManager->upload($imageFile, 'user', ['maxWidth' => 350, 'maxHeight' => 350]);
+                $user->setImage($imageFileName);
+            }
+
+            $eventDispatcher->dispatch(new UserUpdatedEvent($user));
+
+            $entityManager->flush();
+            $this->addFlash('success', $translator->trans('Your profile has been updated'));
+
+            return $this->redirectToRoute('profile_index');
+        }
+
+        return $this->render('profile/edit.html.twig', [
+            'profileForm' => $form->createView(),
         ]);
     }
 
