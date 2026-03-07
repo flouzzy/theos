@@ -88,8 +88,8 @@ class LessonController extends AbstractController
 
         $this->ensureUserIsSubscribed($course, $user);
 
-        // Toggle completion status
-        $completed = !(boolval($completed));
+        // Parse completion status
+        $completed = boolval($completed);
 
         // Save lesson completion status for current user
         $wasCompleted = $this->updateCompletionStatus($user, $lesson, $course, $module, $completed);

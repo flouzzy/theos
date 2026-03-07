@@ -207,6 +207,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(nullable: true)]
     private ?string $googleAuthenticatorSecret = null;
 
+    /**
+     * @var Collection<int, Evaluation>
+     */
+    #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'user')]
+    private Collection $cohort;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -226,6 +232,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->portfolioProjects = new ArrayCollection();
         $this->assignmentSubmissions = new ArrayCollection();
         $this->peerReviews = new ArrayCollection();
+        $this->cohort = new ArrayCollection();
     }
 
     public function __toString()
@@ -1094,6 +1101,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
             // set the owning side to null (unless already changed)
             if ($peerReview->getReviewer() === $this) {
                 $peerReview->setReviewer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Evaluation>
+     */
+    public function getEvaluations(): Collection
+    {
+        return $this->evaluations;
+    }
+
+    public function addEvaluation(Evaluation $evaluation): static
+    {
+        if (!$this->evaluations->contains($evaluation)) {
+            $this->evaluations->add($evaluation);
+            $evaluation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvaluation(Evaluation $evaluation): static
+    {
+        if ($this->evaluations->removeElement($evaluation)) {
+            // set the owning side to null (unless already changed)
+            if ($evaluation->getUser() === $this) {
+                $evaluation->setUser(null);
             }
         }
 

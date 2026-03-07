@@ -31,4 +31,7 @@ return [
     'tinymce' => [
         'version' => '8.3.2',
     ],
+    'marked' => [
+        'version' => '17.0.4',
+    ],
 ];

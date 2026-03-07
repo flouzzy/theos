@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evaluation{% endblock %}
+
+{% block body %}
+    <h1>Evaluation</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ evaluation.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ evaluation.title }}</td>
+            </tr>
+            <tr>
+                <th>Score</th>
+                <td>{{ evaluation.score }}</td>
+            </tr>
+            <tr>
+                <th>MaxScore</th>
+                <td>{{ evaluation.maxScore }}</td>
+            </tr>
+            <tr>
+                <th>Feedback</th>
+                <td>{{ evaluation.feedback }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ evaluation.createdAt ? evaluation.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ evaluation.updatedAt ? evaluation.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_evaluation_index') }}">back to list</a>
+
+    <a href="{{ path('app_admin_evaluation_edit', {'id': evaluation.id}) }}">edit</a>
+
+    {{ include('admin/evaluation/_delete_form.html.twig') }}
+{% endblock %}

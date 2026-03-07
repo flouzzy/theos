@@ -1,10 +1,14 @@
 <div class="relative group inline-block {{ wrapperClass|default('') }}">
     <div class="{{ class|default('w-10 h-10') }} rounded-full overflow-hidden border border-border bg-muted flex-shrink-0 relative shadow-sm">
-        {% if user.image %}
-            <img src="{{ asset(user.image) }}" alt="{{ user.fullname }}" class="w-full h-full object-cover">
-        {% else %}
+        {% if user and user.image %}
+            <img src="{{ asset(user.image) }}" alt="{{ user.fullname|default('Utilisateur') }}" class="w-full h-full object-cover">
+        {% elseif user %}
             <div class="w-full h-full flex items-center justify-center font-bold text-muted-foreground bg-primary/5 text-primary">
-                {{ user.firstname|first|upper }}{{ user.lastname|first|upper }}
+                {{ user.firstname|default('')|first|upper }}{{ user.lastname|default('')|first|upper }}
+            </div>
+        {% else %}
+            <div class="w-full h-full flex items-center justify-center bg-muted text-muted-foreground">
+                <twig:ux:icon name="lucide:user" class="w-1/2 h-1/2" />
             </div>
         {% endif %}
     </div>
@@ -13,7 +17,7 @@
             {{ badgeContent|default('') }}
         </div>
     {% endif %}
-    {% if showName|default(false) %}
-        <span class="sr-only">{{ user.fullname }}</span>
+    {% if showName|default(false) and user %}
+        <span class="sr-only">{{ user.fullname|default('Inconnu') }}</span>
     {% endif %}
 </div>

@@ -97,123 +97,136 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const chatInput = document.getElementById('chat-input');
-    const chatSubmit = document.getElementById('chat-submit');
-    const chatMessages = document.getElementById('chat-messages');
+<script type="module">
+import { marked } from 'marked';
+window.marked = marked;
+
+const chatInput = document.getElementById('chat-input');
+const chatSubmit = document.getElementById('chat-submit');
+const chatMessages = document.getElementById('chat-messages');
+
+const addMessageToUI = (text, isUser = false) => {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'flex gap-3 justify-' + (isUser ? 'end' : 'start');
     
-    const addMessageToUI = (text, isUser = false) => {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = 'flex gap-3 justify-' + (isUser ? 'end' : 'start');
-        
-        let innerHtml = '';
-        if (isUser) {
-            innerHtml = `
-                <div class="bg-primary text-primary-foreground rounded-2xl rounded-tr-none p-3 text-sm max-w-[85%]">
-                    <p>${text}</p>
-                </div>
-            `;
-        } else {
-            // Apply markdown parsing for AI responses
-            const htmlContent = marked.parse(text);
-            innerHtml = `
-                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
-                <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm max-w-[85%] prose prose-sm prose-indigo dark:prose-invert">
-                    ${htmlContent}
-                </div>
-            `;
-        }
-        
-        msgDiv.innerHTML = innerHtml;
-        chatMessages.appendChild(msgDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    };
-
-    const loadHistory = async () => {
+    let innerHtml = '';
+    if (isUser) {
+        innerHtml = `
+            <div class="bg-primary text-primary-foreground rounded-2xl rounded-tr-none p-3 text-sm max-w-[85%]">
+                <p>${text}</p>
+            </div>
+        `;
+    } else {
+        // Apply markdown parsing for AI responses
+        let htmlContent = text;
         try {
-            const response = await fetch('{{ path("coach_history") }}');
-            const data = await response.json();
-            if (data.history && data.history.length > 0) {
-                // Clear initial greeting if history exists
-                chatMessages.innerHTML = '';
-                data.history.forEach(msg => {
-                    addMessageToUI(msg.content, msg.role === 'user');
-                });
+            if (window.marked && window.marked.parse) {
+                htmlContent = window.marked.parse(text);
+            } else if (marked && marked.parse) {
+                htmlContent = marked.parse(text);
             }
         } catch (e) {
-            console.error("Failed to load history", e);
+            console.warn('Fallback: marked not loaded correctly.', e);
         }
-    };
 
-    const toggleTypingIndicator = (show) => {
-        if (show) {
-            const typingDiv = document.createElement('div');
-            typingDiv.id = 'typing-indicator';
-            typingDiv.className = 'flex gap-3 justify-start opacity-60';
-            typingDiv.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
-                <div class="bg-muted rounded-2xl rounded-tl-none px-4 py-3 text-sm flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse" style="animation-delay: 75ms"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse" style="animation-delay: 150ms"></span>
-                </div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        } else {
-            const typingDiv = document.getElementById('typing-indicator');
-            if (typingDiv) typingDiv.remove();
-        }
-    };
+        innerHtml = `
+            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
+            <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm max-w-[85%] prose prose-sm prose-indigo dark:prose-invert">
+                ${htmlContent}
+            </div>
+        `;
+    }
+    
+    msgDiv.innerHTML = innerHtml;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+};
 
-    const sendMessage = async () => {
-        const message = chatInput.value.trim();
-        if (!message) return;
-        
-        addMessageToUI(message, true);
-        chatInput.value = '';
-        chatInput.disabled = true;
-        
-        toggleTypingIndicator(true);
-
-        try {
-            const response = await fetch('{{ path("coach_chat") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ message: message })
+const loadHistory = async () => {
+    try {
+        const response = await fetch('{{ path("coach_history") }}');
+        const data = await response.json();
+        if (data.history && data.history.length > 0) {
+            // Clear initial greeting if history exists
+            chatMessages.innerHTML = '';
+            data.history.forEach(msg => {
+                addMessageToUI(msg.content, msg.role === 'user');
             });
-
-            const data = await response.json();
-            toggleTypingIndicator(false);
-            
-            if (data.reply) {
-                addMessageToUI(data.reply, false);
-            } else {
-                addMessageToUI("Désolé, je n'ai pas pu répondre. Réessaie !", false);
-            }
-        } catch (e) {
-            toggleTypingIndicator(false);
-            addMessageToUI("Erreur de connexion ! Vérifie ta connexion.", false);
-            console.error(e);
         }
+    } catch (e) {
+        console.error("Failed to load history", e);
+    }
+};
+
+const toggleTypingIndicator = (show) => {
+    if (show) {
+        const typingDiv = document.createElement('div');
+        typingDiv.id = 'typing-indicator';
+        typingDiv.className = 'flex gap-3 justify-start opacity-60';
+        typingDiv.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
+            <div class="bg-muted rounded-2xl rounded-tl-none px-4 py-3 text-sm flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse" style="animation-delay: 75ms"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-foreground/40 animate-pulse" style="animation-delay: 150ms"></span>
+            </div>
+        `;
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    } else {
+        const typingDiv = document.getElementById('typing-indicator');
+        if (typingDiv) typingDiv.remove();
+    }
+};
+
+const sendMessage = async () => {
+    const message = chatInput.value.trim();
+    if (!message) return;
+    
+    addMessageToUI(message, true);
+    chatInput.value = '';
+    chatInput.disabled = true;
+    
+    toggleTypingIndicator(true);
+
+    try {
+        const response = await fetch('{{ path("coach_chat") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+        toggleTypingIndicator(false);
         
-        chatInput.disabled = false;
-        chatInput.focus();
-    };
+        if (data.reply) {
+            addMessageToUI(data.reply, false);
+        } else {
+            addMessageToUI("Désolé, je n'ai pas pu répondre. Réessaie !", false);
+        }
+    } catch (e) {
+        toggleTypingIndicator(false);
+        addMessageToUI("Erreur de connexion ! Vérifie ta connexion.", false);
+        console.error(e);
+    }
+    
+    chatInput.disabled = false;
+    chatInput.focus();
+};
 
-    chatSubmit.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-
-    // Initial load
-    loadHistory();
+chatSubmit.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+    }
 });
+
+// Initial load
+loadHistory();
 </script>
 
 {% endblock %}
