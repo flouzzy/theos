@@ -40,7 +40,7 @@ class CoachAIAgent
             // We use the beta version to enable system instructions
             $model = $this->client
                 ->withV1BetaVersion()
-                ->generativeModel('gemini-2.5-flash')
+                ->generativeModel('gemini-3.1-flash-lite-preview')
                 ->withSystemInstruction($systemPrompt);
 
             $chat = $model->startChat();
