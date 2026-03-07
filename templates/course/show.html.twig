@@ -86,7 +86,7 @@
                 <div class="divide-y divide-border">
                     {% for lesson in module.lessons|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
                         {% set isLessonCompleted = lesson.id in completedLessonIds %}
-                        {% set isLessonLocked = not isSubscribed and lesson.itemOrder > 1 %}
+                        {% set isLessonLocked = false %}
 
                         {{ component('LessonItem', {
                             lesson: lesson,
