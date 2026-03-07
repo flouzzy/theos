@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\CoachDataService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,7 +14,8 @@ class CoachController extends AbstractController
 {
     public function __construct(
         #[\Symfony\Component\DependencyInjection\Attribute\Autowire(env: 'bool:COACH_ENABLED')]
-        private bool $coachEnabled
+        private bool $coachEnabled,
+        private readonly CoachDataService $coachData,
     ) {}
 
     #[Route('/', name: 'index')]
@@ -26,10 +28,20 @@ class CoachController extends AbstractController
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
+        $weeklyXp = $this->coachData->getWeeklyXpData($user);
+        $nextLesson = $this->coachData->getNextLesson($user);
+        $reviewLesson = $this->coachData->getLastCompletedLesson($user);
+        $streakInfo = $this->coachData->getStreakInfo($user);
+
         return $this->render('coach/index.html.twig', [
             'streak' => $user->getStreak(),
             'xp' => $user->getXp(),
             'badgesCount' => count($user->getBadges()),
+            'weeklyXp' => $weeklyXp,
+            'weeklyXpTotal' => array_sum($weeklyXp),
+            'nextLesson' => $nextLesson,
+            'reviewLesson' => $reviewLesson,
+            'streakInfo' => $streakInfo,
         ]);
     }
     #[Route('/chat', name: 'chat', methods: ['POST'])]

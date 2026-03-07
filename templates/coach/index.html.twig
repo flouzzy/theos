@@ -49,43 +49,53 @@
         {# Main Column (3/4) #}
         <div class="lg:col-span-3 space-y-6">
             
-            {# Quick Actions Grid (Simplified) #}
+            {# Quick Actions Grid (Dynamic) #}
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <button class="bg-card hover:border-blue-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group">
+                <a href="{{ path('evaluation_index') }}" class="bg-card hover:border-blue-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
                     <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                         🎯
                     </div>
-                    <span class="font-bold text-sm text-center">{{ 'Fixer un objectif' | trans }}</span>
-                </button>
-                <button class="bg-card hover:border-pink-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group">
+                    <span class="font-bold text-sm text-center">{{ 'Évaluations' | trans }}</span>
+                </a>
+                {% if nextLesson %}
+                <a href="{{ path('lesson_show', {lessonId: nextLesson.id, moduleSlug: nextLesson.module.slug, courseSlug: nextLesson.module.course.slug}) }}" class="bg-card hover:border-pink-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
                     <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                         📖
                     </div>
                     <span class="font-bold text-sm text-center">{{ 'Reprendre' | trans }}</span>
-                </button>
-                <button class="bg-card hover:border-green-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group">
+                </a>
+                {% else %}
+                <a href="{{ path('course_index') }}" class="bg-card hover:border-pink-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
+                    <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        📖
+                    </div>
+                    <span class="font-bold text-sm text-center">{{ 'Explorer' | trans }}</span>
+                </a>
+                {% endif %}
+                <a href="{{ path('leaderboard_index') }}" class="bg-card hover:border-green-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
                     <div class="w-10 h-10 rounded-full bg-green-100 text-green-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        🧠
+                        🏆
                     </div>
-                    <span class="font-bold text-sm text-center">{{ 'Quiz du jour' | trans }}</span>
-                </button>
-                 <button class="bg-card hover:border-orange-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group">
+                    <span class="font-bold text-sm text-center">{{ 'Classement' | trans }}</span>
+                </a>
+                <a href="{{ path('note_index') }}" class="bg-card hover:border-orange-300 border border-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md group no-underline text-foreground">
                     <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        🏅
+                        📝
                     </div>
-                    <span class="font-bold text-sm text-center">{{ 'Achievements' | trans }}</span>
-                </button>
+                    <span class="font-bold text-sm text-center">{{ 'Mes Notes' | trans }}</span>
+                </a>
             </div>
 
-            {# Recommendations #}
+            {# Recommendations (Dynamic) #}
             <div>
                 <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
                     <span class="text-xl">✨</span> {{ 'Pour toi aujourd\'hui' | trans }} {# codespell-ignore #}
                 </h3>
                 
                 <div class="space-y-4">
-                    {# Recommendation Card 1 #}
-                    <div class="bg-card border border-border rounded-2xl p-6 flex flex-col sm:flex-row gap-6 hover:shadow-md transition-shadow">
+                    {# Streak Card (Dynamic) #}
+                    {% if nextLesson %}
+                    <a href="{{ path('lesson_show', {lessonId: nextLesson.id, moduleSlug: nextLesson.module.slug, courseSlug: nextLesson.module.course.slug}) }}" class="bg-card border border-border rounded-2xl p-6 flex flex-col sm:flex-row gap-6 hover:shadow-md transition-shadow no-underline text-foreground block">
                         <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl flex-shrink-0">
                             🔥
                         </div>
@@ -94,42 +104,46 @@
                                 <div>
                                     <h4 class="font-bold text-lg leading-tight">{{ 'Ne brise pas ta série !' | trans }}</h4>
                                     <p class="text-sm text-muted-foreground mt-1">
-                                        {{ 'Complète une leçon pour atteindre' | trans }} <span class="font-bold text-orange-500">4 {{ 'jours' | trans }}</span>
+                                        {{ streakInfo.message }}
                                     </p>
                                 </div>
-                                <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full">+20 XP</span>
+                                <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full">+10 XP</span>
                              </div>
                              
                              <div class="h-2 bg-muted rounded-full overflow-hidden mb-4 mt-2">
-                                <div class="h-full bg-orange-500 w-[70%] rounded-full"></div>
+                                <div class="h-full bg-orange-500 rounded-full transition-all" style="width: {{ streakInfo.progress }}%"></div>
                             </div>
 
-                             <div class="flex justify-end">
-                                 <button class="btn btn-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg px-6">
+                             <div class="flex justify-between items-center">
+                                 <span class="text-xs text-muted-foreground">{{ 'Objectif :' | trans }} {{ streakInfo.nextTarget }} {{ 'jours' | trans }}</span>
+                                 <span class="btn btn-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg px-6">
                                      {{ 'Go !' | trans }}
-                                 </button>
+                                 </span>
                              </div>
                         </div>
-                    </div>
+                    </a>
+                    {% endif %}
 
-                    {# Recommendation Card 2 #}
-                    <div class="bg-card border border-border rounded-2xl p-6 flex flex-col sm:flex-row gap-6 hover:shadow-md transition-shadow">
+                    {# Review Card (Dynamic) #}
+                    {% if reviewLesson %}
+                    <a href="{{ path('lesson_show', {lessonId: reviewLesson.id, moduleSlug: reviewLesson.module.slug, courseSlug: reviewLesson.module.course.slug}) }}" class="bg-card border border-border rounded-2xl p-6 flex flex-col sm:flex-row gap-6 hover:shadow-md transition-shadow no-underline text-foreground block">
                         <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl flex-shrink-0">
                             🔄
                         </div>
                         <div class="flex-1">
                              <h4 class="font-bold text-lg leading-tight mb-1">{{ 'Révision recommandée' | trans }}</h4>
                              <p class="text-sm text-muted-foreground mb-4">
-                                 {{ 'Rafraîchis tes connaissances sur "Props et State"' | trans }}
+                                 {{ 'Rafraîchis tes connaissances sur' | trans }} "<span class="font-medium text-foreground">{{ reviewLesson.title }}</span>"
                              </p>
                              
                              <div class="flex justify-end">
-                                 <button class="btn btn-sm btn-outline hover:bg-purple-50 hover:text-purple-600 rounded-lg px-6">
+                                 <span class="btn btn-sm btn-outline hover:bg-purple-50 hover:text-purple-600 rounded-lg px-6">
                                      {{ 'Réviser' | trans }}
-                                 </button>
+                                 </span>
                              </div>
                         </div>
-                    </div>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -137,25 +151,29 @@
         {# Sidebar (1/4) #}
         <div class="space-y-6">
             
-            {# Weekly Activity #}
+            {# Weekly Activity (Dynamic) #}
             <div class="bg-card border border-border rounded-2xl p-6 shadow-sm">
                  <h3 class="font-bold text-sm uppercase text-muted-foreground mb-4">
                     {{ 'Cette semaine' | trans }}
                  </h3>
                  
                  <div class="flex items-baseline gap-1 mb-4">
-                     <span class="text-3xl font-extrabold text-foreground">555</span>
+                     <span class="text-3xl font-extrabold text-foreground">{{ weeklyXpTotal }}</span>
                      <span class="text-sm font-bold text-muted-foreground">XP</span>
                  </div>
 
-                 {# Weekly Graph #}
+                 {# Weekly Graph (Dynamic) #}
+                 {% set maxXp = 1 %}
+                 {% for day, dayXp in weeklyXp %}
+                     {% if dayXp > maxXp %}{% set maxXp = dayXp %}{% endif %}
+                 {% endfor %}
                  <div class="flex justify-between items-end h-24 gap-1">
-                     {% for day, height in {'L': '40%', 'M': '60%', 'M.': '30%', 'J': '80%', 'V': '50%', 'S': '90%', 'D': '20%'} %}
+                     {% for day, dayXp in weeklyXp %}
                         <div class="flex flex-col items-center gap-1 flex-1">
                             <div class="w-full bg-muted/50 rounded-t-md h-full relative group">
-                                <div class="absolute bottom-0 left-0 right-0 bg-indigo-500 rounded-t-md transition-all group-hover:bg-indigo-600" style="height: {{ height }}"></div>
+                                <div class="absolute bottom-0 left-0 right-0 bg-indigo-500 rounded-t-md transition-all group-hover:bg-indigo-600" style="height: {{ maxXp > 0 ? ((dayXp / maxXp) * 100)|round ~ '%' : '0%' }}"></div>
                             </div>
-                            <span class="text-[10px] font-bold text-muted-foreground">{{ day|first }}</span>
+                            <span class="text-[10px] font-bold text-muted-foreground">{{ day }}</span>
                         </div>
                      {% endfor %}
                  </div>
