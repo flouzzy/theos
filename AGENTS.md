@@ -15,6 +15,9 @@ Ce document définit les protocoles opérationnels que tout Agent (Jules, Gemini
 3. Vérifier la syntaxe PHP (`php -l`) pour éviter de bloquer le redémarrage (l'entrypoint échouerait).
 4. Vider le cache via `make cc`.
 
+### Règles de Code PHP Sensibles
+- **Imports:** Préférer systématiquement l'utilisation des déclarations `use` en haut de fichier plutôt que de type-hinter avec des FQCN (ex: `SiteSettingRepository` plutôt que `\App\Repository\SiteSettingRepository`).
+
 ### Gestion des Base de Données
 - Ne JAMAIS supprimer les données du volume `database_data` sans confirmation explicite.
 - Toujours utiliser le port **3307** pour les connexions externes (DBeaver, Sequel Ace, etc.).

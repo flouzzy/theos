@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Repository\CourseCompletionRepository;
 
 #[Route('/profile', name: 'profile_')]
 #[IsGranted('IS_AUTHENTICATED')]
@@ -30,7 +31,7 @@ class ProfileController extends AbstractController
     #[Route('', name: 'index', priority: 3)]
     public function index(
         CompletionRepository $completionRepository,
-        \App\Repository\CourseCompletionRepository $courseCompletionRepository
+        CourseCompletionRepository $courseCompletionRepository
     ): Response {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();

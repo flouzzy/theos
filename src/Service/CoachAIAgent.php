@@ -8,6 +8,7 @@ use GeminiAPI\Resources\Content;
 use GeminiAPI\Resources\Parts\TextPart;
 use GeminiAPI\Resources\ModelName;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use App\Repository\SiteSettingRepository;
 
 class CoachAIAgent
 {
@@ -16,7 +17,7 @@ class CoachAIAgent
     public function __construct(
         #[Autowire(env: 'GEMINI_API_KEY')]
         private string $apiKey,
-        private \App\Repository\SiteSettingRepository $siteSettingRepo
+        private SiteSettingRepository $siteSettingRepo
     ) {
         $this->client = new Client($this->apiKey);
     }
