@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -22,7 +23,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CourseController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(CourseRepository $courseRepository, CohortRepository $cohortRepository, CohortSession $cohortSession): Response
+    public function index(Request $request, CourseRepository $courseRepository, CohortRepository $cohortRepository, CohortSession $cohortSession): Response
     {
         $cohorts = [];
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -42,13 +43,36 @@ class CourseController extends AbstractController
             }
         }
 
-        // Récupère la cohorte active via le service
-        $activeCohort = $cohortSession->getSelectedCohort();
+        $isAdmin = $this->isGranted('ROLE_ADMIN');
+
+        $search = $request->query->get('q');
+        $filterCohortId = $request->query->get('cohort');
+
+        $activeCohorts = [];
+        $selectedCohortTitle = 'Toutes les promos';
+
+        if ($filterCohortId) {
+            $selectedCohort = $cohortRepository->find($filterCohortId);
+            if ($selectedCohort) {
+                $activeCohorts = [$selectedCohort];
+                $selectedCohortTitle = $selectedCohort->getTitle();
+            }
+        } else {
+            // Si pas de filtre explicite, on utilise les cohortes de l'utilisateur normal
+            if (!$isAdmin && $this->getUser()) {
+                /** @var User $user */
+                $user = $this->getUser();
+                $activeCohorts = $user->getCohorts()->toArray();
+            }
+        }
 
         return $this->render('course/index.html.twig', [
-            'courses' => $courseRepository->findCoursesByVisibilityAndCohort($activeCohort),
+            'courses' => $courseRepository->findCatalogCourses($activeCohorts, $isAdmin, $search),
             'cohorts' => $cohorts,
-            'subscribedCourseIds' => $subscribedCourseIds
+            'subscribedCourseIds' => $subscribedCourseIds,
+            'search' => $search,
+            'selectedCohortId' => $filterCohortId,
+            'selectedCohortTitle' => $selectedCohortTitle
         ]);
     }
 

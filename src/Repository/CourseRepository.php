@@ -78,4 +78,40 @@ class CourseRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @return Course[] Returns courses for the catalog filtering by cohorts and text search
+     */
+    public function findCatalogCourses(array $cohorts = [], bool $isAdmin = false, ?string $search = null): array
+    {
+        $qb = $this->createQueryBuilder('c', 'c.id')
+            ->leftJoin('c.modules', 'm')
+            ->leftJoin('m.lessons', 'l')
+            ->leftJoin('c.cohorts', 'co')
+            ->addSelect('m', 'l')
+            ->where('c.status IN (:statuses)')
+            ->setParameter('statuses', ['published', 'progress']);
+
+        if (!$isAdmin) {
+            if (!empty($cohorts)) {
+                $qb->andWhere('c.visibility = :public OR co IN (:cohorts)')
+                    ->setParameter('public', CourseVisibilityEnum::PUBLIC)
+                    ->setParameter('cohorts', $cohorts);
+            } else {
+                $qb->andWhere('c.visibility = :public')
+                    ->setParameter('public', CourseVisibilityEnum::PUBLIC);
+            }
+        } elseif (!empty($cohorts)) {
+            // Admin filtrant par promo spécifique
+            $qb->andWhere('co IN (:cohorts)')
+               ->setParameter('cohorts', $cohorts);
+        }
+
+        if ($search) {
+            $qb->andWhere('c.title LIKE :search OR c.description LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
