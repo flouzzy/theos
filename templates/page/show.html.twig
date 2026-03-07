@@ -6,6 +6,6 @@
 
 {% block content %}
 	<div class="ion-padding">
-		{{page.content | raw}}
+		{{page.content | sanitize_html}}
 	</div>
 {% endblock %}

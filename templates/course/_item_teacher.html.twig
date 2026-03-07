@@ -7,6 +7,6 @@
 		</ion-card-subtitle>
 	</ion-card-header>
 	<ion-card-content>
-		{{course.author.bio | raw}}
+		{{course.author.bio | sanitize_html}}
 	</ion-card-content>
 </ion-card>

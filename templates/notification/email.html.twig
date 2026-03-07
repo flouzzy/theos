@@ -6,7 +6,7 @@
 			{{user.firstname}}
 		</h2>
 
-		{{message | raw}}
+		{{message | sanitize_html}}
 
 		<center>
 			<button href="{{url}}">
