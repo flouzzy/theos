@@ -1,43 +1,70 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{'Payment settings' | trans}}
-{% endblock %}
+{% block title %}{{ 'Détails du paiement' | trans }}{% endblock %}
 
 {% block content %}
+    <twig:AdminHeader 
+        title="Détails du paiement" 
+        subtitle="{{ 'Mode de paiement #' ~ payment_setting.id }}"
+        backPath="{{ path('admin_payment_index') }}"
+    />
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ payment_setting.id }}</td>
-			</tr>
-			<tr>
-				<th>Rib</th>
-				<td>{{ payment_setting.rib }}</td>
-			</tr>
-			<tr>
-				<th>CheckOrder</th>
-				<td>{{ payment_setting.checkOrder }}</td>
-			</tr>
-			<tr>
-				<th>CreatedAt</th>
-				<td>{{ payment_setting.createdAt ? payment_setting.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>UpdatedAt</th>
-				<td>{{ payment_setting.updatedAt ? payment_setting.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800">{{ 'Détails Bancaires / RIB' | trans }}</h3>
+                </div>
+                <div class="p-8">
+                    <div class="p-6 bg-slate-50 rounded-xl border border-slate-100 font-mono text-slate-700 leading-relaxed break-all">
+                        {{ payment_setting.rib|nl2br }}
+                    </div>
+                </div>
+            </div>
 
-	<a href="{{ path('admin_payment_edit', {'id': payment_setting.id}) }}">edit</a>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800">{{ 'Informations Complémentaires' | trans }}</h3>
+                </div>
+                <div class="p-6">
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Ordre du chèque' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-semibold">{{ payment_setting.checkOrder }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'ID Interne' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-mono">#{{ payment_setting.id }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Créé le' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ payment_setting.createdAt ? payment_setting.createdAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Dernière modification' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ payment_setting.updatedAt ? payment_setting.updatedAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
-	{{ include('admin/payment/_delete_form.html.twig') }}
-{% endblock %}
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col gap-3">
+                <twig:Button as="a" href="{{ path('admin_payment_edit', {'id': payment_setting.id}) }}" variant="default" class="w-full">
+                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                    {{ 'Modifier' | trans }}
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('admin_payment_index') }}" variant="ghost" class="w-full">
+                    {{ 'Retour à la liste' | trans }}
+                </twig:Button>
+            </div>
 
-{% block menuBackButton %}
-	<ion-button href="{{path('admin_payment_index')}}" color="light">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-	</ion-button>
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2">{{ 'Zone de danger' | trans }}</h3>
+                <p class="text-red-700 text-sm mb-4">{{ 'Supprimer définitivement ce mode de paiement.' | trans }}</p>
+                {{ include('admin/payment/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

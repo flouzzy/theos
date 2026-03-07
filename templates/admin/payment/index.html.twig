@@ -1,48 +1,62 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{'Payment' | trans}}
-{% endblock %}
+{% block title %}{{ 'Paramètres de paiement' | trans }}{% endblock %}
 
 {% block content %}
+    <twig:AdminHeader 
+        title="{{ 'Paramètres de paiement' | trans }}" 
+        subtitle="Gérez les informations bancaires et les modes de règlement"
+        addPath="{{ path('admin_payment_new') }}"
+        addLabel="Ajouter un mode de paiement"
+    />
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Rib</th>
-				<th>CheckOrder</th>
-				<th>CreatedAt</th>
-				<th>UpdatedAt</th>
-				<th>actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for payment_setting in payment_settings %}
-				<tr>
-					<td>{{ payment_setting.id }}</td>
-					<td>{{ payment_setting.rib }}</td>
-					<td>{{ payment_setting.checkOrder }}</td>
-					<td>{{ payment_setting.createdAt ? payment_setting.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-					<td>{{ payment_setting.updatedAt ? payment_setting.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-					<td>
-						<a href="{{ path('admin_payment_show', {'id': payment_setting.id}) }}">show</a>
-						<a href="{{ path('admin_payment_edit', {'id': payment_setting.id}) }}">edit</a>
-					</td>
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="6">no records found</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-
-	<a href="{{ path('admin_payment_new') }}">Create new</a>
-{% endblock %}
-
-{% block menuBackButton %}
-	<ion-button href="{{path('admin_payment_index')}}" color="light">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-	</ion-button>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <twig:Table>
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:Header class="w-16">Id</twig:Table:Header>
+                    <twig:Table:Header>{{ 'RIB / Détails' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Ordre chèque' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Dernière mise à jour' | trans }}</twig:Table:Header>
+                    <twig:Table:Header class="text-right">{{ 'Actions' | trans }}</twig:Table:Header>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                {% for payment_setting in payment_settings %}
+                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
+                        <twig:Table:Cell class="font-medium text-slate-500">#{{ payment_setting.id }}</twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <div class="text-sm font-mono text-slate-700 bg-slate-50 p-2 rounded border border-slate-100 max-w-md line-clamp-2">
+                                {{ payment_setting.rib }}
+                            </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <span class="text-sm font-semibold text-slate-900">{{ payment_setting.checkOrder }}</span>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <span class="text-[10px] text-slate-400">
+                                {{ payment_setting.updatedAt|date('d/m/Y H:i') }}
+                            </span>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <twig:Button as="a" href="{{ path('admin_payment_show', {'id': payment_setting.id}) }}" variant="ghost" size="icon-sm" title="{{ 'Voir' | trans }}">
+                                    <twig:ux:icon name="lucide:eye" class="w-4 h-4" />
+                                </twig:Button>
+                                <twig:Button as="a" href="{{ path('admin_payment_edit', {'id': payment_setting.id}) }}" variant="outline" size="icon-sm" title="{{ 'Modifier' | trans }}">
+                                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 text-slate-600" />
+                                </twig:Button>
+                            </div>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell colspan="5" class="py-12 text-center text-slate-400 italic">
+                            {{ 'Aucun mode de paiement configuré' | trans }}
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+            </twig:Table:Body>
+        </twig:Table>
+    </div>
 {% endblock %}

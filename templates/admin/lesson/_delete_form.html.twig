@@ -1,8 +1,7 @@
-<ion-item>
-	<form method="post" action="{{ path('admin_lesson_delete', {'id': lesson.id}) }}" onsubmit="return confirm('{{'Are you sure you want to delete this item ?' | trans}}');">
-		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ lesson.id) }}">
-		<ion-button type="submit" color="danger">
-			{{'Delete' | trans}}
-		</ion-button>
-	</form>
-</ion-item>
+<form method="post" action="{{ path('admin_lesson_delete', {'id': lesson.id}) }}" onsubmit="return confirm('{{'Êtes-vous sûr de vouloir supprimer cet élément ?' | trans}}');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ lesson.id) }}">
+    <twig:Button variant="destructive">
+        <twig:ux:icon name="lucide:trash-2" class="w-4 h-4 mr-2" />
+        {{ 'Supprimer' | trans }}
+    </twig:Button>
+</form>

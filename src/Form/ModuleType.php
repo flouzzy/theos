@@ -20,6 +20,13 @@ class ModuleType extends AbstractType
             ->add('itemOrder', null, [
                 'attr' => ['class' => 'ion-margin'],
             ])
+            ->add('courses', EntityType::class, [
+                'class' => Course::class,
+                'choice_label' => 'title',
+                'multiple' => true,
+                'required' => false,
+                'label' => 'Cours parents',
+            ])
             ->add('status', ChoiceType::class, [
                 'choices'  => [
                     'Brouillon' => 'draft',

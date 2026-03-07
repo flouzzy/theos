@@ -1,44 +1,60 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{'Pages' | trans}}
-{% endblock %}
+{% block title %}{{ 'Pages' | trans }}{% endblock %}
 
 {% block content %}
-	<div class="ion-padding-vertical">
-		<table class=" table">
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Title</th>
-					<th>CreatedAt</th>
-					<th>UpdatedAt</th>
-					<th>actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for page in pages %}
-					<tr>
-						<td>{{ page.id }}</td>
-						<td>{{ page.title }}</td>
-						<td>{{ page.createdAt ? page.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-						<td>{{ page.updatedAt ? page.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-						<td>
-							<a href="{{ path('admin_page_show', {'id': page.id}) }}">show</a>
-							<a href="{{ path('admin_page_edit', {'id': page.id}) }}">edit</a>
-						</td>
-					</tr>
-				{% else %}
-					<tr>
-						<td colspan="7">no records found</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	<ion-fab slot="fixed" vertical="bottom" horizontal="end">
-		<ion-fab-button href="{{ path('admin_page_new') }}">
-			<ion-icon name="add"></ion-icon>
-		</ion-fab-button>
-	</ion-fab>
+    <twig:AdminHeader 
+        title="Pages" 
+        subtitle="Gérez les pages de contenu statique de la plateforme (Mentions légales, À propos, etc.)"
+        addPath="{{ path('admin_page_new') }}"
+        addLabel="Nouvelle Page"
+    />
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <twig:Table>
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:Header class="w-16">Id</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Titre' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Slug' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Dernière modification' | trans }}</twig:Table:Header>
+                    <twig:Table:Header class="text-right">{{ 'Actions' | trans }}</twig:Table:Header>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                {% for page in pages %}
+                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
+                        <twig:Table:Cell class="font-medium text-slate-500">#{{ page.id }}</twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <span class="font-semibold text-slate-900">{{ page.title }}</span>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">/{{ page.slug|default(page.id) }}</code>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <span class="text-[10px] text-slate-400">
+                                {{ page.updatedAt|date('d/m/Y H:i') }}
+                            </span>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <twig:Button as="a" href="{{ path('admin_page_show', {'id': page.id}) }}" variant="ghost" size="icon-sm" title="{{ 'Voir' | trans }}">
+                                    <twig:ux:icon name="lucide:eye" class="w-4 h-4" />
+                                </twig:Button>
+                                <twig:Button as="a" href="{{ path('admin_page_edit', {'id': page.id}) }}" variant="outline" size="icon-sm" title="{{ 'Modifier' | trans }}">
+                                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 text-slate-600" />
+                                </twig:Button>
+                            </div>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell colspan="5" class="py-12 text-center text-slate-400">
+                            {{ 'Aucune page trouvée' | trans }}
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+            </twig:Table:Body>
+        </twig:Table>
+    </div>
 {% endblock %}

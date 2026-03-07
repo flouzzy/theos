@@ -1,45 +1,90 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{course.title}}|
-	{{'Course' | trans}}
-{% endblock %}
-
-{% block pageTitle %}
-	{{course.title}}|
-{% endblock %}
+{% block title %}{{ course.title }}{% endblock %}
 
 {% block content %}
-	<h1>Course</h1>
+    <twig:AdminHeader 
+        title="{{ course.title }}" 
+        subtitle="{{ 'Détails du cours' | trans }}"
+        backPath="{{ path('admin_course_index') }}"
+    />
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ course.id }}</td>
-			</tr>
-			<tr>
-				<th>Title</th>
-				<td>{{ course.title }}</td>
-			</tr>
-			<tr>
-				<th>Description</th>
-				<td>{{ course.description }}</td>
-			</tr>
-			<tr>
-				<th>CreatedAt</th>
-				<td>{{ course.createdAt ? course.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>UpdatedAt</th>
-				<td>{{ course.updatedAt ? course.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            {# Course Overview #}
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="h-64 bg-slate-100 relative">
+                    {% if course.image %}
+                        <img src="{{ asset(course.image) }}" alt="" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center text-slate-300">
+                            <twig:ux:icon name="lucide:book-open" class="w-16 h-16" />
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">{{ course.title }}</h3>
+                    <div class="prose prose-slate max-w-none text-slate-600">
+                        {{ course.description|raw }}
+                    </div>
+                </div>
+            </div>
 
-	<a href="{{ path('admin_course_index') }}">back to list</a>
+            {# System Info #}
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800">{{ 'Informations Techniques' | trans }}</h3>
+                </div>
+                <div class="p-6">
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'ID' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-mono">#{{ course.id }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Auteur' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-semibold">{{ course.author ? course.author.fullname : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Date de création' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ course.createdAt ? course.createdAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Dernière modification' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ course.updatedAt ? course.updatedAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
-	<a href="{{ path('admin_course_edit', {'id': course.id}) }}">edit</a>
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-col gap-3">
+                    <twig:Button as="a" href="{{ path('admin_course_edit', {'id': course.id}) }}" variant="default" class="w-full">
+                        <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                        {{ 'Modifier le cours' | trans }}
+                    </twig:Button>
+                </div>
+            </div>
 
-	{{ include('admin/course/_delete_form.html.twig') }}
+            {# Additional Context Card #}
+            <div class="bg-blue-50 rounded-xl p-6 border border-blue-100">
+                <h3 class="text-blue-900 font-bold mb-2 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:info" class="w-5 h-5 text-blue-600" />
+                    {{ 'Contenu' | trans }}
+                </h3>
+                <p class="text-blue-700 text-sm mb-4">{{ 'Ce cours contient plusieurs modules et leçons.' | trans }}</p>
+                <twig:Button as="a" href="{{ path('admin_module_index', {'course': course.id}) }}" variant="outline" class="w-full bg-white text-blue-700 border-blue-200 hover:bg-blue-50">
+                    {{ 'Gérer les modules' | trans }}
+                </twig:Button>
+            </div>
+
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2">{{ 'Zone de danger' | trans }}</h3>
+                <p class="text-red-700 text-sm mb-4">{{ 'Supprimer définitivement ce cours.' | trans }}</p>
+                {{ include('admin/course/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

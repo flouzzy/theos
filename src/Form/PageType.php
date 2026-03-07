@@ -13,6 +13,10 @@ class PageType extends AbstractType
     {
         $builder
             ->add('title')
+            ->add('slug', null, [
+                'required' => false,
+                'label' => 'Slug URL',
+            ])
             ->add('content', null, [
                 'attr' => [
                     'class' => 'ion-margin text-editor',

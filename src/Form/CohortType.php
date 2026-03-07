@@ -32,6 +32,10 @@ class CohortType extends AbstractType
                     'Archivé' => 'archived',
                 ],
             ])
+            ->add('image', null, [
+                'required' => false,
+                'label' => 'Image de couverture (URL)',
+            ])
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
                 'choice_label' => 'title',

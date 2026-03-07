@@ -1,40 +1,78 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{module.title}}|{{'Modules' | trans}}
-{% endblock %}
+{% block title %}{{ module.title }}{% endblock %}
 
 {% block content %}
-	<h1>Module</h1>
+    <twig:AdminHeader 
+        title="{{ module.title }}" 
+        subtitle="{{ 'Détails du module' | trans }}"
+        backPath="{{ path('admin_module_index') }}"
+    />
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ module.id }}</td>
-			</tr>
-			<tr>
-				<th>Title</th>
-				<td>{{ module.title }}</td>
-			</tr>
-			<tr>
-				<th>Description</th>
-				<td>{{ module.description }}</td>
-			</tr>
-			<tr>
-				<th>CreatedAt</th>
-				<td>{{ module.createdAt ? module.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>UpdatedAt</th>
-				<td>{{ module.updatedAt ? module.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                <div class="flex items-center gap-3 text-sm font-bold text-primary uppercase tracking-wider mb-4">
+                    <twig:ux:icon name="lucide:layers" class="w-4 h-4" />
+                    {{ 'Module de formation' | trans }}
+                </div>
+                <h3 class="text-3xl font-bold text-slate-900 mb-6">{{ module.title }}</h3>
+                <div class="prose prose-slate max-w-none text-slate-600">
+                    {{ module.description|raw }}
+                </div>
+            </div>
 
-	<a href="{{ path('admin_module_index') }}">back to list</a>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800">{{ 'Informations Complémentaires' | trans }}</h3>
+                </div>
+                <div class="p-6">
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Cours associé' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-semibold">{{ module.course ? module.course.title : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Auteur' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-semibold">{{ module.author ? module.author.fullname : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Ordre d\'affichage' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-mono">{{ module.itemOrder }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Date de création' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ module.createdAt ? module.createdAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
-	<a href="{{ path('admin_module_edit', {'id': module.id}) }}">edit</a>
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <twig:Button as="a" href="{{ path('admin_module_edit', {'id': module.id}) }}" variant="default" class="w-full">
+                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                    {{ 'Modifier le module' | trans }}
+                </twig:Button>
+            </div>
 
-	{{ include('admin/module/_delete_form.html.twig') }}
+            <div class="bg-indigo-50 rounded-xl p-6 border border-indigo-100">
+                <h3 class="text-indigo-900 font-bold mb-2 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:list" class="w-5 h-5 text-indigo-600" />
+                    {{ 'Leçons' | trans }}
+                </h3>
+                <p class="text-indigo-700 text-sm mb-4">{{ 'Gérez les leçons contenues dans ce module.' | trans }}</p>
+                <twig:Button as="a" href="{{ path('admin_lesson_index', {'module': module.id}) }}" variant="outline" class="w-full bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50">
+                    {{ 'Voir les leçons' | trans }}
+                </twig:Button>
+            </div>
+
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2">{{ 'Zone de danger' | trans }}</h3>
+                <p class="text-red-700 text-sm mb-4">{{ 'Supprimer ce module.' | trans }}</p>
+                {{ include('admin/module/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

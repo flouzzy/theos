@@ -1,4 +1,52 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<div class="space-y-6">
+    {{ form_start(form, {'attr': {'class': 'divide-y divide-slate-100', 'novalidate': 'novalidate'}}) }}
+        
+        {# Section 1 : Design & Identité #}
+        <div class="pb-10">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center text-yellow-600">
+                    <twig:ux:icon name="lucide:award" class="w-4 h-4" />
+                </div>
+                <h2 class="text-lg font-bold text-slate-800">{{ 'Configuration du Badge' | trans }}</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="md:col-span-2 space-y-2">
+                    {{ form_label(form.title, 'Nom du badge'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-bold', 'placeholder': 'Ex: Explorateur de la Foi'}}) }}
+                    {{ form_errors(form.title) }}
+                </div>
+                <div class="md:col-span-2 space-y-2">
+                    {{ form_label(form.description, 'Description de l\'accomplissement'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-700 leading-relaxed', 'rows': 3, 'placeholder': 'Décrivez comment obtenir ce badge...'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+                <div class="space-y-2">
+                    {{ form_label(form.image, 'Sélecteur d\'icône (SVG/URL)'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.image, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-mono text-xs'}}) }}
+                    {{ form_errors(form.image) }}
+                </div>
+                <div class="space-y-2">
+                    {{ form_label(form.code, 'Code administratif unique'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.code, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-mono uppercase', 'placeholder': 'BADGE_001'}}) }}
+                    {{ form_errors(form.code) }}
+                </div>
+            </div>
+        </div>
+
+        {# Actions #}
+        <div class="pt-10 flex items-center justify-end gap-4">
+            <twig:Button as="a" href="{{ path('admin_badge_type_index') }}" variant="ghost" class="text-slate-500 hover:bg-slate-100">
+                {{ 'Annuler' | trans }}
+            </twig:Button>
+            <twig:Button type="submit" variant="default" class="px-8 py-3 shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+                <twig:ux:icon name="lucide:save" class="w-5 h-5 mr-2" />
+                {{ button_label|default('Enregistrer')|trans }}
+            </twig:Button>
+        </div>
+
+        <div class="hidden">
+            {{ form_rest(form) }}
+        </div>
+    {{ form_end(form) }}
+</div>

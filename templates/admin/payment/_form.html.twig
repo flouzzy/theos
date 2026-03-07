@@ -1,4 +1,71 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'divide-y divide-slate-100'}}) }}
+    
+    {# Section 1 : Tarification #}
+    <div class="pb-10">
+        <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                <twig:ux:icon name="lucide:banknote" class="w-4 h-4" />
+            </div>
+            <h2 class="text-lg font-bold text-slate-800">{{ 'Tarification Générale' | trans }}</h2>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="space-y-2">
+                {{ form_label(form.pricing, 'Prix de l\'abonnement / Formation'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.pricing, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-bold text-lg', 'placeholder': 'Ex: 29.90 €'}}) }}
+                {{ form_errors(form.pricing) }}
+            </div>
+            <div class="space-y-2">
+                {{ form_label(form.note, 'Note d\'information (affichée aux utilisateurs)'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.note, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-700', 'rows': 3}}) }}
+                {{ form_errors(form.note) }}
+            </div>
+        </div>
+    </div>
+
+    {# Section 2 : Modes de Paiement #}
+    <div class="py-10">
+        <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                <twig:ux:icon name="lucide:credit-card" class="w-4 h-4" />
+            </div>
+            <h2 class="text-lg font-bold text-slate-800">{{ 'Méthodes de Paiement' | trans }}</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    {{ form_label(form.rib, 'Informations RIB'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.rib, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-mono text-sm', 'rows': 4}}) }}
+                    {{ form_errors(form.rib) }}
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="space-y-2 text-xs text-slate-500 font-medium p-4 bg-slate-50 rounded-xl border border-slate-100 mb-2">
+                    <p class="mb-2 italic">{{ 'Ces informations seront envoyées par mail à l\'étudiant après son inscription.'|trans }}</p>
+                </div>
+                <div class="space-y-2">
+                    {{ form_label(form.checkOrder, 'Ordre du chèque'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.checkOrder, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all'}}) }}
+                    {{ form_errors(form.checkOrder) }}
+                </div>
+                <div class="space-y-2">
+                    {{ form_label(form.receptionAddress, 'Adresse de réception'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.receptionAddress, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all', 'rows': 3}}) }}
+                    {{ form_errors(form.receptionAddress) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Actions #}
+    <div class="pt-10 flex items-center justify-end gap-4">
+        <twig:Button as="a" href="{{ path('admin_payment_index') }}" variant="ghost" class="text-slate-500 hover:bg-slate-100">
+            {{ 'Annuler' | trans }}
+        </twig:Button>
+        <twig:Button type="submit" variant="default" class="px-8 py-3 shadow-lg shadow-primary/20 hover:scale-105 transition-all text-white bg-slate-900 border-none hover:bg-slate-800">
+            <twig:ux:icon name="lucide:save" class="w-5 h-5 mr-2" />
+            {{ button_label|default('Enregistrer les paramètres')|trans }}
+        </twig:Button>
+    </div>
 {{ form_end(form) }}

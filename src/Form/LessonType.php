@@ -44,6 +44,10 @@ class LessonType extends AbstractType
             ->add('itemOrder', null, [
                 'attr' => ['class' => 'ion-margin'],
             ])
+            ->add('duration', null, [
+                'attr' => ['class' => 'ion-margin', 'placeholder' => 'Ex: 15'],
+                'label' => 'Durée (min)',
+            ])
             ->add('status', ChoiceType::class, [
                 'choices'  => [
                     'Brouillon' => 'draft',

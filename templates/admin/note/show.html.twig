@@ -1,40 +1,73 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{'Note' | trans}}
-{% endblock %}
+{% block title %}{{ 'Note' | trans }}{% endblock %}
 
 {% block content %}
+    <twig:AdminHeader 
+        title="Note" 
+        subtitle="{{ 'Note prise par ' ~ note.user.fullname }}"
+        backPath="{{ path('admin_note_index') }}"
+    />
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ note.id }}</td>
-			</tr>
-			<tr>
-				<th>Content</th>
-				<td>{{ note.content }}</td>
-			</tr>
-			<tr>
-				<th>CreatedAt</th>
-				<td>{{ note.createdAt ? note.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>UpdatedAt</th>
-				<td>{{ note.updatedAt ? note.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800">{{ 'Contenu de la note' | trans }}</h3>
+                    <twig:Badge variant="outline" class="bg-slate-50 text-slate-500 border-slate-200">
+                        #{{ note.id }}
+                    </twig:Badge>
+                </div>
+                <div class="p-8">
+                    <div class="p-6 bg-slate-50 rounded-xl border border-slate-100 text-slate-700 leading-relaxed italic">
+                        "{{ note.content }}"
+                    </div>
+                </div>
+            </div>
 
-	<a href="{{ path('admin_note_edit', {'id': note.id}) }}">{{'Edit' | trans}}</a>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800">{{ 'Contexte'|trans }}</h3>
+                </div>
+                <div class="p-6">
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Étudiant' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-semibold">{{ note.user.fullname }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Leçon' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-semibold text-primary">{{ note.lesson.title }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Créée le' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ note.createdAt ? note.createdAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Dernière modification' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ note.updatedAt ? note.updatedAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
-	{{ include('admin/note/_delete_form.html.twig') }}
-{% endblock %}
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col gap-3">
+                <twig:Button as="a" href="{{ path('admin_note_edit', {'id': note.id}) }}" variant="default" class="w-full">
+                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                    {{ 'Modifier' | trans }}
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('admin_note_index') }}" variant="ghost" class="w-full">
+                    {{ 'Retour à la liste' | trans }}
+                </twig:Button>
+            </div>
 
-
-{% block menuBackButton %}
-	<ion-button href="{{path('admin_note_index')}}" color="light">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-	</ion-button>
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2">{{ 'Zone de danger' | trans }}</h3>
+                <p class="text-red-700 text-sm mb-4">{{ 'Supprimer définitivement cette note.' | trans }}</p>
+                {{ include('admin/note/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

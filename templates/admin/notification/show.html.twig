@@ -1,47 +1,80 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}Notification
-{% endblock %}
+{% block title %}{{ 'Notification' | trans }}{% endblock %}
 
 {% block content %}
-	<h1>Notification</h1>
+    <twig:AdminHeader 
+        title="Notification" 
+        subtitle="{{ notification.title }}"
+        backPath="{{ path('admin_notification_index') }}"
+    />
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ notification.id }}</td>
-			</tr>
-			<tr>
-				<th>Message</th>
-				<td>{{ notification.message }}</td>
-			</tr>
-			<tr>
-				<th>Title</th>
-				<td>{{ notification.title }}</td>
-			</tr>
-			<tr>
-				<th>CreatedAt</th>
-				<td>{{ notification.createdAt ? notification.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>SentAt</th>
-				<td>{{ notification.sentAt ? notification.sentAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>SendAt</th>
-				<td>{{ notification.sendAt ? notification.sendAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>IsRead</th>
-				<td>{{ notification.isRead ? 'Yes' : 'No' }}</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800">{{ 'Contenu du message' | trans }}</h3>
+                    {% if notification.isRead %}
+                        <twig:Badge variant="outline" class="bg-slate-50 text-slate-500 border-slate-200">
+                            {{ 'Lu' | trans }}
+                        </twig:Badge>
+                    {% else %}
+                        <twig:Badge variant="default" class="bg-blue-50 text-blue-700 border-blue-100">
+                            {{ 'Non lu' | trans }}
+                        </twig:Badge>
+                    {% endif %}
+                </div>
+                <div class="p-8">
+                    <h1 class="text-2xl font-bold text-slate-900 mb-4">{{ notification.title }}</h1>
+                    <div class="p-6 bg-slate-50 rounded-xl border border-slate-100 prose prose-slate max-w-none text-slate-700">
+                        {{ notification.message | sanitize_html('app.notification_sanitizer') }}
+                    </div>
+                </div>
+            </div>
 
-	<a href="{{ path('admin_notification_index') }}">back to list</a>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800">{{ 'Informations Système'|trans }}</h3>
+                </div>
+                <div class="p-6">
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'ID' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-mono">#{{ notification.id }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Date de création' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ notification.createdAt ? notification.createdAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Date d\'envoi' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 text-emerald-600 font-semibold">{{ notification.sentAt ? notification.sentAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Prévu pour' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-semibold text-blue-600">{{ notification.sendAt ? notification.sendAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
-	<a href="{{ path('admin_notification_edit', {'id': notification.id}) }}">edit</a>
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col gap-3">
+                <twig:Button as="a" href="{{ path('admin_notification_edit', {'id': notification.id}) }}" variant="default" class="w-full">
+                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                    {{ 'Modifier' | trans }}
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('admin_notification_index') }}" variant="ghost" class="w-full">
+                    {{ 'Retour à la liste' | trans }}
+                </twig:Button>
+            </div>
 
-	{{ include('admin/notification/_delete_form.html.twig') }}
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2">{{ 'Zone de danger' | trans }}</h3>
+                <p class="text-red-700 text-sm mb-4">{{ 'Supprimer définitivement cette notification.' | trans }}</p>
+                {{ include('admin/notification/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

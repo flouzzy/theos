@@ -1,47 +1,73 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{page.title}}
-{% endblock %}
+{% block title %}{{ page.title }}{% endblock %}
 
 {% block content %}
+    <twig:AdminHeader 
+        title="Page" 
+        subtitle="{{ page.title }}"
+        backPath="{{ path('admin_page_index') }}"
+    />
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ page.id }}</td>
-			</tr>
-			<tr>
-				<th>Title</th>
-				<td>{{ page.title }}</td>
-			</tr>
-			<tr>
-				<th>Content</th>
-				<td>{{ page.content }}</td>
-			</tr>
-			<tr>
-				<th>Slug</th>
-				<td>{{ page.slug }}</td>
-			</tr>
-			<tr>
-				<th>CreatedAt</th>
-				<td>{{ page.createdAt ? page.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>UpdatedAt</th>
-				<td>{{ page.updatedAt ? page.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800">{{ 'Contenu de la page' | trans }}</h3>
+                </div>
+                <div class="p-8">
+                    <h1 class="text-3xl font-bold text-slate-900 mb-6">{{ page.title }}</h1>
+                    <div class="prose prose-slate max-w-none text-slate-700">
+                        {{ page.content|raw }}
+                    </div>
+                </div>
+            </div>
 
-	<a href="{{ path('admin_page_edit', {'id': page.id}) }}">edit</a>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800">{{ 'Informations Système' | trans }}</h3>
+                </div>
+                <div class="p-6">
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'ID' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-mono">#{{ page.id }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Slug' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">
+                                <code class="bg-slate-100 px-1.5 py-0.5 rounded">/{{ page.slug }}</code>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Créée le' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ page.createdAt ? page.createdAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Dernière modification' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">{{ page.updatedAt ? page.updatedAt|date('d/m/Y H:i') : '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
-	{{ include('admin/page/_delete_form.html.twig') }}
-{% endblock %}
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col gap-3">
+                <twig:Button as="a" href="{{ path('admin_page_edit', {'id': page.id}) }}" variant="default" class="w-full">
+                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                    {{ 'Modifier' | trans }}
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('admin_page_index') }}" variant="ghost" class="w-full">
+                    {{ 'Retour à la liste' | trans }}
+                </twig:Button>
+            </div>
 
-{% block menuBackButton %}
-	<ion-button href="{{path('admin_page_index')}}">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-	</ion-button>
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2">{{ 'Zone de danger' | trans }}</h3>
+                <p class="text-red-700 text-sm mb-4">{{ 'Supprimer définitivement cette page.' | trans }}</p>
+                {{ include('admin/page/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

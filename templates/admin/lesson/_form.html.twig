@@ -1,104 +1,109 @@
-<div data-controller="editor">
-	{{ form_start(form) }}
-	<ion-list>
+<div data-controller="editor" class="space-y-12">
+    {{ form_start(form, {'attr': {'class': 'divide-y divide-slate-100'}}) }}
+        
+        {# Section 1 : Informations Générales #}
+        <div class="pb-10">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <twig:ux:icon name="lucide:type" class="w-4 h-4" />
+                </div>
+                <h2 class="text-lg font-bold text-slate-800">{{ 'Informations Générales' | trans }}</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    {{ form_label(form.title, 'Titre de la leçon'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium', 'placeholder': 'Ex: Introduction à la théologie'}}) }}
+                    {{ form_errors(form.title) }}
+                </div>
+                <div class="space-y-2">
+                    {{ form_label(form.module, 'Module parent'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.module, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium'}}) }}
+                    {{ form_errors(form.module) }}
+                </div>
+                <div class="space-y-2">
+                    {{ form_label(form.itemOrder, 'Ordre d\'affichage'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.itemOrder, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium'}}) }}
+                    {{ form_errors(form.itemOrder) }}
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        {{ form_label(form.duration, 'Durée (min)'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                        {{ form_widget(form.duration, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium', 'placeholder': 'Ex: 15'}}) }}
+                        {{ form_errors(form.duration) }}
+                    </div>
+                    <div class="space-y-2">
+                        {{ form_label(form.status, 'Statut'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                        {{ form_widget(form.status, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium'}}) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-		{# Title #}
-		<ion-item lines="none">
-			<ion-label>
-				{{ form_label(form.title) }}
-				{{ form_widget(form.title) }}
-			</ion-label>
-			<ion-text color="danger">
-				{{ form_errors(form.title) }}
-			</ion-text>
-		</ion-item>
+        {# Section 2 : Résumé #}
+        <div class="py-10">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                    <twig:ux:icon name="lucide:align-left" class="w-4 h-4" />
+                </div>
+                <h2 class="text-lg font-bold text-slate-800">{{ 'Résumé & Description' | trans }}</h2>
+            </div>
+            <div class="space-y-2">
+                {{ form_label(form.description, 'Bref résumé'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-700 leading-relaxed', 'rows': 3, 'placeholder': 'Une courte description pour les listes...'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
 
-		{# description #}
-		<ion-item lines="none">
-			<ion-label>
-				{{ form_label(form.description) }}
-				{{ form_widget(form.description) }}
-			</ion-label>
-			<ion-text color="danger">
-				{{ form_errors(form.description) }}
-			</ion-text>
-		</ion-item>
+        {# Section 3 : Contenu Riche #}
+        <div class="py-10">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <twig:ux:icon name="lucide:file-edit" class="w-4 h-4" />
+                </div>
+                <h2 class="text-lg font-bold text-slate-800">{{ 'Contenu de la Leçon' | trans }}</h2>
+            </div>
+            <div class="space-y-2 prose prose-slate max-w-none">
+                {{ form_label(form.content, 'Corps de la leçon'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                <div class="rounded-xl border border-slate-200 overflow-hidden focus-within:ring-4 focus-within:ring-primary/10 transition-all">
+                    {{ form_widget(form.content, {'attr': {'class': 'text-editor'}}) }}
+                </div>
+                {{ form_errors(form.content) }}
+            </div>
+        </div>
 
-		{# Content #}
-		<ion-item lines="none">
-			<ion-label>
-				{{ form_label(form.content) }}
-				{{ form_widget(form.content) }}
-			</ion-label>
-			<ion-text color="danger">
-				{{ form_errors(form.content) }}
-			</ion-text>
-		</ion-item>
+        {# Section 4 : Médias #}
+        <div class="py-10">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
+                    <twig:ux:icon name="lucide:play" class="w-4 h-4" />
+                </div>
+                <h2 class="text-lg font-bold text-slate-800">{{ 'Support Vidéo' | trans }}</h2>
+            </div>
+            <div class="grid grid-cols-1 gap-8">
+                <div class="space-y-2">
+                    {{ form_label(form.videoUrl, 'Lien Vidéo (YouTube, Vimeo...)'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.videoUrl, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-mono text-sm', 'placeholder': 'https://www.youtube.com/watch?v=...'}}) }}
+                    {{ form_errors(form.videoUrl) }}
+                </div>
+                <div class="space-y-2">
+                    {{ form_label(form.videoEmbeded, 'Code Embed (Optionnel)'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                    {{ form_widget(form.videoEmbeded, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-600 font-mono text-xs bg-slate-50', 'rows': 4, 'placeholder': '<iframe ...></iframe>'}}) }}
+                    {{ form_errors(form.videoEmbeded) }}
+                </div>
+            </div>
+        </div>
 
-
-		{# videoEmbeded #}
-		<ion-item lines="none">
-			<ion-label>
-				{{ form_label(form.videoEmbeded) }}
-				{{ form_widget(form.videoEmbeded) }}
-			</ion-label>
-			<ion-text color="danger">
-				{{ form_errors(form.videoEmbeded) }}
-			</ion-text>
-		</ion-item>
-
-
-		{# videoUrl #}
-		<ion-item lines="none">
-			<ion-label>
-				{{ form_label(form.videoUrl) }}
-				{{ form_widget(form.videoUrl) }}
-			</ion-label>
-			<ion-text color="danger">
-				{{ form_errors(form.videoUrl) }}
-			</ion-text>
-		</ion-item>
-
-
-		{# module #}
-		<ion-item lines="none">
-			<ion-label>
-				{{ form_label(form.module) }}
-				{{ form_widget(form.module) }}
-			</ion-label>
-			<ion-text color="danger">
-				{{ form_errors(form.module) }}
-			</ion-text>
-		</ion-item>
-
-		{# itemOrder #}
-		<ion-item lines="none">
-			<ion-label>
-				{{ form_label(form.itemOrder) }}
-				{{ form_widget(form.itemOrder) }}
-			</ion-label>
-			<ion-text color="danger">
-				{{ form_errors(form.itemOrder) }}
-			</ion-text>
-		</ion-item>
-
-
-		{# status #}
-		<ion-item lines="none">
-			<ion-label>
-				{{ form_label(form.status) }}
-				{{ form_widget(form.status) }}
-			</ion-label>
-			<ion-text color="danger">
-				{{ form_errors(form.status) }}
-			</ion-text>
-		</ion-item>
-
-
-		<ion-item lines="none">
-			<ion-button color="success" size="normal" type="submit">{{ button_label|default('Save')|trans }}</ion-button>
-		</ion-item>
-
-	</ion-list>
-	{{ form_end(form) }}
+        {# Actions #}
+        <div class="pt-10 flex items-center justify-end gap-4">
+            <twig:Button as="a" href="{{ path('admin_lesson_index') }}" variant="ghost" class="text-slate-500 hover:bg-slate-100">
+                {{ 'Annuler' | trans }}
+            </twig:Button>
+            <twig:Button type="submit" variant="default" class="px-8 py-3 shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+                <twig:ux:icon name="lucide:save" class="w-5 h-5 mr-2" />
+                {{ button_label|default('Enregistrer')|trans }}
+            </twig:Button>
+        </div>
+    {{ form_end(form) }}
 </div>

@@ -1,4 +1,7 @@
-<form method="post" action="{{ path('admin_payment_delete', {'id': payment_setting.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ payment_setting.id) }}">
-	<button class="btn">Delete</button>
+<form method="post" action="{{ path('admin_payment_delete', {'id': payment_setting.id}) }}" onsubmit="return confirm('{{ 'Êtes-vous sûr de vouloir supprimer ce mode de paiement ?'|trans }}');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ payment_setting.id) }}">
+    <twig:Button variant="destructive" class="w-full">
+        <twig:ux:icon name="lucide:trash-2" class="w-4 h-4 mr-2" />
+        {{ 'Supprimer' | trans }}
+    </twig:Button>
 </form>

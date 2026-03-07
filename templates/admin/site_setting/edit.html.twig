@@ -1,38 +1,101 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{'Modifier Paramètre' | trans}}
-{% endblock %}
+{% block title %}{{ 'Paramètres Système' | trans }}{% endblock %}
 
 {% block content %}
-	<div class="container mx-auto py-10 max-w-4xl">
-		<div class="mb-6 flex items-center justify-between">
-			<div class="space-y-1">
-				<h2 class="text-2xl font-bold tracking-tight">
-					{{ 'Modifier le paramètre'|trans }} <span class="bg-muted text-lg px-2 py-1 rounded font-mono ml-2">{{ site_setting.name }}</span>
-				</h2>
-			</div>
-			<div class="flex items-center space-x-2">
-				<twig:Button asChild variant="outline">
-					<a href="{{ path('admin_setting_index') }}">
-						<twig:ux:icon name="lucide:arrow-left" class="mr-2 h-4 w-4" />
-						{{ 'Retour à la liste'|trans }}
-					</a>
-				</twig:Button>
-			</div>
-		</div>
+    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="flex items-start gap-5">
+            <div class="mt-1">
+                <twig:Button as="a" href="{{ path('admin_setting_index') }}" variant="outline" size="icon" class="rounded-xl shadow-sm hover:bg-white hover:text-primary transition-all">
+                    <twig:ux:icon name="lucide:chevron-left" class="w-5 h-5" />
+                </twig:Button>
+            </div>
+            <div>
+                <nav class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                    <span>{{ 'Administration' | trans }}</span>
+                    <twig:ux:icon name="lucide:chevron-right" class="w-3 h-3" />
+                    <a href="{{ path('admin_setting_index') }}" class="hover:text-primary transition-colors">{{ 'Configuration' | trans }}</a>
+                </nav>
+                <h1 class="text-4xl font-black text-slate-900 leading-tight">
+                    {{ 'Modifier le paramètre' | trans }}
+                </h1>
+                <p class="text-slate-500 font-medium mt-1 uppercase tracking-wide text-xs">
+                    {{ 'Clé technique :'|trans }} <span class="text-slate-900 font-bold ml-1">{{ site_setting.name }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
 
-		<div class="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
-			{{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
-				{{ form_widget(form) }}
-				
-				<div class="flex justify-end pt-4 border-t border-border mt-6">
-					<twig:Button type="submit">
-						<twig:ux:icon name="lucide:save" class="mr-2 h-4 w-4" />
-						{{ 'Enregistrer les modifications'|trans }}
-					</twig:Button>
-				</div>
-			{{ form_end(form) }}
-		</div>
-	</div>
+    <div class="grid grid-cols-1 xl:grid-cols-4 gap-8 max-w-[1600px] mx-auto">
+        <div class="xl:col-span-3">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-8">
+                    {{ form_start(form, {'attr': {'class': 'divide-y divide-slate-100'}}) }}
+                        
+                        {# Section 1 : Configuration #}
+                        <div class="pb-10">
+                            <div class="flex items-center gap-2 mb-6">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                    <twig:ux:icon name="lucide:settings" class="w-4 h-4" />
+                                </div>
+                                <h2 class="text-lg font-bold text-slate-800">{{ 'Détails du Paramètre' | trans }}</h2>
+                            </div>
+                            
+                            <div class="space-y-6">
+                                <div class="space-y-2">
+                                    {{ form_label(form.description, 'Description explicative'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-700 font-medium'}}) }}
+                                    {{ form_errors(form.description) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Section 2 : Valeur #}
+                        <div class="py-10">
+                            <div class="flex items-center gap-2 mb-6">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                                    <twig:ux:icon name="lucide:code-2" class="w-4 h-4" />
+                                </div>
+                                <h2 class="text-lg font-bold text-slate-800">{{ 'Valeur du Paramètre' | trans }}</h2>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                {{ form_label(form.value, 'Contenu / Valeur'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                                {{ form_widget(form.value, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-mono text-sm bg-slate-50 text-slate-800 leading-relaxed', 'rows': 12}}) }}
+                                {{ form_errors(form.value) }}
+                            </div>
+                        </div>
+
+                        {# Actions #}
+                        <div class="pt-10 flex items-center justify-end gap-4">
+                            <twig:Button as="a" href="{{ path('admin_setting_index') }}" variant="ghost" class="text-slate-500 hover:bg-slate-100">
+                                {{ 'Annuler' | trans }}
+                            </twig:Button>
+                            <twig:Button type="submit" variant="default" class="px-8 py-3 shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+                                <twig:ux:icon name="lucide:save" class="w-5 h-5 mr-2" />
+                                {{ 'Enregistrer les modifications'|trans }}
+                            </twig:Button>
+                        </div>
+                        
+                        {# Hidden Name Field #}
+                        <div class="hidden">
+                            {{ form_row(form.name) }}
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-8">
+            <div class="bg-amber-50 rounded-2xl p-6 border border-amber-100">
+                <h3 class="text-amber-900 font-bold mb-2 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:help-circle" class="w-4 h-4 text-amber-600" />
+                    {{ 'Aide' | trans }}
+                </h3>
+                <p class="text-amber-800 text-xs leading-relaxed">
+                    {{ site_setting.description|default('Ce paramètre contrôle une fonctionnalité spécifique du système. Manipulez avec précaution.'|trans) }}
+                </p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

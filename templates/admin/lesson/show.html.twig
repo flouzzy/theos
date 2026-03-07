@@ -1,39 +1,86 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}Lesson
-{% endblock %}
+{% block title %}{{ lesson.title }}{% endblock %}
 
 {% block content %}
-	<h1>Lesson</h1>
+    <twig:AdminHeader 
+        title="{{ lesson.title }}" 
+        subtitle="{{ 'Détails de la leçon' | trans }}"
+        backPath="{{ path('admin_lesson_index') }}"
+    />
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ lesson.id }}</td>
-			</tr>
-			<tr>
-				<th>Title</th>
-				<td>{{ lesson.title }}</td>
-			</tr>
-			<tr>
-				<th>Content</th>
-				<td>{{ lesson.content }}</td>
-			</tr>
-			<tr>
-				<th>CreatedAt</th>
-				<td>{{ lesson.createdAt ? lesson.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>UpdatedAt</th>
-				<td>{{ lesson.updatedAt ? lesson.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            {# Lesson Content #}
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="px-2 py-1 rounded bg-slate-200 text-slate-700 text-xs font-mono">#{{ lesson.id }}</span>
+                        <h3 class="font-bold text-slate-800">{{ 'Contenu de la leçon' | trans }}</h3>
+                    </div>
+                    <twig:Badge variant="{{ lesson.status == 'published' ? 'default' : 'outline' }}">
+                        {{ lesson.status | trans }}
+                    </twig:Badge>
+                </div>
+                <div class="p-8">
+                    <h1 class="text-3xl font-bold text-slate-900 mb-6">{{ lesson.title }}</h1>
+                    
+                    {% if lesson.description %}
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 mb-8 text-slate-600 italic">
+                            {{ lesson.description }}
+                        </div>
+                    {% endif %}
 
-	<a href="{{ path('admin_lesson_index') }}">back to list</a>
+                    <div class="prose prose-slate max-w-none text-slate-700">
+                        {{ lesson.content|raw }}
+                    </div>
+                </div>
+            </div>
 
-	<a href="{{ path('admin_lesson_edit', {'id': lesson.id}) }}">edit</a>
+            {# System Metadata #}
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <dt class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{{ 'Ordre' | trans }}</dt>
+                        <dd class="text-lg font-bold text-slate-900">{{ lesson.itemOrder }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{{ 'Créée le' | trans }}</dt>
+                        <dd class="text-sm text-slate-600">{{ lesson.createdAt ? lesson.createdAt|date('d/m/Y') : '-' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{{ 'Modifiée le' | trans }}</dt>
+                        <dd class="text-sm text-slate-600">{{ lesson.updatedAt ? lesson.updatedAt|date('d/m/Y') : '-' }}</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-	{{ include('admin/lesson/_delete_form.html.twig') }}
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">{{ 'Module Parent' | trans }}</label>
+                        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <twig:ux:icon name="lucide:layers" class="w-5 h-5 text-primary" />
+                            <span class="text-sm font-semibold text-slate-800">{{ lesson.module.title }}</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex flex-col gap-3">
+                        <twig:Button as="a" href="{{ path('admin_lesson_edit', {'id': lesson.id}) }}" variant="default" class="w-full">
+                            <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                            {{ 'Modifier la leçon' | trans }}
+                        </twig:Button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2">{{ 'Zone de danger' | trans }}</h3>
+                <p class="text-red-700 text-sm mb-4">{{ 'Supprimer définitivement cette leçon.' | trans }}</p>
+                {{ include('admin/lesson/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

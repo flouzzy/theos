@@ -1,67 +1,150 @@
-<div{{ attributes }} class="p-6">
+<div{{ attributes }} class="p-8 max-w-[1600px] mx-auto">
     {% set dashboard = this %}
-    <h1 class="text-3xl font-bold text-center mb-8">{{ 'Dashboard'|trans }}</h1>
+    
+    {# Header Premium #}
+    <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <h1 class="text-4xl font-black text-slate-900 leading-tight">
+                {{ 'Tableau de Bord'|trans }}
+            </h1>
+            <p class="text-slate-500 font-medium mt-1">
+                {{ 'Bienvenue dans votre centre de pilotage. Voici l\'activité de l\'académie.'|trans }}
+            </p>
+        </div>
+        <div class="flex items-center gap-3">
+            <twig:Button as="a" href="{{ path('admin_user_new') }}" variant="default" class="rounded-xl shadow-lg shadow-primary/20 bg-slate-900 border-none hover:bg-slate-800 transition-all px-6">
+                <twig:ux:icon name="lucide:user-plus" class="w-4 h-4 mr-2" />
+                {{ 'Nouvel Utilisateur'|trans }}
+            </twig:Button>
+            <twig:Button as="a" href="{{ path('admin_lesson_new') }}" variant="outline" class="rounded-xl border-slate-200 hover:bg-white hover:text-primary transition-all px-5">
+                <twig:ux:icon name="lucide:plus" class="w-4 h-4 mr-2" />
+                {{ 'Nouvelle Leçon'|trans }}
+            </twig:Button>
+        </div>
+    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {# Stats Grid #}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         {# Users Card #}
-        <a href="{{ path('admin_user_index') }}" class="block transition-transform hover:scale-105">
-            <twig:Card class="h-full text-center hover:bg-muted/50 transition-colors">
-                <twig:Card:Header>
-                    <twig:Card:Title class="text-xl">{{ 'Verified users'|trans }}</twig:Card:Title>
-                    <twig:Card:Description>
-                        {# Icon placeholder - standard User icon #}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mt-2 h-8 w-8 text-primary"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    </twig:Card:Description>
-                </twig:Card:Header>
-                <twig:Card:Content>
-                    <p class="text-4xl font-bold text-primary">{{ dashboard.usersTotal }}</p>
-                </twig:Card:Content>
-            </twig:Card>
+        <a href="{{ path('admin_user_index') }}" class="group relative overflow-hidden bg-white rounded-3xl p-8 border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-blue-200 hover:-translate-y-1">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50/50 rounded-full blur-2xl group-hover:bg-blue-100/50 transition-colors"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                    <twig:ux:icon name="lucide:users" class="w-7 h-7" />
+                </div>
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">{{ 'Utilisateurs'|trans }}</h3>
+                <div class="text-4xl font-black text-slate-900 mb-1">{{ dashboard.usersTotal }}</div>
+                <div class="text-xs font-bold text-blue-600">{{ 'Vérifiés'|trans }}</div>
+            </div>
         </a>
 
         {# Courses Card #}
-        <a href="{{ path('admin_completion_index', {_fragment:'completion-course'}) }}" class="block transition-transform hover:scale-105">
-            <twig:Card class="h-full text-center hover:bg-muted/50 transition-colors">
-                <twig:Card:Header>
-                    <twig:Card:Title class="text-xl">{{ 'Completed courses'|trans }}</twig:Card:Title>
-                    <twig:Card:Description>
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mt-2 h-8 w-8 text-primary"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-                    </twig:Card:Description>
-                </twig:Card:Header>
-                <twig:Card:Content>
-                    <p class="text-4xl font-bold text-primary">{{ dashboard.coursesTotal }}</p>
-                </twig:Card:Content>
-            </twig:Card>
+        <a href="{{ path('admin_completion_index', {_fragment:'completion-course'}) }}" class="group relative overflow-hidden bg-white rounded-3xl p-8 border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-orange-200 hover:-translate-y-1">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-50/50 rounded-full blur-2xl group-hover:bg-orange-100/50 transition-colors"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-all">
+                    <twig:ux:icon name="lucide:graduation-cap" class="w-7 h-7" />
+                </div>
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">{{ 'Cours'|trans }}</h3>
+                <div class="text-4xl font-black text-slate-900 mb-1">{{ dashboard.coursesTotal }}</div>
+                <div class="text-xs font-bold text-orange-600">{{ 'Complétés'|trans }}</div>
+            </div>
         </a>
 
         {# Modules Card #}
-        <a href="{{ path('admin_completion_index', {_fragment:'completion-module'}) }}" class="block transition-transform hover:scale-105">
-            <twig:Card class="h-full text-center hover:bg-muted/50 transition-colors">
-                 <twig:Card:Header>
-                    <twig:Card:Title class="text-xl">{{ 'Completed modules'|trans }}</twig:Card:Title>
-                    <twig:Card:Description>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mt-2 h-8 w-8 text-primary"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-                    </twig:Card:Description>
-                </twig:Card:Header>
-                <twig:Card:Content>
-                     <p class="text-4xl font-bold text-primary">{{ dashboard.modulesTotal }}</p>
-                </twig:Card:Content>
-            </twig:Card>
+        <a href="{{ path('admin_completion_index', {_fragment:'completion-module'}) }}" class="group relative overflow-hidden bg-white rounded-3xl p-8 border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-indigo-200 hover:-translate-y-1">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-50/50 rounded-full blur-2xl group-hover:bg-indigo-100/50 transition-colors"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                    <twig:ux:icon name="lucide:layers" class="w-7 h-7" />
+                </div>
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">{{ 'Modules'|trans }}</h3>
+                <div class="text-4xl font-black text-slate-900 mb-1">{{ dashboard.modulesTotal }}</div>
+                <div class="text-xs font-bold text-indigo-600">{{ 'Validés'|trans }}</div>
+            </div>
         </a>
 
         {# Lessons Card #}
-        <a href="{{ path('admin_completion_index', {_fragment:'completion-lesson'}) }}" class="block transition-transform hover:scale-105">
-            <twig:Card class="h-full text-center hover:bg-muted/50 transition-colors">
-                <twig:Card:Header>
-                    <twig:Card:Title class="text-xl">{{ 'Completed lessons'|trans }}</twig:Card:Title>
-                    <twig:Card:Description>
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mt-2 h-8 w-8 text-primary"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M8 15l4 3 4-3"/></svg>
-                    </twig:Card:Description>
-                </twig:Card:Header>
-                <twig:Card:Content>
-                     <p class="text-4xl font-bold text-primary">{{ dashboard.lessonsTotal }}</p>
-                </twig:Card:Content>
-            </twig:Card>
+        <a href="{{ path('admin_completion_index', {_fragment:'completion-lesson'}) }}" class="group relative overflow-hidden bg-white rounded-3xl p-8 border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-emerald-200 hover:-translate-y-1">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50/50 rounded-full blur-2xl group-hover:bg-emerald-100/50 transition-colors"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-all">
+                    <twig:ux:icon name="lucide:book-open" class="w-7 h-7" />
+                </div>
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">{{ 'Leçons'|trans }}</h3>
+                <div class="text-4xl font-black text-slate-900 mb-1">{{ dashboard.lessonsTotal }}</div>
+                <div class="text-xs font-bold text-emerald-600">{{ 'Terminées'|trans }}</div>
+            </div>
         </a>
+    </div>
+
+    {# Quick Access Section #}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-xl font-black text-slate-900 flex items-center gap-3">
+                        <div class="w-2 h-8 bg-primary rounded-full"></div>
+                        {{ 'Accès Rapides'|trans }}
+                    </h2>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <twig:Button as="a" href="{{ path('admin_cohort_index') }}" variant="outline" class="h-24 rounded-2xl flex flex-col gap-2 hover:border-primary hover:text-primary transition-all border-slate-100 bg-slate-50/50">
+                        <twig:ux:icon name="lucide:users-round" class="w-6 h-6" />
+                        <span class="text-xs font-bold uppercase tracking-wider">{{ 'Promotions'|trans }}</span>
+                    </twig:Button>
+                    <twig:Button as="a" href="{{ path('admin_course_index') }}" variant="outline" class="h-24 rounded-2xl flex flex-col gap-2 hover:border-primary hover:text-primary transition-all border-slate-100 bg-slate-50/50">
+                        <twig:ux:icon name="lucide:monitor-play" class="w-6 h-6" />
+                        <span class="text-xs font-bold uppercase tracking-wider">{{ 'Cours'|trans }}</span>
+                    </twig:Button>
+                    <twig:Button as="a" href="{{ path('admin_page_index') }}" variant="outline" class="h-24 rounded-2xl flex flex-col gap-2 hover:border-primary hover:text-primary transition-all border-slate-100 bg-slate-50/50">
+                        <twig:ux:icon name="lucide:file-text" class="w-6 h-6" />
+                        <span class="text-xs font-bold uppercase tracking-wider">{{ 'Pages'|trans }}</span>
+                    </twig:Button>
+                    <twig:Button as="a" href="{{ path('admin_badge_type_index') }}" variant="outline" class="h-24 rounded-2xl flex flex-col gap-2 hover:border-primary hover:text-primary transition-all border-slate-100 bg-slate-50/50">
+                        <twig:ux:icon name="lucide:award" class="w-6 h-6" />
+                        <span class="text-xs font-bold uppercase tracking-wider">{{ 'Badges'|trans }}</span>
+                    </twig:Button>
+                    <twig:Button as="a" href="{{ path('admin_setting_index') }}" variant="outline" class="h-24 rounded-2xl flex flex-col gap-2 hover:border-primary hover:text-primary transition-all border-slate-100 bg-slate-50/50">
+                        <twig:ux:icon name="lucide:settings-2" class="w-6 h-6" />
+                        <span class="text-xs font-bold uppercase tracking-wider">{{ 'Paramètres'|trans }}</span>
+                    </twig:Button>
+                    <twig:Button as="a" href="{{ path('admin_payment_index') }}" variant="outline" class="h-24 rounded-2xl flex flex-col gap-2 hover:border-primary hover:text-primary transition-all border-slate-100 bg-slate-50/50">
+                        <twig:ux:icon name="lucide:wallet" class="w-6 h-6" />
+                        <span class="text-xs font-bold uppercase tracking-wider">{{ 'Paiements'|trans }}</span>
+                    </twig:Button>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden group shadow-xl">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/30 transition-all"></div>
+                <h3 class="text-xl font-black mb-4 relative z-10">{{ 'Besoin d\'aide ?'|trans }}</h3>
+                <p class="text-slate-400 text-sm mb-6 relative z-10 leading-relaxed">
+                    {{ 'Consultez la documentation ou contactez l\'équipe technique si vous rencontrez un problème avec la plateforme.'|trans }}
+                </p>
+                <twig:Button as="a" href="#" variant="default" class="w-full rounded-xl bg-primary hover:bg-white hover:text-primary transition-all border-none font-bold py-3 text-sm">
+                    {{ 'Documentation'|trans }}
+                </twig:Button>
+            </div>
+            
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <h3 class="font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:info" class="w-5 h-5 text-primary" />
+                    {{ 'Informations Système'|trans }}
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center py-3 border-b border-slate-50">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ 'Version'|trans }}</span>
+                        <span class="text-sm font-black text-slate-900">v2.4.0</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-50">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ 'PHP'|trans }}</span>
+                        <span class="text-sm font-black text-slate-900">8.4</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

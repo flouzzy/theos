@@ -1,56 +1,53 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{'Paramètres Généraux' | trans}}
-{% endblock %}
+{% block title %}{{ 'Paramètres Généraux' | trans }}{% endblock %}
 
 {% block content %}
-	<div class="container mx-auto py-10">
-		<div class="flex justify-between items-center mb-6">
-			<h1 class="text-2xl font-bold tracking-tight">{{ 'Paramètres Généraux'|trans }}</h1>
-		</div>
+    <twig:AdminHeader 
+        title="{{ 'Paramètres Généraux' | trans }}" 
+        subtitle="Configurez les variables globales de la plateforme (Coach IA, etc.)"
+    />
 
-		<div class="rounded-md border bg-card">
-			<twig:Table>
-				<twig:Table:Header>
-					<twig:Table:Row>
-						<twig:Table:Head>{{ 'Clé'|trans }}</twig:Table:Head>
-						<twig:Table:Head>{{ 'Description'|trans }}</twig:Table:Head>
-						<twig:Table:Head>{{ 'Valeur'|trans }}</twig:Table:Head>
-						<twig:Table:Head class="text-right">{{ 'Actions'|trans }}</twig:Table:Head>
-					</twig:Table:Row>
-				</twig:Table:Header>
-				<twig:Table:Body>
-					{% for setting in settings %}
-						<twig:Table:Row>
-							<twig:Table:Cell class="font-medium">
-								<span class="bg-muted px-2 py-1 rounded text-xs font-mono">{{ setting.name }}</span>
-							</twig:Table:Cell>
-							<twig:Table:Cell class="text-muted-foreground text-sm">
-								{{ setting.description }}
-							</twig:Table:Cell>
-							<twig:Table:Cell class="text-sm">
-								{{ setting.value|striptags|u.truncate(50, '...') }}
-							</twig:Table:Cell>
-							<twig:Table:Cell class="text-right">
-								<div class="flex justify-end gap-2">
-									<twig:Button variant="ghost" size="sm" asChild>
-										<a href="{{ path('admin_setting_edit', {id: setting.id}) }}">
-											<twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
-										</a>
-									</twig:Button>
-								</div>
-							</twig:Table:Cell>
-						</twig:Table:Row>
-					{% else %}
-						<twig:Table:Row>
-							<twig:Table:Cell colspan="4" class="h-24 text-center text-muted-foreground">
-								{{ 'Aucun paramètre trouvé.'|trans }}
-							</twig:Table:Cell>
-						</twig:Table:Row>
-					{% endfor %}
-				</twig:Table:Body>
-			</twig:Table>
-		</div>
-	</div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <twig:Table>
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:Header>{{ 'Clé' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Description' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Valeur' | trans }}</twig:Table:Header>
+                    <twig:Table:Header class="text-right">{{ 'Actions' | trans }}</twig:Table:Header>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                {% for setting in settings %}
+                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
+                        <twig:Table:Cell class="font-medium">
+                            <code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono text-primary border border-slate-200">
+                                {{ setting.name }}
+                            </code>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-slate-600 text-sm italic">
+                            {{ setting.description }}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-sm text-slate-500 max-w-md">
+                            <div class="line-clamp-2">
+                                {{ setting.value|striptags|u.truncate(150, '...') }}
+                            </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-right">
+                            <twig:Button as="a" href="{{ path('admin_setting_edit', {id: setting.id}) }}" variant="outline" size="icon-sm" title="{{ 'Modifier' | trans }}">
+                                <twig:ux:icon name="lucide:pencil" class="w-4 h-4 text-slate-600" />
+                            </twig:Button>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell colspan="4" class="py-12 text-center text-slate-400 italic">
+                            {{ 'Aucun paramètre trouvé.' | trans }}
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+            </twig:Table:Body>
+        </twig:Table>
+    </div>
 {% endblock %}

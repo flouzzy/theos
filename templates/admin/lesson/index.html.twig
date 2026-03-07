@@ -1,14 +1,69 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block title %}
-	{{'Lessons' | trans}}
+    {{ 'Lessons' | trans }}
 {% endblock %}
 
 {% block content %}
-	{% include "admin/lesson/_list.html.twig" %}
-	<ion-fab slot="fixed" vertical="bottom" horizontal="end">
-		<ion-fab-button href="{{ path('admin_lesson_new') }}">
-			<ion-icon name="add"></ion-icon>
-		</ion-fab-button>
-	</ion-fab>
+    <twig:AdminHeader 
+        title="Leçons" 
+        subtitle="Gérez le contenu pédagogique de vos modules"
+        addPath="{{ path('admin_lesson_new') }}"
+        addLabel="Nouvelle Leçon"
+    />
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <twig:Table>
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:Header class="w-16">Id</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Titre' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Module' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Ordre' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Statut' | trans }}</twig:Table:Header>
+                    <twig:Table:Header class="text-right">{{ 'Actions' | trans }}</twig:Table:Header>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                {% for lesson in lessons %}
+                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
+                        <twig:Table:Cell class="font-medium text-slate-500">#{{ lesson.id }}</twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <div class="font-semibold text-slate-900">{{ lesson.title }}</div>
+                            <div class="text-xs text-slate-400 truncate max-w-xs">{{ lesson.description|u.truncate(60, '...') }}</div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <span class="text-sm text-slate-600">{{ lesson.module.title }}</span>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-mono">
+                                {{ lesson.itemOrder }}
+                            </span>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <twig:Badge variant="{{ lesson.status == 'published' ? 'default' : 'outline' }}">
+                                {{ lesson.status | trans }}
+                            </twig:Badge>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <twig:Button as="a" href="{{ path('admin_lesson_show', {'id': lesson.id}) }}" variant="ghost" size="icon-sm" title="{{ 'Voir' | trans }}">
+                                    <twig:ux:icon name="lucide:eye" class="w-4 h-4" />
+                                </twig:Button>
+                                <twig:Button as="a" href="{{ path('admin_lesson_edit', {'id': lesson.id}) }}" variant="outline" size="icon-sm" title="{{ 'Modifier' | trans }}">
+                                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 text-slate-600" />
+                                </twig:Button>
+                            </div>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell colspan="6" class="py-12 text-center text-slate-400">
+                            {{ 'Aucun enregistrement trouvé' | trans }}
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+            </twig:Table:Body>
+        </twig:Table>
+    </div>
 {% endblock %}

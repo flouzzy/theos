@@ -78,4 +78,15 @@ class CohortController extends AbstractController
 
         return $this->redirectToRoute('admin_cohort_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/regenerate-token', name: 'regenerate_token', methods: ['GET'])]
+    public function regenerateToken(Cohort $cohort, EntityManagerInterface $entityManager): Response
+    {
+        $cohort->setInvitationToken(bin2hex(random_bytes(16)));
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Le lien d\'invitation a été régénéré avec succès.');
+
+        return $this->redirectToRoute('admin_cohort_edit', ['id' => $cohort->getId()]);
+    }
 }

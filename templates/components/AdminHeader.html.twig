@@ -1,0 +1,64 @@
+<div {{ attributes }} class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {# Title & Subtitle Section #}
+        <div class="flex items-center gap-4">
+            {% if backPath %}
+                <twig:Button as="a" href="{{ backPath }}" variant="ghost" size="icon-sm">
+                    <twig:ux:icon name="lucide:arrow-left" class="w-4 h-4" />
+                </twig:Button>
+            {% endif %}
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 tracking-tight">{{ title | trans }}</h1>
+                <p class="text-sm text-slate-500">{{ subtitle | trans }}</p>
+            </div>
+        </div>
+
+        {# Search & Actions Section #}
+        <div class="flex items-center gap-3">
+            {# Quick Search (Live) #}
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                    <twig:ux:icon name="lucide:search" class="w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+                </div>
+                <input 
+                    type="text" 
+                    data-model="query"
+                    placeholder="{{ 'Recherche rapide...' | trans }}"
+                    class="pl-10 pr-4 py-2 bg-slate-100/50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all w-64"
+                >
+                {% if query %}
+                    <button 
+                        data-action="live#action" 
+                        data-live-action-param="reset" {# Need to add reset action or just clear model #}
+                        onclick="this.previousElementSibling.value = ''; this.previousElementSibling.dispatchEvent(new Event('input'))"
+                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-slate-600"
+                    >
+                        <twig:ux:icon name="lucide:x" class="w-3.5 h-3.5" />
+                    </button>
+                {% endif %}
+            </div>
+
+            {# Global Divider #}
+            <div class="h-6 w-px bg-slate-200 mx-1"></div>
+
+            {# Add Action #}
+            {% if addPath %}
+                <twig:Button as="a" href="{{ addPath }}" variant="default" class="shadow-sm shadow-primary/20">
+                    <twig:ux:icon name="lucide:plus" class="w-4 h-4 mr-2" />
+                    {{ addLabel|default('Nouveau')|trans }}
+                </twig:Button>
+            {% endif %}
+        </div>
+    </div>
+    
+    {# Global Search Results overlay (Optional) #}
+    {% if query and this.results %}
+        <div class="absolute z-50 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+            <div class="p-2 space-y-1">
+                {% for result in this.results %}
+                    {# Render results here #}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>

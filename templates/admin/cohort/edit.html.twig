@@ -1,19 +1,100 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block menuBackButton %}
-	<ion-button href="{{path('admin_cohort_index')}}">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-		{{'Back' | trans}}
-	</ion-button>
-{% endblock %}
-
-{% block title %}
-	{{'Edit cohort' | trans}}
-{% endblock %}
+{% block title %}{{ 'Modifier la Promotion' | trans }}{% endblock %}
 
 {% block content %}
+    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="flex items-start gap-5">
+            <div class="mt-1">
+                <twig:Button as="a" href="{{ path('admin_cohort_index') }}" variant="outline" size="icon" class="rounded-xl shadow-sm hover:bg-white hover:text-primary transition-all">
+                    <twig:ux:icon name="lucide:chevron-left" class="w-5 h-5" />
+                </twig:Button>
+            </div>
+            <div>
+                <nav class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                    <span>{{ 'Administration' | trans }}</span>
+                    <twig:ux:icon name="lucide:chevron-right" class="w-3 h-3" />
+                    <a href="{{ path('admin_cohort_index') }}" class="hover:text-primary transition-colors">{{ 'Promotions' | trans }}</a>
+                </nav>
+                <h1 class="text-4xl font-black text-slate-900 leading-tight">
+                    {{ 'Modifier la Promotion' | trans }}
+                </h1>
+                <p class="text-slate-500 font-medium mt-1">
+                    {{ cohort.title }} — <span class="text-primary/70 font-bold ml-1">{{ cohort.year }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
 
-	{{ include('admin/cohort/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="grid grid-cols-1 xl:grid-cols-4 gap-8 max-w-[1600px] mx-auto">
+        <div class="xl:col-span-3">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-8">
+                    {{ include('admin/cohort/_form.html.twig', {'button_label': 'Mettre à jour la promotion'}) }}
+                </div>
+            </div>
+        </div>
 
-	{{ include('admin/cohort/_delete_form.html.twig') }}
+        <div class="space-y-8">
+            {# Preview Card #}
+            {% if cohort.image %}
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <img src="{{ cohort.image }}" alt="{{ cohort.title }}" class="w-full h-48 object-cover">
+                    <div class="p-4 border-t border-slate-50">
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">{{ 'Aperçu Image' | trans }}</p>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:info" class="w-4 h-4 text-primary" />
+                    {{ 'Statistiques' | trans }}
+                </h3>
+                <div class="space-y-4 text-sm">
+                    <div class="flex justify-between py-2 border-b border-slate-50">
+                        <span class="text-slate-500">{{ 'Étudiants' | trans }}</span>
+                        <span class="text-slate-900 font-bold">{{ cohort.users|length }}</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-50">
+                        <span class="text-slate-500">{{ 'Création' | trans }}</span>
+                        <span class="text-slate-900 font-semibold">{{ cohort.createdAt|date('d/m/Y') }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Invitation Link #}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 overflow-hidden relative group">
+                <div class="absolute -right-4 -top-4 w-20 h-20 bg-primary/5 rounded-full blur-2xl transition-all group-hover:bg-primary/10"></div>
+                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:share-2" class="w-4 h-4 text-primary" />
+                    {{ 'Lien d\'invitation' | trans }}
+                </h3>
+                <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+                    {{ 'Partagez ce lien pour permettre l\'auto-inscription dans cette promotion.' | trans }}
+                </p>
+                <div class="space-y-3">
+                    <div class="relative">
+                        <input type="text" readonly value="{{ url('cohort_join', {token: cohort.invitationToken}) }}" class="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-mono text-slate-600 focus:ring-0 outline-none">
+                        <button onclick="navigator.clipboard.writeText('{{ url('cohort_join', {token: cohort.invitationToken}) }}'); alert('Lien copié !')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1">
+                            <twig:ux:icon name="lucide:copy" class="w-4 h-4" />
+                        </button>
+                    </div>
+                    <a href="{{ path('admin_cohort_regenerate_token', {id: cohort.id}) }}" class="text-[10px] font-bold text-primary hover:underline flex items-center gap-1">
+                        <twig:ux:icon name="lucide:refresh-cw" class="w-3 h-3" />
+                        {{ 'Régénérer le lien' | trans }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-red-50 rounded-2xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:alert-triangle" class="w-4 h-4 text-red-600" />
+                    {{ 'Zone de danger' | trans }}
+                </h3>
+                <p class="text-red-700 text-xs mb-4">{{ 'La suppression d\'une promotion est définitive et peut affecter les comptes étudiants associés.' | trans }}</p>
+                {{ include('admin/cohort/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

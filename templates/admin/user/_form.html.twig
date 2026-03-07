@@ -1,4 +1,67 @@
-{{ form_start(form) }}
-{{ form_widget(form) }}
-<ion-button type="submit">{{ button_label|default('Save')|trans }}</ion-button>
+{{ form_start(form, {'attr': {'class': 'divide-y divide-slate-100'}}) }}
+    
+    {# Section 1 : Identité #}
+    <div class="pb-10">
+        <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                <twig:ux:icon name="lucide:user" class="w-4 h-4" />
+            </div>
+            <h2 class="text-lg font-bold text-slate-800">{{ 'Identité & Contact' | trans }}</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-2">
+                {{ form_label(form.fullname, 'Nom complet'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.fullname, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium', 'placeholder': 'Jean Dupont'}}) }}
+                {{ form_errors(form.fullname) }}
+            </div>
+            <div class="space-y-2">
+                {{ form_label(form.email, 'Adresse E-mail'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.email, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium', 'placeholder': 'jean@exemple.com'}}) }}
+                {{ form_errors(form.email) }}
+            </div>
+        </div>
+    </div>
+
+    {# Section 2 : Accès & Sécurité #}
+    <div class="py-10">
+        <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                <twig:ux:icon name="lucide:shield-check" class="w-4 h-4" />
+            </div>
+            <h2 class="text-lg font-bold text-slate-800">{{ 'Accès & Sécurité' | trans }}</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-2">
+                {{ form_label(form.roles, 'Rôles & Permissions'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.roles, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium h-32'}}) }}
+                <p class="text-[10px] text-slate-400 font-medium mt-1 leading-tight italic">{{ 'Maintenez CMD/Ctrl pour sélectionner plusieurs rôles.'|trans }}</p>
+                {{ form_errors(form.roles) }}
+            </div>
+            <div class="space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-bold text-slate-700">{{ 'Compte vérifié'|trans }}</p>
+                            <p class="text-xs text-slate-500">{{ 'L\'utilisateur a confirmé son e-mail.'|trans }}</p>
+                        </div>
+                        {{ form_widget(form.isVerified, {'attr': {'class': 'w-6 h-6 text-primary border-slate-300 rounded-lg focus:ring-primary/20 transition-all cursor-pointer'}}) }}
+                    </div>
+                    {{ form_errors(form.isVerified) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Actions #}
+    <div class="pt-10 flex items-center justify-end gap-4">
+        <twig:Button as="a" href="{{ path('admin_user_index') }}" variant="ghost" class="text-slate-500 hover:bg-slate-100">
+            {{ 'Annuler' | trans }}
+        </twig:Button>
+        <twig:Button type="submit" variant="default" class="px-8 py-3 shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+            <twig:ux:icon name="lucide:save" class="w-5 h-5 mr-2" />
+            {{ button_label|default('Enregistrer')|trans }}
+        </twig:Button>
+    </div>
 {{ form_end(form) }}

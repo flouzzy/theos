@@ -1,99 +1,125 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block title %}
-	{{'Users' | trans}}
+    {{ 'Users' | trans }}
 {% endblock %}
 
 {% block content %}
-	<div class="container mx-auto py-10">
-		<div class="flex justify-between items-center mb-6">
-			<h1 class="text-2xl font-bold tracking-tight">{{ 'Users'|trans }}</h1>
-				<a href="{{ path('admin_user_new') }}">
-					<twig:ux:icon name="lucide:plus" class="mr-2 h-4 w-4" />
-					{{ 'New User'|trans }}
-				</a>
-		</div>
+    <twig:AdminHeader 
+        title="Utilisateurs" 
+        subtitle="Gérez les membres et les instructeurs de l'académie"
+        addPath="{{ path('admin_user_new') }}"
+        addLabel="Nouvel Utilisateur"
+    />
 
-		<div class="rounded-md border">
-			<twig:Table>
-				<twig:Table:Header>
-					<twig:Table:Row>
-						<twig:Table:Head>{{ 'User'|trans }}</twig:Table:Head>
-						<twig:Table:Head>{{ 'Roles'|trans }}</twig:Table:Head>
-						<twig:Table:Head>{{ 'Status'|trans }}</twig:Table:Head>
-						<twig:Table:Head>{{ 'Completion'|trans }}</twig:Table:Head>
-						<twig:Table:Head class="text-right">{{ 'Actions'|trans }}</twig:Table:Head>
-					</twig:Table:Row>
-				</twig:Table:Header>
-				<twig:Table:Body>
-					{% for user in users %}
-						<twig:Table:Row>
-							<twig:Table:Cell class="font-medium">
-								<div class="flex items-center gap-3">
-									<twig:Avatar>
-										<twig:Avatar:Image src="{{ asset(user.image) }}" alt="{{ user.fullname }}" />
-										<twig:Avatar:Text>{{ user.fullname|slice(0, 2)|upper }}</twig:Avatar:Text>
-									</twig:Avatar>
-									<div class="flex flex-col">
-										<span>{{ user.fullname }}</span>
-										<span class="text-xs text-muted-foreground">{{ user.email }}</span>
-									</div>
-								</div>
-							</twig:Table:Cell>
-							<twig:Table:Cell>
-								{% for role in user.roles %}
-									{% if role != 'ROLE_USER' %}
-										<twig:Badge variant="outline" class="mr-1 mb-1">{{ role|replace({'ROLE_': ''})|capitalize }}</twig:Badge>
-									{% endif %}
-								{% endfor %}
-							</twig:Table:Cell>
-							<twig:Table:Cell>
-								{% if user.isVerified %}
-									<twig:Badge variant="secondary" class="bg-green-100 text-green-800 hover:bg-green-100">Verified</twig:Badge>
-								{% else %}
-									<twig:Badge variant="secondary" class="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pending</twig:Badge>
-								{% endif %}
-							</twig:Table:Cell>
-							<twig:Table:Cell>
-								<div class="text-sm">
-									<div>{{ completionCounts[user.id]['courses'] ?? 0 }} Courses</div>
-									<div>{{ completionCounts[user.id]['modules'] ?? 0 }} Modules</div>
-								</div>
-							</twig:Table:Cell>
-							<twig:Table:Cell class="text-right">
-								<twig:Button variant="ghost" size="sm" asChild>
-									<a href="{{ path('admin_user_edit', {id: user.id}) }}">Edit</a>
-								</twig:Button>
-							</twig:Table:Cell>
-						</twig:Table:Row>
-					{% else %}
-						<twig:Table:Row>
-							<twig:Table:Cell colspan="5" class="h-24 text-center">
-								{{ 'No users found.'|trans }}
-							</twig:Table:Cell>
-						</twig:Table:Row>
-					{% endfor %}
-				</twig:Table:Body>
-			</twig:Table>
-		</div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <twig:Table>
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:Header>{{ 'Utilisateur' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Rôles' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Statut' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Progression' | trans }}</twig:Table:Header>
+                    <twig:Table:Header class="text-right">{{ 'Actions' | trans }}</twig:Table:Header>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                {% for user in users %}
+                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
+                        <twig:Table:Cell>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 overflow-hidden font-bold uppercase border border-slate-200">
+                                    {% if user.image %}
+                                        <img src="{{ asset(user.image) }}" alt="" class="w-full h-full object-cover">
+                                    {% else %}
+                                        {{ user.fullname|slice(0, 2) }}
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-slate-900 leading-tight">{{ user.fullname }}</div>
+                                    <div class="text-xs text-slate-400">{{ user.email }}</div>
+                                </div>
+                            </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <div class="flex flex-wrap gap-1">
+                                {% for role in user.roles %}
+                                    {% if role != 'ROLE_USER' %}
+                                        <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200">
+                                            {{ role|replace({'ROLE_': ''}) }}
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            {% if user.isVerified %}
+                                <twig:Badge variant="default" class="bg-emerald-50 text-emerald-700 border-emerald-100 shadow-none">
+                                    <twig:ux:icon name="lucide:check-circle" class="w-3 h-3 mr-1" />
+                                    {{ 'Vérifié' | trans }}
+                                </twig:Badge>
+                            {% else %}
+                                <twig:Badge variant="outline" class="bg-amber-50 text-amber-700 border-amber-100 shadow-none">
+                                    <twig:ux:icon name="lucide:clock" class="w-3 h-3 mr-1" />
+                                    {{ 'En attente' | trans }}
+                                </twig:Badge>
+                            {% endif %}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <div class="text-xs text-slate-500 space-y-0.5">
+                                <div class="flex items-center gap-1">
+                                    <twig:ux:icon name="lucide:book-open" class="w-3 h-3" />
+                                    {{ completionCounts[user.id]['courses'] ?? 0 }} {{ 'Cours' | trans }}
+                                </div>
+                                <div class="flex items-center gap-1 text-slate-400">
+                                    <twig:ux:icon name="lucide:layers" class="w-3 h-3" />
+                                    {{ completionCounts[user.id]['modules'] ?? 0 }} {{ 'Modules' | trans }}
+                                </div>
+                            </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <twig:Button as="a" href="{{ path('admin_user_show', {'id': user.id}) }}" variant="ghost" size="icon-sm" title="{{ 'Voir' | trans }}">
+                                    <twig:ux:icon name="lucide:eye" class="w-4 h-4" />
+                                </twig:Button>
+                                <twig:Button as="a" href="{{ path('admin_user_edit', {'id': user.id}) }}" variant="outline" size="icon-sm" title="{{ 'Modifier' | trans }}">
+                                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 text-slate-600" />
+                                </twig:Button>
+                            </div>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell colspan="5" class="py-12 text-center text-slate-400">
+                            {{ 'Aucun utilisateur trouvé' | trans }}
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+            </twig:Table:Body>
+        </twig:Table>
+    </div>
 
-		<div class="mt-4 flex items-center justify-center space-x-2">
-			{% if currentPage > 1 %}
-				<a href="{{ path('admin_user_index', {page: currentPage - 1}) }}" class="px-3 py-1 border rounded hover:bg-gray-100">
-					{{ 'Previous'|trans }}
-				</a>
-			{% endif %}
+    {% if totalPages > 1 %}
+        <div class="mt-8 flex items-center justify-between">
+            <div class="text-sm text-slate-500">
+                {{ 'Page %current% sur %total%'|trans({'%current%': currentPage, '%total%': totalPages}) }}
+            </div>
+            <div class="flex items-center gap-2">
+                {% if currentPage > 1 %}
+                    <twig:Button as="a" href="{{ path('admin_user_index', {page: currentPage - 1}) }}" variant="outline" size="sm">
+                        <twig:ux:icon name="lucide:chevron-left" class="w-4 h-4 mr-1" />
+                        {{ 'Précédent' | trans }}
+                    </twig:Button>
+                {% endif %}
 
-			<span class="px-3 py-1">
-				{{ 'Page %current% of %total%'|trans({'%current%': currentPage, '%total%': totalPages}) }}
-			</span>
-
-			{% if currentPage < totalPages %}
-				<a href="{{ path('admin_user_index', {page: currentPage + 1}) }}" class="px-3 py-1 border rounded hover:bg-gray-100">
-					{{ 'Next'|trans }}
-				</a>
-			{% endif %}
-		</div>
-	</div>
+                {% if currentPage < totalPages %}
+                    <twig:Button as="a" href="{{ path('admin_user_index', {page: currentPage + 1}) }}" variant="outline" size="sm">
+                        {{ 'Suivant' | trans }}
+                        <twig:ux:icon name="lucide:chevron-right" class="w-4 h-4 ml-1" />
+                    </twig:Button>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
 

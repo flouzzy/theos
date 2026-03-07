@@ -1,44 +1,76 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}
-	{{'BadgeType' | trans}}
-{% endblock %}
+{% block title %}{{ badge_type.title }}{% endblock %}
 
 {% block content %}
-	<h1>BadgeType</h1>
+    <twig:AdminHeader 
+        title="Détails du Badge" 
+        subtitle="{{ badge_type.title }}"
+        backPath="{{ path('admin_badge_type_index') }}"
+    />
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ badge_type.id }}</td>
-			</tr>
-			<tr>
-				<th>Title</th>
-				<td>{{ badge_type.title }}</td>
-			</tr>
-			<tr>
-				<th>Description</th>
-				<td>{{ badge_type.description }}</td>
-			</tr>
-			<tr>
-				<th>Image</th>
-				<td>{{ badge_type.image }}</td>
-			</tr>
-			<tr>
-				<th>Code</th>
-				<td>{{ badge_type.code }}</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800">{{ 'Aperçu du Badge' | trans }}</h3>
+                </div>
+                <div class="p-8 flex flex-col md:flex-row items-center gap-8">
+                    <div class="w-32 h-32 rounded-full bg-slate-100 border-4 border-slate-200 flex items-center justify-center p-4">
+                        {% if badge_type.image %}
+                            <img src="{{ badge_type.image }}" alt="{{ badge_type.title }}" class="w-full h-full object-contain">
+                        {% else %}
+                            <twig:ux:icon name="lucide:award" class="w-16 h-16 text-slate-300" />
+                        {% endif %}
+                    </div>
+                    <div class="flex-1 space-y-4 text-center md:text-left">
+                        <h1 class="text-3xl font-bold text-slate-900">{{ badge_type.title }}</h1>
+                        <p class="text-lg text-slate-600 leading-relaxed">{{ badge_type.description }}</p>
+                    </div>
+                </div>
+            </div>
 
-	<a href="{{ path('admin_badge_type_edit', {'id': badge_type.id}) }}">edit</a>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800">{{ 'Configuration' | trans }}</h3>
+                </div>
+                <div class="p-6">
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'Code / Identifiant' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900">
+                                <code class="bg-slate-100 px-2 py-1 rounded text-primary font-mono text-xs">{{ badge_type.code }}</code>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500">{{ 'ID Interne' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 font-mono">#{{ badge_type.id }}</dd>
+                        </div>
+                        <div class="md:col-span-2">
+                            <dt class="text-sm font-medium text-slate-500">{{ 'URL de l\'image' | trans }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 break-all">{{ badge_type.image|default('Aucune image configurée'|trans) }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
-	{{ include('admin/badge_type/_delete_form.html.twig') }}
-{% endblock %}
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col gap-3">
+                <twig:Button as="a" href="{{ path('admin_badge_type_edit', {'id': badge_type.id}) }}" variant="default" class="w-full">
+                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                    {{ 'Modifier' | trans }}
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('admin_badge_type_index') }}" variant="ghost" class="w-full">
+                    {{ 'Retour à la liste' | trans }}
+                </twig:Button>
+            </div>
 
-{% block menuBackButton %}
-	<ion-button href="{{path('admin_badge_type_index')}}">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-	</ion-button>
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+                <h3 class="text-red-900 font-bold mb-2">{{ 'Zone de danger' | trans }}</h3>
+                <p class="text-red-700 text-sm mb-4">{{ 'Supprimer définitivement ce type de badge.' | trans }}</p>
+                {{ include('admin/badge_type/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

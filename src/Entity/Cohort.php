@@ -54,6 +54,9 @@ class Cohort
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Conversation $conversation = null;
 
+    #[ORM\Column(length: 64, nullable: true, unique: true)]
+    private ?string $invitationToken = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -255,5 +258,25 @@ class Cohort
         $this->conversation = $conversation;
 
         return $this;
+    }
+
+    public function getInvitationToken(): ?string
+    {
+        return $this->invitationToken;
+    }
+
+    public function setInvitationToken(?string $invitationToken): static
+    {
+        $this->invitationToken = $invitationToken;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function generateInvitationToken(): void
+    {
+        if (null === $this->invitationToken) {
+            $this->invitationToken = bin2hex(random_bytes(16));
+        }
     }
 }

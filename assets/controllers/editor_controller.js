@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-// import tinymce from "https://cdn.jsdelivr.net/npm/tinymce@6.8.2/+esm";
+import tinymce from "tinymce";
 
 /**
  * Editor JS
@@ -8,12 +8,16 @@ export default class extends Controller {
   connect() {
     tinymce.init({
       selector: ".text-editor",
+      promotion: false,
+      branding: false,
+      skin: "oxide",
+      content_css: "default",
       a11y_advanced_options: true,
       relative_urls: false,
       remove_script_host: false,
       convert_urls: true,
       document_base_url: window.location.origin,
-      menubar: "edit view",
+      menubar: false,
       plugins: [
         "emoticons",
         "wordcount",
@@ -29,13 +33,8 @@ export default class extends Controller {
         "media",
       ],
       toolbar:
-        "blocks |bold italic link |image emoticons| blockquote| styleselect | alignleft aligncenter alignright alignjustify | table bullist numlist outdent indent",
+        "undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | table emoticons | code fullscreen",
       setup: function (editor) {
-        editor.on("init", function (e) {
-          // Retrait du copyright par défaut \o/
-          document.querySelector(".tox-statusbar [href*='tiny']").remove();
-        });
-
         editor.on("change", function () {
           tinymce.triggerSave();
         });

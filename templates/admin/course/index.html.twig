@@ -1,63 +1,73 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block title %}
-	{{'Courses' | trans}}
+    {{ 'Courses' | trans }}
 {% endblock %}
 
 {% block content %}
-	<div class="container mx-auto py-10">
-		<div class="flex justify-between items-center mb-6">
-			<h1 class="text-2xl font-bold tracking-tight">{{ 'Courses'|trans }}</h1>
-			<twig:Button asChild>
-				<a href="{{ path('admin_course_new') }}">
-					<twig:ux:icon name="lucide:plus" class="mr-2 h-4 w-4" />
-					{{ 'New Course'|trans }}
-				</a>
-			</twig:Button>
-		</div>
+    <twig:AdminHeader 
+        title="Cours" 
+        subtitle="Gérez votre catalogue de cours théologiques"
+        addPath="{{ path('admin_course_new') }}"
+        addLabel="Nouveau Cours"
+    />
 
-		<div class="rounded-md border">
-			<twig:Table>
-				<twig:Table:Header>
-					<twig:Table:Row>
-						<twig:Table:Head>{{ 'Title'|trans }}</twig:Table:Head>
-						<twig:Table:Head>{{ 'Description'|trans }}</twig:Table:Head>
-						<twig:Table:Head class="text-right">{{ 'Actions'|trans }}</twig:Table:Head>
-					</twig:Table:Row>
-				</twig:Table:Header>
-				<twig:Table:Body>
-					{% for course in courses %}
-						<twig:Table:Row>
-							<twig:Table:Cell class="font-medium">
-								{{ course.title }}
-							</twig:Table:Cell>
-							<twig:Table:Cell>
-								{{ course.description|striptags|u.truncate(50, '...') }}
-							</twig:Table:Cell>
-							<twig:Table:Cell class="text-right">
-								<div class="flex justify-end gap-2">
-									<twig:Button variant="ghost" size="sm" asChild>
-										<a href="{{ path('admin_course_show', {id: course.id}) }}">
-											<twig:ux:icon name="lucide:eye" class="h-4 w-4" />
-										</a>
-									</twig:Button>
-									<twig:Button variant="ghost" size="sm" asChild>
-										<a href="{{ path('admin_course_edit', {id: course.id}) }}">
-											<twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
-										</a>
-									</twig:Button>
-								</div>
-							</twig:Table:Cell>
-						</twig:Table:Row>
-					{% else %}
-						<twig:Table:Row>
-							<twig:Table:Cell colspan="3" class="h-24 text-center">
-								{{ 'No courses found.'|trans }}
-							</twig:Table:Cell>
-						</twig:Table:Row>
-					{% endfor %}
-				</twig:Table:Body>
-			</twig:Table>
-		</div>
-	</div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <twig:Table>
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:Header class="w-16">Id</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Titre' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Description' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Auteur' | trans }}</twig:Table:Header>
+                    <twig:Table:Header class="text-right">{{ 'Actions' | trans }}</twig:Table:Header>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                {% for course in courses %}
+                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
+                        <twig:Table:Cell class="font-medium text-slate-500">#{{ course.id }}</twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
+                                    {% if course.image %}
+                                        <img src="{{ asset(course.image) }}" alt="" class="w-full h-full object-cover">
+                                    {% else %}
+                                        <twig:ux:icon name="lucide:book-open" class="w-6 h-6" />
+                                    {% endif %}
+                                </div>
+                                <div class="font-semibold text-slate-900 leading-tight">{{ course.title }}</div>
+                            </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <div class="text-sm text-slate-500 line-clamp-2 max-w-sm">
+                                {{ course.description|striptags }}
+                            </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <span class="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-full">
+                                {{ course.author ? course.author.fullname : '-' }}
+                            </span>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <twig:Button as="a" href="{{ path('admin_course_show', {'id': course.id}) }}" variant="ghost" size="icon-sm" title="{{ 'Voir' | trans }}">
+                                    <twig:ux:icon name="lucide:eye" class="w-4 h-4" />
+                                </twig:Button>
+                                <twig:Button as="a" href="{{ path('admin_course_edit', {'id': course.id}) }}" variant="outline" size="icon-sm" title="{{ 'Modifier' | trans }}">
+                                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 text-slate-600" />
+                                </twig:Button>
+                            </div>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell colspan="5" class="py-12 text-center text-slate-400">
+                            {{ 'Aucun cours trouvé' | trans }}
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+            </twig:Table:Body>
+        </twig:Table>
+    </div>
 {% endblock %}

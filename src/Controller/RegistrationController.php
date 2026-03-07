@@ -71,8 +71,13 @@ class RegistrationController extends AbstractController
             $this->sendEmailConfirmation($user);
 
             // Force user login
-            $redirectResponse = $security->login($user, 'form_login');
-            return $redirectResponse ?? $this->redirectToRoute('home');
+            $security->login($user, 'form_login');
+
+            if ($request->getSession()->has('pending_cohort_token')) {
+                return $this->redirectToRoute('cohort_complete_join');
+            }
+
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('registration/register.html.twig', [
