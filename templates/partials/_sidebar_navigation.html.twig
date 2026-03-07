@@ -23,7 +23,8 @@
         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Cours' | trans }}</span>
     </a>
 
-    {# Coach #}
+    {# Coach (Feature-flagged) #}
+    {% if coach_enabled() %}
     <a href="{{ path('coach_index') }}" 
        class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ app.request.attributes.get('_route') starts with 'coach' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
         <div class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors {{ app.request.attributes.get('_route') starts with 'coach' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
@@ -33,6 +34,7 @@
         </div>
         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Coach' | trans }}</span>
     </a>
+    {% endif %}
 
     {# Bloc-notes #}
     <a href="{{ path('note_index') }}" 

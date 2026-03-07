@@ -198,7 +198,8 @@
                 <span class="text-[10px] font-bold">{{ 'Cours' | trans }}</span>
             </a>
             
-            {# Tab 3: Coach #}
+            {# Tab 3: Coach (Feature-flagged) #}
+            {% if coach_enabled() %}
             <a href="{{ path('coach_index') }}" class="tab-item {{ app.request.attributes.get('_route') starts with 'coach' ? 'active text-primary' : '' }} flex-1 flex flex-col items-center justify-center gap-1 group">
                 <div class="p-1 rounded-xl transition-all {{ app.request.attributes.get('_route') starts with 'coach' ? 'bg-primary/10' : '' }}">
                      <svg class="h-6 w-6 transition-transform group-active:scale-95" fill="{{ app.request.attributes.get('_route') starts with 'coach' ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke="currentColor">
@@ -207,6 +208,7 @@
                 </div>
                 <span class="text-[10px] font-bold">{{ 'Coach' | trans }}</span>
             </a>
+            {% endif %}
             
             {# Tab 4: Profil #}
             <a href="{{ path('profile_index') }}" class="tab-item {{ app.request.attributes.get('_route') starts with 'profile' ? 'active text-primary' : '' }} flex-1 flex flex-col items-center justify-center gap-1 group">

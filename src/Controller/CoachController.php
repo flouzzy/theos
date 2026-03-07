@@ -11,9 +11,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('IS_AUTHENTICATED')]
 class CoachController extends AbstractController
 {
+    public function __construct(
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire(env: 'bool:COACH_ENABLED')]
+        private bool $coachEnabled
+    ) {}
+
     #[Route('/', name: 'index')]
     public function index(): Response
     {
+        if (!$this->coachEnabled) {
+            throw $this->createNotFoundException('Coach is not enabled');
+        }
+
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
@@ -26,6 +35,10 @@ class CoachController extends AbstractController
     #[Route('/chat', name: 'chat', methods: ['POST'])]
     public function chat(\Symfony\Component\HttpFoundation\Request $request, \App\Service\CoachAIAgent $agent): \Symfony\Component\HttpFoundation\JsonResponse
     {
+        if (!$this->coachEnabled) {
+            return $this->json(['error' => 'Coach is not enabled'], 403);
+        }
+
         $data = json_decode($request->getContent(), true);
         $message = $data['message'] ?? '';
         $history = $data['history'] ?? [];
