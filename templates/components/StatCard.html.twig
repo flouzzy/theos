@@ -1,0 +1,9 @@
+<div class="stat-card {{ class|default('') }}">
+    <div class="stat-value">{{ value }}</div>
+    <div class="stat-label flex items-center justify-center gap-1">
+        {% if icon|default(false) %}
+            <span class="text-indigo-600 dark:text-indigo-400">{{ icon }}</span>
+        {% endif %}
+        {{ label }}
+    </div>
+</div>

@@ -17,6 +17,8 @@ class CoachAIAgent
     public function __construct(
         #[Autowire(env: 'GEMINI_API_KEY')]
         private string $apiKey,
+        #[Autowire(env: 'GEMINI_MODEL')]
+        private string $geminiModel,
         private SiteSettingRepository $siteSettingRepo
     ) {
         $this->client = new Client($this->apiKey);
@@ -41,7 +43,7 @@ class CoachAIAgent
             // We use the beta version to enable system instructions
             $model = $this->client
                 ->withV1BetaVersion()
-                ->generativeModel('gemini-3.1-flash-lite-preview')
+                ->generativeModel($this->geminiModel)
                 ->withSystemInstruction($systemPrompt);
 
             $chat = $model->startChat();

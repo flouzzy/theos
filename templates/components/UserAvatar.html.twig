@@ -1,0 +1,19 @@
+<div class="relative group inline-block {{ wrapperClass|default('') }}">
+    <div class="{{ class|default('w-10 h-10') }} rounded-full overflow-hidden border border-border bg-muted flex-shrink-0 relative shadow-sm">
+        {% if user.image %}
+            <img src="{{ asset(user.image) }}" alt="{{ user.fullname }}" class="w-full h-full object-cover">
+        {% else %}
+            <div class="w-full h-full flex items-center justify-center font-bold text-muted-foreground bg-primary/5 text-primary">
+                {{ user.firstname|first|upper }}{{ user.lastname|first|upper }}
+            </div>
+        {% endif %}
+    </div>
+    {% if showBadge|default(false) %}
+        <div class="absolute -bottom-1 -right-1 bg-background text-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold border border-border shadow-sm">
+            {{ badgeContent|default('') }}
+        </div>
+    {% endif %}
+    {% if showName|default(false) %}
+        <span class="sr-only">{{ user.fullname }}</span>
+    {% endif %}
+</div>

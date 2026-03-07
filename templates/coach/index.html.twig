@@ -97,6 +97,7 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
@@ -116,10 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
         } else {
+            // Apply markdown parsing for AI responses
+            const htmlContent = marked.parse(text);
             innerHtml = `
                 <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
-                <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm max-w-[85%] prose-sm">
-                    <p>${text}</p>
+                <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm max-w-[85%] prose prose-sm prose-indigo dark:prose-invert">
+                    ${htmlContent}
                 </div>
             `;
         }

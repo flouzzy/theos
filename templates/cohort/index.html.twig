@@ -62,43 +62,13 @@
     {# 2. Stats Row (3 Columns) #}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {# Hours #}
-        <div class="bg-card rounded-2xl border border-border p-6 shadow-sm flex items-center gap-4">
-            <div class="h-12 w-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-muted-foreground">{{ 'Heures d\'apprentissage' | trans }}</p>
-                <p class="text-2xl font-bold font-serif">{{ stats.hours }}h</p>
-            </div>
-        </div>
+        <twig:StatCard value="{{ stats.hours }}h" label="{{ 'Heures d\'apprentissage' | trans }}" icon="⏱" class="flex-row items-center gap-4 text-left p-6" />
 
         {# Courses #}
-        <div class="bg-card rounded-2xl border border-border p-6 shadow-sm flex items-center gap-4">
-            <div class="h-12 w-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-muted-foreground">{{ 'Cours complétés' | trans }}</p>
-                <p class="text-2xl font-bold font-serif">{{ stats.completed }}</p>
-            </div>
-        </div>
+        <twig:StatCard value="{{ stats.completed }}" label="{{ 'Cours complétés' | trans }}" icon="🎓" class="flex-row items-center gap-4 text-left p-6" />
 
         {# Streak #}
-        <div class="bg-card rounded-2xl border border-border p-6 shadow-sm flex items-center gap-4">
-            <div class="h-12 w-12 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center">
-                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.54.5c2.041 0 3.41-.5 3.41-.512a3 3 0 00-.83 2.132z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-muted-foreground">{{ 'Série en cours' | trans }}</p>
-                <p class="text-2xl font-bold font-serif text-orange-500">{{ app.user.streak ?? 0 }} {{ 'Jours' | trans }}</p>
-            </div>
-        </div>
+        <twig:StatCard value="{{ app.user.streak ?? 0 }} {{ 'Jours' | trans }}" label="{{ 'Série en cours' | trans }}" icon="🔥" class="flex-row items-center gap-4 text-left p-6 text-orange-500" />
     </div>
 
     {# 3. My Courses Section (Grid) #}
