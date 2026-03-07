@@ -11,6 +11,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GamificationService
 {
+    private array $badgeTypeCache = [];
+    private array $badgeCache = [];
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator
@@ -112,26 +115,37 @@ class GamificationService
         ?string $typeDesc = null,
         bool $flush = true
     ): void {
-        $badgeTypeRepo = $this->entityManager->getRepository(BadgeType::class);
-        $badgeType = $badgeTypeRepo->findOneBy(['code' => $code]);
+        if (isset($this->badgeTypeCache[$code])) {
+            $badgeType = $this->badgeTypeCache[$code];
+        } else {
+            $badgeTypeRepo = $this->entityManager->getRepository(BadgeType::class);
+            $badgeType = $badgeTypeRepo->findOneBy(['code' => $code]);
 
-        if (!$badgeType) {
-            $badgeType = new BadgeType();
-            $badgeType->setCode($code);
-            $badgeType->setTitle($typeTitle ?? $badgeTitle);
-            $badgeType->setDescription($typeDesc ?? $badgeDesc);
-            $this->entityManager->persist($badgeType);
+            if (!$badgeType) {
+                $badgeType = new BadgeType();
+                $badgeType->setCode($code);
+                $badgeType->setTitle($typeTitle ?? $badgeTitle);
+                $badgeType->setDescription($typeDesc ?? $badgeDesc);
+                $this->entityManager->persist($badgeType);
+            }
+            $this->badgeTypeCache[$code] = $badgeType;
         }
 
-        $badgeRepo = $this->entityManager->getRepository(Badge::class);
-        $badge = $badgeRepo->findOneBy(['title' => $badgeTitle, 'badgeType' => $badgeType]);
+        $badgeCacheKey = $badgeTitle . '|' . spl_object_id($badgeType);
+        if (isset($this->badgeCache[$badgeCacheKey])) {
+            $badge = $this->badgeCache[$badgeCacheKey];
+        } else {
+            $badgeRepo = $this->entityManager->getRepository(Badge::class);
+            $badge = $badgeRepo->findOneBy(['title' => $badgeTitle, 'badgeType' => $badgeType]);
 
-        if (!$badge) {
-            $badge = new Badge();
-            $badge->setTitle($badgeTitle);
-            $badge->setDescription($badgeDesc);
-            $badge->setBadgeType($badgeType);
-            $this->entityManager->persist($badge);
+            if (!$badge) {
+                $badge = new Badge();
+                $badge->setTitle($badgeTitle);
+                $badge->setDescription($badgeDesc);
+                $badge->setBadgeType($badgeType);
+                $this->entityManager->persist($badge);
+            }
+            $this->badgeCache[$badgeCacheKey] = $badge;
         }
 
         if (!$user->getBadges()->contains($badge)) {
