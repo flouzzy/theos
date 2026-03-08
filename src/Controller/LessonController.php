@@ -19,9 +19,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/courses/{courseSlug}/{moduleSlug}/lesson', name: 'lesson_')]
-#[IsGranted('IS_AUTHENTICATED', message: 'You must be logged in to view this lesson')]
+#[IsGranted('IS_AUTHENTICATED', message: 'Vous devez être connecté pour voir cette leçon')]
 class LessonController extends AbstractController
 {
     public function __construct(
@@ -30,6 +31,7 @@ class LessonController extends AbstractController
         private EventDispatcherInterface $dispatcher,
         private CompletionService $completionService,
         private GamificationService $gamificationService,
+        private TranslatorInterface $translator,
     ) {}
     #[Route('/{lessonId}', name: 'show')]
     public function show(
@@ -99,8 +101,8 @@ class LessonController extends AbstractController
         $this->dispatcher->dispatch($lessonCompleteEvent);
 
         if ($completed == false) {
-            // Show current lesson
-            $this->addFlash('success', 'Lesson marked as unread');
+            // Afficher la leçon actuelle
+            $this->addFlash('success', $this->translator->trans('Leçon marquée comme non lue'));
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
@@ -110,20 +112,19 @@ class LessonController extends AbstractController
 
         $nextLesson = $this->getNextLesson($module, $lesson);
 
-        // Il existe une leçon suivante
-        if ($nextLesson) {
-            // Go to next lesson
-            $this->addFlash('success', 'Lesson completed');
+        if ($nextLesson && $nextLesson->getId() !== $lesson->getId()) {
+            // Aller à la leçon suivante
+            $this->addFlash('success', $this->translator->trans('Leçon terminée'));
             return $this->redirectToRoute('lesson_show', [
                 'courseSlug' => $course->getSlug(),
                 'moduleSlug' => $module->getSlug(),
                 'lessonId' => $nextLesson->getId()
             ]);
         } else {
-            // C'était la dernière leçon du module
-            $this->addFlash('success', 'Well done! Keep up the good work');
+            // C'était la dernière leçon du module ou soucis de résolution
+            $this->addFlash('success', $this->translator->trans('Bravo ! Module terminé'));
 
-            // Go to next module
+            // Retour à la page du cours
             return $this->redirectToRoute('course_show', [
                 'slug' => $course->getSlug()
             ]);
@@ -203,7 +204,7 @@ class LessonController extends AbstractController
     ): Response {
         $submittedToken = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('add_comment', (string) $submittedToken)) {
-            throw $this->createAccessDeniedException('Invalid CSRF token.');
+            throw $this->createAccessDeniedException($this->translator->trans('Jeton CSRF invalide.'));
         }
 
         $content = $request->request->get('content');

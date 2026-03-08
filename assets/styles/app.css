@@ -315,3 +315,10 @@
         display: inline-block;
     }
 }
+/* Video Embed Scaling Fix */
+.aspect-video iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none;
+    border-radius: var(--radius-lg);
+}
