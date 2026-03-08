@@ -34,7 +34,7 @@ class ProfileController extends AbstractController
         CourseCompletionRepository $courseCompletionRepository
     ): Response {
         /** @var \App\Entity\User $user */
-        dump($this->getUser()); $user = $this->getUser();
+        $user = $this->getUser();
 
         // Calculate Stats
         $coursesEnrolled = $user->getCourses();
@@ -65,7 +65,7 @@ class ProfileController extends AbstractController
         EventDispatcherInterface $eventDispatcher
     ): Response {
         /** @var \App\Entity\User $user */
-        dump($this->getUser()); $user = $this->getUser();
+        $user = $this->getUser();
 
         $form = $this->createForm(UserType::class, $user, [
             'action' => $this->generateUrl('profile_edit'),
@@ -100,7 +100,7 @@ class ProfileController extends AbstractController
         /**
          * @var \App\Entity\User $user
          */
-        dump($this->getUser()); $user = $this->getUser();
+        $user = $this->getUser();
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             // Forcer la déconnexion de l'utilisateur
@@ -126,7 +126,7 @@ class ProfileController extends AbstractController
 
         $skillName = trim($request->request->get('name'));
         if ($skillName) {
-            dump($this->getUser()); $user = $this->getUser();
+            $user = $this->getUser();
             $skillRepo = $entityManager->getRepository(Skill::class);
             $skill = $skillRepo->findOneBy(['name' => $skillName]);
 
@@ -165,7 +165,7 @@ class ProfileController extends AbstractController
         }
 
         if ($title) {
-            dump($this->getUser()); $user = $this->getUser();
+            $user = $this->getUser();
             $project = new PortfolioProject();
             $project->setTitle($title);
             $project->setDescription($description);
