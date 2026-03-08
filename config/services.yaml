@@ -20,6 +20,13 @@ services:
   _defaults:
     autowire: true # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    bind:
+      string $brevoApiKey: "%env(BREVO_API_KEY)%"
+      string $brevoFromName: "%env(BREVO_FROM_NAME)%"
+      string $brevoFromEmail: "%env(BREVO_FROM_EMAIL)%"
+      string $brevoSubject: "%env(BREVO_SUBJECT)%"
+      string $brevoListId: "%env(BREVO_LIST_ID)%"
+      string $kernelEnvironment: "%kernel.environment%"
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name

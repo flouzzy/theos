@@ -19,33 +19,28 @@ class BrevoApi
     private Client $httpClient;
 
     public function __construct(
-        private ParameterBagInterface $parameterBag,
+        private string $brevoApiKey,
+        private string $brevoFromName,
+        private string $brevoFromEmail,
+        private string $brevoSubject,
+        private string $brevoListId,
+        private string $kernelEnvironment,
         private LoggerInterface $logger,
         private SettingRepository $settingRepository
     ) {
-        $apiKey = $this->parameterBag->get('brevo_api_key');
-        if (!is_string($apiKey)) {
-            $apiKey = '';
-        }
-
-        $config = BrevoClient\Configuration::getDefaultConfiguration()->setApiKey('api-key', $apiKey);
+        $config = BrevoClient\Configuration::getDefaultConfiguration()->setApiKey('api-key', $this->brevoApiKey);
 
         $this->httpClient = new Client();
 
         $this->apiContact = new Api\ContactsApi(
-            // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-            // This is optional, `GuzzleHttp\Client` will be used as default.
             $this->httpClient,
             $config
         );
 
         $this->apiEmail = new BrevoClient\Api\TransactionalEmailsApi(
-            // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-            // This is optional, `GuzzleHttp\Client` will be used as default.
             $this->httpClient,
             $config
         );
-
     }
 
     /**
@@ -54,10 +49,8 @@ class BrevoApi
     public function addOrUpdateContact(User $user, ?array $listIds = null): void
     {
         // Skip Brevo operations in dev/test environments to avoid polluting data
-        $env = $this->parameterBag->get('kernel.environment');
-        if (in_array($env, ['dev', 'test'])) {
-            $envStr = is_string($env) ? $env : 'unknown';
-            $this->logger->info('Skipping Brevo contact addition in ' . $envStr . ' environment');
+        if (in_array($this->kernelEnvironment, ['dev', 'test'])) {
+            $this->logger->info('Skipping Brevo contact addition in ' . $this->kernelEnvironment . ' environment');
             return;
         }
 
@@ -72,11 +65,7 @@ class BrevoApi
         $createContact->setUpdateEnabled(true);
 
         if ($listIds === null) {
-            $listIds = [];
-            $listIdConfig = $this->parameterBag->get('brevo_list_id');
-            if (is_string($listIdConfig)) {
-                $listIds = array_map('intval', explode(',', $listIdConfig));
-            }
+            $listIds = array_map('intval', explode(',', $this->brevoListId));
         }
 
         if (!empty($listIds)) {
@@ -123,8 +112,7 @@ class BrevoApi
     public function removeContactFromList(User $user, int $listId): void
     {
         // Skip Brevo operations in dev/test environments
-        $env = $this->parameterBag->get('kernel.environment');
-        if (in_array($env, ['dev', 'test'])) {
+        if (in_array($this->kernelEnvironment, ['dev', 'test'])) {
             return;
         }
 
@@ -149,17 +137,17 @@ class BrevoApi
      */
     public function sendEmail(array $tos, array $params): void
     {
-        if ($this->parameterBag->get('brevo_api_key') === "null") {
+        if ($this->brevoApiKey === "null") {
             return;
         }
 
-        $subject = $params['subject'] ?? $this->parameterBag->get('brevo_subject');
+        $subject = $params['subject'] ?? $this->brevoSubject;
         $htmlContent = $params['html_content'] ?? '<html><body><h1>Email from Le Rocher Académie</h1></body></html>';
 
         $sendSmtpEmail = new BrevoClient\Model\SendSmtpEmail([
             "sender" => [
-                "name" => $this->parameterBag->get('brevo_from_name'),
-                "email" => $this->parameterBag->get('brevo_from_email')
+                "name" => $this->brevoFromName,
+                "email" => $this->brevoFromEmail
             ],
             'htmlContent' => $htmlContent,
             "params" => $params,

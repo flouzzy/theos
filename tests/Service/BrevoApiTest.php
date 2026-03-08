@@ -16,29 +16,24 @@ use App\Repository\SettingRepository;
 
 class BrevoApiTest extends TestCase
 {
-    private ParameterBagInterface&MockObject $parameterBag;
     private LoggerInterface&MockObject $logger;
     private BrevoApi $brevoApi;
 
     protected function setUp(): void
     {
-        $this->parameterBag = $this->createMock(ParameterBagInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-
-        $this->parameterBag->method('get')
-            ->willReturnCallback(function (string $key) {
-                return match ($key) {
-                    'brevo_api_key' => 'fake_api_key',
-                    'brevo_subject' => 'fake_subject',
-                    'brevo_from_name' => 'Fake Name',
-                    'brevo_from_email' => 'fake@example.com',
-                    default => null,
-                };
-            });
-
         $settingRepository = $this->createMock(SettingRepository::class);
 
-        $this->brevoApi = new BrevoApi($this->parameterBag, $this->logger, $settingRepository);
+        $this->brevoApi = new BrevoApi(
+            'fake_api_key',
+            'Fake Name',
+            'fake@example.com',
+            'fake_subject',
+            '1,2',
+            'test',
+            $this->logger,
+            $settingRepository
+        );
     }
 
     public function testSendEmailExceptionIsCaughtAndLogged(): void
