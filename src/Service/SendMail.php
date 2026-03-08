@@ -29,6 +29,7 @@ class SendMail
         string $template,
         array $context
     ): void {
+        $this->logger->info('Attempting to send email: ' . $subject . ' to ' . (is_array($to) ? json_encode($to) : $to));
         //On crée le mail
         $toAddresses = is_array($to) ? $to : [$to];
 

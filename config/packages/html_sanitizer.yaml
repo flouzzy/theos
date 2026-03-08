@@ -1,13 +1,13 @@
 framework:
     html_sanitizer:
         sanitizers:
-            app.default_sanitizer:
+            default:
                 allow_safe_elements: true
-            app.notification_sanitizer:
+            notification:
                 allow_safe_elements: true
                 allow_elements:
                     callout: '*'
-            app.video_sanitizer:
+            video:
                 allow_safe_elements: true
                 allow_elements:
                     iframe: ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'title']

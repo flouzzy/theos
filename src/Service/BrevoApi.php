@@ -157,6 +157,7 @@ class BrevoApi
 
         try {
             $this->apiEmail->sendTransacEmail($sendSmtpEmail);
+            $this->logger->info('Email successfully sent via Brevo API to: ' . json_encode($tos));
         } catch (Exception $e) {
             $this->logger->error('Exception when calling TransactionalEmailsApi->sendTransacEmail: ' . $e->getMessage());
         }
