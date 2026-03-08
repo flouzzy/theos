@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 	<head>
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,6 +12,10 @@
 		<meta name="turbo-refresh-method" content="morph">
 		<meta name="turbo-refresh-scroll" content="preserve">
 		<meta name="turbo-prefetch" content="true">
+
+		{% block meta_description %}
+		<meta name="description" content="{{ 'The online evangelical school to equip you for the destiny God has prepared for you.' | trans }}">
+		{% endblock %}
 
 		<base href="/">
 
@@ -50,7 +54,7 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
 		{% endblock %}
 	</head>
-	<body data-controller="app">
+	<body data-controller="app pwa">
 		{% set currentroute = app.request.attributes.get('_route') %}
 		{% set colorActive = 'light' %}
 		{% include "partials/_app_install.html.twig" %}

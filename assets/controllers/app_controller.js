@@ -12,9 +12,6 @@ import { visit } from "@hotwired/turbo";
  */
 export default class extends Controller {
   connect() {
-    // Init A2HS
-    this.initA2HSEvent();
-
     // Init SW
     this.initSW();
 
@@ -82,46 +79,6 @@ export default class extends Controller {
     } else {
       console.log("Service Worker non disponible");
     }
-  }
-
-  initA2HSEvent() {
-    const installBtn = document.querySelector("#installApp");
-    let deferredPrompt;
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
-      e.preventDefault();
-      // Stash the event so it can be triggered later.
-      deferredPrompt = e;
-
-      // Show Modal install app
-      if (this.isMobile()) {
-        // true for mobile device
-        this.toggleA2HSModal();
-      }
-
-      installBtn.addEventListener("click", (e) => {
-        // hide our user interface that shows our A2HS button
-        this.toggleA2HSModal();
-
-        // Show the prompt
-        deferredPrompt.prompt();
-
-        // Wait for the user to respond to the prompt
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === "accepted") {
-            console.log("User accepted the A2HS prompt");
-          } else {
-            console.log("User dismissed the A2HS prompt");
-          }
-          deferredPrompt = null;
-        });
-      });
-    });
-  }
-  toggleA2HSModal() {
-    const modalAppInstall = document.querySelector("ion-modal#modalAppInstall");
-    modalAppInstall.isOpen = modalAppInstall.isOpen == true ? false : true;
   }
 
   isMobile() {
