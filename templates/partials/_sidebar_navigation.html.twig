@@ -23,18 +23,7 @@
         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Cours' | trans }}</span>
     </a>
 
-    {# 3. Classement #}
-    <a href="{{ path('leaderboard_index') }}" 
-       class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ app.request.attributes.get('_route') == 'leaderboard_index' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
-       <div class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors {{ app.request.attributes.get('_route') == 'leaderboard_index' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-            </svg>
-       </div>
-        <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Classement' | trans }}</span>
-    </a>
-
-    {# 4. Bloc-notes #}
+    {# 3. Bloc-notes #}
     <a href="{{ path('note_index') }}" 
        class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ app.request.attributes.get('_route') starts with 'note' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
        <div class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors {{ app.request.attributes.get('_route') starts with 'note' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
@@ -45,15 +34,15 @@
         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Bloc-notes' | trans }}</span>
     </a>
 
-    {# 5. Profil #}
-    <a href="{{ path('profile_index') }}" 
-       class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ app.request.attributes.get('_route') starts with 'profile' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
-        <div class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors {{ app.request.attributes.get('_route') starts with 'profile' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
+    {# 4. Classement #}
+    <a href="{{ path('leaderboard_index') }}" 
+       class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ app.request.attributes.get('_route') == 'leaderboard_index' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
+       <div class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors {{ app.request.attributes.get('_route') == 'leaderboard_index' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
             </svg>
-        </div>
-        <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Profil' | trans }}</span>
+       </div>
+        <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Classement' | trans }}</span>
     </a>
 
     {# ── Secondary Section ── #}
