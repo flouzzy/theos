@@ -19,17 +19,19 @@ class BrevoApiTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->parameterBag = $this->createMock(ParameterBagInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->settingRepository = $this->createMock(SettingRepository::class);
 
-        // Mock parameterBag to return empty string for api key
-        $this->parameterBag->method('get')->willReturnMap([
-            ['brevo_api_key', 'test_key'],
-            ['kernel.environment', 'prod'],
-        ]);
-
-        $this->brevoApi = new BrevoApi($this->parameterBag, $this->logger, $this->settingRepository);
+        $this->brevoApi = new BrevoApi(
+            'test_key',
+            'Academy',
+            'no-reply@test.com',
+            'Subject',
+            '123',
+            'test',
+            $this->logger,
+            $this->settingRepository
+        );
     }
 
     public function testAddContactToOnboardedList(): void
