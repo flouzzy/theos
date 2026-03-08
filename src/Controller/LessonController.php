@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Completion;
 use App\Entity\Course;
 use App\Entity\Lesson;
@@ -161,6 +162,47 @@ class LessonController extends AbstractController
         $this->entityManager->flush();
 
         return $wasCompleted;
+    }
+
+    #[Route('/{lessonId}/comment', name: 'add_comment', methods: ['POST'])]
+    public function addComment(
+        Request $request,
+        #[MapEntity(mapping: ['lessonId' => 'id'])]
+        Lesson $lesson,
+        #[MapEntity(mapping: ['courseSlug' => 'slug'])]
+        Course $course,
+        #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
+        Module $module
+    ): Response {
+        $content = $request->request->get('content');
+        $token = $request->request->get('_token');
+
+        if (!$this->isCsrfTokenValid('add_comment', $token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        if (!empty(trim((string)$content))) {
+            /** @var \App\Entity\User|null $user */
+            $user = $this->getUser();
+            if ($user) {
+                $comment = new Comment();
+                $comment->setContent((string)$content);
+                $comment->setUser($user);
+                $comment->setLesson($lesson);
+
+                $this->entityManager->persist($comment);
+                $this->entityManager->flush();
+
+                $this->gamificationService->addXp($user, 5, 'comment_posted');
+                $this->addFlash('success', $this->translator->trans('Commentaire ajouté !'));
+            }
+        }
+
+        return $this->redirectToRoute('lesson_show', [
+            'courseSlug' => $course->getSlug(),
+            'moduleSlug' => $module->getSlug(),
+            'lessonId' => $lesson->getId()
+        ]);
     }
 
     private function getNextLesson(Module $module, Lesson $lesson): ?Lesson
