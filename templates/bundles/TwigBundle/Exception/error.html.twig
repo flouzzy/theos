@@ -1,18 +1,43 @@
 {% extends "app.html.twig" %}
 
+{% block title %}{{ 'Une erreur est survenue' | trans }}{% endblock %}
+
 {% block content %}
-	<ion-card>
-		<img alt="Silhouette of mountains" src="{{ asset('images/default-error.png') }}"/>
-		<ion-card-header>
-			<ion-card-title>{{'An error has occurred' | trans}}</ion-card-title>
-		</ion-card-header>
-		<ion-card-content>
-			<h2>
-				{{'Oops! Something went wrong. Please try again, or contact an administrator if it persists' | trans}}
-			</h2>
-			<p>
-				<a href="{{ path('home') }}">{{'Return to the homepage' | trans}}</a>.
-			</p>
-		</ion-card-content>
-	</ion-card>
+<div class="min-h-[80vh] flex flex-col items-center justify-center p-6 text-center">
+    <div class="relative w-full max-w-lg mb-8 group">
+        <!-- Decoration background -->
+        <div class="absolute inset-0 bg-red-500/10 blur-3xl rounded-full scale-110 group-hover:scale-125 transition-transform duration-700"></div>
+        
+        <img src="{{ asset('images/error_illustration_premium.png') }}" 
+             alt="{{ 'Illustration Erreur' | trans }}" 
+             class="relative w-full h-auto drop-shadow-2xl grayscale-[0.2] sepia-[0.1] group-hover:scale-105 transition-transform duration-500 ease-out">
+    </div>
+
+    <div class="max-w-md space-y-6 relative">
+        <div class="space-y-2">
+            <h1 class="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+                {{ 'Oops !' | trans }}
+            </h1>
+            <p class="text-xl font-semibold text-muted-foreground uppercase tracking-widest text-sm">
+                {{ 'Une erreur s\'est produite' | trans }}
+            </p>
+        </div>
+
+        <div class="h-1 w-12 bg-red-500 mx-auto rounded-full"></div>
+
+        <p class="text-lg text-muted-foreground leading-relaxed">
+            {{ 'Une turbulence inattendue a perturbé votre navigation. Notre équipe technique a été alertée.' | trans }}
+        </p>
+
+        <div class="pt-6">
+            <a href="{{ path('home') }}" 
+               class="inline-flex items-center justify-center px-8 py-3 text-base font-bold text-primary-foreground bg-primary rounded-xl shadow-lg shadow-primary/25 hover:bg-primary/90 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300">
+                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                {{ 'Retourner à l\'accueil' | trans }}
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}
