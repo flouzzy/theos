@@ -1,0 +1,40 @@
+<div {{ attributes }}>
+    <div class="flex flex-wrap gap-2 mb-4">
+        {% for skill in this.skills %}
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300 group">
+                {{ skill.name }}
+                <button 
+                    type="button"
+                    data-action="live#action"
+                    data-live-action-param="removeSkill"
+                    data-live-skill-id-param="{{ skill.id }}"
+                    class="ml-2 hover:text-indigo-600 transition-colors"
+                >
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </span>
+        {% else %}
+            <p class="text-sm text-muted-foreground">{{ 'Aucune compétence listée.' | trans }}</p>
+        {% endfor %}
+    </div>
+
+    <div class="mt-4">
+        <form data-action="live#action:prevent" data-live-action-param="addSkill" class="flex gap-2">
+            <input 
+                type="text" 
+                data-model="newSkillName"
+                placeholder="{{ 'Ex: Exégèse biblique, Herméneutique, Théologie systématique...' | trans }}" 
+                class="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                required
+            >
+            <button 
+                type="submit" 
+                class="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+                {{ 'Ajouter' | trans }}
+            </button>
+        </form>
+    </div>
+</div>
