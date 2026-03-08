@@ -17,7 +17,7 @@
                 <ion-item {% if notification.isRead %} color="light" {% endif %} button {% if not notification.isRead %} data-action="click->live#action" data-live-action-param="markAsRead" data-live-id-param="{{ notification.id }}" {% endif %} {% if notification.isRead %}href="{{ path('notification_show', { id:notification.id }) }}"{% endif %}>
                     <ion-label class="ion-text-wrap">
                         <ion-text {% if not notification.isRead %} color="danger" {% endif %} class="{% if not notification.isRead %}font-semibold{% endif %}">
-                            {{ notification.message | sanitize_html('app.notification_sanitizer') }}
+                            {{ notification.message|default('')|sanitize_html('app.notification_sanitizer') }}
                         </ion-text>
                         <p class="text-xs mt-1 text-muted-foreground">
                             {{ notification.createdAt ? notification.createdAt|date('d/m/Y H:i') : '' }}

@@ -27,7 +27,7 @@
                 <div class="p-8">
                     <h1 class="text-2xl font-bold text-slate-900 mb-4">{{ notification.title }}</h1>
                     <div class="p-6 bg-slate-50 rounded-xl border border-slate-100 prose prose-slate max-w-none text-slate-700">
-                        {{ notification.message | sanitize_html('app.notification_sanitizer') }}
+                        {{ notification.message|default('')|sanitize_html('app.notification_sanitizer') }}
                     </div>
                 </div>
             </div>

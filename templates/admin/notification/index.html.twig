@@ -28,7 +28,7 @@
                         <twig:Table:Cell class="font-medium text-slate-500">#{{ notification.id }}</twig:Table:Cell>
                         <twig:Table:Cell>
                             <div class="text-sm text-slate-700 line-clamp-1 max-w-sm">
-                                {{ notification.message | sanitize_html('app.notification_sanitizer') }}
+                                {{ notification.message|default('')|sanitize_html('app.notification_sanitizer') }}
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>

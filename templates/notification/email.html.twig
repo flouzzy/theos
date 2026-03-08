@@ -6,7 +6,7 @@
 			{{user.firstname}}
 		</h2>
 
-		{{message | sanitize_html('app.notification_sanitizer')}}
+		{{ message|default('')|sanitize_html('app.notification_sanitizer') }}
 
 		<center>
 			<button href="{{url}}">
