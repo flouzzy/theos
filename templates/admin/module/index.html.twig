@@ -26,21 +26,24 @@
             <twig:Table:Body>
                 {% for module in modules %}
                     <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
-                        <twig:Table:Cell class="font-medium text-slate-500">#{{ module.id }}</twig:Table:Cell>
+                        <twig:Table:Cell class="font-medium text-slate-500 w-16">#{{ module.id }}</twig:Table:Cell>
                         <twig:Table:Cell>
                             <div class="font-semibold text-slate-900 leading-tight">{{ module.title }}</div>
-                            <div class="text-xs text-slate-500 truncate max-w-sm">{{ module.description|striptags }}</div>
+                            <div class="text-[10px] text-slate-500 truncate max-w-sm italic">{{ module.description|striptags }}</div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
                             <div class="flex items-center gap-2">
-                                <twig:ux:icon name="lucide:book" class="w-3.5 h-3.5 text-slate-400" />
-                                <span class="text-sm text-slate-600">{{ module.course ? module.course.title : '-' }}</span>
+                                <twig:ux:icon name="lucide:book-open" class="w-3.5 h-3.5 text-slate-400" />
+                                <span class="text-xs text-slate-600 font-medium">{{ module.course ? module.course.title : '-' }}</span>
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-full">
-                                {{ module.author ? module.author.fullname : '-' }}
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <twig:Avatar:Text name="{{ module.author ? module.author.fullname : 'Anonyme' }}" class="scale-75 origin-left" />
+                                <span class="text-xs font-medium text-slate-700">
+                                    {{ module.author ? module.author.fullname : '-' }}
+                                </span>
+                            </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell class="text-right">
                             <div class="flex items-center justify-end gap-2">

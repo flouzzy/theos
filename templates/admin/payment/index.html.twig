@@ -24,17 +24,17 @@
             <twig:Table:Body>
                 {% for payment_setting in payment_settings %}
                     <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
-                        <twig:Table:Cell class="font-medium text-slate-500">#{{ payment_setting.id }}</twig:Table:Cell>
+                        <twig:Table:Cell class="font-medium text-slate-500 w-16">#{{ payment_setting.id }}</twig:Table:Cell>
                         <twig:Table:Cell>
-                            <div class="text-sm font-mono text-slate-700 bg-slate-50 p-2 rounded border border-slate-100 max-w-md line-clamp-2">
+                            <div class="text-xs font-mono text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 max-w-md line-clamp-2 shadow-inner">
                                 {{ payment_setting.rib }}
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="text-sm font-semibold text-slate-900">{{ payment_setting.checkOrder }}</span>
+                            <span class="text-sm font-bold text-slate-900">{{ payment_setting.checkOrder }}</span>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="text-[10px] text-slate-400">
+                            <span class="text-[10px] text-slate-400 font-mono">
                                 {{ payment_setting.updatedAt|date('d/m/Y H:i') }}
                             </span>
                         </twig:Table:Cell>

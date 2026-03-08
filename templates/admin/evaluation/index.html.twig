@@ -1,45 +1,63 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Evaluation index{% endblock %}
+{% block title %}
+    {{ 'Evaluations' | trans }}
+{% endblock %}
 
-{% block body %}
-    <h1>Evaluation index</h1>
+{% block content %}
+    <twig:AdminHeader 
+        title="Évaluations" 
+        subtitle="Gérez les évaluations de l'académie"
+        addPath="{{ path('app_admin_evaluation_new') }}"
+        addLabel="Nouvelle Évaluation"
+    />
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Score</th>
-                <th>MaxScore</th>
-                <th>Feedback</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for evaluation in evaluations %}
-            <tr>
-                <td>{{ evaluation.id }}</td>
-                <td>{{ evaluation.title }}</td>
-                <td>{{ evaluation.score }}</td>
-                <td>{{ evaluation.maxScore }}</td>
-                <td>{{ evaluation.feedback }}</td>
-                <td>{{ evaluation.createdAt ? evaluation.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ evaluation.updatedAt ? evaluation.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_admin_evaluation_show', {'id': evaluation.id}) }}">show</a>
-                    <a href="{{ path('app_admin_evaluation_edit', {'id': evaluation.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_admin_evaluation_new') }}">Create new</a>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <twig:Table>
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:Header>{{ 'Titre' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Score' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Créé le' | trans }}</twig:Table:Header>
+                    <twig:Table:Header class="text-right">{{ 'Actions' | trans }}</twig:Table:Header>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                {% for evaluation in evaluations %}
+                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
+                        <twig:Table:Cell>
+                            <div class="font-semibold text-slate-900 leading-tight">{{ evaluation.title }}</div>
+                            <div class="text-xs text-slate-400">ID: {{ evaluation.id }}</div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <twig:Badge variant="outline" class="bg-slate-50 text-slate-700 border-slate-100 shadow-none font-mono">
+                                {{ evaluation.score }} / {{ evaluation.maxScore }}
+                            </twig:Badge>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            <div class="text-xs text-slate-500">
+                                {{ evaluation.createdAt ? evaluation.createdAt|date('d/m/Y H:i') : '-' }}
+                            </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <twig:Button as="a" href="{{ path('app_admin_evaluation_show', {'id': evaluation.id}) }}" variant="ghost" size="icon-sm" title="{{ 'Voir' | trans }}">
+                                    <twig:ux:icon name="lucide:eye" class="w-4 h-4" />
+                                </twig:Button>
+                                <twig:Button as="a" href="{{ path('app_admin_evaluation_edit', {'id': evaluation.id}) }}" variant="outline" size="icon-sm" title="{{ 'Modifier' | trans }}">
+                                    <twig:ux:icon name="lucide:pencil" class="w-4 h-4 text-slate-600" />
+                                </twig:Button>
+                            </div>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell colspan="4" class="py-12 text-center text-slate-400">
+                            {{ 'Aucune évaluation trouvée' | trans }}
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+            </twig:Table:Body>
+        </twig:Table>
+    </div>
 {% endblock %}

@@ -1,4 +1,7 @@
-<form method="post" action="{{ path('app_admin_evaluation_delete', {'id': evaluation.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+<form method="post" action="{{ path('app_admin_evaluation_delete', {'id': evaluation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette évaluation ?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evaluation.id) }}">
-    <button class="btn">Delete</button>
+    <twig:Button variant="danger" size="sm">
+        <twig:ux:icon name="lucide:trash-2" class="w-4 h-4 mr-2" />
+        {{ 'Supprimer' | trans }}
+    </twig:Button>
 </form>

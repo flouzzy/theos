@@ -27,23 +27,32 @@
             <twig:Table:Body>
                 {% for lesson in lessons %}
                     <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
-                        <twig:Table:Cell class="font-medium text-slate-500">#{{ lesson.id }}</twig:Table:Cell>
+                        <twig:Table:Cell class="font-medium text-slate-500 w-16">#{{ lesson.id }}</twig:Table:Cell>
                         <twig:Table:Cell>
                             <div class="font-semibold text-slate-900">{{ lesson.title }}</div>
-                            <div class="text-xs text-slate-400 truncate max-w-xs">{{ lesson.description|u.truncate(60, '...') }}</div>
+                            <div class="text-[10px] text-slate-400 truncate max-w-xs">{{ lesson.description|u.truncate(60, '...') }}</div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="text-sm text-slate-600">{{ lesson.module.title }}</span>
+                            <div class="flex items-center gap-2">
+                                <twig:ux:icon name="lucide:layers" class="w-3.5 h-3.5 text-slate-400" />
+                                <span class="text-xs text-slate-600 font-medium">{{ lesson.module.title }}</span>
+                            </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-mono">
+                            <span class="px-2 py-1 rounded-md bg-slate-50 text-slate-600 border border-slate-200 text-[10px] font-bold font-mono">
                                 {{ lesson.itemOrder }}
                             </span>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <twig:Badge variant="{{ lesson.status == 'published' ? 'default' : 'outline' }}">
-                                {{ lesson.status | trans }}
-                            </twig:Badge>
+                            {% if lesson.status == 'published' %}
+                                <twig:Badge variant="default" class="bg-emerald-50 text-emerald-700 border-emerald-100 shadow-none text-[10px] font-bold uppercase">
+                                    {{ 'Publié' | trans }}
+                                </twig:Badge>
+                            {% else %}
+                                <twig:Badge variant="outline" class="bg-slate-50 text-slate-500 border-slate-200 shadow-none text-[10px] font-bold uppercase">
+                                    {{ 'Brouillon' | trans }}
+                                </twig:Badge>
+                            {% endif %}
                         </twig:Table:Cell>
                         <twig:Table:Cell class="text-right">
                             <div class="flex items-center justify-end gap-2">

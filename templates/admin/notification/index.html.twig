@@ -25,10 +25,10 @@
             <twig:Table:Body>
                 {% for notification in notifications %}
                     <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
-                        <twig:Table:Cell class="font-medium text-slate-500">#{{ notification.id }}</twig:Table:Cell>
+                        <twig:Table:Cell class="font-medium text-slate-500 w-16">#{{ notification.id }}</twig:Table:Cell>
                         <twig:Table:Cell>
-                            <div class="text-sm text-slate-700 line-clamp-1 max-w-sm">
-                                {{ notification.message|default('')|sanitize_html('app.notification_sanitizer') }}
+                            <div class="text-xs text-slate-500 line-clamp-1 max-w-sm italic">
+                                {{ notification.message|default('')|raw }}
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
@@ -36,24 +36,24 @@
                         </twig:Table:Cell>
                         <twig:Table:Cell>
                             {% if notification.isRead %}
-                                <twig:Badge variant="outline" class="bg-slate-50 text-slate-500 border-slate-200 shadow-none text-[10px]">
+                                <twig:Badge variant="outline" class="bg-slate-50 text-slate-400 border-slate-200 shadow-none text-[9px] font-bold uppercase">
                                     {{ 'Lu' | trans }}
                                 </twig:Badge>
                             {% else %}
-                                <twig:Badge variant="default" class="bg-blue-50 text-blue-700 border-blue-100 shadow-none text-[10px]">
+                                <twig:Badge variant="default" class="bg-blue-50 text-blue-700 border-blue-100 shadow-none text-[9px] font-bold uppercase">
                                     {{ 'Non lu' | trans }}
                                 </twig:Badge>
                             {% endif %}
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <div class="text-[10px] space-y-0.5">
+                            <div class="text-[10px] space-y-1">
                                 <div class="text-slate-400 flex items-center gap-1">
-                                    <twig:ux:icon name="lucide:clock" class="w-2.5 h-2.5" />
+                                    <twig:ux:icon name="lucide:calendar" class="w-3 h-3" />
                                     {{ notification.createdAt|date('d/m/Y H:i') }}
                                 </div>
                                 {% if notification.sentAt %}
-                                    <div class="text-emerald-500 flex items-center gap-1 font-medium">
-                                        <twig:ux:icon name="lucide:check-circle" class="w-2.5 h-2.5" />
+                                    <div class="text-emerald-500 flex items-center gap-1 font-semibold">
+                                        <twig:ux:icon name="lucide:send" class="w-3 h-3" />
                                         {{ notification.sentAt|date('d/m/Y H:i') }}
                                     </div>
                                 {% endif %}

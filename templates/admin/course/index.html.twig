@@ -26,10 +26,10 @@
             <twig:Table:Body>
                 {% for course in courses %}
                     <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
-                        <twig:Table:Cell class="font-medium text-slate-500">#{{ course.id }}</twig:Table:Cell>
+                        <twig:Table:Cell class="font-medium text-slate-500 w-16">#{{ course.id }}</twig:Table:Cell>
                         <twig:Table:Cell>
                             <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
+                                <div class="w-12 h-12 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0 shadow-sm">
                                     {% if course.image %}
                                         <img src="{{ asset(course.image) }}" alt="" class="w-full h-full object-cover">
                                     {% else %}
@@ -40,14 +40,17 @@
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <div class="text-sm text-slate-500 line-clamp-2 max-w-sm">
+                            <div class="text-xs text-slate-500 line-clamp-2 max-w-sm italic">
                                 {{ course.description|striptags }}
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-full">
-                                {{ course.author ? course.author.fullname : '-' }}
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <twig:Avatar:Text name="{{ course.author ? course.author.fullname : 'Anonyme' }}" class="scale-75 origin-left" />
+                                <span class="text-xs font-medium text-slate-700">
+                                    {{ course.author ? course.author.fullname : '-' }}
+                                </span>
+                            </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell class="text-right">
                             <div class="flex items-center justify-end gap-2">

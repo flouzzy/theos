@@ -1,46 +1,69 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Evaluation{% endblock %}
+{% block title %}
+    {{ 'Evaluation' | trans }} - {{ evaluation.title }}
+{% endblock %}
 
-{% block body %}
-    <h1>Evaluation</h1>
+{% block content %}
+    <twig:AdminHeader 
+        title="Détails de l'Évaluation" 
+        subtitle="{{ evaluation.title }}"
+        backPath="{{ path('app_admin_evaluation_index') }}"
+    >
+        <div class="flex items-center gap-2">
+             <twig:Button as="a" href="{{ path('app_admin_evaluation_edit', {'id': evaluation.id}) }}" variant="outline" size="sm">
+                <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
+                {{ 'Modifier' | trans }}
+            </twig:Button>
+            {{ include('admin/evaluation/_delete_form.html.twig') }}
+        </div>
+    </twig:AdminHeader>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ evaluation.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ evaluation.title }}</td>
-            </tr>
-            <tr>
-                <th>Score</th>
-                <td>{{ evaluation.score }}</td>
-            </tr>
-            <tr>
-                <th>MaxScore</th>
-                <td>{{ evaluation.maxScore }}</td>
-            </tr>
-            <tr>
-                <th>Feedback</th>
-                <td>{{ evaluation.feedback }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ evaluation.createdAt ? evaluation.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>UpdatedAt</th>
-                <td>{{ evaluation.updatedAt ? evaluation.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-lg font-semibold text-slate-900 mb-4">{{ 'Informations Générales' | trans }}</h3>
+                <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                    <div>
+                        <dt class="text-sm font-medium text-slate-500">{{ 'Titre' | trans }}</dt>
+                        <dd class="mt-1 text-sm text-slate-900">{{ evaluation.title }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-slate-500">{{ 'Score' | trans }}</dt>
+                        <dd class="mt-1">
+                            <twig:Badge variant="outline" class="bg-slate-50 text-slate-700 border-slate-100 shadow-none font-mono">
+                                {{ evaluation.score }} / {{ evaluation.maxScore }}
+                            </twig:Badge>
+                        </dd>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <dt class="text-sm font-medium text-slate-500">{{ 'Feedback' | trans }}</dt>
+                        <dd class="mt-1 text-sm text-slate-900 bg-slate-50 p-4 rounded-lg border border-slate-100 italic">
+                            {{ evaluation.feedback|default('Aucun feedback'|trans) }}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
 
-    <a href="{{ path('app_admin_evaluation_index') }}">back to list</a>
-
-    <a href="{{ path('app_admin_evaluation_edit', {'id': evaluation.id}) }}">edit</a>
-
-    {{ include('admin/evaluation/_delete_form.html.twig') }}
+        <div class="space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">{{ 'Métadonnées' | trans }}</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-slate-500">{{ 'ID' | trans }}</span>
+                        <span class="font-mono text-slate-900">{{ evaluation.id }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-slate-500">{{ 'Créé le' | trans }}</span>
+                        <span class="text-slate-900">{{ evaluation.createdAt ? evaluation.createdAt|date('d/m/Y H:i') : '-' }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-slate-500">{{ 'Modifié le' | trans }}</span>
+                        <span class="text-slate-900">{{ evaluation.updatedAt ? evaluation.updatedAt|date('d/m/Y H:i') : '-' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

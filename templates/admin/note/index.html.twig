@@ -24,26 +24,24 @@
             </twig:Table:Head>
             <twig:Table:Body>
                 {% for note in notes %}
-                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
-                        <twig:Table:Cell class="font-medium text-slate-500">#{{ note.id }}</twig:Table:Cell>
+                    <twig:Table:Row class="hover:bg-slate-50/50 transition-colors group">
+                        <twig:Table:Cell class="font-medium text-slate-500 w-16">#{{ note.id }}</twig:Table:Cell>
                         <twig:Table:Cell>
                             <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase">
-                                    {{ note.user.firstname|slice(0, 1) }}{{ note.user.lastname|slice(0, 1) }}
-                                </div>
-                                <span class="text-sm font-medium text-slate-900">{{ note.user.fullname }}</span>
+                                <twig:Avatar:Text name="{{ note.user.fullname }}" class="scale-75 origin-left" />
+                                <span class="text-sm font-semibold text-slate-900">{{ note.user.fullname }}</span>
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="text-xs text-slate-600 font-medium">{{ note.lesson.title }}</span>
+                            <span class="text-xs text-slate-600 font-medium bg-slate-50 px-2 py-1 rounded border border-slate-100 italic">{{ note.lesson.title }}</span>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <div class="text-sm text-slate-500 line-clamp-1 max-w-xs">
+                            <div class="text-xs text-slate-500 line-clamp-1 max-w-xs group-hover:line-clamp-none transition-all">
                                 {{ note.content }}
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="text-[10px] text-slate-400">
+                            <span class="text-[10px] text-slate-400 font-mono">
                                 {{ note.createdAt|date('d/m/Y H:i') }}
                             </span>
                         </twig:Table:Cell>

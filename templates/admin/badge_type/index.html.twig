@@ -24,9 +24,9 @@
             <twig:Table:Body>
                 {% for badge_type in badge_types %}
                     <twig:Table:Row class="hover:bg-slate-50/50 transition-colors group">
-                        <twig:Table:Cell class="font-medium text-slate-500">#{{ badge_type.id }}</twig:Table:Cell>
-                        <twig:Table:Cell>
-                            <div class="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center p-2 group-hover:scale-110 transition-transform">
+                        <twig:Table:Cell class="font-medium text-slate-500 w-16">#{{ badge_type.id }}</twig:Table:Cell>
+                        <twig:Table:Cell class="w-20">
+                            <div class="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center p-2 group-hover:scale-110 transition-transform shadow-sm">
                                 {% if badge_type.image %}
                                     <img src="{{ badge_type.image }}" alt="{{ badge_type.title }}" class="w-full h-full object-contain">
                                 {% else %}
@@ -41,7 +41,7 @@
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <code class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 font-mono">
+                            <code class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 font-mono border border-slate-200">
                                 {{ badge_type.code }}
                             </code>
                         </twig:Table:Cell>

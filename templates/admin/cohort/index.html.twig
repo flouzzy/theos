@@ -27,10 +27,10 @@
             <twig:Table:Body>
                 {% for cohort in cohorts %}
                     <twig:Table:Row class="hover:bg-slate-50/50 transition-colors">
-                        <twig:Table:Cell class="font-medium text-slate-500">#{{ cohort.id }}</twig:Table:Cell>
+                        <twig:Table:Cell class="font-medium text-slate-500 w-16">#{{ cohort.id }}</twig:Table:Cell>
                         <twig:Table:Cell>
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden">
+                                <div class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shadow-sm">
                                     {% if cohort.image %}
                                         <img src="{{ asset(cohort.image) }}" alt="" class="w-full h-full object-cover">
                                     {% else %}
@@ -41,17 +41,25 @@
                             </div>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-bold">
+                            <span class="px-2.5 py-1 rounded-md bg-slate-50 text-slate-600 border border-slate-200 text-xs font-bold font-mono">
                                 {{ cohort.year }}
                             </span>
                         </twig:Table:Cell>
                         <twig:Table:Cell>
-                            <twig:Badge variant="{{ cohort.status == 'published' ? 'default' : 'outline' }}">
-                                {{ cohort.status | trans }}
-                            </twig:Badge>
+                            {% if cohort.status == 'published' %}
+                                <twig:Badge variant="default" class="bg-emerald-50 text-emerald-700 border-emerald-100 shadow-none text-[10px] font-bold uppercase">
+                                    {{ 'Publié' | trans }}
+                                </twig:Badge>
+                            {% else %}
+                                <twig:Badge variant="outline" class="bg-slate-50 text-slate-500 border-slate-200 shadow-none text-[10px] font-bold uppercase">
+                                    {{ 'Brouillon' | trans }}
+                                </twig:Badge>
+                            {% endif %}
                         </twig:Table:Cell>
-                        <twig:Table:Cell class="text-slate-500 text-xs">
-                            {{ cohort.createdAt ? cohort.createdAt|date('d/m/Y') : '-' }}
+                        <twig:Table:Cell>
+                            <span class="text-slate-400 text-[10px]">
+                                {{ cohort.createdAt ? cohort.createdAt|date('d/m/Y') : '-' }}
+                            </span>
                         </twig:Table:Cell>
                         <twig:Table:Cell class="text-right">
                             <div class="flex items-center justify-end gap-2">
