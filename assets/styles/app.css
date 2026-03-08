@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+[x-cloak] {
+    display: none !important;
+}
+
 :root {
     /* Primary - OKLCH (Purple from Figma #6c5bd9 approx) */
     --primary: oklch(0.56 0.21 286);
