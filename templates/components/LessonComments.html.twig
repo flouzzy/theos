@@ -1,0 +1,80 @@
+<div {{ attributes }} class="mt-12 pt-8 border-t border-border">
+    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+        💬 {{ 'Discussions' | trans }} 
+        <span class="text-sm font-normal text-muted-foreground">({{ lesson.comments|length }})</span>
+    </h3>
+
+    {# Comment Form #}
+    {% if is_granted('IS_AUTHENTICATED') %}
+        <div class="bg-muted/30 rounded-2xl p-4 mb-8">
+            <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold shadow-sm">
+                        {{ app.user.firstname|first }}{{ app.user.lastname|first }}
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <textarea 
+                        data-model="content" 
+                        required 
+                        placeholder="{{ 'Ajouter un commentaire...' | trans }}" 
+                        class="w-full bg-white dark:bg-card border border-input rounded-xl px-4 py-3 min-h-[80px] focus:ring-2 focus:ring-primary/20 resize-y outline-none transition-all"
+                    ></textarea>
+                    <div class="flex justify-end mt-2">
+                        <button 
+                            data-action="live#action" 
+                            data-live-action-param="addComment"
+                            class="btn btn-primary rounded-xl px-6 py-2 text-sm font-bold disabled:opacity-50"
+                            {% if content|trim is empty %}disabled{% endif %}
+                        >
+                            <span class="flex items-center gap-2">
+                                <span data-loading="action(addComment)" class="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full"></span>
+                                {{ 'Publier' | trans }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="bg-muted/50 rounded-xl p-4 text-center mb-8">
+            <p class="text-muted-foreground">{{ 'Connectez-vous pour participer à la discussion.' | trans }}</p>
+        </div>
+    {% endif %}
+
+    {# Comments List #}
+    <div class="space-y-6">
+        {% for comment in lesson.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
+            <div class="flex gap-4 group animate-in fade-in slide-in-from-bottom-2">
+                {# Avatar #}
+                <div class="flex-shrink-0">
+                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 text-white flex items-center justify-center font-bold shadow-sm">
+                        {{ comment.user.firstname|first }}{{ comment.user.lastname|first }}
+                    </div>
+                </div>
+
+                {# Content #}
+                <div class="flex-1">
+                    <div class="bg-card border border-border rounded-2xl rounded-tl-sm p-4 shadow-sm relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-sm">{{ comment.user.fullname }}</span>
+                            <span class="text-xs text-muted-foreground">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
+                        </div>
+                        <p class="text-foreground/90 leading-relaxed">{{ comment.content }}</p>
+                    </div>
+                    
+                    {# Actions #}
+                    <div class="flex items-center gap-4 mt-1 ml-2">
+                        <button class="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors">
+                            {{ 'Répondre' | trans }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-12 bg-muted/20 rounded-2xl border-2 border-dashed border-muted">
+                <p class="text-muted-foreground">{{ 'Aucun commentaire pour le moment. Soyez le premier !' | trans }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>

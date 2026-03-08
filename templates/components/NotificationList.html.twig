@@ -1,35 +1,81 @@
 <div {{ attributes }}>
     {% set notifications = this.notifications %}
 
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold flex items-center gap-2">
+            🔔 {{ 'Notifications' | trans }}
+            {% set unreadCount = notifications|filter(n => not n.isRead)|length %}
+            {% if unreadCount > 0 %}
+                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                    {{ unreadCount }}
+                </span>
+            {% endif %}
+        </h3>
+        
+        {% if notifications is not empty %}
+            <button 
+                data-action="live#action" 
+                data-live-action-param="markAllAsRead"
+                class="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group"
+            >
+                <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7m-6 0l4 4L19 7" />
+                </svg>
+                {{ 'Tout marquer comme lu' | trans }}
+            </button>
+        {% endif %}
+    </div>
+
     {% if notifications is empty %}
-        <div class="text-center text-muted-foreground p-8">
-            {{ 'Aucune notification pour le moment.' | trans }}
+        <div class="text-center py-12 bg-muted/20 rounded-2xl border-2 border-dashed border-muted">
+            <div class="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+            </div>
+            <p class="text-muted-foreground">{{ 'Aucune notification pour le moment.' | trans }}</p>
         </div>
     {% else %}
-        <div class="flex justify-end mb-4">
-            <ion-button fill="clear" color="primary" data-action="click->live#action" data-live-action-param="markAllAsRead">
-                <span class="ion-hide-md-down mr-2">{{ 'Mark all as read' | trans }}</span>
-                <ion-icon slot="end" name="checkmark-done-outline"></ion-icon>
-            </ion-button>
-        </div>
-        <ion-list>
+        <div class="space-y-3">
             {% for notification in notifications %}
-                <ion-item {% if notification.isRead %} color="light" {% endif %} button {% if not notification.isRead %} data-action="click->live#action" data-live-action-param="markAsRead" data-live-id-param="{{ notification.id }}" {% endif %} {% if notification.isRead %}href="{{ path('notification_show', { id:notification.id }) }}"{% endif %}>
-                    <ion-label class="ion-text-wrap">
-                        <ion-text {% if not notification.isRead %} color="danger" {% endif %} class="{% if not notification.isRead %}font-semibold{% endif %}">
+                <div 
+                    class="group relative flex items-start gap-4 p-4 rounded-xl border transition-all duration-200 {{ notification.isRead ? 'bg-card border-border' : 'bg-primary/5 border-primary/20 shadow-sm' }}"
+                >
+                    <div class="flex-shrink-0 mt-1">
+                        {% if notification.isRead %}
+                            <div class="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
+                        {% else %}
+                            <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm text-foreground/90 leading-relaxed font-medium">
                             {{ notification.message|default('')|sanitize_html('app.notification_sanitizer') }}
-                        </ion-text>
-                        <p class="text-xs mt-1 text-muted-foreground">
+                        </div>
+                        <div class="mt-1 text-xs text-muted-foreground flex items-center gap-2">
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                             {{ notification.createdAt ? notification.createdAt|date('d/m/Y H:i') : '' }}
-                        </p>
-                    </ion-label>
+                        </div>
+                    </div>
+
                     {% if not notification.isRead %}
-                        <ion-button slot="end" fill="clear" color="danger" title="{{ 'Marquer comme lu' | trans }}">
-                            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
-                        </ion-button>
+                        <button 
+                            data-action="live#action" 
+                            data-live-action-param="markAsRead" 
+                            data-live-id-param="{{ notification.id }}"
+                            class="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg"
+                            title="{{ 'Marquer comme lu' | trans }}"
+                        >
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </button>
                     {% endif %}
-                </ion-item>
+                </div>
             {% endfor %}
-        </ion-list>
+        </div>
     {% endif %}
 </div>

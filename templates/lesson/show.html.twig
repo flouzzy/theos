@@ -158,7 +158,7 @@
                 </div>
 
                 {# Tab Panels #}
-                <div x-show="tab === 'overview'" class="prose prose-slate dark:prose-invert max-w-none animate-in fade-in slide-in-from-bottom-2">
+                <div x-show="tab === 'overview'" class="prose prose-slate dark:prose-invert prose-lg max-w-none animate-in fade-in slide-in-from-bottom-2">
                     {{ currentLesson.content|default('')|sanitize_html('app.default_sanitizer') }}
                 </div>
 
@@ -175,7 +175,7 @@
                 </div>
 
                 <div x-show="tab === 'comments'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
-                    {% include 'comment/_section.html.twig' %}
+                    {{ component('LessonComments', { lesson: currentLesson }) }}
                 </div>
             </div>
 

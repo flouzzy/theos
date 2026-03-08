@@ -4,14 +4,14 @@
 
 {% block content %}
 <div class="max-w-4xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6 text-center">{{ 'Classement Global' | trans }}</h1>
+    <h1 class="text-3xl font-bold mb-12 text-center">{{ 'Classement Global' | trans }}</h1>
 
     {% set podiumUsers = topUsers|slice(0, 3) %}
     {% set otherUsers = topUsers|slice(3) %}
 
     {# Podium Top 3 #}
     {% if podiumUsers|length >= 3 %}
-    <div class="flex justify-center items-end gap-2 sm:gap-8 mb-16 mt-12 h-56">
+    <div class="flex justify-center items-end gap-2 sm:gap-8 mb-16 mt-8 h-56 relative">
         {# 2ème #}
         {% set user2 = podiumUsers[1] %}
         <div class="flex flex-col items-center w-28 sm:w-36 z-10 translate-y-6">
