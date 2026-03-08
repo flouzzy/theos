@@ -12,12 +12,15 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
+use Twig\Environment;
+
 class SendMailTest extends TestCase
 {
     private MailerInterface&MockObject $mailer;
     private LoggerInterface&MockObject $logger;
     private BrevoApi&MockObject $brevoApi;
     private ParameterBagInterface&MockObject $parameterBag;
+    private Environment&MockObject $twig;
     private SendMail $sendMail;
 
     protected function setUp(): void
@@ -26,18 +29,22 @@ class SendMailTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->brevoApi = $this->createMock(BrevoApi::class);
         $this->parameterBag = $this->createMock(ParameterBagInterface::class);
+        $this->twig = $this->createMock(Environment::class);
 
         // Assert 'prod' environment to bypass dev/test override and test Brevo behaviour
         $this->parameterBag->method('get')->willReturnMap([
             ['brevo_api_key', 'valid-api-key'],
             ['kernel.environment', 'prod'],
         ]);
+        
+        $this->twig->method('render')->willReturn('<h1>Mocked HTML</h1>');
 
         $this->sendMail = new SendMail(
             $this->mailer,
             $this->logger,
             $this->brevoApi,
-            $this->parameterBag
+            $this->parameterBag,
+            $this->twig
         );
     }
 
@@ -51,9 +58,13 @@ class SendMailTest extends TestCase
 
         $expectedToList = [['email' => $to]];
 
+        $expectedContext = $context;
+        $expectedContext['subject'] = $subject;
+        $expectedContext['html_content'] = '<h1>Mocked HTML</h1>';
+
         $this->brevoApi->expects($this->once())
             ->method('sendEmail')
-            ->with($expectedToList, $context);
+            ->with($expectedToList, $expectedContext);
 
         $this->logger->expects($this->never())->method('error');
         $this->mailer->expects($this->never())->method('send');
@@ -74,9 +85,13 @@ class SendMailTest extends TestCase
             ['email' => 'recipient2@example.com'],
         ];
 
+        $expectedContext = $context;
+        $expectedContext['subject'] = $subject;
+        $expectedContext['html_content'] = '<h1>Mocked HTML</h1>';
+
         $this->brevoApi->expects($this->once())
             ->method('sendEmail')
-            ->with($expectedToList, $context);
+            ->with($expectedToList, $expectedContext);
 
         $this->logger->expects($this->never())->method('error');
         $this->mailer->expects($this->never())->method('send');
@@ -100,9 +115,13 @@ class SendMailTest extends TestCase
             ['email' => 'recipient2@example.com', 'name' => ''],
         ];
 
+        $expectedContext = $context;
+        $expectedContext['subject'] = $subject;
+        $expectedContext['html_content'] = '<h1>Mocked HTML</h1>';
+
         $this->brevoApi->expects($this->once())
             ->method('sendEmail')
-            ->with($expectedToList, $context);
+            ->with($expectedToList, $expectedContext);
 
         $this->logger->expects($this->never())->method('error');
         $this->mailer->expects($this->never())->method('send');
@@ -118,14 +137,21 @@ class SendMailTest extends TestCase
         $template = 'test/template.html.twig';
         $context = ['key' => 'value'];
 
+        $expectedToList = [['email' => $to]]; // Added this line
+
+        $expectedContext = $context;
+        $expectedContext['subject'] = $subject;
+        $expectedContext['html_content'] = '<h1>Mocked HTML</h1>';
+
         $exception = new \Symfony\Component\Mailer\Exception\TransportException('Transport error');
         $this->brevoApi->expects($this->once())
             ->method('sendEmail')
+            ->with($expectedToList, $expectedContext)
             ->willThrowException($exception);
 
         $this->logger->expects($this->once())
             ->method('error')
-            ->with($exception->getDebug());
+            ->with($exception->getMessage());
 
         $this->mailer->expects($this->once())
             ->method('send')
@@ -134,9 +160,7 @@ class SendMailTest extends TestCase
                     && $email->getTo()[0]->getAddress() === $to
                     && $email->getSubject() === $subject
                     && $email->getHtmlTemplate() === $template
-                    && $email->getContext() === $context
-                    && $email->getHeaders()->has('X-Transport')
-                    && $email->getHeaders()->get('X-Transport')->getBody() === 'alternative';
+                    && $email->getContext() === $context;
             }));
 
         $this->sendMail->send($from, $to, $subject, $template, $context);

@@ -8,12 +8,26 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class AdminSmokeTest extends WebTestCase
 {
+    private $client;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->client = static::createClient();
+        $container = $this->client->getContainer();
+        $em = $container->get(EntityManagerInterface::class);
+        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
+        $metadata = $em->getMetadataFactory()->getAllMetadata();
+        $schemaTool->dropSchema($metadata);
+        $schemaTool->createSchema($metadata);
+    }
+
     public function testAllAdminPagesLoadSuccessfully(): void
     {
-        $client = static::createClient();
+        $client = $this->client;
         
         // 1. Authenticate as Super Admin
-        $container = static::getContainer();
+        $container = $client->getContainer();
         /** @var EntityManagerInterface $em */
         $em = $container->get(EntityManagerInterface::class);
         

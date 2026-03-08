@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\EventSubscriber;
+namespace App\Tests\Unit;
 
 use App\Entity\Cohort;
 use App\Entity\Course;

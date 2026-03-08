@@ -12,6 +12,7 @@ use App\Service\SendMail;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -35,12 +36,14 @@ class RegistrationControllerTest extends TestCase
     private $flashBag;
     private $router;
     private $parameterBag;
+    private $eventDispatcher;
     private $controller;
 
     protected function setUp(): void
     {
         $this->emailVerifier = $this->createMock(EmailVerifier::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->jwt = $this->createMock(JWT::class);
         $this->mailer = $this->createMock(SendMail::class);
@@ -64,7 +67,15 @@ class RegistrationControllerTest extends TestCase
         ]);
         $this->parameterBag->method('get')->with('app.jwtsecret')->willReturn('secret');
 
-        $this->controller = new RegistrationController($this->entityManager, $this->translator, $this->jwt, $this->mailer, 'test@example.com', 'Test Sender');
+        $this->controller = new RegistrationController(
+            $this->entityManager, 
+            $this->translator, 
+            $this->jwt, 
+            $this->mailer, 
+            $this->eventDispatcher,
+            'test@example.com', 
+            'Test Sender'
+        );
         $this->controller->setContainer($this->container);
     }
 
@@ -84,8 +95,8 @@ class RegistrationControllerTest extends TestCase
         $user->method('isVerified')->willReturn(false);
         $user->expects($this->once())->method('setIsVerified')->with(true);
 
-        $this->entityManager->expects($this->once())->method('flush')->with($user);
-        $this->brevoApi->expects($this->once())->method('addOrUpdateContact')->with($user);
+        $this->entityManager->expects($this->once())->method('flush');
+        $this->eventDispatcher->expects($this->once())->method('dispatch')->with($this->isInstanceOf(\App\Event\UserVerifiedEvent::class));
 
         $flashes = [];
         $this->flashBag->expects($this->once())->method('add')
@@ -119,7 +130,7 @@ class RegistrationControllerTest extends TestCase
         $user->expects($this->never())->method('setIsVerified');
 
         $this->entityManager->expects($this->never())->method('flush');
-        $this->brevoApi->expects($this->never())->method('addOrUpdateContact');
+        $this->eventDispatcher->expects($this->never())->method('dispatch');
 
         $flashes = [];
         $this->flashBag->expects($this->once())->method('add')

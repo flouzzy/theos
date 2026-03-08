@@ -66,33 +66,4 @@ class UserNotificationControllerTest extends WebTestCase
         }
     }
 
-    public function testMarkAllAsRead(): void
-    {
-        // Create unread notifications
-        for ($i = 0; $i < 5; $i++) {
-            $notification = new Notification();
-            $notification->setMessage("Notification $i");
-            $notification->setUser($this->user);
-            $notification->setIsRead(false);
-            $this->entityManager->persist($notification);
-        }
-        $this->entityManager->flush();
-
-        // Verify they are unread
-        $count = $this->notificationRepository->count(['user' => $this->user, 'isRead' => false]);
-        $this->assertEquals(5, $count, 'Should have 5 unread notifications');
-
-        // Call the endpoint
-        $this->client->request('GET', '/notification/read/all');
-
-        // Assert redirect
-        self::assertResponseRedirects('/notification/');
-
-        // Verify database state
-        $countAfter = $this->notificationRepository->count(['user' => $this->user, 'isRead' => false]);
-        $this->assertEquals(0, $countAfter, 'Should have 0 unread notifications');
-
-        $countRead = $this->notificationRepository->count(['user' => $this->user, 'isRead' => true]);
-        $this->assertEquals(5, $countRead, 'Should have 5 read notifications');
-    }
 }

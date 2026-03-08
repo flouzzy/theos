@@ -17,6 +17,12 @@ class LessonFrontendTest extends WebTestCase
         $container = static::getContainer();
         $entityManager = $container->get('doctrine')->getManager();
 
+        // Clean up database state for user
+        $conn = $entityManager->getConnection();
+        $conn->executeStatement('PRAGMA foreign_keys = OFF');
+        $conn->executeStatement('DELETE FROM user WHERE email = "test@example.com"');
+        $conn->executeStatement('PRAGMA foreign_keys = ON');
+
         // Create User
         $user = new User();
         $user->setEmail('test@example.com');
@@ -43,6 +49,7 @@ class LessonFrontendTest extends WebTestCase
         $lesson->setTitle('Test Lesson');
         $lesson->setModule($module);
         $lesson->setContent('Content');
+        $lesson->setStatus('published');
         $entityManager->persist($lesson);
 
         // Create Completion
@@ -68,6 +75,7 @@ class LessonFrontendTest extends WebTestCase
         $otherLesson->setTitle('Other Lesson');
         $otherLesson->setModule($otherModule);
         $otherLesson->setContent('Other Content');
+        $otherLesson->setStatus('published');
         $entityManager->persist($otherLesson);
 
         $otherCompletion = new Completion();
@@ -89,8 +97,8 @@ class LessonFrontendTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // Check if completion indicator is present (the SVG checkmark)
-        $this->assertSelectorExists('path[d="M5 13l4 4L19 7"]');
+        // Check if completion indicator is present (the SVG checkmark container)
+        $this->assertSelectorExists('.bg-primary.text-primary-foreground svg');
 
         // Ensure "Other Lesson" is not shown (it shouldn't be because it's in another course)
         $this->assertSelectorTextNotContains('body', 'Other Lesson');

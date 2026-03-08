@@ -47,7 +47,7 @@ class CohortSessionTest extends TestCase
     {
         $user = new User();
         $cohort = new Cohort();
-        $cohort->setName('Promo 1');
+        $cohort->setTitle('Promo 1');
         $user->addCohort($cohort);
 
         $this->security->method('getUser')->willReturn($user);

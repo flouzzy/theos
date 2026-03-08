@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
 class CompletionServiceTest extends TestCase
@@ -37,6 +38,8 @@ class CompletionServiceTest extends TestCase
     private Environment $twig;
     /** @var GamificationService&MockObject */
     private GamificationService $gamificationService;
+    /** @var EventDispatcherInterface&MockObject */
+    private EventDispatcherInterface $eventDispatcher;
 
     private CompletionService $completionService;
 
@@ -48,6 +51,7 @@ class CompletionServiceTest extends TestCase
         $this->security = $this->createMock(Security::class);
         $this->twig = $this->createMock(Environment::class);
         $this->gamificationService = $this->createMock(GamificationService::class);
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->completionService = new CompletionService(
             $this->entityManager,
@@ -55,7 +59,8 @@ class CompletionServiceTest extends TestCase
             $this->translator,
             $this->security,
             $this->twig,
-            $this->gamificationService
+            $this->gamificationService,
+            $this->eventDispatcher
         );
     }
 
@@ -283,6 +288,10 @@ class CompletionServiceTest extends TestCase
         $this->gamificationService->expects($this->once())
             ->method('awardEarlyBirdBadge')
             ->with($user, $course, $this->isInstanceOf(\DateTimeImmutable::class), false);
+            
+        $this->eventDispatcher->expects($this->once())
+            ->method('dispatch')
+            ->with($this->isInstanceOf(\App\Event\TrainingCompletionEvent::class));
 
         $this->completionService->setCourseCompletion($course);
 

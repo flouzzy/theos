@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use App\Repository\SettingRepository;
 
 class BrevoApiTest extends TestCase
 {
@@ -35,7 +36,9 @@ class BrevoApiTest extends TestCase
                 };
             });
 
-        $this->brevoApi = new BrevoApi($this->parameterBag, $this->logger);
+        $settingRepository = $this->createMock(SettingRepository::class);
+
+        $this->brevoApi = new BrevoApi($this->parameterBag, $this->logger, $settingRepository);
     }
 
     public function testSendEmailExceptionIsCaughtAndLogged(): void
