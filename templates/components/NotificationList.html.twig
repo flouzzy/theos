@@ -1,35 +1,94 @@
-<div {{ attributes }}>
+<div {{ attributes }} class="space-y-4">
     {% set notifications = this.notifications %}
 
     {% if notifications is empty %}
-        <div class="text-center text-muted-foreground p-8">
-            {{ 'Aucune notification pour le moment.' | trans }}
+        <div class="flex flex-col items-center justify-center p-12 text-center bg-card border border-dashed border-border rounded-3xl">
+            <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4 text-muted-foreground">
+                <twig:ux:icon name="lucide:bell-off" class="w-8 h-8" />
+            </div>
+            <h3 class="text-xl font-bold mb-1">{{ 'Aucune notification' | trans }}</h3>
+            <p class="text-muted-foreground">{{ 'Vous êtes à jour ! Revenez plus tard pour de nouvelles actualités.' | trans }}</p>
         </div>
     {% else %}
-        <div class="flex justify-end mb-4">
-            <ion-button fill="clear" color="primary" data-action="click->live#action" data-live-action-param="markAllAsRead">
-                <span class="ion-hide-md-down mr-2">{{ 'Mark all as read' | trans }}</span>
-                <ion-icon slot="end" name="checkmark-done-outline"></ion-icon>
-            </ion-button>
+        <div class="flex items-center justify-between mb-6 px-2">
+            <h2 class="text-2xl font-black tracking-tight">{{ 'Notifications' | trans }}</h2>
+            <button 
+                data-action="live#action" 
+                data-live-action-param="markAllAsRead"
+                class="flex items-center gap-2 text-sm font-bold text-primary hover:text-primary/80 transition-colors bg-primary/5 px-4 py-2 rounded-xl"
+            >
+                <twig:ux:icon name="lucide:check-check" class="w-4 h-4" />
+                <span>{{ 'Tout marquer comme lu' | trans }}</span>
+            </button>
         </div>
-        <ion-list>
+
+        <div class="space-y-3">
             {% for notification in notifications %}
-                <ion-item {% if notification.isRead %} color="light" {% endif %} button {% if not notification.isRead %} data-action="click->live#action" data-live-action-param="markAsRead" data-live-id-param="{{ notification.id }}" {% endif %} {% if notification.isRead %}href="{{ path('notification_show', { id:notification.id }) }}"{% endif %}>
-                    <ion-label class="ion-text-wrap">
-                        <ion-text {% if not notification.isRead %} color="danger" {% endif %} class="{% if not notification.isRead %}font-semibold{% endif %}">
-                            {{ notification.message|default('')|sanitize_html('notification') }}
-                        </ion-text>
-                        <p class="text-xs mt-1 text-muted-foreground">
-                            {{ notification.createdAt ? notification.createdAt|date('d/m/Y H:i') : '' }}
-                        </p>
-                    </ion-label>
+                <div 
+                    class="group relative flex gap-4 p-5 rounded-3xl border transition-all duration-300 transform active:scale-[0.98] 
+                           {{ notification.isRead ? 'bg-card/50 border-border opacity-75' : 'bg-card border-primary/20 shadow-sm border-l-4 border-l-primary' }}"
+                >
+                    {# Icon/Avatar part #}
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center 
+                                    {{ notification.isRead ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary' }}">
+                            {% if 'leçon' in notification.message|lower %}
+                                <twig:ux:icon name="lucide:book-open" class="w-6 h-6" />
+                            {% elseif 'badge' in notification.message|lower %}
+                                <twig:ux:icon name="lucide:award" class="w-6 h-6" />
+                            {% else %}
+                                <twig:ux:icon name="lucide:bell" class="w-6 h-6" />
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Content #}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="text-sm md:text-base leading-relaxed {{ notification.isRead ? 'text-muted-foreground' : 'text-foreground font-medium' }}">
+                                {{ notification.message|default('')|sanitize_html('notification') }}
+                            </div>
+                            
+                            {% if not notification.isRead %}
+                                <div class="flex-shrink-0 w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(var(--primary),0.5)]"></div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex items-center gap-4 mt-2">
+                            <span class="text-xs text-muted-foreground flex items-center gap-1">
+                                <twig:ux:icon name="lucide:clock" class="w-3 h-3" />
+                                {{ notification.createdAt ? notification.createdAt|date('d/m/Y H:i') : '' }}
+                            </span>
+                            
+                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {% if not notification.isRead %}
+                                    <button 
+                                        data-action="live#action" 
+                                        data-live-action-param="markAsRead" 
+                                        data-live-id-param="{{ notification.id }}"
+                                        class="text-xs font-bold text-primary hover:underline"
+                                    >
+                                        {{ 'Marquer comme lu' | trans }}
+                                    </button>
+                                {% endif %}
+                                <a href="{{ path('notification_show', { id: notification.id }) }}" class="text-xs font-bold text-muted-foreground hover:text-foreground">
+                                    {{ 'Détails' | trans }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Click overlay if unread to trigger markAsRead #}
                     {% if not notification.isRead %}
-                        <ion-button slot="end" fill="clear" color="danger" title="{{ 'Marquer comme lu' | trans }}">
-                            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
-                        </ion-button>
+                        <div 
+                            class="absolute inset-0 cursor-pointer rounded-3xl z-10"
+                            data-action="click->live#action" 
+                            data-live-action-param="markAsRead" 
+                            data-live-id-param="{{ notification.id }}"
+                        ></div>
                     {% endif %}
-                </ion-item>
+                </div>
             {% endfor %}
-        </ion-list>
+        </div>
     {% endif %}
 </div>

@@ -48,10 +48,13 @@ final class NotificationList
             return;
         }
 
-        // We can't see other people's notifications
-        if ($notification->getUser() !== $this->security->getUser()) {
+        // We can't see other people's notifications, but we can see (and mark) global ones
+        if ($notification->getUser() !== null && $notification->getUser() !== $this->security->getUser()) {
             return;
         }
+        
+        // If it's a global notification, marking it as read will mark it for EVERYONE.
+        // This is a current limitation of the schema, but better than doing nothing.
 
         $notification->setIsRead(true);
         $this->entityManager->flush();

@@ -82,7 +82,7 @@ class NotificationRepository extends ServiceEntityRepository
         $this->createQueryBuilder('n')
             ->update()
             ->set('n.isRead', ':isRead')
-            ->where('n.user = :user')
+            ->where('n.user = :user OR n.user IS NULL')
             ->setParameter('isRead', true)
             ->setParameter('user', $user)
             ->getQuery()

@@ -5,13 +5,14 @@
 {% endblock %}
 
 {% block content %}
-	<div class="ion-padding max-w-4xl mx-auto">
+	<div class="max-w-4xl mx-auto">
 		{{ component('NotificationList') }}
 	</div>
 {% endblock %}
 
 {% block menuBackButton %}
-	<ion-button href="{{path('home')}}">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-	</ion-button>
+	<a href="{{path('cohort_index')}}" class="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
+		<twig:ux:icon name="lucide:chevron-left" class="w-5 h-5" />
+        <span class="font-medium">{{ 'Retour' | trans }}</span>
+	</a>
 {% endblock %}
