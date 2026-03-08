@@ -29,6 +29,7 @@ class LessonFrontendTest extends WebTestCase
         $course = new Course();
         $course->setTitle('Test Course');
         $course->setDescription('Test Description');
+        $course->setAuthor($user);
         $entityManager->persist($course);
 
         // Create Module
@@ -55,6 +56,7 @@ class LessonFrontendTest extends WebTestCase
         $otherCourse = new Course();
         $otherCourse->setTitle('Other Course');
         $otherCourse->setDescription('Other Description');
+        $otherCourse->setAuthor($user);
         $entityManager->persist($otherCourse);
 
         $otherModule = new Module();

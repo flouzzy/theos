@@ -23,9 +23,12 @@ class CohortSessionTest extends TestCase
     {
         $this->security = $this->createMock(Security::class);
         $this->cohortRepository = $this->createMock(CohortRepository::class);
+        $session = new Session(new MockArraySessionStorage());
+        $request = new \Symfony\Component\HttpFoundation\Request();
+        $request->setSession($session);
+        
         $this->requestStack = new RequestStack();
-        $this->requestStack->push(new \Symfony\Component\HttpFoundation\Request());
-        $this->requestStack->getSession()->start();
+        $this->requestStack->push($request);
 
         $this->cohortSession = new CohortSession(
             $this->requestStack,

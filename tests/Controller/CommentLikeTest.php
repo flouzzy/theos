@@ -30,6 +30,7 @@ class CommentLikeTest extends WebTestCase
         $course->setTitle('Test Course');
         $course->setDescription('Test Description');
         $course->setSlug('test-course-like');
+        $course->setAuthor($user);
         $entityManager->persist($course);
 
         $module = new Module();

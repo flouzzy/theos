@@ -64,7 +64,7 @@ class RegistrationControllerTest extends TestCase
         ]);
         $this->parameterBag->method('get')->with('app.jwtsecret')->willReturn('secret');
 
-        $this->controller = new RegistrationController($this->emailVerifier, $this->entityManager, $this->translator, $this->jwt, $this->mailer);
+        $this->controller = new RegistrationController($this->entityManager, $this->translator, $this->jwt, $this->mailer, 'test@example.com', 'Test Sender');
         $this->controller->setContainer($this->container);
     }
 

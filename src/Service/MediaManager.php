@@ -112,7 +112,7 @@ class MediaManager
         return $ips[0];
     }
 
-    private function fetchUrlContent(string $url): string|false
+    public function downloadFileByUrl(string $url, string $mediaType = 'post'): string|false
     {
         $maxRedirects = 3;
 
@@ -138,7 +138,9 @@ class MediaManager
                     return false;
                 }
 
-                return $this->saveDownloadedContent($content, '', ''); // Adjusting to match existing structure if needed, but the main goal is fixing the syntax
+                $targetDirectory = $this->getTargetDirectory($mediaType);
+                $fileFullPath = null;
+                return $this->saveDownloadedContent($content, $targetDirectory, $fileFullPath);
             }
         } catch (FileException $e) {
             $this->logDownloadError('Erreur lors du téléchargement du fichier', $e, $url);

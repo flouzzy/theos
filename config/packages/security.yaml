@@ -60,6 +60,7 @@ security:
   access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/profile, roles: ROLE_USER }
+    - { path: ^/courses/[^/]+/[^/]+/lesson, roles: IS_AUTHENTICATED }
 
 when@test:
   security:
