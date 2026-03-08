@@ -13,6 +13,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Twig\Environment;
 use App\Service\GamificationService;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use App\Event\TrainingCompletionEvent;
 
 class CompletionService
 {
@@ -23,6 +25,7 @@ class CompletionService
         private Security $security,
         private Environment $twig,
         private GamificationService $gamificationService,
+        private EventDispatcherInterface $eventDispatcher,
     ) {}
 
     public function setModuleCompletion(Module $module): void
@@ -93,7 +96,7 @@ class CompletionService
     /**
      * Mark course as completed
      */
-    public function setCourseCompletion($course)
+    public function setCourseCompletion(\App\Entity\Course $course): void
     {
         /**
          * @var \App\Entity\User $user
@@ -171,6 +174,9 @@ class CompletionService
                 $courseCompletion->getCreatedAt() ?? new \DateTimeImmutable(),
                 false
             );
+
+            // Dispatch TrainingCompletionEvent
+            $this->eventDispatcher->dispatch(new TrainingCompletionEvent($user, $course));
         }
 
         // MAj du statut du parcours
@@ -179,7 +185,7 @@ class CompletionService
         $this->entityManager->persist($courseCompletion);
     }
 
-    public function sendNotificationToAllUsers($content, $title): void
+    public function sendNotificationToAllUsers(string $content, string $title): void
     {
         $this->bus->dispatch(new \App\Message\Notification($content, $title));
     }

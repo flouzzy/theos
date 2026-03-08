@@ -18,7 +18,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
       # Mount external uploads from the host
-      - /var/www/academie/public/uploads:/app/public/uploads
+      - /var/www/lerocher/academie/public/uploads:/app/public/uploads
     ports:
       - "8095:80"
       - "8096:443"

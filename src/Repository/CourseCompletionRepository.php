@@ -47,4 +47,22 @@ class CourseCompletionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Retourne les IDs des cours complétés par un utilisateur
+     * @return array<int>
+     */
+    public function findCompletedCourseIdsForUser(User $user): array
+    {
+        $results = $this->createQueryBuilder('c')
+            ->select('course.id')
+            ->join('c.course', 'course')
+            ->where('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_map('intval', array_column($results, 'id'));
+    }
 }

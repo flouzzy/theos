@@ -15,7 +15,7 @@ class ContentSecurityPolicySubscriber implements EventSubscriberInterface
         // Define the CSP policy
         // Note: 'unsafe-inline' and 'unsafe-eval' are allowed here for compatibility with Stimulus/Hotwire/Tailwind as per project requirements.
         // In a stricter environment, we would use nonces or hashes.
-        $policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none';";
+        $policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'self' https://www.youtube.com https://youtube.com;";
 
         $response->headers->set('Content-Security-Policy', $policy);
     }

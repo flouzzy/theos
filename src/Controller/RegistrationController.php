@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
-use App\Service\BrevoApi;
 use App\Service\JWT;
 use App\Service\SendMail;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +29,7 @@ class RegistrationController extends AbstractController
         private TranslatorInterface $translator,
         private JWT $jwt,
         private SendMail $mailer,
+        private \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher,
         #[Autowire('%default_from_email%')] private string $senderEmail,
         #[Autowire('%default_from_name%')] private string $senderName,
     ) {
@@ -86,7 +86,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email/{token}', name: 'verify_email', priority: 3)]
-    public function verifyUserEmail(string $token, UserRepository $userRepository, BrevoApi $brevoApi): Response
+    public function verifyUserEmail(string $token, UserRepository $userRepository): Response
     {
 
         //On vérifie si le token est valide, n'a pas expiré et n'a pas été modifié
@@ -107,8 +107,8 @@ class RegistrationController extends AbstractController
                 $user->setIsVerified(true);
                 $this->entityManager->flush();
 
-                // Maj brevo
-                $brevoApi->addOrUpdateContact($user);
+                // Dispatch event
+                $this->eventDispatcher->dispatch(new \App\Event\UserVerifiedEvent($user));
 
                 $this->addFlash('success', 'Your email address has been verified');
                 return $this->redirectToRoute('home');

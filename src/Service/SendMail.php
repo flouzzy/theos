@@ -9,6 +9,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Twig\Environment;
 
 class SendMail
 {
@@ -16,7 +17,8 @@ class SendMail
         private MailerInterface $mailer,
         private LoggerInterface $logger,
         private BrevoApi $brevoApi,
-        private ParameterBagInterface $parameterBag
+        private ParameterBagInterface $parameterBag,
+        private Environment $twig
     ) {
     }
 
@@ -47,6 +49,9 @@ class SendMail
                  return;
             }
 
+            // Pour Brevo, on doit d'abord rendre le template Twig en HTML
+            $htmlContent = $this->twig->render($template, $context);
+
             $toList = [];
             if (is_string($to)) {
                 $toList[] = ['email' => $to];
@@ -59,15 +64,21 @@ class SendMail
                     }
                 }
             }
-            $this->brevoApi->sendEmail($toList, $context);
-        } catch (TransportExceptionInterface $e) {
-            // some error prevented the email sending; display an
-            // error message or try to resend the message
-            $this->logger->error($e->getDebug());
+            
+            // On ajoute le sujet et le contenu HTML au contexte pour BrevoApi
+            $context['subject'] = $subject;
+            $context['html_content'] = $htmlContent;
 
-            // ... use the transport "alternative":
-            $email->getHeaders()->addTextHeader('X-Transport', 'alternative');
-            $this->mailer->send($email);
+            $this->brevoApi->sendEmail($toList, $context);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+
+            // En cas d'erreur avec Brevo ou le rendu, on tente le mailer classique
+            try {
+                $this->mailer->send($email);
+            } catch (TransportExceptionInterface $te) {
+                $this->logger->error($te->getDebug());
+            }
         }
     }
 }
