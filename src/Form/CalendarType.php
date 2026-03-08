@@ -19,7 +19,7 @@ class CalendarType extends AbstractType
             ->add('embed')
             ->add('cohort', EntityType::class, [
                 'class' => Cohort::class,
-'choice_label' => 'id',
+                'choice_label' => 'title',
             ])
         ;
     }

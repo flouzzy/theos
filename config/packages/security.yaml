@@ -60,6 +60,11 @@ security:
   access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/profile, roles: ROLE_USER }
+    - { path: ^/calendar, roles: ROLE_USER }
+    - { path: ^/note, roles: ROLE_USER }
+    - { path: ^/notification, roles: ROLE_USER }
+    - { path: ^/cohort, roles: ROLE_USER }
+    - { path: ^/payment, roles: ROLE_USER }
     - { path: ^/courses/[^/]+/[^/]+/lesson, roles: IS_AUTHENTICATED }
 
 when@test:
