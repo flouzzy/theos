@@ -18,3 +18,24 @@
     - [x] Add tests for Brevo list management and automation logic
 - [x] Implement Gold Standard Workflow
 - [x] Verify Implementation
+- [x] **AI-Powered Lesson Audio (Gemini Native TTS)**
+    - [x] **Infrastructure & Docker**
+        - [x] Add `ffmpeg` to the Dockerfile.
+        - [x] Rebuild the production image.
+    - [x] **Domain Model & Database**
+        - [x] Add `audioPath` and `audioDuration` fields to `Lesson` entity.
+        - [x] Manually apply schema changes for production.
+    - [x] **Service Layer**
+        - [x] Implement `GeminiAudioService` with native TTS support (2.5 Flash).
+        - [x] Handle PCM to MP3 conversion via FFmpeg.
+    - [x] **Asynchronous Processing (Messenger)**
+        - [x] Implement `GenerateLessonAudioMessage` & `Handler`.
+        - [x] Route message to `async` transport (Redis).
+    - [x] **Admin Interface**
+        - [x] Add "Générer l'audio" button in the Lesson edit view.
+        - [x] Display audio status and player in the sidebar.
+    - [x] **Frontend Integration**
+        - [x] Integrate custom Audio Player in `templates/lesson/show.html.twig`.
+    - [x] **Testing**
+        - [x] Add unit tests for `GeminiAudioService`.
+        - [x] Add functional tests for Admin route.

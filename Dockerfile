@@ -22,8 +22,8 @@ RUN apk add --no-cache \
 	file \
 	gettext \
 	git \
-	;
-
+	ffmpeg \
+;
 RUN set -eux; \
 	install-php-extensions \
 	@composer \

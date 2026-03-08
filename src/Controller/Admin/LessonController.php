@@ -11,9 +11,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use App\Message\GenerateLessonAudioMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
+
 #[Route('/admin/lesson', name: 'admin_lesson_',)]
 class LessonController extends AbstractController
 {
+    #[Route('/{id}/generate-audio', name: 'generate_audio', methods: ['POST'])]
+    public function generateAudio(Lesson $lesson, MessageBusInterface $bus): Response
+    {
+        if (!$lesson->getContent()) {
+            $this->addFlash('error', 'La leçon doit avoir du contenu pour générer un audio.');
+            return $this->redirectToRoute('admin_lesson_edit', ['id' => $lesson->getId()]);
+        }
+
+        $bus->dispatch(new GenerateLessonAudioMessage($lesson->getId()));
+
+        $this->addFlash('success', 'La génération de l\'audio a été lancée en tâche de fond. Elle sera disponible dans quelques instants.');
+
+        return $this->redirectToRoute('admin_lesson_edit', ['id' => $lesson->getId()]);
+    }
+
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(LessonRepository $lessonRepository): Response
     {

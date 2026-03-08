@@ -64,6 +64,12 @@ class Lesson
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $itemOrder = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $audioPath = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $audioDuration = null;
+
     #[ORM\OneToOne(mappedBy: 'lesson', cascade: ['persist', 'remove'])]
     private ?Assignment $assignment = null;
 
@@ -278,6 +284,30 @@ class Lesson
     public function setItemOrder(?int $itemOrder): static
     {
         $this->itemOrder = $itemOrder;
+
+        return $this;
+    }
+
+    public function getAudioPath(): ?string
+    {
+        return $this->audioPath;
+    }
+
+    public function setAudioPath(?string $audioPath): static
+    {
+        $this->audioPath = $audioPath;
+
+        return $this;
+    }
+
+    public function getAudioDuration(): ?int
+    {
+        return $this->audioDuration;
+    }
+
+    public function setAudioDuration(?int $audioDuration): static
+    {
+        $this->audioDuration = $audioDuration;
 
         return $this;
     }
