@@ -19,8 +19,8 @@
 			<tr>
 				<th>Id</th>
 				<th>Description</th>
+				<th>Promotion</th>
 				<th>Url</th>
-				<th>Embed</th>
 				<th>actions</th>
 			</tr>
 		</thead>
@@ -29,11 +29,15 @@
 				<tr>
 					<td>{{ calendar.id }}</td>
 					<td>{{ calendar.description }}</td>
+					<td>{{ calendar.cohort ? calendar.cohort.title : 'Aucune' }}</td>
 					<td>{{ calendar.url }}</td>
-					<td>{{ calendar.embed }}</td>
-					<td>
-						<a href="{{ path('admin_calendar_show', {'id': calendar.id}) }}">show</a>
-						<a href="{{ path('admin_calendar_edit', {'id': calendar.id}) }}">edit</a>
+					<td class="flex items-center gap-2">
+						<a href="{{ path('admin_calendar_show', {'id': calendar.id}) }}" class="btn btn-sm btn-outline">{{ 'Détails' | trans }}</a>
+						<a href="{{ path('admin_calendar_edit', {'id': calendar.id}) }}" class="btn btn-sm btn-primary">{{ 'Modifier' | trans }}</a>
+                        <form method="post" action="{{ path('admin_calendar_duplicate', {'id': calendar.id}) }}" onsubmit="return confirm('Voulez-vous vraiment dupliquer ce calendrier ?');" style="display:inline-block">
+                            <input type="hidden" name="_token" value="{{ csrf_token('duplicate' ~ calendar.id) }}">
+                            <button class="btn btn-sm btn-secondary cursor-pointer">{{ 'Dupliquer' | trans }}</button>
+                        </form>
 					</td>
 				</tr>
 			{% else %}
