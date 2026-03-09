@@ -1,6 +1,6 @@
 # --- Variables ---
 # Default Environment (dev | prod | staging | test)
-ENV ?= dev
+ENV ?= $(shell (grep "^APP_ENV=" .env.local 2>/dev/null || grep "^APP_ENV=" .env 2>/dev/null || echo "dev") | cut -d= -f2 | tr -d '"' | head -n 1)
 
 # Base Docker Compose command
 DK_COMPOSE_CMD = docker compose
@@ -249,13 +249,13 @@ db-diff:
 
 # --- Production ---
 deploy:
-	@echo "🚀 Deploying..."
+	@echo "🚀 Deploying in PROD environment..."
 	git pull
-	$(MAKE) build
-	$(MAKE) up
-	$(MAKE) vendor
-	$(MAKE) cc
-	$(MAKE) db-migrate
+	$(MAKE) build ENV=prod
+	$(MAKE) up ENV=prod
+	$(MAKE) vendor ENV=prod
+	$(MAKE) cc ENV=prod
+	$(MAKE) db-migrate ENV=prod
 
 prod-deploy:
 	@echo "🚀 Starting Production Deployment..."
