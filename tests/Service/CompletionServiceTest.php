@@ -13,6 +13,7 @@ use App\Entity\ModuleCompletion;
 use App\Entity\User;
 use App\Service\CompletionService;
 use App\Service\GamificationService;
+use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -22,6 +23,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
 class CompletionServiceTest extends TestCase
@@ -38,8 +40,12 @@ class CompletionServiceTest extends TestCase
     private Environment $twig;
     /** @var GamificationService&MockObject */
     private GamificationService $gamificationService;
+    /** @var NotificationService&MockObject */
+    private NotificationService $notificationService;
     /** @var EventDispatcherInterface&MockObject */
     private EventDispatcherInterface $eventDispatcher;
+    /** @var UrlGeneratorInterface&MockObject */
+    private UrlGeneratorInterface $urlGenerator;
 
     private CompletionService $completionService;
 
@@ -51,7 +57,9 @@ class CompletionServiceTest extends TestCase
         $this->security = $this->createMock(Security::class);
         $this->twig = $this->createMock(Environment::class);
         $this->gamificationService = $this->createMock(GamificationService::class);
+        $this->notificationService = $this->createMock(NotificationService::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
 
         $this->completionService = new CompletionService(
             $this->entityManager,
@@ -60,7 +68,9 @@ class CompletionServiceTest extends TestCase
             $this->security,
             $this->twig,
             $this->gamificationService,
-            $this->eventDispatcher
+            $this->notificationService,
+            $this->eventDispatcher,
+            $this->urlGenerator
         );
     }
 

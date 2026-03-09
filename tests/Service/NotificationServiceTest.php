@@ -58,11 +58,12 @@ class NotificationServiceTest extends TestCase
         $this->entityManager->expects($this->once())
             ->method('flush');
 
-        $notification = $this->notificationService->createNotification($content, $title, $user, true);
+        $notification = $this->notificationService->createNotification($content, $title, $user, 'http://example.com', true);
 
         $this->assertInstanceOf(Notification::class, $notification);
         $this->assertEquals($content, $notification->getMessage());
         $this->assertEquals($title, $notification->getTitle());
+        $this->assertEquals('http://example.com', $notification->getLink());
         $this->assertSame($user, $notification->getUser());
     }
 
@@ -79,7 +80,7 @@ class NotificationServiceTest extends TestCase
         $this->entityManager->expects($this->never())
             ->method('flush');
 
-        $this->notificationService->createNotification($content, $title, $user, false);
+        $this->notificationService->createNotification($content, $title, $user, null, false);
     }
 
     public function testFlush(): void

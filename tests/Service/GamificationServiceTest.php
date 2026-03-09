@@ -4,17 +4,26 @@ namespace App\Tests\Service;
 
 use App\Entity\User;
 use App\Service\GamificationService;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class GamificationServiceTest extends TestCase
 {
+    private function createService($entityManager): GamificationService
+    {
+        $translator = $this->createMock(TranslatorInterface::class);
+        $notificationService = $this->createMock(NotificationService::class);
+        $urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        return new GamificationService($entityManager, $translator, $notificationService, $urlGenerator);
+    }
+
     public function testAddXp(): void
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $translator = $this->createMock(TranslatorInterface::class);
-        $service = new GamificationService($entityManager, $translator);
+        $service = $this->createService($entityManager);
 
         $user = new User();
         // User xp is 0 by default
@@ -29,9 +38,7 @@ class GamificationServiceTest extends TestCase
     public function testUpdateStreakIncrement(): void
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $translator = $this->createMock(TranslatorInterface::class);
-
-        $service = new GamificationService($entityManager, $translator);
+        $service = $this->createService($entityManager);
 
         $user = new User();
         $user->setStreak(1);
@@ -51,8 +58,7 @@ class GamificationServiceTest extends TestCase
     public function testUpdateStreakReset(): void
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $translator = $this->createMock(TranslatorInterface::class);
-        $service = new GamificationService($entityManager, $translator);
+        $service = $this->createService($entityManager);
 
         $user = new User();
         $user->setStreak(5);
@@ -71,8 +77,7 @@ class GamificationServiceTest extends TestCase
     public function testUpdateStreakSameDay(): void
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $translator = $this->createMock(TranslatorInterface::class);
-        $service = new GamificationService($entityManager, $translator);
+        $service = $this->createService($entityManager);
 
         $user = new User();
         $user->setStreak(5);

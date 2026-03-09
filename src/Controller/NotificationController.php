@@ -46,6 +46,11 @@ class NotificationController extends AbstractController
             $entityManager->flush();
         }
 
+        // Auto-redirect if there is a link
+        if ($notification->getLink()) {
+            return $this->redirect($notification->getLink());
+        }
+
         // ... but we can see general notifications (without a targeted user)
         return $this->render('notification/show.html.twig', [
             'notification' => $notification,

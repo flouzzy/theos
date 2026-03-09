@@ -84,4 +84,22 @@ class CoachAIAgent
             return "Désolé, une erreur est survenue lors de ma réflexion. (Erreur Technique: " . $e->getMessage() . ")";
         }
     }
+
+    public function generateNextStepNudge(\App\Entity\User $user, \App\Entity\Lesson $lesson): string
+    {
+        $prompt = sprintf(
+            "Génère une phrase d'encouragement très courte (max 150 caractères) pour l'étudiant %s afin qu'il étudie sa prochaine leçon : '%s' du module '%s'. Sois motivant, biblique et chaleureux.",
+            $user->getFullname(),
+            $lesson->getTitle(),
+            $lesson->getModule()->getTitle()
+        );
+
+        try {
+            $model = $this->client->generativeModel($this->geminiModel);
+            $response = $model->generateContent(new TextPart($prompt));
+            return trim($response->text());
+        } catch (\Exception $e) {
+            return "C'est le moment idéal pour découvrir votre prochaine leçon : " . $lesson->getTitle() . " !";
+        }
+    }
 }

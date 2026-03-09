@@ -11,6 +11,7 @@ use App\Event\LessonCompleteEvent;
 use App\Repository\CompletionRepository;
 use App\Service\CompletionService;
 use App\Service\GamificationService;
+use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/courses/{courseSlug}/{moduleSlug}/lesson', name: 'lesson_')]
 #[IsGranted('IS_AUTHENTICATED', message: 'Vous devez être connecté pour voir cette leçon')]
@@ -32,6 +34,7 @@ class LessonController extends AbstractController
         private EventDispatcherInterface $dispatcher,
         private CompletionService $completionService,
         private GamificationService $gamificationService,
+        private NotificationService $notificationService,
         private TranslatorInterface $translator,
     ) {}
     #[Route('/{lessonId}', name: 'show')]
@@ -195,6 +198,73 @@ class LessonController extends AbstractController
 
                 $this->gamificationService->addXp($user, 5, 'comment_posted');
                 $this->addFlash('success', $this->translator->trans('Commentaire ajouté !'));
+            }
+        }
+
+        return $this->redirectToRoute('lesson_show', [
+            'courseSlug' => $course->getSlug(),
+            'moduleSlug' => $module->getSlug(),
+            'lessonId' => $lesson->getId()
+        ]);
+    }
+
+    #[Route('/{lessonId}/comment/{parentId}/reply', name: 'add_reply', methods: ['POST'])]
+    public function addReply(
+        Request $request,
+        #[MapEntity(mapping: ['lessonId' => 'id'])]
+        Lesson $lesson,
+        #[MapEntity(mapping: ['courseSlug' => 'slug'])]
+        Course $course,
+        #[MapEntity(mapping: ['moduleSlug' => 'slug'])]
+        Module $module,
+        #[MapEntity(mapping: ['parentId' => 'id'])]
+        Comment $parent
+    ): Response {
+        $content = $request->request->get('content');
+        $token = $request->request->get('_token');
+
+        if (!$this->isCsrfTokenValid('add_reply', $token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        if (!empty(trim((string)$content))) {
+            /** @var \App\Entity\User|null $user */
+            $user = $this->getUser();
+            if ($user) {
+                $comment = new Comment();
+                $comment->setContent((string)$content);
+                $comment->setUser($user);
+                $comment->setLesson($lesson);
+                $comment->setParent($parent);
+
+                $this->entityManager->persist($comment);
+                $this->entityManager->flush();
+
+                $this->gamificationService->addXp($user, 2, 'reply_posted');
+                
+                // Notify parent comment author if they are not the same person
+                if ($parent->getUser() && $parent->getUser()->getId() !== $user->getId()) {
+                    $title = "💬 Nouveau message";
+                    $msg = sprintf("%s a répondu à votre commentaire dans la leçon : %s", $user->getFullname(), $lesson->getTitle());
+                    
+                    if ($this->isGranted('ROLE_COACH') || $this->isGranted('ROLE_ADMIN')) {
+                        $title = "💡 Un mentor vous a répondu !";
+                        $msg = sprintf("Bonne nouvelle ! Le mentor %s a répondu à votre question dans la leçon : %s", $user->getFullname(), $lesson->getTitle());
+                    }
+
+                    $this->notificationService->addNotification(
+                        $parent->getUser(),
+                        $title,
+                        $msg,
+                        $this->generateUrl('lesson_show', [
+                            'courseSlug' => $course->getSlug(),
+                            'moduleSlug' => $module->getSlug(),
+                            'lessonId' => $lesson->getId()
+                        ], UrlGeneratorInterface::ABSOLUTE_URL)
+                    );
+                }
+
+                $this->addFlash('success', $this->translator->trans('Réponse ajoutée !'));
             }
         }
 

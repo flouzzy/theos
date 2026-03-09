@@ -6,12 +6,14 @@ use App\Entity\Assignment;
 use App\Entity\AssignmentSubmission;
 use App\Entity\PeerReview;
 use App\Service\GamificationService;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/assignment', name: 'assignment_')]
 #[IsGranted('IS_AUTHENTICATED')]
@@ -19,7 +21,8 @@ class AssignmentController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private GamificationService $gamificationService
+        private GamificationService $gamificationService,
+        private NotificationService $notificationService
     ) {}
 
     #[Route('/{id}', name: 'show')]
@@ -64,6 +67,21 @@ class AssignmentController extends AbstractController
             $submission->setAssignment($assignment);
             $submission->setUser($user);
             $this->gamificationService->addXp($user, 20, 'assignment_submitted');
+
+            // Trigger #6: Browser notification for new peer review requests
+            $cohort = $user->getCurrentCohort();
+            if ($cohort) {
+                 foreach ($cohort->getUsers() as $peer) {
+                     if ($peer->getId() !== $user->getId()) {
+                         $this->notificationService->addNotification(
+                             $peer,
+                             "🤝 Nouvelle revue disponible",
+                             sprintf("%s a soumis un travail. Viens l'aider en le corrigeant !", $user->getFullname()),
+                             $this->generateUrl('assignment_review_pool', ['id' => $assignment->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
+                         );
+                     }
+                 }
+            }
         }
 
         $submission->setContent($content);
@@ -151,6 +169,14 @@ class AssignmentController extends AbstractController
         $this->entityManager->flush();
 
         $this->gamificationService->addXp($user, 15, 'peer_review_completed');
+
+        // Notify author
+        $this->notificationService->addNotification(
+            $submission->getUser(),
+            "📝 Ton travail a été corrigé",
+            sprintf("%s a corrigé ton travail pour l'exercice : %s", $user->getFullname(), $assignment->getTitle()),
+            $this->generateUrl('assignment_show', ['id' => $assignment->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
+        );
 
         $this->addFlash('success', 'Review submitted successfully!');
 

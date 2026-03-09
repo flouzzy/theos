@@ -13,8 +13,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Twig\Environment;
 use App\Service\GamificationService;
+use App\Service\NotificationService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Event\TrainingCompletionEvent;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CompletionService
 {
@@ -25,7 +27,9 @@ class CompletionService
         private Security $security,
         private Environment $twig,
         private GamificationService $gamificationService,
+        private NotificationService $notificationService,
         private EventDispatcherInterface $eventDispatcher,
+        private UrlGeneratorInterface $urlGenerator,
     ) {}
 
     public function setModuleCompletion(Module $module): void
@@ -173,6 +177,14 @@ class CompletionService
                 $course,
                 $courseCompletion->getCreatedAt() ?? new \DateTimeImmutable(),
                 false
+            );
+
+            // Personal Notification
+            $this->notificationService->addNotification(
+                $user,
+                "🎓 Félicitations !",
+                sprintf("Tu as terminé le cours '%s'. Ton certificat est prêt !", $course->getTitle()),
+                $this->urlGenerator->generate('certificate_show', ['id' => $course->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
             );
 
             // Dispatch TrainingCompletionEvent

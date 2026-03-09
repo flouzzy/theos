@@ -40,24 +40,27 @@ final class NotificationList
     }
 
     #[LiveAction]
-    public function markAsRead(#[LiveArg] int $id): void
+    public function markAsRead(#[LiveArg] int $id): ?\Symfony\Component\HttpFoundation\Response
     {
         $notification = $this->notificationRepository->find($id);
 
         if (!$notification) {
-            return;
+            return null;
         }
 
         // We can't see other people's notifications, but we can see (and mark) global ones
         if ($notification->getUser() !== null && $notification->getUser() !== $this->security->getUser()) {
-            return;
+            return null;
         }
-        
-        // If it's a global notification, marking it as read will mark it for EVERYONE.
-        // This is a current limitation of the schema, but better than doing nothing.
 
         $notification->setIsRead(true);
         $this->entityManager->flush();
+
+        if ($notification->getLink()) {
+            return new \Symfony\Component\HttpFoundation\RedirectResponse($notification->getLink());
+        }
+
+        return null;
     }
 
     #[LiveAction]

@@ -8,19 +8,56 @@ use App\Entity\BadgeType;
 use App\Entity\Course;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class GamificationService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private NotificationService $notificationService,
+        private UrlGeneratorInterface $urlGenerator
     ) {}
 
     public function addXp(User $user, int $amount, string $reason = ''): void
     {
+        $oldXp = $user->getXp();
         $user->addXp($amount);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        $this->checkLeaderboardOvertake($user, $oldXp);
+    }
+
+    public function checkLeaderboardOvertake(User $user, int $oldXp): void
+    {
+        $newXp = $user->getXp();
+        if ($newXp <= $oldXp) {
+            return;
+        }
+
+        $userRepository = $this->entityManager->getRepository(User::class);
+        
+        // Find users who were strictly above oldXp and are now strictly below or equal to newXp
+        // Actually, anyone who had more than $oldXp but less than $newXp
+        $overtakenUsers = $userRepository->createQueryBuilder('u')
+            ->where('u.id != :userId')
+            ->andWhere('u.xp < :newXp')
+            ->andWhere('u.xp >= :oldXp')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('newXp', $newXp)
+            ->setParameter('oldXp', $oldXp)
+            ->getQuery()
+            ->getResult();
+
+        foreach ($overtakenUsers as $overtakenUser) {
+            $this->notificationService->addNotification(
+                $overtakenUser,
+                "📊 Classement mis à jour",
+                sprintf("Oh non ! %s vient de te doubler au classement. Reprends l'avantage maintenant !", $user->getFullname()),
+                $this->urlGenerator->generate('leaderboard_index', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
+        }
     }
 
     public function updateStreak(User $user): void
@@ -137,6 +174,14 @@ class GamificationService
         if (!$user->getBadges()->contains($badge)) {
             $user->addBadge($badge);
             $this->entityManager->persist($user);
+
+            // Add notification for new badge
+            $this->notificationService->addNotification(
+                $user,
+                "🏅 Nouveau badge débloqué !",
+                sprintf("Félicitations ! Tu as remporté le badge : %s.", $badgeTitle),
+                $this->urlGenerator->generate('profile_index', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
 
             if ($flush) {
                 $this->entityManager->flush();

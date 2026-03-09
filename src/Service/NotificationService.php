@@ -25,7 +25,7 @@ class NotificationService
     ) {
     }
 
-    public function createNotification(string $content, string $title = '', ?User $user = null, bool $flush = true): Notification
+    public function createNotification(string $content, string $title = '', ?User $user = null, ?string $link = null, bool $flush = true): Notification
     {
         // Créer la notification
         $notification = new Notification();
@@ -34,6 +34,7 @@ class NotificationService
         }
         $notification->setTitle($title);
         $notification->setMessage($content);
+        $notification->setLink($link);
         $this->entityManager->persist($notification);
         if ($flush) {
             $this->entityManager->flush();
@@ -41,14 +42,19 @@ class NotificationService
         return $notification;
     }
 
+    public function addNotification(User $user, string $title, string $message, ?string $link = null): void
+    {
+        $this->createAndSendNotification($message, $title, $user, $link);
+    }
+
     public function flush(): void
     {
         $this->entityManager->flush();
     }
 
-    public function createAndSendNotification(string $content, string $title, User $user): void
+    public function createAndSendNotification(string $content, string $title, User $user, ?string $link = null): void
     {
-        $notification = $this->createNotification($content, $title, $user);
+        $notification = $this->createNotification($content, $title, $user, $link);
         $this->sendNotification($notification, $user);
     }
 
@@ -70,7 +76,7 @@ class NotificationService
                 'message' => $notification->getMessage(),
                 'user' => $user,
                 // Generate absolute url for notification show route
-                'url' => $this->router->generate(
+                'url' => $notification->getLink() ?? $this->router->generate(
                     'notification_show',
                     [
                         'id' => $notification->getId(),

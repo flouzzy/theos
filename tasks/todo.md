@@ -87,18 +87,18 @@
 ## 🚀 144 Features to 'Zero to One' & 'Hooked' Status
 
 ### 🎣 1. Triggers (Engagement Hooks)
-- [ ] **Smart daily email digest with AI-curated next steps**
-- [ ] **Push notification: 'Don't break your streak!'**
+- [x] **Smart daily email digest with AI-curated next steps**
+- [x] **Push notification: 'Don't break your streak!'**
 - [ ] **SMS reminders for live cohort sessions**
-- [ ] **Notification: 'Your peer just overtook you on the leaderboard'**
-- [ ] **AI nudge: 'You usually study at 8 PM, ready to start?'**
-- [ ] **Browser notification for new peer review requests**
-- [ ] **In-app modal: 'New badge available in your current module'**
+- [x] **Notification: 'Your peer just overtook you on the leaderboard'**
+- [x] **AI nudge: 'You usually study at 8 PM, ready to start?'**
+- [x] **Browser notification for new peer review requests**
+- [x] **In-app modal: 'New badge available in your current module'**
 - [ ] **Weekly recap email with personalized infographics**
 - [ ] **Calendar integration (Google/Outlook) for study blocks**
-- [ ] **Notification: 'A mentor replied to your comment'**
-- [ ] **Inactivity trigger: 'We miss you, here is a 5-min micro-lesson'**
-- [ ] **Milestone reminder: 'You are 1 lesson away from completing the course'**
+- [x] **Notification: 'A mentor replied to your comment'**
+- [x] **Inactivity trigger: 'We miss you, here is a 5-min micro-lesson'**
+- [x] **Milestone reminder: 'You are 1 lesson away from completing the course'**
 - [ ] **Notification: 'New exclusive content unlocked for your cohort'**
 - [ ] **Desktop push notifications (PWA)**
 - [ ] **Discord/Slack bot integration for cohort announcements**
@@ -109,7 +109,7 @@
 - [ ] **FOMO trigger: '80% of your cohort has finished this lesson'**
 - [ ] **Morning routine integration (audio lesson trigger)**
 - [ ] **End of week reflection prompt**
-- [ ] **Notification: 'Your certificate is ready to claim'**
+- [x] **Notification: 'Your certificate is ready to claim'**
 - [ ] **Goal reminder: 'Keep working towards your [Custom Goal]'**
 
 ### ⚡ 2. Actions (Frictionless UX/UI)

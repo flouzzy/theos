@@ -59,9 +59,10 @@ class NotificationHandlerTest extends TestCase
         $capturedUsers = [];
         $this->notificationService->expects($this->exactly(2))
             ->method('createNotification')
-            ->willReturnCallback(function ($content, $title, $user, $flush) use (&$capturedUsers) {
+            ->willReturnCallback(function ($content, $title, $user, $link, $flush) use (&$capturedUsers) {
                 $this->assertEquals('Test Content', $content);
                 $this->assertEquals('Translated Title', $title);
+                $this->assertNull($link);
                 $this->assertFalse($flush);
                 $capturedUsers[] = $user;
                 return $this->createMock(\App\Entity\Notification::class);

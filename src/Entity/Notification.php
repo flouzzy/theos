@@ -38,12 +38,27 @@ class Notification
     #[ORM\Column(nullable: true)]
     private ?bool $isRead = false;
 
+    #[ORM\Column(nullable: true, length: 500)]
+    private ?string $link = null;
+
     #[ORM\OneToMany(mappedBy: 'notification', targetEntity: Comment::class)]
     private Collection $comments;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): static
+    {
+        $this->link = $link;
+
+        return $this;
     }
 
     public function getId(): ?int
