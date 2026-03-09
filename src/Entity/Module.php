@@ -31,6 +31,7 @@ class Module
     private Collection $courses;
 
     #[ORM\OneToMany(mappedBy: 'module', targetEntity: Lesson::class, orphanRemoval: true)]
+    #[ORM\OrderBy(['itemOrder' => 'ASC', 'id' => 'ASC'])]
     private Collection $lessons;
 
     #[ORM\ManyToOne(inversedBy: 'modules')]

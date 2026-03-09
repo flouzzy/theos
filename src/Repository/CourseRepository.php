@@ -34,6 +34,8 @@ class CourseRepository extends ServiceEntityRepository
             ->addSelect('m')
             ->where('c.status IN (:statuses)')
             ->setParameter('statuses', ['published', 'progress'])
+            ->addOrderBy('c.itemOrder', 'ASC')
+            ->addOrderBy('c.id', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -50,6 +52,8 @@ class CourseRepository extends ServiceEntityRepository
             ->addSelect('m', 'l')
             ->where('u = :user')
             ->setParameter('user', $user)
+            ->addOrderBy('c.itemOrder', 'ASC')
+            ->addOrderBy('c.id', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -76,6 +80,9 @@ class CourseRepository extends ServiceEntityRepository
                 ->setParameter('public', CourseVisibilityEnum::PUBLIC);
         }
 
+        $qb->addOrderBy('c.itemOrder', 'ASC')
+           ->addOrderBy('c.id', 'ASC');
+
         return $qb->getQuery()->getResult();
     }
 
@@ -85,6 +92,7 @@ class CourseRepository extends ServiceEntityRepository
     public function findCatalogCourses(array $cohorts = [], bool $isAdmin = false, ?string $search = null): array
     {
         $qb = $this->createQueryBuilder('c', 'c.id')
+            ->distinct()
             ->leftJoin('c.modules', 'm')
             ->leftJoin('m.lessons', 'l')
             ->leftJoin('c.cohorts', 'co')
@@ -94,7 +102,7 @@ class CourseRepository extends ServiceEntityRepository
 
         if (!$isAdmin) {
             if (!empty($cohorts)) {
-                $qb->andWhere('c.visibility = :public OR co IN (:cohorts)')
+                $qb->andWhere('(c.visibility = :public OR co IN (:cohorts))')
                     ->setParameter('public', CourseVisibilityEnum::PUBLIC)
                     ->setParameter('cohorts', $cohorts);
             } else {
@@ -108,9 +116,12 @@ class CourseRepository extends ServiceEntityRepository
         }
 
         if ($search) {
-            $qb->andWhere('c.title LIKE :search OR c.description LIKE :search')
+            $qb->andWhere('(c.title LIKE :search OR c.description LIKE :search)')
                ->setParameter('search', '%' . $search . '%');
         }
+
+        $qb->addOrderBy('c.itemOrder', 'ASC')
+           ->addOrderBy('c.id', 'ASC');
 
         return $qb->getQuery()->getResult();
     }

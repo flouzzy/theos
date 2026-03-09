@@ -41,7 +41,7 @@ class NotificationController extends AbstractController
         }
 
         // Mark as read if not read
-        if (!$notification->isIsRead()) {
+        if (!$notification->isRead()) {
             $notification->setIsRead(true);
             $entityManager->flush();
         }

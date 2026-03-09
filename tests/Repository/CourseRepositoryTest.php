@@ -36,6 +36,7 @@ class CourseRepositoryTest extends TestCase
         $queryBuilder->method('leftJoin')->willReturn($queryBuilder);
         $queryBuilder->method('addSelect')->willReturn($queryBuilder);
         $queryBuilder->method('where')->willReturn($queryBuilder);
+        $queryBuilder->method('addOrderBy')->willReturn($queryBuilder);
         $queryBuilder->method('setParameter')->willReturn($queryBuilder);
         $queryBuilder->method('getQuery')->willReturn($query);
         $query->method('getResult')->willReturn([]);

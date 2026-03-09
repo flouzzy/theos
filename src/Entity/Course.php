@@ -33,6 +33,7 @@ class Course
     private Collection $users;
 
     #[ORM\ManyToMany(targetEntity: Module::class, mappedBy: 'courses')]
+    #[ORM\OrderBy(['itemOrder' => 'ASC', 'id' => 'ASC'])]
     private Collection $modules;
 
     #[ORM\Column(length: 255, nullable: true)]

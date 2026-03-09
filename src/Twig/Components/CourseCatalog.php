@@ -16,10 +16,10 @@ class CourseCatalog
 {
     use DefaultActionTrait;
 
-    #[LiveProp(writable: true)]
+    #[LiveProp(writable: true, url: true)]
     public string $query = '';
 
-    #[LiveProp(writable: true)]
+    #[LiveProp(writable: true, url: true)]
     public ?int $cohortId = null;
 
     #[LiveProp]
@@ -30,6 +30,17 @@ class CourseCatalog
         private CohortRepository $cohortRepository,
         private Security $security
     ) {
+    }
+
+    public function mount(): void
+    {
+        $user = $this->security->getUser();
+        if ($user instanceof User) {
+            $this->subscribedCourseIds = array_map(
+                fn($course) => $course->getId(),
+                $user->getCourses()->toArray()
+            );
+        }
     }
 
     public function getCourses(): array

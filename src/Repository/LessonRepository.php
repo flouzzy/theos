@@ -29,6 +29,8 @@ class LessonRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->addSelect('m')
             ->leftJoin('l.module', 'm')
+            ->addOrderBy('l.itemOrder', 'ASC')
+            ->addOrderBy('l.id', 'ASC')
             ->getQuery()
             ->getResult();
     }
