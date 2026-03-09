@@ -122,6 +122,23 @@ class Module
     }
 
     /**
+     * @return array<Lesson>
+     */
+    public function getSortedLessons(): array
+    {
+        $lessons = $this->lessons->toArray();
+        usort($lessons, function (Lesson $a, Lesson $b) {
+            $orderA = $a->getItemOrder() ?? 0;
+            $orderB = $b->getItemOrder() ?? 0;
+            if ($orderA === $orderB) {
+                return $a->getId() <=> $b->getId();
+            }
+            return $orderA <=> $orderB;
+        });
+        return $lessons;
+    }
+
+    /**
      * @return Collection<int, Lesson>
      */
     public function getLessons(): Collection

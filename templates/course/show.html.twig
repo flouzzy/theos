@@ -84,7 +84,7 @@
 
                 {# Lessons List #}
                 <div class="divide-y divide-border">
-                    {% for lesson in module.lessons|sort((a, b) => a.itemOrder <=> b.itemOrder) %}
+                    {% for lesson in module.sortedLessons %}
                         {% set isLessonCompleted = lesson.id in completedLessonIds %}
                         {% set isLessonLocked = false %}
 

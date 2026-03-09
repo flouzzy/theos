@@ -207,20 +207,7 @@ class LessonController extends AbstractController
 
     private function getNextLesson(Module $module, Lesson $lesson): ?Lesson
     {
-        // On récupère les leçons du module
-        $lessons = $module->getLessons();
-
-        // On trie les données par itemOrder
-        /**
-         * @var \ArrayIterator<int, Lesson> $iterator
-         */
-        $iterator = $lessons->getIterator();
-        $iterator->uasort(function ($first, $second) {
-            return (int) $first->getItemOrder() > (int) $second->getItemOrder() ? 1 : -1;
-        });
-
-        // On transforme les données en ArrayCollection en mettant à jour les index (grâce à array_values)
-        $sortedArray = array_values(iterator_to_array($iterator));
+        $sortedArray = $module->getSortedLessons();
         $sortedLessons = new ArrayCollection($sortedArray);
 
         // On récupère l'index courant
