@@ -34,4 +34,7 @@ return [
     'marked' => [
         'version' => '17.0.4',
     ],
+    'canvas-confetti' => [
+        'version' => '1.9.4',
+    ],
 ];

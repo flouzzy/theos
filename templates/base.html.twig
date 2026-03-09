@@ -54,7 +54,7 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
 		{% endblock %}
 	</head>
-	<body data-controller="app pwa">
+	<body data-controller="app pwa confetti">
 		{% set currentroute = app.request.attributes.get('_route') %}
 		{% set colorActive = 'light' %}
 		{% include "partials/_app_install.html.twig" %}

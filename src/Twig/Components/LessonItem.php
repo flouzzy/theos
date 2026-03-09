@@ -19,11 +19,13 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
+use Symfony\UX\LiveComponent\ComponentToolsTrait;
 
 #[AsLiveComponent('LessonItem')]
 final class LessonItem
 {
     use DefaultActionTrait;
+    use ComponentToolsTrait;
 
     #[LiveProp]
     public Lesson $lesson;
@@ -86,6 +88,10 @@ final class LessonItem
         // Dispatch event
         $event = new LessonCompleteEvent($this->lesson, $user, $newStatus, $wasCompleted);
         $this->dispatcher->dispatch($event);
+
+        if ($newStatus && !$wasCompleted) {
+            $this->dispatchBrowserEvent('confetti:fire');
+        }
 
         $this->isCompleted = $newStatus;
     }
