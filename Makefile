@@ -253,8 +253,6 @@ deploy:
 	git pull
 	$(MAKE) build ENV=prod
 	$(MAKE) up ENV=prod
-	$(MAKE) vendor ENV=prod
-	$(MAKE) cc ENV=prod
 	$(MAKE) db-migrate ENV=prod
 
 prod-deploy:
