@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Trait\DateTimeAble;
 use App\Repository\PeerReviewRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -33,6 +35,9 @@ class PeerReview
     #[ORM\JoinColumn(nullable: false)]
     private ?User $reviewer = null;
 
+    /**
+     * @var Collection<int, PeerReviewScore>
+     */
     #[ORM\OneToMany(mappedBy: 'peerReview', targetEntity: PeerReviewScore::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $scores;
 

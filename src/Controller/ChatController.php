@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Cohort;
 use App\Entity\Conversation;
 use App\Entity\Message;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,8 +20,11 @@ class ChatController extends AbstractController
     #[Route('/{id}/chat', name: 'chat')]
     public function show(Cohort $cohort, Request $request, EntityManagerInterface $entityManager): Response
     {
+        /** @var User|null $user */
+        $user = $this->getUser();
+
         // Check if user is in cohort
-        if (!$cohort->getUsers()->contains($this->getUser())) {
+        if (!$cohort->getUsers()->contains($user)) {
             throw $this->createAccessDeniedException();
         }
 
@@ -37,10 +41,14 @@ class ChatController extends AbstractController
              $content = $request->request->get('content');
              $token = $request->request->get('_token');
 
-             if ($this->isCsrfTokenValid('chat', $token) && $content) {
+             if (is_string($token) && $this->isCsrfTokenValid('chat', $token) && is_string($content)) {
+                 if (!$user instanceof User) {
+                     throw $this->createAccessDeniedException();
+                 }
+
                  $message = new Message();
                  $message->setContent($content);
-                 $message->setSender($this->getUser());
+                 $message->setSender($user);
                  $message->setConversation($conversation);
                  $entityManager->persist($message);
                  $entityManager->flush();

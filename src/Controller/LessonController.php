@@ -197,9 +197,9 @@ class LessonController extends AbstractController
         Module $module
     ): Response {
         $content = $request->request->get('content');
-        $token = $request->request->get('_token');
+        $token = $request->getPayload()->getString('_token');
 
-        if (!$this->isCsrfTokenValid('add_comment', $token)) {
+        if (!$this->isCsrfTokenValid('add_comment', (string) $token)) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
@@ -240,9 +240,9 @@ class LessonController extends AbstractController
         Comment $parent
     ): Response {
         $content = $request->request->get('content');
-        $token = $request->request->get('_token');
+        $token = $request->getPayload()->getString('_token');
 
-        if (!$this->isCsrfTokenValid('add_reply', $token)) {
+        if (!$this->isCsrfTokenValid('add_reply', (string) $token)) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 

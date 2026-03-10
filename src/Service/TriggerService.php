@@ -15,13 +15,10 @@ class TriggerService
 {
     public function __construct(
         private UserRepository $userRepository,
-        private LessonRepository $lessonRepository,
         private CompletionRepository $completionRepository,
-        private EntityManagerInterface $entityManager,
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
-        private LoggerInterface $logger
     ) {}
 
     /**

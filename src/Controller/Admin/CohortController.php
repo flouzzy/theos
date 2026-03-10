@@ -71,7 +71,7 @@ class CohortController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Cohort $cohort, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $cohort->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $cohort->getId(), $request->request->getString('_token'))) {
             $entityManager->remove($cohort);
             $entityManager->flush();
         }

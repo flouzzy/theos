@@ -71,7 +71,7 @@ class BadgeTypeController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, BadgeType $badgeType, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $badgeType->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $badgeType->getId(), $request->request->getString('_token'))) {
             $entityManager->remove($badgeType);
             $entityManager->flush();
         }

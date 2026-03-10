@@ -5,6 +5,7 @@ namespace App\Twig\Components;
 use App\Entity\Skill;
 use App\Entity\User;
 use App\Repository\SkillRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -13,6 +14,7 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[AsLiveComponent]
 class UserSkillsComponent
@@ -35,9 +37,9 @@ class UserSkillsComponent
     /**
      * @return Collection<int, Skill>
      */
-    public function getSkills(): iterable
+    public function getSkills(): Collection|iterable
     {
-        return $this->user ? $this->user->getSkills() : [];
+        return $this->user ? $this->user->getSkills() : new ArrayCollection();
     }
 
     #[LiveAction]
@@ -84,7 +86,7 @@ class UserSkillsComponent
 
     private function denyAccessUnlessOwner(): void
     {
-        /** @var User $currentUser */
+        /** @var User|null $currentUser */
         $currentUser = $this->security->getUser();
 
         if (!$currentUser || !$this->user || $currentUser->getId() !== $this->user->getId()) {

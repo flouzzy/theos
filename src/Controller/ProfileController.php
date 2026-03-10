@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\PortfolioProject;
 use App\Entity\Skill;
+use App\Entity\User;
 use App\Event\UserUpdatedEvent;
 use App\Form\UserType;
 use App\Repository\CompletionRepository;
@@ -103,7 +104,7 @@ class ProfileController extends AbstractController
          */
         $user = $this->getUser();
 
-        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
             // Forcer la déconnexion de l'utilisateur
             $tokenStorage->setToken(null);
 
@@ -119,16 +120,20 @@ class ProfileController extends AbstractController
     #[Route('/add-skill', name: 'add_skill', methods: ['POST'])]
     public function addSkill(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $submittedToken = $request->request->get('_token');
+        $submittedToken = $request->getPayload()->getString('_token');
         if (!$this->isCsrfTokenValid('add_skill', $submittedToken)) {
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('profile_index');
         }
 
         $skillName = trim($request->request->get('name'));
-        if ($skillName) {
-            $user = $this->getUser();
-            $skillRepo = $entityManager->getRepository(Skill::class);
+            if ($skillName) {
+                /** @var User|null $user */
+                $user = $this->getUser();
+                if (!$user instanceof User) {
+                    throw $this->createAccessDeniedException();
+                }
+                $skillRepo = $entityManager->getRepository(Skill::class);
             $skill = $skillRepo->findOneBy(['name' => $skillName]);
 
             if (!$skill) {
@@ -150,7 +155,7 @@ class ProfileController extends AbstractController
     #[Route('/add-portfolio', name: 'add_portfolio', methods: ['POST'])]
     public function addPortfolio(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $submittedToken = $request->request->get('_token');
+        $submittedToken = $request->getPayload()->getString('_token');
         if (!$this->isCsrfTokenValid('add_portfolio', $submittedToken)) {
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('profile_index');
@@ -166,7 +171,11 @@ class ProfileController extends AbstractController
         }
 
         if ($title) {
+            /** @var User|null $user */
             $user = $this->getUser();
+            if (!$user instanceof User) {
+                throw $this->createAccessDeniedException();
+            }
             $project = new PortfolioProject();
             $project->setTitle($title);
             $project->setDescription($description);

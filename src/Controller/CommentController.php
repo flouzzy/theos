@@ -76,7 +76,7 @@ class CommentController extends AbstractController
     {
         $this->denyAccessUnlessGranted('DELETE', $comment);
 
-        if ($this->isCsrfTokenValid('delete'.$comment->getId(), (string) $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($comment);
             $entityManager->flush();
         }
@@ -92,7 +92,7 @@ class CommentController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        if (!$this->isCsrfTokenValid('like_comment_'.$comment->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('like_comment_'.$comment->getId(), $request->getPayload()->getString('_token'))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 

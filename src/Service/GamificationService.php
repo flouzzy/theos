@@ -51,6 +51,9 @@ class GamificationService
             ->getResult();
 
         foreach ($overtakenUsers as $overtakenUser) {
+            if (!$overtakenUser instanceof User) {
+                continue;
+            }
             $this->notificationService->addNotification(
                 $overtakenUser,
                 "📊 Classement mis à jour",

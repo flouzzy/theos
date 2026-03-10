@@ -22,6 +22,13 @@ class SendMail
     ) {
     }
 
+    /**
+     * @param Address|string $from
+     * @param array<string|Address>|string $to
+     * @param string $subject
+     * @param string $template
+     * @param array<string, mixed> $context
+     */
     public function send(
         Address|string $from,
         array|string $to,

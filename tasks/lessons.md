@@ -51,3 +51,9 @@
 * **Correction:** Installation de `gemini-api-php/client` couplée à `symfony/http-client`. Création d'un Service `CoachAIAgent` encapsulant l'appel vers le modèle `gemini-1.5-flash` avec un *System Instruction* pédagogique.
 * **Rule:** Ne pas embarquer Guzzle si Symfony HttpClient est pré-existant/recommandé. Câbler les appels LLM en asynchrone (AJAX/Fetch) sur le Front pour ne pas bloquer le thread PHP principal lors de la génération (Streaming).
 * **Testing:** Vérification du Endpoint JSON via `fetch` JS. Validation du loader dynamique et du parsing de la réponse texte.
+
+## 2026-03-10 - Test Environment & PHPStan Hardening
+* **Mistake:** Tests were failing due to low memory limit (128M) and misconfigured `test` environment (SQLite table missing, missing `APP_ENV=test` in `.env.test`).
+* **Correction:** Increased PHP memory limit to 512M in Docker config. Updated `Makefile` to include database initialization in `tests` target. Added `APP_ENV=test` to `.env.test`. Fixed multiple PHPStan level 8 errors related to CSRF validation by using `$request->getPayload()->getString('_token')`.
+* **Rule:** Ensure test environments match production/dev capabilities (memory, extensions). Always use strict type methods like `getString()` for request parameters to satisfy PHPStan level 8.
+* **Testing:** All 157 tests now pass in the Docker environment using `make tests`.

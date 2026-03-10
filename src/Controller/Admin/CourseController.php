@@ -41,6 +41,9 @@ class CourseController extends AbstractController
             // Set course author
             /** @var \App\Entity\User|null $user */
             $user = $this->getUser();
+            if (!$user instanceof \App\Entity\User) {
+                throw $this->createAccessDeniedException();
+            }
             $course->setAuthor($user);
 
             // Sauvegarde l'image associée à la leçon

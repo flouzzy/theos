@@ -33,7 +33,12 @@ class ModuleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Set author
-            $module->setAuthor($this->getUser());
+            /** @var \App\Entity\User|null $user */
+            $user = $this->getUser();
+            if (!$user instanceof \App\Entity\User) {
+                throw $this->createAccessDeniedException();
+            }
+            $module->setAuthor($user);
 
 
             $entityManager->persist($module);
@@ -83,7 +88,7 @@ class ModuleController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Module $module, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $module->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $module->getId(), $request->request->getString('_token'))) {
             $entityManager->remove($module);
             $entityManager->flush();
 

@@ -21,7 +21,12 @@ class NoteRepository extends ServiceEntityRepository
         parent::__construct($registry, Note::class);
     }
 
-    public function findUserNotesByLesson($lesson, $user)
+    /**
+     * @param mixed $lesson
+     * @param mixed $user
+     * @return Note[]
+     */
+    public function findUserNotesByLesson($lesson, $user): array
     {
 
         return $this->createQueryBuilder('n')
@@ -31,5 +36,14 @@ class NoteRepository extends ServiceEntityRepository
             ->setParameter('lesson', $lesson)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param mixed $user
+     * @return Note[]
+     */
+    public function findByUser($user): array
+    {
+        return $this->findBy(['user' => $user], ['createdAt' => 'DESC']);
     }
 }

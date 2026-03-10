@@ -18,7 +18,7 @@ else ifeq ($(ENV),staging)
     SERVICE_PHP = php
 else ifeq ($(ENV),test)
     # Test
-    COMPOSE_FILES = -f compose.yaml
+    COMPOSE_FILES = -f compose.yaml -f compose.override.yaml
     ENV_FILES = --env-file .env.test
     SERVICE_PHP = php
 else
@@ -280,7 +280,9 @@ prod-deploy:
 # --- Tests ---
 tests:
 	$(MAKE) up ENV=test
-	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php composer install --no-interaction --no-progress --optimize-autoloader
-	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php bin/console doctrine:schema:drop --force --env=test || true
-	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php bin/console doctrine:schema:create --env=test
-	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php bin/phpunit
+	$(PHP_EXEC) bin/console doctrine:schema:drop --force --env=test || true
+	$(PHP_EXEC) bin/console doctrine:schema:create --env=test
+	$(PHP_EXEC) bin/phpunit
+
+test-coverage:
+	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec -e XDEBUG_MODE=coverage php bin/phpunit --coverage-html var/coverage

@@ -122,4 +122,16 @@ class Assignment
 
         return $this;
     }
+
+    public function getRubricEntity(): ?Rubric
+    {
+        return $this->rubricEntity;
+    }
+
+    public function setRubricEntity(?Rubric $rubricEntity): static
+    {
+        $this->rubricEntity = $rubricEntity;
+
+        return $this;
+    }
 }

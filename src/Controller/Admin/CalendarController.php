@@ -71,7 +71,7 @@ class CalendarController extends AbstractController
     #[Route('/{id}/duplicate', name: 'duplicate', methods: ['POST'])]
     public function duplicate(Request $request, Calendar $calendar, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('duplicate' . $calendar->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('duplicate' . $calendar->getId(), $request->request->getString('_token'))) {
             $newCalendar = clone $calendar;
             
             // Note: The 'clone' in PHP is shallow. We need to handle related entities if needed.
@@ -112,7 +112,7 @@ class CalendarController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Calendar $calendar, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $calendar->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $calendar->getId(), $request->request->getString('_token'))) {
             $entityManager->remove($calendar);
             $entityManager->flush();
         }

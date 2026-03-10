@@ -25,8 +25,8 @@ class SubscriptionService
         // Créer un client Stripe si nécessaire
         if (!$user->getStripeCustomerId()) {
             $customer = $this->stripeClient->customers->create([
-                'email' => $user->getEmail(),
-                'name' => $user->getFullname(),
+                'email' => (string) $user->getEmail(),
+                'name' => (string) $user->getFullname(),
             ]);
             $user->setStripeCustomerId($customer->id);
             $this->entityManager->persist($user);
@@ -34,7 +34,7 @@ class SubscriptionService
         }
 
         $session = $this->stripeClient->checkout->sessions->create([
-            'customer' => $user->getStripeCustomerId(),
+            'customer' => (string) $user->getStripeCustomerId(),
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price' => $priceId,
@@ -45,7 +45,7 @@ class SubscriptionService
             'cancel_url' => $this->urlGenerator->generate('app_subscription_cancel', [], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
 
-        return $session->url;
+        return (string) $session->url;
     }
 
     /**
@@ -65,24 +65,28 @@ class SubscriptionService
             case 'customer.subscription.created':
             case 'customer.subscription.updated':
                 $subscription = $event->data->object;
-                $this->updateUserSubscription($subscription);
+                if ($subscription instanceof \Stripe\Subscription) {
+                    $this->updateUserSubscription($subscription);
+                }
                 break;
             case 'customer.subscription.deleted':
                 $subscription = $event->data->object;
-                $this->cancelUserSubscription($subscription);
+                if ($subscription instanceof \Stripe\Subscription) {
+                    $this->cancelUserSubscription($subscription);
+                }
                 break;
         }
     }
 
     private function updateUserSubscription(\Stripe\Subscription $subscription): void
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['stripeCustomerId' => $subscription->customer]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['stripeCustomerId' => (string) $subscription->customer]);
         if ($user) {
-            $user->setSubscriptionId($subscription->id);
-            $user->setSubscriptionStatus($subscription->status);
+            $user->setSubscriptionId((string) $subscription->id);
+            $user->setSubscriptionStatus((string) $subscription->status);
             
             // On peut mapper le price ID à un plan interne
-            $priceId = $subscription->items->data[0]->price->id;
+            $priceId = (string) $subscription->items->data[0]->price->id;
             $user->setSubscriptionPlan($this->mapPriceToPlan($priceId));
 
             $this->entityManager->persist($user);
@@ -92,7 +96,7 @@ class SubscriptionService
 
     private function cancelUserSubscription(\Stripe\Subscription $subscription): void
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['stripeCustomerId' => $subscription->customer]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['stripeCustomerId' => (string) $subscription->customer]);
         if ($user) {
             $user->setSubscriptionStatus('canceled');
             $this->entityManager->persist($user);

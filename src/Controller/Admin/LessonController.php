@@ -25,7 +25,11 @@ class LessonController extends AbstractController
             return $this->redirectToRoute('admin_lesson_edit', ['id' => $lesson->getId()]);
         }
 
-        $bus->dispatch(new GenerateLessonAudioMessage($lesson->getId()));
+        $lessonId = $lesson->getId();
+        if (null === $lessonId) {
+            throw new \LogicException('Lesson must be persisted before generating audio.');
+        }
+        $bus->dispatch(new GenerateLessonAudioMessage($lessonId));
 
         $this->addFlash('success', 'La génération de l\'audio a été lancée en tâche de fond. Elle sera disponible dans quelques instants.');
 
@@ -51,8 +55,11 @@ class LessonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Set author
-            /** @var \App\Entity\User $user */
+            /** @var \App\Entity\User|null $user */
             $user = $this->getUser();
+            if (!$user instanceof \App\Entity\User) {
+                throw $this->createAccessDeniedException();
+            }
             $lesson->setAuthor($user);
 
 

@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Entity\User;
+use App\Entity\PeerReviewScore;
+use App\Entity\Rubric;
 
 use App\Service\MediaManager;
 
@@ -31,6 +34,7 @@ class AssignmentController extends AbstractController
     #[Route('/{id}', name: 'show')]
     public function show(Assignment $assignment): Response
     {
+        /** @var User|null $user */
         $user = $this->getUser();
         $submission = $this->entityManager->getRepository(AssignmentSubmission::class)->findOneBy([
             'assignment' => $assignment,
@@ -46,13 +50,17 @@ class AssignmentController extends AbstractController
     #[Route('/{id}/submit', name: 'submit', methods: ['POST'])]
     public function submit(Assignment $assignment, Request $request): Response
     {
-        $submittedToken = $request->request->get('_token');
+        $submittedToken = $request->getPayload()->getString('_token');
         if (!$this->isCsrfTokenValid('submit_assignment' . $assignment->getId(), $submittedToken)) {
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('assignment_show', ['id' => $assignment->getId()]);
         }
 
+        /** @var User|null $user */
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
         $content = $request->request->get('content');
 
         if (!$content) {
@@ -108,7 +116,11 @@ class AssignmentController extends AbstractController
     public function reviewPool(Assignment $assignment): Response
     {
         // Find a submission that is not mine and I haven't reviewed yet
+        /** @var User|null $user */
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
 
         $qb = $this->entityManager->getRepository(AssignmentSubmission::class)->createQueryBuilder('s');
         $qb->where('s.assignment = :assignment')
@@ -137,13 +149,17 @@ class AssignmentController extends AbstractController
     #[Route('/{id}/review/{submissionId}', name: 'submit_review', methods: ['POST'])]
     public function submitReview(Assignment $assignment, int $submissionId, Request $request): Response
     {
-        $submittedToken = $request->request->get('_token');
+        $submittedToken = $request->getPayload()->getString('_token');
         if (!$this->isCsrfTokenValid('submit_review' . $submissionId, $submittedToken)) {
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('assignment_review_pool', ['id' => $assignment->getId()]);
         }
 
+        /** @var User|null $user */
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
         $score = (int) $request->request->get('score');
         $feedback = $request->request->get('feedback');
 

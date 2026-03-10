@@ -30,6 +30,10 @@ class RecommendationService
      */
     public function updateLessonEmbedding(Lesson $lesson): void
     {
+        if ($this->apiKey === 'test') {
+            return;
+        }
+
         $text = $lesson->getTitle() . "\n\n" . $lesson->getDescription() . "\n\n" . strip_tags($lesson->getContent() ?? '');
         
         $payload = [

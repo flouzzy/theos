@@ -48,6 +48,23 @@ curl -X POST http://localhost:8095/api/login -d '{"email":"...", "password":"...
 
 ---
 
+## 🧠 Intelligence Layer (Sprint 3)
+Fonctionnalités basées sur l'IA Gemini pour enrichir l'apprentissage.
+
+### 💡 Recommandations
+- **Utilisation** : En bas de chaque leçon, une section "Suggéré par l'IA" affiche 3 leçons sémantiquement proches du contenu actuel.
+- **Technique** : Algorithme de similarité cosinus basé sur les embeddings `text-embedding-004`.
+
+### 📝 Quiz Automatisés
+- **Utilisation** : En édition de leçon (Admin), cliquez sur "Générer un Quiz (Gemini)".
+- **Résultat** : Un quiz de 5 questions à choix multiples est automatiquement créé et attaché à la leçon.
+
+### 📊 Analyses & Engagement
+- **Accès** : Menu Admin > Analytics > At-Risk Students.
+- **Fonctionnement** : Identifie les étudiants ayant un score de risque élevé (basé sur l'inactivité, les notes < 10/20 et la progression).
+
+---
+
 ## 🏗️ Administration & Équipes (Sprint 4)
 Gestion des cohortes, des paiements et des équipes.
 

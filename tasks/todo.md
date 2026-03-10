@@ -44,8 +44,8 @@
 
 ### Sprint 1: The "10x" Foundation
 - [/] **Code Quality & Architecture**
-    - [/] Implement PHPStan at Level 8 (Configured, 257 errors to fix).
-    - [ ] Increase test coverage to >80% (Add unit tests for `CourseCompletion` and `PaymentSetting`).
+    - [/] Implement PHPStan at Level 8 (Configured, reduced errors to 262).
+    - [/] Increase test coverage to >80% (Added unit tests for `CourseCompletion`, `PaymentSetting`, and `DateTimeAble`).
     - [ ] Performance Audit: Optimize Doctrine queries (N+1), Implement Redis caching, Configure AssetMapper.
 - [ ] **Security Hardening**
     - [ ] Integrate `scheb/2fa-bundle` for 2FA.

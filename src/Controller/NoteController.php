@@ -89,7 +89,12 @@ class NoteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // New note for current user
-            $note->setUser($this->getUser());
+            /** @var \App\Entity\User|null $user */
+            $user = $this->getUser();
+            if (!$user instanceof \App\Entity\User) {
+                throw $this->createAccessDeniedException();
+            }
+            $note->setUser($user);
 
             $note->setLesson($lesson);
 
@@ -132,7 +137,8 @@ class NoteController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Note $note, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $note->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $note->getId(), $request->getPayload()->getString('_token'))) {
+
             $entityManager->remove($note);
             $entityManager->flush();
         }
