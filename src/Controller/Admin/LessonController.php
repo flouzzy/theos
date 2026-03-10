@@ -12,11 +12,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 use App\Message\GenerateLessonAudioMessage;
+use App\Message\GenerateLessonEmbeddingMessage;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[Route('/admin/lesson', name: 'admin_lesson_',)]
 class LessonController extends AbstractController
 {
+    #[Route('/{id}/generate-embedding', name: 'generate_embedding', methods: ['POST'])]
+    public function generateEmbedding(Lesson $lesson, MessageBusInterface $bus): Response
+    {
+        $lessonId = $lesson->getId();
+        if (null === $lessonId) {
+            throw new \LogicException('Lesson must be persisted before generating embedding.');
+        }
+        $bus->dispatch(new GenerateLessonEmbeddingMessage($lessonId));
+
+        $this->addFlash('success', 'La génération de l\'embedding a été lancée. Les recommandations seront bientôt à jour.');
+
+        return $this->redirectToRoute('admin_lesson_edit', ['id' => $lesson->getId()]);
+    }
+
     #[Route('/{id}/generate-audio', name: 'generate_audio', methods: ['POST'])]
     public function generateAudio(Lesson $lesson, MessageBusInterface $bus): Response
     {
