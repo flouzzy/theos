@@ -97,4 +97,17 @@
         <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Coach IA' | trans }}</span>
     </a>
     {% endif %}
+
+    {# Team Management (Authorized users) #}
+    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MANAGER') %}
+    <a href="{{ path('team_dashboard') }}" 
+       class="group flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 {{ app.request.attributes.get('_route') starts with 'team' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
+        <div class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors {{ app.request.attributes.get('_route') starts with 'team' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+        </div>
+        <span :class="{'hidden': !desktopSidebarOpen}" class="whitespace-nowrap">{{ 'Mon Équipe' | trans }}</span>
+    </a>
+    {% endif %}
 </nav>

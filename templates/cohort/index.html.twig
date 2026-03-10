@@ -78,6 +78,38 @@
         <twig:StatCard value="{{ app.user.streak ?? 0 }} {{ 'Jours' | trans }}" label="{{ 'Série en cours' | trans }}" icon="🔥" class="flex-row items-center gap-4 text-left p-6 text-orange-500" />
     </div>
 
+    {# Subscription Status #}
+    <div class="bg-card rounded-xl p-6 border border-border flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="font-bold font-serif">{{ 'Mon Abonnement' | trans }}</h3>
+                <p class="text-sm text-muted-foreground">
+                    {% if app.user.subscriptionStatus == 'active' %}
+                        {{ 'Statut : Actif' | trans }} (Plan : {{ app.user.subscriptionPlan }})
+                    {% elseif app.user.subscriptionStatus == 'past_due' %}
+                        <span class="text-destructive">{{ 'Paiement en attente' | trans }}</span>
+                    {% else %}
+                        {{ 'Passez au niveau supérieur pour débloquer toutes les fonctionnalités.' | trans }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div>
+            {% if app.user.subscriptionStatus != 'active' %}
+                <a href="{{ path('app_subscription_checkout', {priceId: 'price_monthly_id'}) }}" class="btn btn-primary btn-sm">
+                    {{ 'S\'abonner (Mensuel)' | trans }}
+                </a>
+            {% else %}
+                <span class="text-xs font-semibold px-2 py-1 bg-green-100 text-green-700 rounded-full">Pro User</span>
+            {% endif %}
+        </div>
+    </div>
+
     {# 3. My Courses Section (Grid) #}
     <div>
         <h2 class="text-2xl font-serif font-bold mb-6 flex items-center gap-2">

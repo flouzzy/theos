@@ -219,6 +219,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: ChatMessage::class, orphanRemoval: true)]
     private Collection $chatMessages;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeCustomerId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $subscriptionId = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $subscriptionStatus = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $subscriptionPlan = null;
+
+    #[ORM\ManyToOne(inversedBy: 'members')]
+    private ?Team $team = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -1170,6 +1185,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
                 $chatMessage->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): static
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+
+        return $this;
+    }
+
+    public function getSubscriptionId(): ?string
+    {
+        return $this->subscriptionId;
+    }
+
+    public function setSubscriptionId(?string $subscriptionId): static
+    {
+        $this->subscriptionId = $subscriptionId;
+
+        return $this;
+    }
+
+    public function getSubscriptionStatus(): ?string
+    {
+        return $this->subscriptionStatus;
+    }
+
+    public function setSubscriptionStatus(?string $subscriptionStatus): static
+    {
+        $this->subscriptionStatus = $subscriptionStatus;
+
+        return $this;
+    }
+
+    public function getSubscriptionPlan(): ?string
+    {
+        return $this->subscriptionPlan;
+    }
+
+    public function setSubscriptionPlan(?string $subscriptionPlan): static
+    {
+        $this->subscriptionPlan = $subscriptionPlan;
+
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): static
+    {
+        $this->team = $team;
 
         return $this;
     }
