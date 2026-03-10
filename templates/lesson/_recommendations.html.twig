@@ -1,0 +1,20 @@
+{% if recommendations|length > 0 %}
+    <div class="mt-12 pt-8 border-t border-gray-100">
+        <h3 class="text-xl font-serif font-bold text-gray-900 mb-6">Pour approfondir (Suggéré par l'IA)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for rec in recommendations %}
+                <a href="{{ path('app_lesson_show', {slug: rec.slug}) }}" class="group bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="aspect-video bg-gray-50 rounded-xl mb-4 overflow-hidden relative">
+                        {% if rec.videoUrl %}
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/5 group-hover:bg-black/0 transition-colors">
+                                <svg class="w-10 h-10 text-white opacity-80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h4 class="font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-2 mb-2">{{ rec.title }}</h4>
+                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">{{ rec.module.title }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

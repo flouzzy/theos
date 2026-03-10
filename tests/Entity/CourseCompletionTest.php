@@ -28,4 +28,27 @@ class CourseCompletionTest extends TestCase
         $courseCompletion->setCompleted(false);
         $this->assertFalse($courseCompletion->isCompleted());
     }
+
+    public function testDateTimeAbleTrait(): void
+    {
+        $courseCompletion = new CourseCompletion();
+        
+        $this->assertNull($courseCompletion->getCreatedAt());
+        $this->assertNull($courseCompletion->getUpdatedAt());
+
+        $courseCompletion->setDateTimeValue();
+
+        $this->assertInstanceOf(\DateTimeImmutable::class, $courseCompletion->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $courseCompletion->getUpdatedAt());
+        
+        $createdAt = $courseCompletion->getCreatedAt();
+        $updatedAt = $courseCompletion->getUpdatedAt();
+
+        // Wait a bit to ensure updatedAt changes if we call it again
+        usleep(1000);
+        $courseCompletion->setDateTimeValue();
+
+        $this->assertSame($createdAt, $courseCompletion->getCreatedAt());
+        $this->assertNotSame($updatedAt, $courseCompletion->getUpdatedAt());
+    }
 }

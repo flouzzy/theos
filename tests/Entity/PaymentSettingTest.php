@@ -26,4 +26,27 @@ class PaymentSettingTest extends TestCase
         $paymentSetting->setPricing(100);
         $this->assertSame(100, $paymentSetting->getPricing());
     }
+
+    public function testDateTimeAbleTrait(): void
+    {
+        $paymentSetting = new PaymentSetting();
+        
+        $this->assertNull($paymentSetting->getCreatedAt());
+        $this->assertNull($paymentSetting->getUpdatedAt());
+
+        $paymentSetting->setDateTimeValue();
+
+        $this->assertInstanceOf(\DateTimeImmutable::class, $paymentSetting->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $paymentSetting->getUpdatedAt());
+        
+        $createdAt = $paymentSetting->getCreatedAt();
+        $updatedAt = $paymentSetting->getUpdatedAt();
+
+        // Wait a bit to ensure updatedAt changes if we call it again
+        usleep(1000);
+        $paymentSetting->setDateTimeValue();
+
+        $this->assertSame($createdAt, $paymentSetting->getCreatedAt());
+        $this->assertNotSame($updatedAt, $paymentSetting->getUpdatedAt());
+    }
 }

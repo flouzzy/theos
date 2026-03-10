@@ -1,0 +1,33 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'SÉLECTIONNER UNE COHORTE' | trans }}{% endblock %}
+
+{% block content %}
+    <div class="mb-10">
+        <h1 class="text-4xl font-black text-slate-900 leading-tight mb-2">
+            {{ 'Analyses & Engagement' | trans }}
+        </h1>
+        <p class="text-slate-500 font-medium italic">
+            {{ 'Identifiez les étudiants ayant besoin de soutien pédagogique.' | trans }}
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for cohort in cohorts %}
+            <a href="{{ path('admin_analytics_at_risk', {id: cohort.id}) }}" class="group bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-primary transition-all duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                        <twig:ux:icon name="lucide:users" class="w-6 h-6" />
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 group-hover:text-primary transition-colors uppercase tracking-widest">{{ cohort.users|length }} Étudiants</span>
+                </div>
+                <h3 class="text-xl font-serif font-bold text-slate-900 mb-2 truncate">{{ cohort.name }}</h3>
+                <p class="text-slate-500 text-sm line-clamp-2 mb-4">{{ cohort.course.title }}</p>
+                <div class="flex items-center text-primary text-sm font-bold">
+                    {{ 'Voir les analyses' | trans }}
+                    <twig:ux:icon name="lucide:arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

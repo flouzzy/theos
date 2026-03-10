@@ -246,6 +246,9 @@
                     <div class="prose prose-slate dark:prose-invert max-w-none animate-in fade-in slide-in-from-bottom-2" data-controller="glossary">
                         {{ currentLesson.content|default('')|sanitize_html('default') }}
                     </div>
+
+                    {# Recommendations Section #}
+                    {{ render(controller('App\\Controller\\RecommendationController::index', {id: currentLesson.id})) }}
                 </div>
 
                 <div x-show="tab === 'resources'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">

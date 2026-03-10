@@ -81,6 +81,25 @@
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:clipboard-check" class="w-4 h-4 text-emerald-600" />
+                    {{ 'Quiz par IA' | trans }}
+                </h3>
+                
+                {% set quizCount = lesson.quizzes|length %}
+                <p class="text-slate-500 text-xs mb-4">
+                    {{ quizCount > 0 ? (quizCount ~ ' quiz(zes) déjà présent(s).') : 'Générez un quiz de 5 questions automatiquement.' | trans }}
+                </p>
+
+                <form action="{{ path('admin_ai_quiz_generate', {id: lesson.id}) }}" method="POST">
+                    <twig:Button type="submit" variant="outline" class="w-full justify-center gap-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                        <twig:ux:icon name="lucide:brain-circuit" class="w-4 h-4" />
+                        {{ 'Générer un Quiz (Gemini)' | trans }}
+                    </twig:Button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
                     <twig:ux:icon name="lucide:info" class="w-4 h-4 text-primary" />
                     {{ 'Informations' | trans }}
                 </h3>

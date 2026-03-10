@@ -220,6 +220,9 @@ sh:
 
 # --- Fixes & Caches ---
 
+phpstan:
+	$(PHP_EXEC) vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G
+
 cc:
 	$(SYMFONY) cache:clear
 
@@ -276,6 +279,8 @@ prod-deploy:
 
 # --- Tests ---
 tests:
-	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test up -d --remove-orphans
+	$(MAKE) up ENV=test
 	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php composer install --no-interaction --no-progress --optimize-autoloader
+	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php bin/console doctrine:schema:drop --force --env=test || true
+	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php bin/console doctrine:schema:create --env=test
 	$(DK_COMPOSE_CMD) -f compose.yaml -f compose.override.yaml --env-file .env.test exec --user root php bin/phpunit

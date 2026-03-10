@@ -1,0 +1,2036 @@
+docker compose -f compose.yaml -f compose.override.yaml --env-file .env --env-file .env.local exec php vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G
+   0/207 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%[1G[2K  20/207 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]   9%[1G[2K  60/207 [▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░]  28%[1G[2K  80/207 [▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░]  38%[1G[2K 100/207 [▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░]  48%[1G[2K 120/207 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░]  57%[1G[2K 140/207 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░]  67%[1G[2K 167/207 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░]  80%[1G[2K 187/207 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░]  90%[1G[2K 207/207 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/BadgeTypeController.php                               
+ ------ ----------------------------------------------------------------------- 
+  74     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/CalendarController.php                                
+ ------ ----------------------------------------------------------------------- 
+  74     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+  115    Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/CohortController.php                                  
+ ------ ----------------------------------------------------------------------- 
+  74     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/EvaluationController.php                              
+ ------ ----------------------------------------------------------------------- 
+  39     Parameter #1 $user of method App\Service\GamificationService::addXp()  
+         expects App\Entity\User, App\Entity\User|null given.                   
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------- 
+  Line   Controller/Admin/LessonController.php                            
+ ------ ----------------------------------------------------------------- 
+  28     Parameter #1 $lessonId of class                                  
+         App\Message\GenerateLessonAudioMessage constructor expects int,  
+         int|null given.                                                  
+         🪪  argument.type                                                
+ ------ ----------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/ModuleController.php                                  
+ ------ ----------------------------------------------------------------------- 
+  36     Parameter #1 $author of method App\Entity\Module::setAuthor() expects  
+         App\Entity\User|null,                                                  
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         🪪  argument.type                                                      
+  86     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/NoteController.php                                    
+ ------ ----------------------------------------------------------------------- 
+  75     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/NotificationController.php                            
+ ------ ----------------------------------------------------------------------- 
+  74     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/PageController.php                                    
+ ------ ----------------------------------------------------------------------- 
+  84     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/UserController.php                                    
+ ------ ----------------------------------------------------------------------- 
+  95     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Controller/Api/ApiController.php                                    
+ ------ -------------------------------------------------------------------- 
+  50     Parameter #3 $secret of method App\Service\JWT::generate() expects  
+         string, string|null given.                                          
+         🪪  argument.type                                                   
+  80     Parameter #2 $secret of method App\Service\JWT::check() expects     
+         string, string|null given.                                          
+         🪪  argument.type                                                   
+  95     Call to an undefined method App\Entity\Course::getExcerpt().        
+         🪪  method.notFound                                                 
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/AssignmentController.php                                    
+ ------ ----------------------------------------------------------------------- 
+  50     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+  71     Parameter #1 $user of method                                           
+         App\Entity\AssignmentSubmission::setUser() expects                     
+         App\Entity\User|null,                                                  
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         🪪  argument.type                                                      
+  72     Parameter #1 $user of method App\Service\GamificationService::addXp()  
+         expects App\Entity\User,                                               
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         🪪  argument.type                                                      
+  75     Cannot call method getCurrentCohort() on                               
+         Symfony\Component\Security\Core\User\UserInterface|null.               
+         🪪  method.nonObject                                                   
+  78     Cannot call method getId() on                                          
+         Symfony\Component\Security\Core\User\UserInterface|null.               
+         🪪  method.nonObject                                                   
+  82     Cannot call method getFullname() on                                    
+         Symfony\Component\Security\Core\User\UserInterface|null.               
+         🪪  method.nonObject                                                   
+  90     Parameter #1 $content of method                                        
+         App\Entity\AssignmentSubmission::setContent() expects string,          
+         float|int<min, -1>|int<1, max>|string|true given.                      
+         🪪  argument.type                                                      
+  141    Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+  156    Cannot call method getId() on App\Entity\User|null.                    
+         🪪  method.nonObject                                                   
+  156    Cannot call method getId() on                                          
+         Symfony\Component\Security\Core\User\UserInterface|null.               
+         🪪  method.nonObject                                                   
+  173    Parameter #1 $reviewer of method App\Entity\PeerReview::setReviewer()  
+         expects App\Entity\User|null,                                          
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         🪪  argument.type                                                      
+  174    Parameter #1 $feedback of method App\Entity\PeerReview::setFeedback()  
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  177    Call to an undefined method App\Entity\Assignment::getRubricEntity().  
+         🪪  method.notFound                                                    
+  181    Instantiated class App\Controller\PeerReviewScore not found.           
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  182    Call to method setCriterion() on an unknown class                      
+         App\Controller\PeerReviewScore.                                        
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  183    Call to method setScore() on an unknown class                          
+         App\Controller\PeerReviewScore.                                        
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  184    Parameter #1 $score of method App\Entity\PeerReview::addScore()        
+         expects App\Entity\PeerReviewScore, App\Controller\PeerReviewScore     
+         given.                                                                 
+         🪪  argument.type                                                      
+  196    Parameter #1 $user of method App\Service\GamificationService::addXp()  
+         expects App\Entity\User,                                               
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         🪪  argument.type                                                      
+  200    Parameter #1 $user of method                                           
+         App\Service\NotificationService::addNotification() expects             
+         App\Entity\User, App\Entity\User|null given.                           
+         🪪  argument.type                                                      
+  202    Cannot call method getFullname() on                                    
+         Symfony\Component\Security\Core\User\UserInterface|null.               
+         🪪  method.nonObject                                                   
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/ChatController.php                                          
+ ------ ----------------------------------------------------------------------- 
+  40     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+  42     Parameter #1 $content of method App\Entity\Message::setContent()       
+         expects string, float|int<min, -1>|int<1, max>|string|true given.      
+         🪪  argument.type                                                      
+  43     Parameter #1 $sender of method App\Entity\Message::setSender()         
+         expects App\Entity\User|null,                                          
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/CohortController.php                                        
+ ------ ----------------------------------------------------------------------- 
+  26     Negated boolean expression is always false.                            
+         🪪  booleanNot.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.                                                                     
+  115    Left side of && is always true.                                        
+         🪪  booleanAnd.leftAlwaysTrue                                          
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.                                                                     
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/CommentController.php                                       
+ ------ ----------------------------------------------------------------------- 
+  95     Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   Controller/CourseController.php                                    
+ ------ ------------------------------------------------------------------- 
+  32     Call to an undefined method                                        
+         Symfony\Component\Security\Core\User\UserInterface::getCourses().  
+         🪪  method.notFound                                                
+ ------ ------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/LessonController.php                                        
+ ------ ----------------------------------------------------------------------- 
+  202    Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+  245    Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/NoteController.php                                          
+ ------ ----------------------------------------------------------------------- 
+  28     Call to an undefined method                                            
+         App\Repository\NoteRepository::findByUser().                           
+         🪪  method.notFound                                                    
+  92     Parameter #1 $user of method App\Entity\Note::setUser() expects        
+         App\Entity\User|null,                                                  
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         🪪  argument.type                                                      
+  135    Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/ProfileController.php                                       
+ ------ ----------------------------------------------------------------------- 
+  106    Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+  123    Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+  128    Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  140    Cannot call method getSkills() on                                      
+         Symfony\Component\Security\Core\User\UserInterface|null.               
+         🪪  method.nonObject                                                   
+  141    Cannot call method addSkill() on                                       
+         Symfony\Component\Security\Core\User\UserInterface|null.               
+         🪪  method.nonObject                                                   
+  154    Parameter #2 $token of method                                          
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfT  
+         okenValid() expects string|null, bool|float|int|string|null given.     
+         🪪  argument.type                                                      
+  159    Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  160    Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  161    Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  174    Parameter #1 $user of method App\Entity\PortfolioProject::setUser()    
+         expects App\Entity\User|null,                                          
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Controller/SubscriptionController.php                                
+ ------ --------------------------------------------------------------------- 
+  24     Parameter #1 $user of method                                         
+         App\Service\SubscriptionService::createCheckoutSession() expects     
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface  
+         given.                                                               
+         🪪  argument.type                                                    
+  54     Parameter #2 $sigHeader of method                                    
+         App\Service\SubscriptionService::handleWebhook() expects string,     
+         string|null given.                                                   
+         🪪  argument.type                                                    
+ ------ --------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   Controller/TeamController.php                                 
+ ------ -------------------------------------------------------------- 
+  38     Call to an undefined method                                   
+         App\Service\CompletionCalculator::calculateGlobalProgress().  
+         🪪  method.notFound                                           
+ ------ -------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   Controller/UserCalendarController.php                              
+ ------ ------------------------------------------------------------------- 
+  23     Call to an undefined method                                        
+         Symfony\Component\Security\Core\User\UserInterface::getCohorts().  
+         🪪  method.notFound                                                
+ ------ ------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   DataFixtures/AppFixtures.php                                           
+ ------ ----------------------------------------------------------------------- 
+  24     Call to an undefined method                                            
+         App\Repository\UserRepository::findOneByUsername().                    
+         🪪  method.notFound                                                    
+  64     Method App\DataFixtures\AppFixtures::createUser() has no return type   
+         specified.                                                             
+         🪪  missingType.return                                                 
+  64     Method App\DataFixtures\AppFixtures::createUser() has parameter $role  
+         with no type specified.                                                
+         🪪  missingType.parameter                                              
+  64     Method App\DataFixtures\AppFixtures::createUser() has parameter        
+         $userData with no type specified.                                      
+         🪪  missingType.parameter                                              
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   DataFixtures/CourseFixtures.php                                        
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\DataFixtures\CourseFixtures::$passwordHasher is never     
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  15     Property App\DataFixtures\CourseFixtures::$userRepository is never     
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  41     Method App\DataFixtures\CourseFixtures::create() has no return type    
+         specified.                                                             
+         🪪  missingType.return                                                 
+  41     Method App\DataFixtures\CourseFixtures::create() has parameter         
+         $author with no type specified.                                        
+         🪪  missingType.parameter                                              
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   DataFixtures/LessonFixtures.php                                        
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\DataFixtures\LessonFixtures::$passwordHasher is never     
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  15     Property App\DataFixtures\LessonFixtures::$userRepository is never     
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   DataFixtures/ModuleFixtures.php                                        
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\DataFixtures\ModuleFixtures::$passwordHasher is never     
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Assignment.php                                                  
+ ------ ----------------------------------------------------------------------- 
+  11     Class App\Repository\AssignmentRepository not found.                   
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  11     Parameter $repositoryClass of attribute class                          
+         Doctrine\ORM\Mapping\Entity constructor expects                        
+         class-string<Doctrine\ORM\EntityRepository<T of object>>|null, 'App\\  
+         Repository\\AssignmentRepository' given.                               
+         🪪  argument.type                                                      
+  17     Property App\Entity\Assignment::$id (int|null) is never assigned int   
+         so it can be removed from the property type.                           
+         🪪  property.unusedType                                                
+  26     Property App\Entity\Assignment::$rubric type has no value type         
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  33     Property App\Entity\Assignment::$submissions with generic interface    
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  36     Property App\Entity\Assignment::$rubricEntity                          
+         (App\Entity\Rubric|null) is never assigned App\Entity\Rubric so it     
+         can be removed from the property type.                                 
+         🪪  property.unusedType                                                
+  36     Property App\Entity\Assignment::$rubricEntity is never read, only      
+         written.                                                               
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  72     Method App\Entity\Assignment::getRubric() return type has no value     
+         type specified in iterable type array.                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  77     Method App\Entity\Assignment::setRubric() has parameter $rubric with   
+         no value type specified in iterable type array.                        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/AssignmentSubmission.php                                        
+ ------ ----------------------------------------------------------------------- 
+  12     Class App\Repository\AssignmentSubmissionRepository not found.         
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  12     Parameter $repositoryClass of attribute class                          
+         Doctrine\ORM\Mapping\Entity constructor expects                        
+         class-string<Doctrine\ORM\EntityRepository<T of object>>|null, 'App\\  
+         Repository\\AssignmentSubmissionRepository' given.                     
+         🪪  argument.type                                                      
+  21     Property App\Entity\AssignmentSubmission::$id (int|null) is never      
+         assigned int so it can be removed from the property type.              
+         🪪  property.unusedType                                                
+  27     Property App\Entity\AssignmentSubmission::$status (string|null) is     
+         never assigned null so it can be removed from the property type.       
+         🪪  property.unusedType                                                
+  38     Property App\Entity\AssignmentSubmission::$reviews with generic        
+         interface Doctrine\Common\Collections\Collection does not specify its  
+         types: TKey, T                                                         
+         🪪  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Badge.php                                                       
+ ------ ----------------------------------------------------------------------- 
+  21     Property App\Entity\Badge::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                 
+         🪪  property.unusedType                                                
+  33     Property App\Entity\Badge::$users with generic interface               
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Entity/BadgeType.php                                                 
+ ------ --------------------------------------------------------------------- 
+  21     Property App\Entity\BadgeType::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                         
+         🪪  property.unusedType                                              
+  33     Property App\Entity\BadgeType::$badges with generic interface        
+         Doctrine\Common\Collections\Collection does not specify its types:   
+         TKey, T                                                              
+         🪪  missingType.generics                                             
+ ------ --------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Calendar.php                                                    
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\Entity\Calendar::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                              
+         🪪  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/ChatMessage.php                                                 
+ ------ ----------------------------------------------------------------------- 
+  21     Property App\Entity\ChatMessage::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                           
+         🪪  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Cohort.php                                                     
+ ------ ---------------------------------------------------------------------- 
+  22     Property App\Entity\Cohort::$id (int|null) is never assigned int so   
+         it can be removed from the property type.                             
+         🪪  property.unusedType                                               
+  34     Property App\Entity\Cohort::$courses with generic interface           
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         🪪  missingType.generics                                              
+  40     Property App\Entity\Cohort::$users with generic interface             
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         🪪  missingType.generics                                              
+  43     Property App\Entity\Cohort::$status (string|null) is never assigned   
+         null so it can be removed from the property type.                     
+         🪪  property.unusedType                                               
+  52     Property App\Entity\Cohort::$events with generic interface            
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         🪪  missingType.generics                                              
+  64     Property App\Entity\Cohort::$year (int|null) does not accept string.  
+         🪪  assign.propertyType                                               
+  71     Method App\Entity\Cohort::__toString() should return string but       
+         returns string|null.                                                  
+         🪪  return.type                                                       
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Comment.php                                                    
+ ------ ---------------------------------------------------------------------- 
+  21     Property App\Entity\Comment::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                             
+         🪪  property.unusedType                                               
+  30     Property App\Entity\Comment::$comments with generic interface         
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         🪪  missingType.generics                                              
+  43     Property App\Entity\Comment::$likes with generic interface            
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         🪪  missingType.generics                                              
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Completion.php                                                 
+ ------ ---------------------------------------------------------------------- 
+  18     Property App\Entity\Completion::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                          
+         🪪  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Conversation.php                                                
+ ------ ----------------------------------------------------------------------- 
+  10     Class App\Repository\ConversationRepository not found.                 
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  10     Parameter $repositoryClass of attribute class                          
+         Doctrine\ORM\Mapping\Entity constructor expects                        
+         class-string<Doctrine\ORM\EntityRepository<T of object>>|null, 'App\\  
+         Repository\\ConversationRepository' given.                             
+         🪪  argument.type                                                      
+  16     Property App\Entity\Conversation::$id (int|null) is never assigned     
+         int so it can be removed from the property type.                       
+         🪪  property.unusedType                                                
+  19     Property App\Entity\Conversation::$participants with generic           
+         interface Doctrine\Common\Collections\Collection does not specify its  
+         types: TKey, T                                                         
+         🪪  missingType.generics                                               
+  23     Property App\Entity\Conversation::$messages with generic interface     
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Course.php                                                      
+ ------ ----------------------------------------------------------------------- 
+  23     Property App\Entity\Course::$id (int|null) is never assigned int so    
+         it can be removed from the property type.                              
+         🪪  property.unusedType                                                
+  33     Property App\Entity\Course::$users with generic interface              
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  37     Property App\Entity\Course::$modules with generic interface            
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  59     Property App\Entity\Course::$completions with generic interface        
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  62     Property App\Entity\Course::$cohorts with generic interface            
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  65     Property App\Entity\Course::$skills with generic interface             
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  81     Parameter #1 $string of function substr expects string, string|null    
+         given.                                                                 
+         🪪  argument.type                                                      
+  159    Negated boolean expression is always true.                             
+         🪪  booleanNot.alwaysTrue                                              
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.                                                                     
+ ------ ----------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------- 
+  Line   Entity/CourseCompletion.php                                    
+ ------ --------------------------------------------------------------- 
+  18     Property App\Entity\CourseCompletion::$id (int|null) is never  
+         assigned int so it can be removed from the property type.      
+         🪪  property.unusedType                                        
+ ------ --------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Evaluation.php                                                 
+ ------ ---------------------------------------------------------------------- 
+  19     Property App\Entity\Evaluation::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                          
+         🪪  property.unusedType                                               
+  36     Property App\Entity\Evaluation::$maxScore (float|null) is never       
+         assigned null so it can be removed from the property type.            
+         🪪  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Event.php                                                       
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\Entity\Event::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                 
+         🪪  property.unusedType                                                
+  30     Property App\Entity\Event::$type (string|null) is never assigned null  
+         so it can be removed from the property type.                           
+         🪪  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Lesson.php                                                      
+ ------ ----------------------------------------------------------------------- 
+  22     Property App\Entity\Lesson::$id (int|null) is never assigned int so    
+         it can be removed from the property type.                              
+         🪪  property.unusedType                                                
+  53     Property App\Entity\Lesson::$notes with generic interface              
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  56     Property App\Entity\Lesson::$completions with generic interface        
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  59     Property App\Entity\Lesson::$comments with generic interface           
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  62     Property App\Entity\Lesson::$quizzes with generic interface            
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  80     Property App\Entity\Lesson::$embeddings type has no value type         
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  100    Parameter #1 $string of function substr expects string, string|null    
+         given.                                                                 
+         🪪  argument.type                                                      
+  402    Method App\Entity\Lesson::getEmbeddings() return type has no value     
+         type specified in iterable type array.                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  407    Method App\Entity\Lesson::setEmbeddings() has parameter $embeddings    
+         with no value type specified in iterable type array.                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Message.php                                                     
+ ------ ----------------------------------------------------------------------- 
+  10     Class App\Repository\MessageRepository not found.                      
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  10     Parameter $repositoryClass of attribute class                          
+         Doctrine\ORM\Mapping\Entity constructor expects                        
+         class-string<Doctrine\ORM\EntityRepository<T of object>>|null, 'App\\  
+         Repository\\MessageRepository' given.                                  
+         🪪  argument.type                                                      
+  19     Property App\Entity\Message::$id (int|null) is never assigned int so   
+         it can be removed from the property type.                              
+         🪪  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Entity/Module.php                                                    
+ ------ --------------------------------------------------------------------- 
+  22     Property App\Entity\Module::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                            
+         🪪  property.unusedType                                              
+  31     Property App\Entity\Module::$courses with generic interface          
+         Doctrine\Common\Collections\Collection does not specify its types:   
+         TKey, T                                                              
+         🪪  missingType.generics                                             
+  35     Property App\Entity\Module::$lessons with generic interface          
+         Doctrine\Common\Collections\Collection does not specify its types:   
+         TKey, T                                                              
+         🪪  missingType.generics                                             
+  44     Property App\Entity\Module::$status (string|null) is never assigned  
+         null so it can be removed from the property type.                    
+         🪪  property.unusedType                                              
+  50     Property App\Entity\Module::$completions with generic interface      
+         Doctrine\Common\Collections\Collection does not specify its types:   
+         TKey, T                                                              
+         🪪  missingType.generics                                             
+  53     Property App\Entity\Module::$quizzes with generic interface          
+         Doctrine\Common\Collections\Collection does not specify its types:   
+         TKey, T                                                              
+         🪪  missingType.generics                                             
+  68     Parameter #1 $string of function substr expects string, string|null  
+         given.                                                               
+         🪪  argument.type                                                    
+ ------ --------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------- 
+  Line   Entity/ModuleCompletion.php                                    
+ ------ --------------------------------------------------------------- 
+  18     Property App\Entity\ModuleCompletion::$id (int|null) is never  
+         assigned int so it can be removed from the property type.      
+         🪪  property.unusedType                                        
+ ------ --------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Note.php                                                       
+ ------ ---------------------------------------------------------------------- 
+  19     Property App\Entity\Note::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                
+         🪪  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Entity/Notification.php                                             
+ ------ -------------------------------------------------------------------- 
+  21     Property App\Entity\Notification::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                    
+         🪪  property.unusedType                                             
+  45     Property App\Entity\Notification::$comments with generic interface  
+         Doctrine\Common\Collections\Collection does not specify its types:  
+         TKey, T                                                             
+         🪪  missingType.generics                                            
+ ------ -------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Page.php                                                       
+ ------ ---------------------------------------------------------------------- 
+  20     Property App\Entity\Page::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                
+         🪪  property.unusedType                                               
+  39     Parameter #1 $string of function substr expects string, string|null   
+         given.                                                                
+         🪪  argument.type                                                     
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/PaymentSetting.php                                             
+ ------ ---------------------------------------------------------------------- 
+  20     Property App\Entity\PaymentSetting::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                      
+         🪪  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/PeerReview.php                                                  
+ ------ ----------------------------------------------------------------------- 
+  10     Class App\Repository\PeerReviewRepository not found.                   
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  10     Parameter $repositoryClass of attribute class                          
+         Doctrine\ORM\Mapping\Entity constructor expects                        
+         class-string<Doctrine\ORM\EntityRepository<T of object>>|null, 'App\\  
+         Repository\\PeerReviewRepository' given.                               
+         🪪  argument.type                                                      
+  20     Property App\Entity\PeerReview::$id (int|null) is never assigned int   
+         so it can be removed from the property type.                           
+         🪪  property.unusedType                                                
+  37     Property App\Entity\PeerReview::$scores has unknown class              
+         App\Entity\Collection as its type.                                     
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  41     Instantiated class App\Entity\ArrayCollection not found.               
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  41     Property App\Entity\PeerReview::$scores (App\Entity\Collection) does   
+         not accept App\Entity\ArrayCollection.                                 
+         🪪  assign.propertyType                                                
+  100    Method App\Entity\PeerReview::getScores() has invalid return type      
+         App\Entity\Collection.                                                 
+         🪪  class.notFound                                                     
+  100    Method App\Entity\PeerReview::getScores() has invalid return type      
+         App\Entity\Collection.                                                 
+         🪪  class.notFound                                                     
+  107    Call to method contains() on an unknown class App\Entity\Collection.   
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  108    Call to method add() on an unknown class App\Entity\Collection.        
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  117    Call to method removeElement() on an unknown class                     
+         App\Entity\Collection.                                                 
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/PeerReviewScore.php                                             
+ ------ ----------------------------------------------------------------------- 
+  16     Property App\Entity\PeerReviewScore::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                       
+         🪪  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/PortfolioProject.php                                            
+ ------ ----------------------------------------------------------------------- 
+  9      Class App\Repository\PortfolioProjectRepository not found.             
+         🪪  class.notFound                                                     
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  9      Parameter $repositoryClass of attribute class                          
+         Doctrine\ORM\Mapping\Entity constructor expects                        
+         class-string<Doctrine\ORM\EntityRepository<T of object>>|null, 'App\\  
+         Repository\\PortfolioProjectRepository' given.                         
+         🪪  argument.type                                                      
+  15     Property App\Entity\PortfolioProject::$id (int|null) is never          
+         assigned int so it can be removed from the property type.              
+         🪪  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Quiz.php                                                       
+ ------ ---------------------------------------------------------------------- 
+  22     Property App\Entity\Quiz::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                
+         🪪  property.unusedType                                               
+  34     Property App\Entity\Quiz::$questions with generic interface           
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         🪪  missingType.generics                                              
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/QuizOption.php                                                 
+ ------ ---------------------------------------------------------------------- 
+  16     Property App\Entity\QuizOption::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                          
+         🪪  property.unusedType                                               
+  22     Property App\Entity\QuizOption::$isCorrect (bool|null) is never       
+         assigned null so it can be removed from the property type.            
+         🪪  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Entity/QuizQuestion.php                                             
+ ------ -------------------------------------------------------------------- 
+  18     Property App\Entity\QuizQuestion::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                    
+         🪪  property.unusedType                                             
+  28     Property App\Entity\QuizQuestion::$options with generic interface   
+         Doctrine\Common\Collections\Collection does not specify its types:  
+         TKey, T                                                             
+         🪪  missingType.generics                                            
+ ------ -------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   Entity/ResetPasswordRequest.php                                    
+ ------ ------------------------------------------------------------------- 
+  18     Property App\Entity\ResetPasswordRequest::$id (int|null) is never  
+         assigned int so it can be removed from the property type.          
+         🪪  property.unusedType                                            
+  26     Property App\Entity\ResetPasswordRequest::$user                    
+         (App\Entity\User|null) does not accept object.                     
+         🪪  assign.propertyType                                            
+  37     Method App\Entity\ResetPasswordRequest::getUser() should return    
+         object but returns App\Entity\User|null.                           
+         🪪  return.type                                                    
+ ------ ------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Entity/Rubric.php                                                    
+ ------ --------------------------------------------------------------------- 
+  18     Property App\Entity\Rubric::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                            
+         🪪  property.unusedType                                              
+  27     Property App\Entity\Rubric::$criteria with generic interface         
+         Doctrine\Common\Collections\Collection does not specify its types:   
+         TKey, T                                                              
+         🪪  missingType.generics                                             
+ ------ --------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/RubricCriterion.php                                             
+ ------ ----------------------------------------------------------------------- 
+  16     Property App\Entity\RubricCriterion::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                       
+         🪪  property.unusedType                                                
+  25     Property App\Entity\RubricCriterion::$maxPoints (int|null) is never    
+         assigned null so it can be removed from the property type.             
+         🪪  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Setting.php                                                    
+ ------ ---------------------------------------------------------------------- 
+  18     Property App\Entity\Setting::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                             
+         🪪  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/SiteSetting.php                                                 
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\Entity\SiteSetting::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                           
+         🪪  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Skill.php                                                       
+ ------ ----------------------------------------------------------------------- 
+  16     Property App\Entity\Skill::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                 
+         🪪  property.unusedType                                                
+  22     Property App\Entity\Skill::$users with generic interface               
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  25     Property App\Entity\Skill::$courses with generic interface             
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Team.php                                                       
+ ------ ---------------------------------------------------------------------- 
+  16     Property App\Entity\Team::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                
+         🪪  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Entity/Trait/SlugAble.php (in context of class App\Entity\Cohort)    
+ ------ --------------------------------------------------------------------- 
+  30     Parameter #1 $string of function substr expects string, string|null  
+         given.                                                               
+         🪪  argument.type                                                    
+ ------ --------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/User.php                                                        
+ ------ ----------------------------------------------------------------------- 
+  32     Property App\Entity\User::$id (int|null) is never assigned int so it   
+         can be removed from the property type.                                 
+         🪪  property.unusedType                                                
+  214    Property App\Entity\User::$cohort is never read, only written.         
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  340    Method App\Entity\User::getUserIdentifier() should return              
+         non-empty-string but returns string.                                   
+         🪪  return.type                                                        
+  1140   Access to an undefined property App\Entity\User::$evaluations.         
+         🪪  property.notFound                                                  
+         💡  Learn more: https://phpstan.org/blog/solving-phpstan-access-to-und  
+         efined-property                                                        
+  1145   Access to an undefined property App\Entity\User::$evaluations.         
+         🪪  property.notFound                                                  
+         💡  Learn more: https://phpstan.org/blog/solving-phpstan-access-to-und  
+         efined-property                                                        
+  1146   Access to an undefined property App\Entity\User::$evaluations.         
+         🪪  property.notFound                                                  
+         💡  Learn more: https://phpstan.org/blog/solving-phpstan-access-to-und  
+         efined-property                                                        
+  1155   Access to an undefined property App\Entity\User::$evaluations.         
+         🪪  property.notFound                                                  
+         💡  Learn more: https://phpstan.org/blog/solving-phpstan-access-to-und  
+         efined-property                                                        
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   EventListener/UserListener.php                                         
+ ------ ----------------------------------------------------------------------- 
+  18     Property App\EventListener\UserListener::$userRepository is never      
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/BadgeRepository.php                                         
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\BadgeRepository has PHPDoc tag @method for        
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\BadgeRepository has PHPDoc tag @method for        
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\BadgeRepository has PHPDoc tag @method for        
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\BadgeRepository has PHPDoc tag @method for        
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/CalendarRepository.php                                      
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\CalendarRepository has PHPDoc tag @method for     
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CalendarRepository has PHPDoc tag @method for     
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CalendarRepository has PHPDoc tag @method for     
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CalendarRepository has PHPDoc tag @method for     
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/ChatMessageRepository.php                                   
+ ------ ----------------------------------------------------------------------- 
+  19     Class App\Repository\ChatMessageRepository has PHPDoc tag @method for  
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\ChatMessageRepository has PHPDoc tag @method for  
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\ChatMessageRepository has PHPDoc tag @method for  
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\ChatMessageRepository has PHPDoc tag @method for  
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/CohortRepository.php                                        
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\CohortRepository has PHPDoc tag @method for       
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CohortRepository has PHPDoc tag @method for       
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CohortRepository has PHPDoc tag @method for       
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CohortRepository has PHPDoc tag @method for       
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/CommentRepository.php                                       
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\CommentRepository has PHPDoc tag @method for      
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CommentRepository has PHPDoc tag @method for      
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CommentRepository has PHPDoc tag @method for      
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\CommentRepository has PHPDoc tag @method for      
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/CourseCompletionRepository.php                              
+ ------ ----------------------------------------------------------------------- 
+  18     Class App\Repository\CourseCompletionRepository has PHPDoc tag         
+         @method for method findBy() parameter #1 $criteria with no value type  
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  18     Class App\Repository\CourseCompletionRepository has PHPDoc tag         
+         @method for method findBy() parameter #2 $orderBy with no value type   
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  18     Class App\Repository\CourseCompletionRepository has PHPDoc tag         
+         @method for method findOneBy() parameter #1 $criteria with no value    
+         type specified in iterable type array.                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  18     Class App\Repository\CourseCompletionRepository has PHPDoc tag         
+         @method for method findOneBy() parameter #2 $orderBy with no value     
+         type specified in iterable type array.                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  28     Method                                                                 
+         App\Repository\CourseCompletionRepository::countCoursesCompletions()   
+         has no return type specified.                                          
+         🪪  missingType.return                                                 
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/CourseRepository.php                                        
+ ------ ----------------------------------------------------------------------- 
+  20     Class App\Repository\CourseRepository has PHPDoc tag @method for       
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  20     Class App\Repository\CourseRepository has PHPDoc tag @method for       
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  20     Class App\Repository\CourseRepository has PHPDoc tag @method for       
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  20     Class App\Repository\CourseRepository has PHPDoc tag @method for       
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  92     Method App\Repository\CourseRepository::findCatalogCourses() has       
+         parameter $cohorts with no value type specified in iterable type       
+         array.                                                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/LessonRepository.php                                        
+ ------ ----------------------------------------------------------------------- 
+  38     Method App\Repository\LessonRepository::findEfficacyStatsByModule()    
+         return type has no value type specified in iterable type array.        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/ModuleRepository.php                                        
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\ModuleRepository has PHPDoc tag @method for       
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\ModuleRepository has PHPDoc tag @method for       
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\ModuleRepository has PHPDoc tag @method for       
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\ModuleRepository has PHPDoc tag @method for       
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/NoteRepository.php                                          
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\NoteRepository has PHPDoc tag @method for method  
+         findBy() parameter #1 $criteria with no value type specified in        
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\NoteRepository has PHPDoc tag @method for method  
+         findBy() parameter #2 $orderBy with no value type specified in         
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\NoteRepository has PHPDoc tag @method for method  
+         findOneBy() parameter #1 $criteria with no value type specified in     
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\NoteRepository has PHPDoc tag @method for method  
+         findOneBy() parameter #2 $orderBy with no value type specified in      
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  24     Method App\Repository\NoteRepository::findUserNotesByLesson() has no   
+         return type specified.                                                 
+         🪪  missingType.return                                                 
+  24     Method App\Repository\NoteRepository::findUserNotesByLesson() has      
+         parameter $lesson with no type specified.                              
+         🪪  missingType.parameter                                              
+  24     Method App\Repository\NoteRepository::findUserNotesByLesson() has      
+         parameter $user with no type specified.                                
+         🪪  missingType.parameter                                              
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/NotificationRepository.php                                  
+ ------ ----------------------------------------------------------------------- 
+  21     Class App\Repository\NotificationRepository has PHPDoc tag @method     
+         for method findBy() parameter #1 $criteria with no value type          
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  21     Class App\Repository\NotificationRepository has PHPDoc tag @method     
+         for method findBy() parameter #2 $orderBy with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  21     Class App\Repository\NotificationRepository has PHPDoc tag @method     
+         for method findOneBy() parameter #1 $criteria with no value type       
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  21     Class App\Repository\NotificationRepository has PHPDoc tag @method     
+         for method findOneBy() parameter #2 $orderBy with no value type        
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/PageRepository.php                                          
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\PageRepository has PHPDoc tag @method for method  
+         findBy() parameter #1 $criteria with no value type specified in        
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\PageRepository has PHPDoc tag @method for method  
+         findBy() parameter #2 $orderBy with no value type specified in         
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\PageRepository has PHPDoc tag @method for method  
+         findOneBy() parameter #1 $criteria with no value type specified in     
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\PageRepository has PHPDoc tag @method for method  
+         findOneBy() parameter #2 $orderBy with no value type specified in      
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/PaymentSettingRepository.php                                
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\PaymentSettingRepository has PHPDoc tag @method   
+         for method findBy() parameter #1 $criteria with no value type          
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\PaymentSettingRepository has PHPDoc tag @method   
+         for method findBy() parameter #2 $orderBy with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\PaymentSettingRepository has PHPDoc tag @method   
+         for method findOneBy() parameter #1 $criteria with no value type       
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\PaymentSettingRepository has PHPDoc tag @method   
+         for method findOneBy() parameter #2 $orderBy with no value type        
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/PeerReviewScoreRepository.php                               
+ ------ ----------------------------------------------------------------------- 
+  19     Class App\Repository\PeerReviewScoreRepository has PHPDoc tag @method  
+         for method findBy() parameter #1 $criteria with no value type          
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\PeerReviewScoreRepository has PHPDoc tag @method  
+         for method findBy() parameter #2 $orderBy with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\PeerReviewScoreRepository has PHPDoc tag @method  
+         for method findOneBy() parameter #1 $criteria with no value type       
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\PeerReviewScoreRepository has PHPDoc tag @method  
+         for method findOneBy() parameter #2 $orderBy with no value type        
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/ResetPasswordRequestRepository.php                          
+ ------ ----------------------------------------------------------------------- 
+  20     Class App\Repository\ResetPasswordRequestRepository has PHPDoc tag     
+         @method for method findBy() parameter #1 $criteria with no value type  
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  20     Class App\Repository\ResetPasswordRequestRepository has PHPDoc tag     
+         @method for method findBy() parameter #2 $orderBy with no value type   
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  20     Class App\Repository\ResetPasswordRequestRepository has PHPDoc tag     
+         @method for method findOneBy() parameter #1 $criteria with no value    
+         type specified in iterable type array.                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  20     Class App\Repository\ResetPasswordRequestRepository has PHPDoc tag     
+         @method for method findOneBy() parameter #2 $orderBy with no value     
+         type specified in iterable type array.                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/RubricCriterionRepository.php                               
+ ------ ----------------------------------------------------------------------- 
+  19     Class App\Repository\RubricCriterionRepository has PHPDoc tag @method  
+         for method findBy() parameter #1 $criteria with no value type          
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\RubricCriterionRepository has PHPDoc tag @method  
+         for method findBy() parameter #2 $orderBy with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\RubricCriterionRepository has PHPDoc tag @method  
+         for method findOneBy() parameter #1 $criteria with no value type       
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\RubricCriterionRepository has PHPDoc tag @method  
+         for method findOneBy() parameter #2 $orderBy with no value type        
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/RubricRepository.php                                        
+ ------ ----------------------------------------------------------------------- 
+  19     Class App\Repository\RubricRepository has PHPDoc tag @method for       
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\RubricRepository has PHPDoc tag @method for       
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\RubricRepository has PHPDoc tag @method for       
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  19     Class App\Repository\RubricRepository has PHPDoc tag @method for       
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/SkillRepository.php                                         
+ ------ ----------------------------------------------------------------------- 
+  17     Class App\Repository\SkillRepository has PHPDoc tag @method for        
+         method findBy() parameter #1 $criteria with no value type specified    
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\SkillRepository has PHPDoc tag @method for        
+         method findBy() parameter #2 $orderBy with no value type specified in  
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\SkillRepository has PHPDoc tag @method for        
+         method findOneBy() parameter #1 $criteria with no value type           
+         specified in iterable type array.                                      
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  17     Class App\Repository\SkillRepository has PHPDoc tag @method for        
+         method findOneBy() parameter #2 $orderBy with no value type specified  
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/UserRepository.php                                          
+ ------ ----------------------------------------------------------------------- 
+  25     Class App\Repository\UserRepository has PHPDoc tag @method for method  
+         findBy() parameter #1 $criteria with no value type specified in        
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  25     Class App\Repository\UserRepository has PHPDoc tag @method for method  
+         findBy() parameter #2 $orderBy with no value type specified in         
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  25     Class App\Repository\UserRepository has PHPDoc tag @method for method  
+         findOneBy() parameter #1 $criteria with no value type specified in     
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  25     Class App\Repository\UserRepository has PHPDoc tag @method for method  
+         findOneBy() parameter #2 $orderBy with no value type specified in      
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  25     PHPDoc tag @implements contains generic type                           
+         Symfony\Component\Security\Core\User\PasswordUpgraderInterface<App\En  
+         tity\User> but interface Symfony\Component\Security\Core\User\Passwor  
+         dUpgraderInterface is not generic.                                     
+         🪪  generics.notGeneric                                                
+  50     Method App\Repository\UserRepository::countVerifiedUsers() has no      
+         return type specified.                                                 
+         🪪  missingType.return                                                 
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Security/EmailVerifier.php                                            
+ ------ ---------------------------------------------------------------------- 
+  29     Call to an undefined method                                           
+         Symfony\Component\Security\Core\User\UserInterface::getId().          
+         🪪  method.notFound                                                   
+  30     Call to an undefined method                                           
+         Symfony\Component\Security\Core\User\UserInterface::getEmail().       
+         🪪  method.notFound                                                   
+  31     Call to an undefined method                                           
+         Symfony\Component\Security\Core\User\UserInterface::getId().          
+         🪪  method.notFound                                                   
+  58     Call to an undefined method                                           
+         Symfony\Component\Security\Core\User\UserInterface::getEmail().       
+         🪪  method.notFound                                                   
+  58     Call to an undefined method                                           
+         Symfony\Component\Security\Core\User\UserInterface::getId().          
+         🪪  method.notFound                                                   
+  60     Call to an undefined method                                           
+         Symfony\Component\Security\Core\User\UserInterface::setIsVerified().  
+         🪪  method.notFound                                                   
+ ------ ---------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Security/Voter/CommentVoter.php                                     
+ ------ -------------------------------------------------------------------- 
+  12     Class App\Security\Voter\CommentVoter extends generic class         
+         Symfony\Component\Security\Core\Authorization\Voter\Voter but does  
+         not specify its types: TAttribute, TSubject                         
+         🪪  missingType.generics                                            
+ ------ -------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Security/Voter/TeamVoter.php                                        
+ ------ -------------------------------------------------------------------- 
+  11     Class App\Security\Voter\TeamVoter extends generic class            
+         Symfony\Component\Security\Core\Authorization\Voter\Voter but does  
+         not specify its types: TAttribute, TSubject                         
+         🪪  missingType.generics                                            
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/CoachAIAgent.php                                               
+ ------ ----------------------------------------------------------------------- 
+  28     Method App\Service\CoachAIAgent::getHistory() return type has no       
+         value type specified in iterable type array.                           
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  35     Method App\Service\CoachAIAgent::saveHistory() has parameter $history  
+         with no value type specified in iterable type array.                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  37     Call to an undefined method                                            
+         Symfony\Contracts\Cache\CacheInterface::getItem().                     
+         🪪  method.notFound                                                    
+  40     Call to an undefined method                                            
+         Symfony\Contracts\Cache\CacheInterface::save().                        
+         🪪  method.notFound                                                    
+  94     Cannot call method getTitle() on App\Entity\Module|null.               
+         🪪  method.nonObject                                                   
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/EngagementAnalyzer.php                                         
+ ------ ----------------------------------------------------------------------- 
+  21     Property App\Service\EngagementAnalyzer::$entityManager is never       
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  72     Method App\Service\EngagementAnalyzer::getAtRiskStudents() return      
+         type has no value type specified in iterable type array.               
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/GamificationService.php                                        
+ ------ ----------------------------------------------------------------------- 
+  17     Property App\Service\GamificationService::$translator is never read,   
+         only written.                                                          
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/GeminiAudioService.php                                         
+ ------ ----------------------------------------------------------------------- 
+  36     Parameter #1 $string of function strip_tags expects string,            
+         string|null given.                                                     
+         🪪  argument.type                                                      
+  67     Cannot call method post() on GuzzleHttp\Client|null.                   
+         🪪  method.nonObject                                                   
+  117    Method App\Service\GeminiAudioService::generateAudio() should return   
+         string but returns string|null.                                        
+         🪪  return.type                                                        
+  120    Method App\Service\GeminiAudioService::createProcess() has parameter   
+         $command with no value type specified in iterable type array.          
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/QuizGeneratorService.php                                       
+ ------ ----------------------------------------------------------------------- 
+  71     Cannot call method post() on GuzzleHttp\Client|null.                   
+         🪪  method.nonObject                                                   
+  91     Method App\Service\QuizGeneratorService::createQuizFromData() has      
+         parameter $data with no value type specified in iterable type array.   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/RecommendationService.php                                      
+ ------ ----------------------------------------------------------------------- 
+  45     Cannot call method post() on GuzzleHttp\Client|null.                   
+         🪪  method.nonObject                                                   
+  110    Method App\Service\RecommendationService::cosineSimilarity() has       
+         parameter $vec1 with no value type specified in iterable type array.   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  110    Method App\Service\RecommendationService::cosineSimilarity() has       
+         parameter $vec2 with no value type specified in iterable type array.   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/SendMail.php                                                   
+ ------ ----------------------------------------------------------------------- 
+  25     Method App\Service\SendMail::send() has parameter $context with no     
+         value type specified in iterable type array.                           
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  25     Method App\Service\SendMail::send() has parameter $to with no value    
+         type specified in iterable type array.                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/SubscriptionService.php                                        
+ ------ ----------------------------------------------------------------------- 
+  27     Parameter #1 $params of method                                         
+         Stripe\Service\CustomerService::create() expects array{address?:       
+         array{city?: string, country?: string, line1?: string, line2?:         
+         string, postal_code?: string, state?: string}|null, balance?: int,     
+         business_name?: string|null, cash_balance?: array{settings?:           
+         array{reconciliation_mode?: string}}, description?: string, email?:    
+         string, expand?: array<string>, individual_name?: string|null, ...}|n  
+         ull, array{email: string|null, name: string|null} given.               
+         🪪  argument.type                                                      
+         💡  Type #1 from the union: Offset 'email' (string) does not accept    
+         type string|null.                                                      
+         💡  Type #1 from the union: Offset 'name' (string) does not accept     
+         type string|null.                                                      
+  36     Parameter #1 $params of method                                         
+         Stripe\Service\Checkout\SessionService::create() expects               
+         array{adaptive_pricing?: array{enabled?: bool}, after_expiration?:     
+         array{recovery?: array{allow_promotion_codes?: bool, enabled: bool}},  
+         allow_promotion_codes?: bool, automatic_tax?: array{enabled: bool,     
+         liability?: array{account?: string, type: string}},                    
+         billing_address_collection?: string, branding_settings?:               
+         array{background_color?: string|null, border_style?: string|null,      
+         button_color?: string|null, display_name?: string, font_family?:       
+         string|null, icon?: array{file?: string, type: string, url?: string},  
+         logo?: array{file?: string, type: string, url?: string}},              
+         cancel_url?: string, client_reference_id?: string, ...}|null,          
+         array{customer: string|null, payment_method_types: array{'card'},      
+         line_items: array{array{price: string, quantity: 1}}, mode:            
+         'subscription', success_url: non-falsy-string, cancel_url: string}     
+         given.                                                                 
+         🪪  argument.type                                                      
+         💡  Type #1 from the union: Offset 'customer' (string) does not accept  
+         type string|null.                                                      
+  48     Method App\Service\SubscriptionService::createCheckoutSession()        
+         should return string but returns string|null.                          
+         🪪  return.type                                                        
+  68     Parameter #1 $subscription of method                                   
+         App\Service\SubscriptionService::updateUserSubscription() expects      
+         Stripe\Subscription, Stripe\StripeObject given.                        
+         🪪  argument.type                                                      
+  72     Parameter #1 $subscription of method                                   
+         App\Service\SubscriptionService::cancelUserSubscription() expects      
+         Stripe\Subscription, Stripe\StripeObject given.                        
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/TriggerService.php                                             
+ ------ ----------------------------------------------------------------------- 
+  18     Property App\Service\TriggerService::$lessonRepository is never read,  
+         only written.                                                          
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  20     Property App\Service\TriggerService::$entityManager is never read,     
+         only written.                                                          
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  24     Property App\Service\TriggerService::$logger is never read, only       
+         written.                                                               
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  114    Cannot call method format() on DateTimeImmutable|null.                 
+         🪪  method.nonObject                                                   
+  201    Cannot call method getId() on App\Entity\Module|null.                  
+         🪪  method.nonObject                                                   
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/AchievementsComponent.php                              
+ ------ ----------------------------------------------------------------------- 
+  24     Method App\Twig\Components\AchievementsComponent::getAchievements()    
+         return type has no value type specified in iterable type array.        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  28     Negated boolean expression is always false.                            
+         🪪  booleanNot.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.                                                                     
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/AdminHeader.php                                        
+ ------ ----------------------------------------------------------------------- 
+  38     Method App\Twig\Components\AdminHeader::getResults() return type has   
+         no value type specified in iterable type array.                        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  48     Attribute class App\Twig\Components\LiveAction does not exist.         
+         🪪  attribute.notFound                                                 
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/ChatComponent.php                                      
+ ------ ----------------------------------------------------------------------- 
+  61     Negated boolean expression is always false.                            
+         🪪  booleanNot.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.                                                                     
+  76     Parameter #2 $data of class Symfony\Component\Mercure\Update           
+         constructor expects string, string|false given.                        
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/CoachChat.php                                          
+ ------ ----------------------------------------------------------------------- 
+  21     Property App\Twig\Components\CoachChat::$history type has no value     
+         type specified in iterable type array.                                 
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/CourseCatalog.php                                      
+ ------ ----------------------------------------------------------------------- 
+  26     Property App\Twig\Components\CourseCatalog::$subscribedCourseIds type  
+         has no value type specified in iterable type array.                    
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  46     Method App\Twig\Components\CourseCatalog::getCourses() return type     
+         has no value type specified in iterable type array.                    
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  72     Method App\Twig\Components\CourseCatalog::getSelectedCohortTitle()     
+         should return string but returns string|null.                          
+         🪪  return.type                                                        
+  77     Method App\Twig\Components\CourseCatalog::getCohorts() return type     
+         has no value type specified in iterable type array.                    
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/LessonItem.php                                         
+ ------ ----------------------------------------------------------------------- 
+  54     Property App\Twig\Components\LessonItem::$gamificationService is       
+         never read, only written.                                              
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------- 
+  Line   Twig/Components/NoteManager.php               
+ ------ ---------------------------------------------- 
+  52     Call to an undefined method                   
+         App\Repository\NoteRepository::findByUser().  
+         🪪  method.notFound                           
+ ------ ---------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/NotificationList.php                                   
+ ------ ----------------------------------------------------------------------- 
+  35     Negated boolean expression is always false.                            
+         🪪  booleanNot.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.                                                                     
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/SearchModal.php                                        
+ ------ ----------------------------------------------------------------------- 
+  25     Method App\Twig\Components\SearchModal::getResults() return type has   
+         no value type specified in iterable type array.                        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/Components/UserSkillsComponent.php                                
+ ------ ----------------------------------------------------------------------- 
+  38     Method App\Twig\Components\UserSkillsComponent::getSkills() has        
+         invalid return type App\Twig\Components\Collection.                    
+         🪪  class.notFound                                                     
+  38     Method App\Twig\Components\UserSkillsComponent::getSkills() return     
+         type has no value type specified in iterable type iterable.            
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  38     PHPDoc tag @return with type App\Twig\Components\Collection<int, App\  
+         Entity\Skill> is not subtype of native type iterable.                  
+         🪪  return.phpDocType                                                  
+  90     Negated boolean expression is always false.                            
+         🪪  booleanNot.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.                                                                     
+ ------ ----------------------------------------------------------------------- 
+
+ [ERROR] Found 326 errors                                                       
+
+make: *** [Makefile:224: phpstan] Error 1
