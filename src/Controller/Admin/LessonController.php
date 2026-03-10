@@ -105,6 +105,7 @@ class LessonController extends AbstractController
     {
         $token = $request->request->get('_token');
         if (is_string($token) && $this->isCsrfTokenValid('delete' . $lesson->getId(), $token)) {
+        if (is_string($token) && $this->isCsrfTokenValid('delete' . $lesson->getId(), $token)) {
             $entityManager->remove($lesson);
             $entityManager->flush();
 
