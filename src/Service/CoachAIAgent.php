@@ -25,6 +25,9 @@ class CoachAIAgent
         $this->client = new Client($this->apiKey);
     }
 
+    /**
+     * @return array<int, array{role: string, content: string}>
+     */
     public function getHistory(\App\Entity\User $user): array
     {
         return $this->cache->get('ai_coach_history_' . $user->getId(), function () {
@@ -32,6 +35,9 @@ class CoachAIAgent
         });
     }
 
+    /**
+     * @param array<int, array{role: string, content: string}> $history
+     */
     public function saveHistory(\App\Entity\User $user, array $history): void
     {
         $item = $this->cache->getItem('ai_coach_history_' . $user->getId());

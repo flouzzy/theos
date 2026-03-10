@@ -41,4 +41,19 @@ class CompletionCalculator
 
         return round(($completedLessons / $totalLessons) * 100, 2);
     }
+
+    public function calculateGlobalProgress(User $user): float
+    {
+        $courses = $user->getCourses();
+        if ($courses->isEmpty()) {
+            return 0;
+        }
+
+        $totalProgress = 0;
+        foreach ($courses as $course) {
+            $totalProgress += $this->calculateCompletionPercentage($course, $user);
+        }
+
+        return round($totalProgress / $courses->count(), 2);
+    }
 }

@@ -57,3 +57,10 @@
 * **Correction:** Increased PHP memory limit to 512M in Docker config. Updated `Makefile` to include database initialization in `tests` target. Added `APP_ENV=test` to `.env.test`. Fixed multiple PHPStan level 8 errors related to CSRF validation by using `$request->getPayload()->getString('_token')`.
 * **Rule:** Ensure test environments match production/dev capabilities (memory, extensions). Always use strict type methods like `getString()` for request parameters to satisfy PHPStan level 8.
 * **Testing:** All 157 tests now pass in the Docker environment using `make tests`.
+
+## 2026-03-10 - Security Hardening & Performance
+* **Feature:** Implemented 2FA (TOTP) with QR Code UI in the profile. Users can now enable/disable 2FA from their settings.
+* **Security:** Integrated `symfony/rate-limiter` for the API and login/registration routes. Added CSP headers allowing `https:` images for QR codes.
+* **Performance:** Optimized `CohortSession` by caching the selected cohort in a private property to avoid redundant database queries during a single request (N+1 fix).
+* **Mistake:** Automated PHPStan fixes on Entities broke Doctrine mappings (ManyToMany).
+* **Correction:** Reverted risky Entity changes and focused on fixing Controllers and Services which are safer and more critical for Level 8.

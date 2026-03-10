@@ -21,6 +21,9 @@ class AchievementsComponent
     ) {
     }
 
+    /**
+     * @return array<int, array{icon: string, title: string, date: \DateTimeInterface|null, reached: bool, description?: string|null}>
+     */
     public function getAchievements(): array
     {
         /** @var User $user */

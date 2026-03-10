@@ -35,6 +35,9 @@ final class AdminHeader
      * Cette méthode pourrait être étendue pour retourner des résultats de recherche
      * globale dans le futur (Command Palette style).
      */
+    /**
+     * @return array<mixed>
+     */
     public function getResults(): array
     {
         if (strlen($this->query) < 2) {

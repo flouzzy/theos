@@ -95,7 +95,7 @@ class AssignmentController extends AbstractController
             }
         }
 
-        $submission->setContent($content);
+        $submission->setContent((string)$content);
         $submission->setStatus('submitted');
 
         $file = $request->files->get('submission_file');
@@ -187,7 +187,7 @@ class AssignmentController extends AbstractController
         $review = new PeerReview();
         $review->setSubmission($submission);
         $review->setReviewer($user);
-        $review->setFeedback($feedback);
+        $review->setFeedback((string)$feedback);
 
         $totalScore = 0;
         $rubric = $assignment->getRubricEntity();
@@ -212,12 +212,14 @@ class AssignmentController extends AbstractController
         $this->gamificationService->addXp($user, 15, 'peer_review_completed');
 
         // Notify author
-        $this->notificationService->addNotification(
-            $submission->getUser(),
-            "📝 Ton travail a été corrigé",
-            sprintf("%s a corrigé ton travail pour l'exercice : %s", $user->getFullname(), $assignment->getTitle()),
-            $this->generateUrl('assignment_show', ['id' => $assignment->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
-        );
+        if ($submission->getUser() instanceof User) {
+            $this->notificationService->addNotification(
+                $submission->getUser(),
+                "📝 Ton travail a été corrigé",
+                sprintf("%s a corrigé ton travail pour l'exercice : %s", $user->getFullname(), $assignment->getTitle()),
+                $this->generateUrl('assignment_show', ['id' => $assignment->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
+        }
 
         $this->addFlash('success', 'Review submitted successfully!');
 

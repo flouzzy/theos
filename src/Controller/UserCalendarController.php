@@ -14,7 +14,7 @@ class UserCalendarController extends AbstractController
     public function index(Security $security): Response
     {
         $user = $security->getUser();
-        if (!$user) {
+        if (!$user instanceof User) {
             return $this->redirectToRoute('login');
         }
 

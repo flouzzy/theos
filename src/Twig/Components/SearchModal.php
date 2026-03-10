@@ -22,10 +22,13 @@ class SearchModal
     ) {
     }
 
+    /**
+     * @return array{courses: array<\App\Entity\Course>, lessons: array<\App\Entity\Lesson>}
+     */
     public function getResults(): array
     {
         if (strlen($this->query) < 2) {
-            return [];
+            return ['courses' => [], 'lessons' => []];
         }
 
         $courses = $this->courseRepository->createQueryBuilder('c')

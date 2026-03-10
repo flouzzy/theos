@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class CohortSession
 {
     private const SESSION_KEY = 'active_cohort_id';
+    private ?Cohort $cachedCohort = null;
 
     public function __construct(
         private RequestStack $requestStack,
@@ -21,6 +22,10 @@ class CohortSession
 
     public function getSelectedCohort(): ?Cohort
     {
+        if ($this->cachedCohort !== null) {
+            return $this->cachedCohort;
+        }
+
         $user = $this->security->getUser();
         if (!$user instanceof User) {
             return null;
@@ -33,6 +38,7 @@ class CohortSession
             $cohort = $this->cohortRepository->find($cohortId);
             // Vérifier que l'utilisateur appartient bien à cette cohorte
             if ($cohort && $user->getCohorts()->contains($cohort)) {
+                $this->cachedCohort = $cohort;
                 return $cohort;
             }
         }
@@ -43,6 +49,8 @@ class CohortSession
             $this->setSelectedCohort($cohort);
         }
 
+        $this->cachedCohort = $cohort;
+
         return $cohort;
     }
 
@@ -50,11 +58,13 @@ class CohortSession
     {
         $session = $this->requestStack->getSession();
         $session->set(self::SESSION_KEY, $cohort->getId());
+        $this->cachedCohort = $cohort;
     }
 
     public function clearSelectedCohort(): void
     {
         $session = $this->requestStack->getSession();
         $session->remove(self::SESSION_KEY);
+        $this->cachedCohort = null;
     }
 }

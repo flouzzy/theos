@@ -22,6 +22,9 @@ class CourseCatalog
     #[LiveProp(writable: true, url: true)]
     public ?int $cohortId = null;
 
+    /**
+     * @var array<int>
+     */
     #[LiveProp]
     public array $subscribedCourseIds = [];
 
@@ -43,6 +46,9 @@ class CourseCatalog
         }
     }
 
+    /**
+     * @return array<\App\Entity\Course>
+     */
     public function getCourses(): array
     {
         $isAdmin = $this->security->isGranted('ROLE_ADMIN');
@@ -74,6 +80,9 @@ class CourseCatalog
         return 'Toutes les promos';
     }
 
+    /**
+     * @return array<\App\Entity\Cohort>
+     */
     public function getCohorts(): array
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {

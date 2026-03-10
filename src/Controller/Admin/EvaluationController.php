@@ -36,7 +36,9 @@ final class EvaluationController extends AbstractController
             // Give XP based on the score over 20 as base. (e.g. 15/20 => 15 XP)
             // But scaled to whatever maxScore is. So: (score / maxScore) * 20 XP
             $xp = (int) (($evaluation->getScore() / $evaluation->getMaxScore()) * 20);
-            $gamificationService->addXp($evaluation->getUser(), max(5, $xp), 'Evaluation: ' . $evaluation->getTitle());
+            if ($evaluation->getUser() instanceof User) {
+                $gamificationService->addXp($evaluation->getUser(), max(5, $xp), 'Evaluation: ' . $evaluation->getTitle());
+            }
 
             $this->addFlash('success', 'Évaluation ajoutée avec succès.');
 

@@ -11,6 +11,7 @@ use App\Form\UserType;
 use App\Repository\CompletionRepository;
 use App\Service\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Totp\TotpAuthenticatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -126,7 +127,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('profile_index');
         }
 
-        $skillName = trim($request->request->get('name'));
+        $skillName = trim((string)$request->request->get('name'));
             if ($skillName) {
                 /** @var User|null $user */
                 $user = $this->getUser();
@@ -161,9 +162,9 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('profile_index');
         }
 
-        $title = trim($request->request->get('title'));
-        $description = trim($request->request->get('description'));
-        $url = trim($request->request->get('url'));
+        $title = trim((string)$request->request->get('title'));
+        $description = trim((string)$request->request->get('description'));
+        $url = trim((string)$request->request->get('url'));
 
         if ($url && (!filter_var($url, FILTER_VALIDATE_URL) || !in_array(parse_url($url, PHP_URL_SCHEME), ['http', 'https']))) {
             $this->addFlash('error', 'Invalid URL. Only http and https are allowed.');
@@ -185,6 +186,36 @@ class ProfileController extends AbstractController
             $entityManager->persist($project);
             $entityManager->flush();
             $this->addFlash('success', 'Project added to portfolio!');
+        }
+
+        return $this->redirectToRoute('profile_index');
+    }
+
+    #[Route('/2fa/enable', name: '2fa_enable')]
+    public function enable2fa(EntityManagerInterface $entityManager, TotpAuthenticatorInterface $totpAuthenticator): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$user->getGoogleAuthenticatorSecret()) {
+            $user->setGoogleAuthenticatorSecret($totpAuthenticator->generateSecret());
+            $entityManager->flush();
+        }
+
+        return $this->render('profile/2fa_enable.html.twig', [
+            'qrCodeContent' => $totpAuthenticator->getQRContent($user),
+        ]);
+    }
+
+    #[Route('/2fa/disable', name: '2fa_disable')]
+    public function disable2fa(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        if ($this->isCsrfTokenValid('disable_2fa', $request->getPayload()->getString('_token'))) {
+            $user->setGoogleAuthenticatorSecret(null);
+            $entityManager->flush();
+            $this->addFlash('success', 'Double authentification désactivée.');
         }
 
         return $this->redirectToRoute('profile_index');

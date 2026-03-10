@@ -28,7 +28,7 @@ class CourseController extends AbstractController
         $user = $this->getUser();
         $subscribedCourseIds = [];
         
-        if ($user) {
+        if ($user instanceof User) {
             $subscribedCourses = $user->getCourses();
             foreach ($subscribedCourses as $course) {
                 $subscribedCourseIds[] = $course->getId();

@@ -4,3 +4,8 @@ framework:
             policy: fixed_window
             limit: 5
             interval: '60 minutes'
+        
+        api:
+            policy: token_bucket
+            limit: 100
+            rate: { interval: '1 minute', amount: 10 }

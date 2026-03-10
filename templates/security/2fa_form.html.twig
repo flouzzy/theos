@@ -1,0 +1,70 @@
+{% extends 'landing.html.twig' %}
+
+{% block title %}
+    {{ 'Double authentification' | trans }}
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-100px)]">
+        <div class="w-full max-w-md">
+            {# Header #}
+            <div class="text-center mb-8">
+                <div class="inline-flex h-14 w-14 rounded-xl bg-primary items-center justify-center text-white font-bold text-2xl mb-4">
+                    🔐
+                </div>
+                <h1 class="text-3xl font-bold mb-2">{{ 'Vérification' | trans }}</h1>
+                <p class="text-muted-foreground">{{ 'Entrez le code généré par votre application' | trans }}</p>
+            </div>
+
+            {# Main Form Card #}
+            <div class="bg-white rounded-xl shadow-sm border border-border p-8">
+                {% if authenticationError %}
+                    <div class="mb-6 p-4 rounded-lg bg-destructive/10 text-destructive border border-destructive/20 text-sm">
+                        {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+                    </div>
+                {% endif %}
+
+                <form action="{{ checkPathUrl }}" method="post">
+                    <div class="mb-6">
+                        <label for="_auth_code" class="block text-sm font-medium mb-2">{{ 'Code de vérification' | trans }}</label>
+                        <input 
+                            type="text" 
+                            name="_auth_code" 
+                            id="_auth_code" 
+                            class="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-center text-2xl tracking-[0.5em] font-mono"
+                            autocomplete="one-time-code" 
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            placeholder="000000"
+                            required 
+                            autofocus
+                        >
+                    </div>
+
+                    {% if displayTrustedOption %}
+                        <div class="flex items-center mb-6">
+                            <input type="checkbox" name="_trusted" id="_trusted" class="h-4 w-4 rounded border-input text-primary focus:ring-primary">
+                            <label for="_trusted" class="ml-2 text-sm text-muted-foreground">
+                                {{ 'Faire confiance à cet appareil' | trans }}
+                            </label>
+                        </div>
+                    {% endif %}
+
+                    {% if isCsrfProtectionEnabled %}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrfTokenId) }}">
+                    {% endif %}
+
+                    <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 rounded-lg transition-colors">
+                        {{ 'Vérifier' | trans }}
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center text-sm">
+                    <a href="{{ path('app_logout') }}" class="text-muted-foreground hover:text-foreground underline">
+                        {{ 'Annuler et se déconnecter' | trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

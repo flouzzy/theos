@@ -13,8 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\RateLimiter\Annotation\RateLimiter;
 
 #[Route('/api', name: 'api_')]
+#[RateLimiter('api')]
 class ApiController extends AbstractController
 {
     #[Route('/login', name: 'login', methods: ['POST'])]
@@ -47,7 +50,7 @@ class ApiController extends AbstractController
         $token = $jwt->generate(
             ['typ' => 'JWT', 'alg' => 'HS256'],
             ['user_id' => $user->getId(), 'email' => $user->getEmail()],
-            $user->getJwtSecret()
+            (string) $user->getJwtSecret()
         );
 
         return new JsonResponse([
@@ -77,7 +80,7 @@ class ApiController extends AbstractController
         $payload = $jwt->getPayload($token);
         $user = $entityManager->getRepository(User::class)->find($payload['user_id']);
 
-        if (!$user || !$jwt->check($token, $user->getJwtSecret())) {
+        if (!$user || !$jwt->check($token, (string) $user->getJwtSecret())) {
             return new JsonResponse(['error' => 'Invalid token or expired'], Response::HTTP_UNAUTHORIZED);
         }
 

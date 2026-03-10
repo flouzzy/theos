@@ -44,13 +44,13 @@
 
 ### Sprint 1: The "10x" Foundation
 - [/] **Code Quality & Architecture**
-    - [/] Implement PHPStan at Level 8 (Configured, reduced errors to 262).
-    - [/] Increase test coverage to >80% (Added unit tests for `CourseCompletion`, `PaymentSetting`, and `DateTimeAble`).
-    - [ ] Performance Audit: Optimize Doctrine queries (N+1), Implement Redis caching, Configure AssetMapper.
-- [ ] **Security Hardening**
-    - [ ] Integrate `scheb/2fa-bundle` for 2FA.
-    - [ ] Configure `symfony/rate-limiter` on login/registration.
-    - [ ] Implement strict Content Security Policy (CSP) headers.
+    - [/] Implement PHPStan at Level 8 (Reduced errors to ~150, fixed all critical argument/method types).
+    - [/] Increase test coverage to >80% (Added unit tests for key entities).
+    - [/] Performance Audit: Optimized Doctrine queries (N+1 in CohortSession), Verified Redis caching, Configured AssetMapper.
+- [x] **Security Hardening**
+    - [x] Integrate `scheb/2fa-bundle` for 2FA (TOTP + QR Code UI).
+    - [x] Configure `symfony/rate-limiter` on login/registration/API.
+    - [x] Implement strict Content Security Policy (CSP) headers.
 
 ### Sprint 2: The Engagement Engine
 - [x] **Advanced Gamification**

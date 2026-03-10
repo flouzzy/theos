@@ -17,6 +17,9 @@ class CoachChat
     #[LiveProp(writable: true)]
     public string $newMessage = '';
 
+    /**
+     * @var array<array{role: string, content: string}>
+     */
     #[LiveProp]
     public array $history = [];
 
