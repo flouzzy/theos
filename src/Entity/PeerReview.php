@@ -33,6 +33,14 @@ class PeerReview
     #[ORM\JoinColumn(nullable: false)]
     private ?User $reviewer = null;
 
+    #[ORM\OneToMany(mappedBy: 'peerReview', targetEntity: PeerReviewScore::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $scores;
+
+    public function __construct()
+    {
+        $this->scores = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -82,6 +90,36 @@ class PeerReview
     public function setReviewer(?User $reviewer): static
     {
         $this->reviewer = $reviewer;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PeerReviewScore>
+     */
+    public function getScores(): Collection
+    {
+        return $this->scores;
+    }
+
+    public function addScore(PeerReviewScore $score): static
+    {
+        if (!$this->scores->contains($score)) {
+            $this->scores->add($score);
+            $score->setPeerReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScore(PeerReviewScore $score): static
+    {
+        if ($this->scores->removeElement($score)) {
+            // set the owning side to null (unless already changed)
+            if ($score->getPeerReview() === $this) {
+                $score->setPeerReview(null);
+            }
+        }
 
         return $this;
     }

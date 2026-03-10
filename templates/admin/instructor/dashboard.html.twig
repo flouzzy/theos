@@ -1,0 +1,74 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Tableau de Bord Instructeur{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Intelligence & Analytics</h1>
+    </div>
+
+    <div class="row">
+        {% for data in cohortData %}
+        <div class="col-xl-6 col-md-12 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center mb-3">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Cohorte: {{ data.cohort.title }}
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ data.atRiskCount }} Étudiants à Risque / {{ data.totalStudents }} total
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+
+                    {% if data.atRiskStudents|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Étudiant</th>
+                                    <th>Score de Risque</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data.atRiskStudents %}
+                                <tr>
+                                    <td>{{ item.user.fullname }}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ item.riskScore }}%" aria-valuenow="{{ item.riskScore }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-{{ item.status == 'Critique' ? 'danger' : 'warning' }}">
+                                            {{ item.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success">
+                        Aucun étudiant à risque détecté dans cette cohorte.
+                    </div>
+                    {% endif %}
+
+                    <a href="{{ path('admin_instructor_cohort_detail', {id: data.cohort.id}) }}" class="btn btn-primary btn-sm mt-3">
+                        Détails de la cohorte
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -43,8 +43,8 @@
 ## Pending Roadmap Tasks (from SPRINTS.md)
 
 ### Sprint 1: The "10x" Foundation
-- [ ] **Code Quality & Architecture**
-    - [ ] Implement PHPStan at Level 8.
+- [/] **Code Quality & Architecture**
+    - [/] Implement PHPStan at Level 8 (Configured, 257 errors to fix).
     - [ ] Increase test coverage to >80% (Add unit tests for `CourseCompletion` and `PaymentSetting`).
     - [ ] Performance Audit: Optimize Doctrine queries (N+1), Implement Redis caching, Configure AssetMapper.
 - [ ] **Security Hardening**
@@ -53,12 +53,12 @@
     - [ ] Implement strict Content Security Policy (CSP) headers.
 
 ### Sprint 2: The Engagement Engine
-- [ ] **Advanced Gamification**
-    - [ ] Implement Dynamic Badges with complex criteria.
-- [ ] **Social Learning 2.0**
-    - [ ] Enhanced Profiles: Add Skills and Portfolio sections.
-    - [ ] Study Groups: Auto-create cohorts and implement real-time group chat (`symfony/mercure`).
-    - [ ] Peer Review System: Structured rubric for student assignments.
+- [x] **Advanced Gamification**
+    - [x] Implement Dynamic Badges with complex criteria.
+- [x] **Social Learning 2.0**
+    - [x] Enhanced Profiles: Add Skills and Portfolio sections.
+    - [x] Study Groups: Auto-create cohorts and implement real-time group chat (`symfony/mercure`).
+    - [x] Peer Review System: Structured rubric for student assignments.
 
 ### Sprint 3: The Intelligence Layer
 - [ ] **AI-Powered Personalization**

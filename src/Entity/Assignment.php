@@ -32,6 +32,9 @@ class Assignment
     #[ORM\OneToMany(mappedBy: 'assignment', targetEntity: AssignmentSubmission::class)]
     private Collection $submissions;
 
+    #[ORM\OneToOne(inversedBy: 'assignment', targetEntity: Rubric::class, cascade: ['persist', 'remove'])]
+    private ?Rubric $rubricEntity = null;
+
     public function __construct()
     {
         $this->submissions = new ArrayCollection();

@@ -17,6 +17,7 @@ use Brevo\Client\Model\CreateContact;
 use Brevo\Client\Model\RemoveContactFromList;
 use App\Entity\User;
 use App\Entity\Setting;
+use App\Repository\SettingRepository;
 
 class BrevoApiTest extends TestCase
 {

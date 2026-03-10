@@ -34,4 +34,17 @@ class LessonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findEfficacyStatsByModule(\App\Entity\Module $module): array
+    {
+        return $this->createQueryBuilder('l')
+            ->select('l.id', 'l.title', 'AVG(c.score) as avgScore', 'COUNT(c.id) as completionCount')
+            ->leftJoin('l.completions', 'c')
+            ->where('l.module = :module')
+            ->andWhere('c.completed = true OR c.id IS NULL')
+            ->setParameter('module', $module)
+            ->groupBy('l.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

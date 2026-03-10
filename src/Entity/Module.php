@@ -49,11 +49,15 @@ class Module
     #[ORM\OneToMany(mappedBy: 'module', targetEntity: ModuleCompletion::class, orphanRemoval: true)]
     private Collection $completions;
 
+    #[ORM\OneToMany(mappedBy: 'module', targetEntity: Quiz::class)]
+    private Collection $quizzes;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
         $this->lessons = new ArrayCollection();
         $this->completions = new ArrayCollection();
+        $this->quizzes = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -241,6 +245,36 @@ class Module
             // set the owning side to null (unless already changed)
             if ($completion->getModule() === $this) {
                 $completion->setModule(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Quiz>
+     */
+    public function getQuizzes(): Collection
+    {
+        return $this->quizzes;
+    }
+
+    public function addQuiz(Quiz $quiz): static
+    {
+        if (!$this->quizzes->contains($quiz)) {
+            $this->quizzes->add($quiz);
+            $quiz->setModule($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuiz(Quiz $quiz): static
+    {
+        if ($this->quizzes->removeElement($quiz)) {
+            // set the owning side to null (unless already changed)
+            if ($quiz->getModule() === $this) {
+                $quiz->setModule(null);
             }
         }
 

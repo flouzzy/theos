@@ -129,4 +129,20 @@ class CompletionRepository extends ServiceEntityRepository
 
         return $completion?->getLesson();
     }
+
+    public function countByUserAndCohort(User $user, \App\Entity\Cohort $cohort): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->join('c.lesson', 'l')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'co')
+            ->where('c.user = :user')
+            ->andWhere('c.completed = true')
+            ->andWhere('co IN (:courses)')
+            ->setParameter('user', $user)
+            ->setParameter('courses', $cohort->getCourses())
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

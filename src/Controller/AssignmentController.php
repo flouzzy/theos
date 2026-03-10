@@ -171,8 +171,24 @@ class AssignmentController extends AbstractController
         $review = new PeerReview();
         $review->setSubmission($submission);
         $review->setReviewer($user);
-        $review->setScore($score);
         $review->setFeedback($feedback);
+
+        $totalScore = 0;
+        $rubric = $assignment->getRubricEntity();
+        if ($rubric) {
+            foreach ($rubric->getCriteria() as $criterion) {
+                $scoreValue = (int) $request->request->get('score_' . $criterion->getId());
+                $peerScore = new PeerReviewScore();
+                $peerScore->setCriterion($criterion);
+                $peerScore->setScore($scoreValue);
+                $review->addScore($peerScore);
+                $totalScore += $scoreValue;
+            }
+        } else {
+            $totalScore = (int) $request->request->get('score');
+        }
+
+        $review->setScore($totalScore);
 
         $this->entityManager->persist($review);
         $this->entityManager->flush();

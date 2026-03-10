@@ -36,10 +36,26 @@
             <form action="{{ path('assignment_submit_review', {id: assignment.id, submissionId: submission.id}) }}" method="POST" class="space-y-6">
                 <input type="hidden" name="_token" value="{{ csrf_token('submit_review' ~ submission.id) }}">
 
-                <div>
-                    <label for="score" class="block text-sm font-medium mb-2">{{ 'Note (1-10)' | trans }}</label>
-                    <input type="number" name="score" id="score" min="1" max="10" required class="w-24 rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary">
-                </div>
+                {% if assignment.rubricEntity %}
+                    <div class="space-y-4">
+                        {% for criterion in assignment.rubricEntity.criteria %}
+                            <div>
+                                <label for="score_{{ criterion.id }}" class="block text-sm font-medium mb-1">
+                                    {{ criterion.label }} ({{ 'Max' | trans }} {{ criterion.maxPoints }})
+                                </label>
+                                {% if criterion.description %}
+                                    <p class="text-xs text-muted-foreground mb-2">{{ criterion.description }}</p>
+                                {% endif %}
+                                <input type="number" name="score_{{ criterion.id }}" id="score_{{ criterion.id }}" min="0" max="{{ criterion.maxPoints }}" required class="w-24 rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div>
+                        <label for="score" class="block text-sm font-medium mb-2">{{ 'Note (1-10)' | trans }}</label>
+                        <input type="number" name="score" id="score" min="1" max="10" required class="w-24 rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                {% endif %}
 
                 <div>
                     <label for="feedback" class="block text-sm font-medium mb-2">{{ 'Commentaires constructifs' | trans }}</label>

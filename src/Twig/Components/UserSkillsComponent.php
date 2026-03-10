@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Repository\SkillRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
@@ -17,6 +18,9 @@ use Symfony\UX\LiveComponent\DefaultActionTrait;
 class UserSkillsComponent
 {
     use DefaultActionTrait;
+
+    #[LiveProp]
+    public ?User $user = null;
 
     #[LiveProp(writable: true)]
     public string $newSkillName = '';
@@ -33,22 +37,20 @@ class UserSkillsComponent
      */
     public function getSkills(): iterable
     {
-        /** @var User $user */
-        $user = $this->security->getUser();
-        return $user ? $user->getSkills() : [];
+        return $this->user ? $this->user->getSkills() : [];
     }
 
     #[LiveAction]
     public function addSkill(): void
     {
+        $this->denyAccessUnlessOwner();
+
         $name = trim($this->newSkillName);
         if (!$name) {
             return;
         }
 
-        /** @var User $user */
-        $user = $this->security->getUser();
-        if (!$user) {
+        if (!$this->user) {
             return;
         }
 
@@ -59,8 +61,8 @@ class UserSkillsComponent
             $this->entityManager->persist($skill);
         }
 
-        if (!$user->getSkills()->contains($skill)) {
-            $user->addSkill($skill);
+        if (!$this->user->getSkills()->contains($skill)) {
+            $this->user->addSkill($skill);
             $this->entityManager->flush();
         }
 
@@ -70,13 +72,23 @@ class UserSkillsComponent
     #[LiveAction]
     public function removeSkill(#[LiveArg] int $skillId): void
     {
-        /** @var User $user */
-        $user = $this->security->getUser();
+        $this->denyAccessUnlessOwner();
+
         $skill = $this->skillRepository->find($skillId);
 
-        if ($user && $skill && $user->getSkills()->contains($skill)) {
-            $user->removeSkill($skill);
+        if ($this->user && $skill && $this->user->getSkills()->contains($skill)) {
+            $this->user->removeSkill($skill);
             $this->entityManager->flush();
+        }
+    }
+
+    private function denyAccessUnlessOwner(): void
+    {
+        /** @var User $currentUser */
+        $currentUser = $this->security->getUser();
+
+        if (!$currentUser || !$this->user || $currentUser->getId() !== $this->user->getId()) {
+            throw new AccessDeniedException('You are not the owner of this profile.');
         }
     }
 }

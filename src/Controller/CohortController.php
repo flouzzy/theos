@@ -118,4 +118,11 @@ class CohortController extends AbstractController
 
         return $this->redirectToRoute('cohort_index');
     }
+    #[Route('/{id}/chat', name: 'chat')]
+    public function chat(Cohort $cohort): Response
+    {
+        return $this->render('cohort/chat.html.twig', [
+            'cohort' => $cohort,
+        ]);
+    }
 }

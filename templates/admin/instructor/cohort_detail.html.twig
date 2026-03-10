@@ -1,0 +1,79 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Détails Cohorte - {{ cohort.title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <div class="mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Détails de l'Engagement : {{ cohort.title }}</h1>
+        <p class="text-muted">Analyse détaillée de tous les étudiants basés sur l'intelligence artificielle.</p>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Liste des Étudiants (Triée par Risque)</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nom & Prénom</th>
+                            <th>Dernière Connexion</th>
+                            <th>Score de Risque</th>
+                            <th>Niveau de Risque</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in atRisk %}
+                        <tr>
+                            <td>{{ item.user.fullname }}</td>
+                            <td>{{ item.user.lastConnectionAt ? item.user.lastConnectionAt|date('d/m/Y H:i') : 'Jamais' }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <span class="mr-2">{{ item.riskScore }}%</span>
+                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                        <div class="progress-bar {{ item.riskScore > 70 ? 'bg-danger' : (item.riskScore > 40 ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ item.riskScore }}%" aria-valuenow="{{ item.riskScore }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ item.riskScore > 70 ? 'danger' : (item.riskScore > 40 ? 'warning' : 'success') }}">
+                                    {{ item.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Heatmap d'Efficacité du Contenu (Moyenne des Quiz)</h6>
+        </div>
+        <div class="card-body">
+            {% for moduleTitle, lessons in efficacyData %}
+                <h5 class="mt-4">{{ moduleTitle }}</h5>
+                <div class="row">
+                    {% for lesson in lessons %}
+                        <div class="col-md-3 mb-3">
+                            <div class="p-3 text-center border rounded {{ lesson.avgScore is null ? 'bg-light' : (lesson.avgScore < 10 ? 'bg-danger text-white' : (lesson.avgScore < 14 ? 'bg-warning' : 'bg-success text-white')) }}">
+                                <div class="small font-weight-bold">{{ lesson.title }}</div>
+                                <div class="h4 mb-0">
+                                    {{ lesson.avgScore is not null ? (lesson.avgScore|round(1) ~ '/20') : 'N/A' }}
+                                </div>
+                                <div class="small">
+                                    {{ lesson.completionCount }} complétions shadow
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@
         {% for skill in this.skills %}
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300 group">
                 {{ skill.name }}
+                {% if app.user and app.user.id == this.user.id %}
                 <button 
                     type="button"
                     data-action="live#action"
@@ -14,12 +15,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
+                {% endif %}
             </span>
         {% else %}
             <p class="text-sm text-muted-foreground">{{ 'Aucune compétence listée.' | trans }}</p>
         {% endfor %}
     </div>
 
+    {% if app.user and app.user.id == this.user.id %}
     <div class="mt-4">
         <form data-action="live#action:prevent" data-live-action-param="addSkill" class="flex gap-2">
             <input 
@@ -37,4 +40,5 @@
             </button>
         </form>
     </div>
+    {% endif %}
 </div>

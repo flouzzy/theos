@@ -58,6 +58,9 @@ class Lesson
     #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
+    #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Quiz::class)]
+    private Collection $quizzes;
+
     #[ORM\Column(nullable: true)]
     private ?int $duration = null;
 
@@ -73,6 +76,12 @@ class Lesson
     #[ORM\OneToOne(mappedBy: 'lesson', cascade: ['persist', 'remove'])]
     private ?Assignment $assignment = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $embeddings = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $transcript = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -80,6 +89,7 @@ class Lesson
         $this->notes = new ArrayCollection();
         $this->completions = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->quizzes = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -355,6 +365,60 @@ class Lesson
         }
 
         $this->assignment = $assignment;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Quiz>
+     */
+    public function getQuizzes(): Collection
+    {
+        return $this->quizzes;
+    }
+
+    public function addQuiz(Quiz $quiz): static
+    {
+        if (!$this->quizzes->contains($quiz)) {
+            $this->quizzes->add($quiz);
+            $quiz->setLesson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuiz(Quiz $quiz): static
+    {
+        if ($this->quizzes->removeElement($quiz)) {
+            // set the owning side to null (unless already changed)
+            if ($quiz->getLesson() === $this) {
+                $quiz->setLesson(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEmbeddings(): ?array
+    {
+        return $this->embeddings;
+    }
+
+    public function setEmbeddings(?array $embeddings): static
+    {
+        $this->embeddings = $embeddings;
+
+        return $this;
+    }
+
+    public function getTranscript(): ?string
+    {
+        return $this->transcript;
+    }
+
+    public function setTranscript(?string $transcript): static
+    {
+        $this->transcript = $transcript;
 
         return $this;
     }

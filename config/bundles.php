@@ -25,4 +25,5 @@ return [
     Symfony\UX\Icons\UXIconsBundle::class => ['all' => true],
     Endroid\QrCodeBundle\EndroidQrCodeBundle::class => ['all' => true],
     Scheb\TwoFactorBundle\SchebTwoFactorBundle::class => ['all' => true],
+    Symfony\Bundle\MercureBundle\MercureBundle::class => ['all' => true],
 ];

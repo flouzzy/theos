@@ -17,14 +17,15 @@
             <div class="flex flex-col sm:flex-row items-center sm:items-end -mt-12 sm:-mt-16 mb-6 gap-4">
                 {# Avatar #}
                 <div class="relative group">
-                    <twig:UserAvatar :user="app.user" class="w-24 h-24 sm:w-32 sm:h-32 shadow-md border-4 border-card" wrapperClass="" />
+                    <twig:UserAvatar :user="user" class="w-24 h-24 sm:w-32 sm:h-32 shadow-md border-4 border-card" wrapperClass="" />
                 </div>
 
                 <div class="flex-1 text-center sm:text-left mb-2 pt-2">
-                    <h2 class="text-2xl font-bold">{{ app.user.fullname }}</h2>
-                    <p class="text-muted-foreground">Promo {{ app.user.cohorts.first.title|default('2024') }}</p>
+                    <h2 class="text-2xl font-bold">{{ user.fullname }}</h2>
+                    <p class="text-muted-foreground">Promo {{ user.cohorts.first.title|default('2024') }}</p>
                 </div>
 
+                {% if app.user and app.user.id == user.id %}
                 <div class="mb-4 pt-10 sm:pt-0">
                     <a href="{{ path('profile_edit') }}" class="btn btn-outline gap-2">
                         <svg class="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,6 +34,7 @@
                         {{ 'Modifier' | trans }}
                     </a>
                 </div>
+                {% endif %}
             </div>
 
             {# User Info Grid #}
@@ -44,7 +46,7 @@
                         </svg>
                         {{ 'Nom complet' | trans }}
                      </label>
-                     <p class="font-medium text-foreground">{{ app.user.fullname }}</p>
+                     <p class="font-medium text-foreground">{{ user.fullname }}</p>
                 </div>
                 <div>
                      <label class="flex items-center gap-2 text-xs text-muted-foreground uppercase font-semibold mb-2">
@@ -53,7 +55,7 @@
                         </svg>
                         {{ 'Email' | trans }}
                      </label>
-                     <p class="font-medium text-foreground">{{ app.user.email }}</p>
+                     <p class="font-medium text-foreground">{{ user.email }}</p>
                 </div>
             </div>
         </div>
@@ -101,7 +103,7 @@
             {{ 'Compétences' | trans }}
         </h3>
         <div class="bg-card border border-border rounded-xl p-6">
-            <twig:UserSkillsComponent />
+            <twig:UserSkillsComponent :user="user" />
         </div>
     </div>
 
@@ -115,7 +117,7 @@
         </h3>
         <div class="bg-card border border-border rounded-xl p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                 {% for project in app.user.portfolioProjects %}
+                 {% for project in user.portfolioProjects %}
                     <div class="border border-border rounded-lg overflow-hidden relative group">
                         {% if project.image %}
                              <img src="{{ asset(project.image) }}" alt="{{ project.title }}" class="w-full h-32 object-cover">
@@ -135,6 +137,7 @@
                  {% endfor %}
             </div>
 
+             {% if app.user and app.user.id == user.id %}
             <details>
                 <summary class="text-sm text-primary cursor-pointer hover:underline list-none font-medium">
                     + {{ 'Ajouter un projet' | trans }}
@@ -156,6 +159,7 @@
                     <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm w-full">{{ 'Ajouter au portfolio' | trans }}</button>
                 </form>
             </details>
+            {% endif %}
         </div>
     </div>
 

@@ -213,6 +213,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'user')]
     private Collection $cohort;
 
+    /**
+     * @var Collection<int, ChatMessage>
+     */
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: ChatMessage::class, orphanRemoval: true)]
+    private Collection $chatMessages;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -233,6 +239,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->assignmentSubmissions = new ArrayCollection();
         $this->peerReviews = new ArrayCollection();
         $this->cohort = new ArrayCollection();
+        $this->chatMessages = new ArrayCollection();
     }
 
     public function __toString()
@@ -1131,6 +1138,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
             // set the owning side to null (unless already changed)
             if ($evaluation->getUser() === $this) {
                 $evaluation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ChatMessage>
+     */
+    public function getChatMessages(): Collection
+    {
+        return $this->chatMessages;
+    }
+
+    public function addChatMessage(ChatMessage $chatMessage): static
+    {
+        if (!$this->chatMessages->contains($chatMessage)) {
+            $this->chatMessages->add($chatMessage);
+            $chatMessage->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChatMessage(ChatMessage $chatMessage): static
+    {
+        if ($this->chatMessages->removeElement($chatMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($chatMessage->getAuthor() === $this) {
+                $chatMessage->setAuthor(null);
             }
         }
 

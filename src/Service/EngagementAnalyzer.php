@@ -1,0 +1,98 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Service;
+
+use App\Entity\User;
+use App\Entity\Cohort;
+use App\Repository\CompletionRepository;
+use App\Repository\EvaluationRepository;
+use Doctrine\ORM\EntityManagerInterface;
+
+class EngagementAnalyzer
+{
+    private const INACTIVITY_THRESHOLD_DAYS = 7;
+    private const SCORE_THRESHOLD = 10.0;
+
+    public function __construct(
+        private CompletionRepository $completionRepository,
+        private EvaluationRepository $evaluationRepository,
+        private EntityManagerInterface $entityManager
+    ) {}
+
+    /**
+     * Analyse l'engagement d'un utilisateur et retourne un score (0-100).
+     * Plus le score est élevé, plus l'utilisateur est "à risque".
+     */
+    public function calculateRiskScore(User $user, Cohort $cohort): int
+    {
+        $riskScore = 0;
+
+        // 1. Inactivité (40% du score)
+        $lastConnection = $user->getLastConnectionAt();
+        if ($lastConnection) {
+            $daysSinceLastConnection = (new \DateTimeImmutable())->diff($lastConnection)->days;
+            if ($daysSinceLastConnection >= self::INACTIVITY_THRESHOLD_DAYS) {
+                $riskScore += min(40, ($daysSinceLastConnection - self::INACTIVITY_THRESHOLD_DAYS) * 5 + 20);
+            }
+        } else {
+            $riskScore += 40; // Jamais connecté
+        }
+
+        // 2. Performance académique (30% du score)
+        $evaluations = $this->evaluationRepository->findBy(['user' => $user, 'cohort' => $cohort], ['createdAt' => 'DESC'], 5);
+        if (count($evaluations) > 0) {
+            $avgScore = array_sum(array_map(fn($e) => $e->getScore(), $evaluations)) / count($evaluations);
+            if ($avgScore < self::SCORE_THRESHOLD) {
+                $riskScore += 30;
+            } elseif ($avgScore < 14) {
+                $riskScore += 15;
+            }
+        }
+
+        // 3. Progression (30% du score)
+        $completionsCount = $this->completionRepository->countByUserAndCohort($user, $cohort);
+        // On suppose qu'un cours moyen a 20 leçons (à affiner si on a le total réel)
+        $estimatedTotalLessons = 20; 
+        $completionRate = ($completionsCount / $estimatedTotalLessons) * 100;
+        
+        if ($completionRate < 20) {
+            $riskScore += 30;
+        } elseif ($completionRate < 50) {
+            $riskScore += 15;
+        }
+
+        return min(100, $riskScore);
+    }
+
+    /**
+     * Retourne la liste des étudiants à risque pour un cohort donné.
+     */
+    public function getAtRiskStudents(Cohort $cohort, int $threshold = 50): array
+    {
+        $atRisk = [];
+        foreach ($cohort->getUsers() as $user) {
+            $score = $this->calculateRiskScore($user, $cohort);
+            if ($score >= $threshold) {
+                $atRisk[] = [
+                    'user' => $user,
+                    'riskScore' => $score,
+                    'status' => $this->getRiskStatus($score)
+                ];
+            }
+        }
+
+        usort($atRisk, fn($a, $b) => $b['riskScore'] <=> $a['riskScore']);
+
+        return $atRisk;
+    }
+
+    private function getRiskStatus(int $score): string
+    {
+        if ($score >= 80) return 'Critique';
+        if ($score >= 50) return 'Élevé';
+        if ($score >= 30) return 'Modéré';
+        return 'Faible';
+    }
+}

@@ -45,6 +45,7 @@ class ProfileController extends AbstractController
         $learningHours = floor($totalMinutes / 60);
 
         return $this->render('profile/show.html.twig', [
+            'user' => $user,
             'stats' => [
                 'enrolled' => $coursesEnrolled->count(),
                 'completed' => $completedCoursesCount,
