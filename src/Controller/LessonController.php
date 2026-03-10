@@ -62,13 +62,32 @@ class LessonController extends AbstractController
 
         $completedLessonIdsByCurrentUser = $this->completionRepository->findCompletedLessonIdsByCourse($user, $course);
 
+        $nextLesson = $this->getNextLesson($module, $lesson);
+        $prevLesson = $this->getPrevLesson($module, $lesson);
+
         return $this->render('lesson/show.html.twig', [
             'course' => $course,
             'module' => $module,
             'currentLesson' => $lesson,
             'isSubscribed' => true,
             'completedLessonIds' => $completedLessonIdsByCurrentUser,
+            'nextLesson' => $nextLesson,
+            'prevLesson' => $prevLesson
         ]);
+    }
+
+    private function getPrevLesson(Module $module, Lesson $lesson): ?Lesson
+    {
+        $sortedArray = $module->getSortedLessons();
+        $sortedLessons = new ArrayCollection($sortedArray);
+
+        $currentIndex = $sortedLessons->indexOf($lesson);
+
+        if ($currentIndex !== false && $currentIndex > 0) {
+            return $sortedLessons->get((int) $currentIndex - 1);
+        }
+
+        return null;
     }
 
     /**

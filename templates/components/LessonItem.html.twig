@@ -43,9 +43,19 @@
             </div>
         </div>
 
-        {# Arrow #}
+        {# Actions #}
         <div class="flex items-center gap-4 text-xs text-muted-foreground">
             {% if not this.isLocked %}
+                <button
+                    data-action="live#action"
+                    data-live-action-param="toggleNeedsReview"
+                    class="p-1.5 rounded-lg transition-colors {{ this.needsReview ? 'text-yellow-500 bg-yellow-500/10' : 'text-muted-foreground/40 hover:bg-muted' }}"
+                    onclick="event.preventDefault(); event.stopPropagation();"
+                    title="{{ 'Révision nécessaire' | trans }}"
+                >
+                    <twig:ux:icon name="lucide:bookmark" class="w-4 h-4 {{ this.needsReview ? 'fill-current' : '' }}" />
+                </button>
+
                 <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>

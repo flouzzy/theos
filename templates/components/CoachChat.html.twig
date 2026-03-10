@@ -1,0 +1,83 @@
+<div {{ attributes }} x-data="{ isOpen: false }" class="fixed bottom-6 right-6 z-[100]">
+    {# Floating Button #}
+    <button @click="isOpen = !isOpen" 
+            class="h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all focus:outline-none focus:ring-4 focus:ring-primary/30 group relative"
+            :class="isOpen ? 'rotate-90' : ''"
+    >
+        <template x-if="!isOpen">
+            <twig:ux:icon name="lucide:sparkles" class="w-7 h-7" />
+        </template>
+        <template x-if="isOpen">
+            <twig:ux:icon name="lucide:x" class="w-7 h-7" />
+        </template>
+        
+        {# Pulse effect #}
+        <span class="absolute inset-0 rounded-full bg-primary animate-ping opacity-20 group-hover:hidden"></span>
+    </button>
+
+    {# Chat Window #}
+    <div x-show="isOpen" 
+         x-transition:enter="transition ease-out duration-300 transform"
+         x-transition:enter-start="translate-y-10 opacity-0 scale-95"
+         x-transition:enter-end="translate-y-0 opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200 transform"
+         x-transition:leave-start="translate-y-0 opacity-100 scale-100"
+         x-transition:leave-end="translate-y-10 opacity-0 scale-95"
+         class="absolute bottom-20 right-0 w-[calc(100vw-3rem)] sm:w-96 h-[500px] max-h-[70vh] bg-background border border-border shadow-2xl rounded-3xl overflow-hidden flex flex-col"
+         style="display: none;"
+    >
+        {# Header #}
+        <div class="p-4 bg-primary text-primary-foreground flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
+                <twig:ux:icon name="lucide:bot" class="w-6 h-6" />
+            </div>
+            <div>
+                <h3 class="font-bold text-sm leading-none">{{ 'Coach IA' | trans }}</h3>
+                <p class="text-[10px] opacity-80 mt-1 uppercase tracking-widest font-bold">{{ 'En ligne' | trans }}</p>
+            </div>
+        </div>
+
+        {# Messages #}
+        <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/10" id="coach-messages" x-ref="messageContainer" x-init="$watch('history', () => $nextTick(() => $refs.messageContainer.scrollTop = $refs.messageContainer.scrollHeight))">
+            {% if history is empty %}
+                <div class="text-center py-10 px-6">
+                    <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <twig:ux:icon name="lucide:message-circle" class="w-8 h-8" />
+                    </div>
+                    <p class="text-sm font-medium text-foreground">{{ 'Bonjour ! Je suis votre coach théologique. Comment puis-je vous aider aujourd\\'hui ?' | trans }}</p>
+                </div>
+            {% endif %}
+
+            {% for message in history %}
+                <div class="flex {{ message.role == 'user' ? 'justify-end' : 'justify-start' }}">
+                    <div class="max-w-[85%] p-3 rounded-2xl text-sm {{ message.role == 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm' : 'bg-card border border-border rounded-tl-sm' }}">
+                        {{ message.content|default('')|sanitize_html('default') }}
+                    </div>
+                </div>
+            {% endfor %}
+
+            {# Loading state #}
+            <div data-loading="addClass(flex); removeClass(hidden)" class="hidden justify-start">
+                <div class="bg-card border border-border p-3 rounded-2xl rounded-tl-sm flex gap-1">
+                    <span class="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </div>
+            </div>
+        </div>
+
+        {# Input #}
+        <div class="p-4 border-t border-border bg-card">
+            <form data-action="live#action" data-live-action-param="sendMessage" class="relative">
+                <input type="text" 
+                       data-model="newMessage"
+                       class="w-full bg-muted/50 border-none rounded-2xl pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                       placeholder="{{ 'Posez votre question...' | trans }}"
+                >
+                <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:scale-110 transition-transform">
+                    <twig:ux:icon name="lucide:send-horizontal" class="w-5 h-5" />
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

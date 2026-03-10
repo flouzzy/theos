@@ -3,7 +3,7 @@
 {% block title %}{{ currentLesson.title }}{% endblock %}
 
 {% block content %}
-<div class="flex h-[calc(100vh-64px)] overflow-hidden bg-background">
+<div class="flex h-[calc(100vh-64px)] overflow-hidden bg-background" x-data="{ showNotes: false }">
     
     {# 1. Left Sidebar (Syllabus) #}
     <aside class="w-80 flex-shrink-0 border-r border-border bg-muted/30 overflow-y-auto hidden lg:block">
@@ -16,37 +16,43 @@
 
         <div class="space-y-1 px-3 pb-6">
             {% for mod in course.modules %}
-                <div class="space-y-1">
-                    <div class="px-3 py-2 font-bold text-sm text-foreground/80 uppercase tracking-wider">
-                        {{ mod.title }}
-                    </div>
+                {% set isModuleCurrent = (currentLesson.module.id == mod.id) %}
+                <div class="space-y-1" x-data="{ expanded: {{ isModuleCurrent ? 'true' : 'false' }} }">
+                    <button @click="expanded = !expanded" class="w-full flex items-center justify-between px-3 py-2 font-bold text-sm text-foreground/80 uppercase tracking-wider hover:bg-muted/50 rounded-lg transition-colors">
+                        <span>{{ mod.title }}</span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
                     
-                    {% for less in mod.lessons %}
-                        {% set isCurrent = (less.id == currentLesson.id) %}
-                        {% set isCompleted = less.id in completedLessonIds %}
-                        
-                        <a href="{{ path('lesson_show', {courseSlug: course.slug, moduleSlug: mod.slug, lessonId: less.id}) }}" 
-                           class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors {{ isCurrent ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
+                    <div x-show="expanded" x-collapse>
+                        {% for less in mod.lessons %}
+                            {% set isCurrent = (less.id == currentLesson.id) %}
+                            {% set isCompleted = less.id in completedLessonIds %}
                             
-                            <div class="flex-shrink-0">
-                                {% if isCompleted %}
-                                    <div class="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-                                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                {% elseif isCurrent %}
-                                     <div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
-                                         <div class="w-2 h-2 rounded-full bg-primary"></div>
-                                     </div>
-                                {% else %}
-                                    <div class="w-5 h-5 rounded-full border-2 border-muted-foreground/30"></div>
-                                {% endif %}
-                            </div>
-                            
-                            <span class="line-clamp-1">{{ less.title }}</span>
-                        </a>
-                    {% endfor %}
+                            <a href="{{ path('lesson_show', {courseSlug: course.slug, moduleSlug: mod.slug, lessonId: less.id}) }}" 
+                               class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors {{ isCurrent ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
+                                
+                                <div class="flex-shrink-0">
+                                    {% if isCompleted %}
+                                        <div class="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                    {% elseif isCurrent %}
+                                         <div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+                                             <div class="w-2 h-2 rounded-full bg-primary"></div>
+                                         </div>
+                                    {% else %}
+                                        <div class="w-5 h-5 rounded-full border-2 border-muted-foreground/30"></div>
+                                    {% endif %}
+                                </div>
+                                
+                                <span class="line-clamp-1">{{ less.title }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
                 </div>
                 {% if not loop.last %}
                     <div class="my-2 border-t border-border/50 mx-3"></div>
@@ -56,7 +62,12 @@
     </aside>
 
     {# 2. Main Content (The Stage) #}
-    <main class="flex-1 overflow-y-auto min-w-0 bg-background relative" id="main-content">
+    <main class="flex-1 overflow-y-auto min-w-0 bg-background relative" 
+          id="main-content"
+          data-controller="swipe-navigation"
+          data-swipe-navigation-next-url-value="{{ nextLesson ? path('lesson_show', {courseSlug: course.slug, moduleSlug: nextLesson.module.slug, lessonId: nextLesson.id}) : '' }}"
+          data-swipe-navigation-prev-url-value="{{ prevLesson ? path('lesson_show', {courseSlug: course.slug, moduleSlug: prevLesson.module.slug, lessonId: prevLesson.id}) : '' }}"
+    >
         
         <div class="max-w-4xl mx-auto p-6 md:p-10 space-y-8">
             
@@ -71,11 +82,12 @@
 
             {# Video Container #}
             <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-border aspect-video group"
-                 data-controller="offline-video"
+                 data-controller="offline-video video-shortcuts auto-play audio-mode"
                  data-offline-video-url-value="{{ currentLesson.videoUrl }}"
                  data-offline-video-lesson-id-value="{{ currentLesson.id }}"
+                 data-auto-play-enabled-value="true"
             >
-                <div data-offline-video-target="playerContainer" class="w-full h-full">
+                <div data-offline-video-target="playerContainer" data-audio-mode-target="videoContainer" class="w-full h-full">
                     {% if currentLesson.videoEmbeded %}
                         {{ currentLesson.videoEmbeded|default('')|sanitize_html('video') }}
                     {% else %}
@@ -89,6 +101,16 @@
                             </div>
                         </div>
                     {% endif %}
+                </div>
+
+                {# Video Player Actions #}
+                <div class="absolute top-4 left-4 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button type="button" data-action="click->video-shortcuts#togglePiP" class="inline-flex items-center justify-center rounded-md text-xs font-medium bg-black/50 text-white hover:bg-black/70 h-8 px-2" title="{{ 'Picture-in-Picture' | trans }} (P)">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 13h2v2h-2z" /></svg>
+                    </button>
+                    <button type="button" data-action="click->audio-mode#toggle" class="inline-flex items-center justify-center rounded-md text-xs font-medium bg-black/50 text-white hover:bg-black/70 h-8 px-2" title="{{ 'Audio-only mode' | trans }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                    </button>
                 </div>
 
                 {# Offline Controls #}
@@ -122,11 +144,22 @@
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    {# Previous Button (could be dynamic) #}
-                    <button class="btn btn-ghost" disabled>
-                        <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                        {{ 'Précédent' | trans }}
+                    <button data-controller="distraction-free" data-action="click->distraction-free#toggle" class="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground hidden lg:flex" title="{{ 'Mode immersion' | trans }}">
+                        <twig:ux:icon name="lucide:maximize-2" class="w-5 h-5" />
                     </button>
+
+                    {# Previous Button #}
+                    {% if prevLesson %}
+                        <a href="{{ path('lesson_show', {courseSlug: course.slug, moduleSlug: prevLesson.module.slug, lessonId: prevLesson.id}) }}" class="btn btn-ghost">
+                            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            {{ 'Précédent' | trans }}
+                        </a>
+                    {% else %}
+                        <button class="btn btn-ghost" disabled>
+                            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            {{ 'Précédent' | trans }}
+                        </button>
+                    {% endif %}
                     
                     {# Mark Complete / Next Action #}
                     {% include "lesson/_complete.html.twig" with {'nextButton': true} %}
@@ -152,6 +185,9 @@
                     <button @click="tab = 'resources'" :class="tab === 'resources' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'" class="px-4 py-3 text-sm font-semibold border-b-2 transition-colors">
                         {{ 'Ressources' | trans }}
                     </button>
+                    <button @click="tab = 'transcript'" :class="tab === 'transcript' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'" class="px-4 py-3 text-sm font-semibold border-b-2 transition-colors">
+                        {{ 'Transcription' | trans }}
+                    </button>
                     <button @click="tab = 'comments'" :class="tab === 'comments' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'" class="px-4 py-3 text-sm font-semibold border-b-2 transition-colors">
                         {{ 'Discussions' | trans }}
                     </button>
@@ -169,7 +205,7 @@
                             <div class="flex-1 text-center md:text-left">
                                 <h4 class="font-bold text-indigo-900 dark:text-indigo-100">Version Audio (IA)</h4>
                                 <p class="text-sm text-indigo-700 dark:text-indigo-300/80 mb-4">Écoutez cette leçon lue par notre assistant pédagogique.</p>
-                                <audio controls class="w-full h-10 rounded-lg">
+                                <audio controls class="w-full h-10 rounded-lg" data-audio-mode-target="audioPlayer">
                                     <source src="{{ asset(currentLesson.audioPath) }}" type="audio/mpeg">
                                     Your browser does not support the audio element.
                                 </audio>
@@ -183,7 +219,7 @@
                         </div>
                     {% endif %}
 
-                    <div class="prose prose-slate dark:prose-invert max-w-none animate-in fade-in slide-in-from-bottom-2">
+                    <div class="prose prose-slate dark:prose-invert max-w-none animate-in fade-in slide-in-from-bottom-2" data-controller="glossary">
                         {{ currentLesson.content|default('')|sanitize_html('default') }}
                     </div>
                 </div>
@@ -200,21 +236,76 @@
                     </div>
                 </div>
 
-                <div x-show="tab === 'comments'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
+                <div x-show="tab === 'transcript'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
+                    <div class="bg-card rounded-2xl border border-border p-6 md:p-8" data-controller="video-sync">
+                        <div class="flex items-center gap-3 mb-6">
+                            <twig:ux:icon name="lucide:align-left" class="w-6 h-6 text-primary" />
+                            <h3 class="text-xl font-bold">{{ 'Transcription de la leçon' | trans }}</h3>
+                        </div>
+
+                        <div class="space-y-6">
+                            {# Mocked Transcript for now, ideally from DB #}
+                            <div class="flex gap-4 group">
+                                <button data-action="click->video-sync#seek" data-timestamp="00:00" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">00:00</button>
+                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed italic">Introduction à la leçon et présentation des concepts clés.</p>
+                            </div>
+                            <div class="flex gap-4 group">
+                                <button data-action="click->video-sync#seek" data-timestamp="00:45" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">00:45</button>
+                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Développement du premier point théologique important concernant l'herméneutique.</p>
+                            </div>
+                            <div class="flex gap-4 group">
+                                <button data-action="click->video-sync#seek" data-timestamp="01:30" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">01:30</button>
+                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Analyse contextuelle des textes originaux et applications pratiques pour aujourd'hui.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+                            <p>Transcription générée automatiquement par IA</p>
+                            <button class="hover:text-foreground underline">Signaler une erreur</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div x-show="tab === 'comments'"
+ style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
                     {% include 'comment/_section.html.twig' %}
                 </div>
             </div>
 
         </div>
     </main>
+
+    {# Notes Sidebar (Right) #}
+    <div 
+        x-show="showNotes" 
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="translate-x-full"
+        x-transition:enter-end="translate-x-0"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="translate-x-full"
+        class="fixed right-0 top-16 bottom-0 w-80 bg-background border-l border-border shadow-2xl z-40 flex flex-col"
+        style="display: none;"
+    >
+        <div class="p-4 border-b border-border flex items-center justify-between bg-muted/20">
+            <h2 class="font-bold text-lg flex items-center gap-2">
+                <twig:ux:icon name="lucide:pencil-line" class="w-5 h-5 text-yellow-500" />
+                {{ 'Notes de cours' | trans }}
+            </h2>
+            <button @click="showNotes = false" class="p-2 hover:bg-muted rounded-full transition-colors">
+                <twig:ux:icon name="lucide:x" class="w-5 h-5" />
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4">
+            {{ component('NoteManager', { lessonId: currentLesson.id }) }}
+        </div>
+    </div>
 </div>
 
-{# Floating AI Chat Trigger (To be implemented) #}
-<div class="fixed bottom-6 right-6 z-50">
-    <button class="h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-4 focus:ring-primary/30">
-        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
+{# Floating Actions #}
+<div class="fixed bottom-6 right-24 z-50">
+    <button @click="showNotes = !showNotes" class="h-14 w-14 rounded-full bg-yellow-500 text-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-4 focus:ring-yellow-500/30" title="{{ 'Mes Notes' | trans }}">
+        <twig:ux:icon name="lucide:pencil-line" class="w-7 h-7" />
     </button>
 </div>
 

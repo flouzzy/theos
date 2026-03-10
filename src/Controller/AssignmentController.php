@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use App\Service\MediaManager;
+
 #[Route('/assignment', name: 'assignment_')]
 #[IsGranted('IS_AUTHENTICATED')]
 class AssignmentController extends AbstractController
@@ -22,7 +24,8 @@ class AssignmentController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private GamificationService $gamificationService,
-        private NotificationService $notificationService
+        private NotificationService $notificationService,
+        private MediaManager $mediaManager
     ) {}
 
     #[Route('/{id}', name: 'show')]
@@ -86,6 +89,12 @@ class AssignmentController extends AbstractController
 
         $submission->setContent($content);
         $submission->setStatus('submitted');
+
+        $file = $request->files->get('submission_file');
+        if ($file) {
+            $filePath = $this->mediaManager->upload($file, 'assignments');
+            $submission->setFilePath($filePath);
+        }
 
         $this->entityManager->persist($submission);
         $this->entityManager->flush();

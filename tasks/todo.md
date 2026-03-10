@@ -113,30 +113,30 @@
 - [ ] **Goal reminder: 'Keep working towards your [Custom Goal]'**
 
 ### ⚡ 2. Actions (Frictionless UX/UI)
-- [ ] **One-click 'Resume where I left off' on dashboard**
-- [ ] **Keyboard shortcuts for video player (speed, rewind, play/pause)**
-- [ ] **Swipe gestures for mobile web (next/prev lesson)**
-- [ ] **Auto-play next lesson (Netflix style)**
-- [ ] **Picture-in-Picture mode for video lessons**
-- [ ] **Audio-only mode toggle for background listening**
-- [ ] **Offline lesson downloading via PWA**
-- [ ] **Quick-add notes sidebar (LiveComponent)**
-- [ ] **Voice-to-text for taking notes on mobile**
+- [x] **One-click 'Resume where I left off' on dashboard**
+- [x] **Keyboard shortcuts for video player (speed, rewind, play/pause)**
+- [x] **Swipe gestures for mobile web (next/prev lesson)**
+- [x] **Auto-play next lesson (Netflix style)**
+- [x] **Picture-in-Picture mode for video lessons**
+- [x] **Audio-only mode toggle for background listening**
+- [x] **Offline lesson downloading via PWA**
+- [x] **Quick-add notes sidebar (LiveComponent)**
+- [x] **Voice-to-text for taking notes on mobile**
 - [ ] **Frictionless login (Magic Links)**
 - [ ] **Social Login (Google, LinkedIn, GitHub)**
-- [ ] **Instant search (cmd+k) for lessons and notes**
-- [ ] **Dark mode / Light mode quick toggle**
-- [ ] **Distraction-free reading mode for text lessons**
-- [ ] **Inline glossary tooltips for complex terms**
-- [ ] **Transcript click-to-seek video navigation**
-- [ ] **Quick 'Mark as understood' / 'Needs review' flags**
-- [ ] **Progressive disclosure of complex UI elements**
-- [ ] **Drag and drop file upload for assignments**
-- [ ] **Rich text editor with markdown support for comments**
-- [ ] **Floating action button for quick help/AI tutor**
-- [ ] **Auto-save for all form inputs (drafts)**
-- [ ] **Seamless language switcher without page reload**
-- [ ] **Accessibility: Full screen reader compatibility and high contrast mode**
+- [x] **Instant search (cmd+k) for lessons and notes**
+- [x] **Dark mode / Light mode quick toggle**
+- [x] **Distraction-free reading mode for text lessons**
+- [x] **Inline glossary tooltips for complex terms**
+- [x] **Transcript click-to-seek video navigation**
+- [x] **Quick 'Mark as understood' / 'Needs review' flags**
+- [x] **Progressive disclosure of complex UI elements**
+- [x] **Drag and drop file upload for assignments**
+- [x] **Rich text editor with markdown support for comments**
+- [x] **Floating action button for quick help/AI tutor**
+- [x] **Auto-save for all form inputs (drafts)**
+- [x] **Seamless language switcher without page reload**
+- [x] **Accessibility: Full screen reader compatibility and high contrast mode**
 
 ### 🎁 3. Variable Rewards (Gamification)
 - [ ] **Dynamic XP multipliers for weekend studying**

@@ -26,9 +26,16 @@
 
         <div class="p-6">
             {% if submission %}
-                <div class="bg-muted p-4 rounded-lg mb-4 font-mono text-sm whitespace-pre-wrap">
-                    {{ submission.content }}
-                </div>
+                <div class="bg-muted p-4 rounded-lg mb-4 font-mono text-sm whitespace-pre-wrap">{{ submission.content }}</div>
+                
+                {% if submission.filePath %}
+                    <div class="flex items-center gap-2 mb-4 p-3 bg-primary/5 rounded-lg border border-primary/10">
+                        <twig:ux:icon name="lucide:file-text" class="w-5 h-5 text-primary" />
+                        <span class="text-sm font-medium flex-1 truncate">{{ submission.filePath|split('/')|last }}</span>
+                        <a href="{{ asset(submission.filePath) }}" target="_blank" class="text-xs font-bold text-primary hover:underline">{{ 'Télécharger' | trans }}</a>
+                    </div>
+                {% endif %}
+
                 <div class="flex items-center gap-2 text-xs text-muted-foreground">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -36,13 +43,41 @@
                     <span>{{ 'Soumis le' | trans }} {{ submission.createdAt|date('d M Y à H:i') }}</span>
                 </div>
             {% else %}
-                <form action="{{ path('assignment_submit', {id: assignment.id}) }}" method="POST">
+                <form action="{{ path('assignment_submit', {id: assignment.id}) }}" 
+                      method="POST" 
+                      enctype="multipart/form-data"
+                      data-controller="form-autosave"
+                      data-form-autosave-key-value="assignment_{{ assignment.id }}"
+                      data-action="input->form-autosave#save submit->form-autosave#clear"
+                >
                     <input type="hidden" name="_token" value="{{ csrf_token('submit_assignment' ~ assignment.id) }}">
                     <div class="mb-4">
                         <label for="content" class="block text-sm font-medium mb-2">{{ 'Votre réponse' | trans }}</label>
                         <textarea name="content" id="content" class="w-full h-48 p-3 rounded-md border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary resize-y" placeholder="{{ 'Rédigez votre réponse ici...' | trans }}"></textarea>
                     </div>
-                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
+
+                    <div class="mb-6" data-controller="drag-drop-upload" data-drag-drop-upload-target="container">
+                        <label class="block text-sm font-medium mb-2">{{ 'Pièce jointe (Optionnel)' | trans }}</label>
+                        <div class="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer group"
+                             @click="$anchor.click()"
+                             data-action="click->drag-drop-upload#selectFile"
+                        >
+                            <input type="file" name="submission_file" class="hidden" 
+                                   data-drag-drop-upload-target="input"
+                                   data-action="change->drag-drop-upload#onInputChange"
+                            >
+                            
+                            <div data-drag-drop-upload-target="preview">
+                                <twig:ux:icon name="lucide:upload-cloud" class="mx-auto h-10 w-10 text-muted-foreground group-hover:text-primary transition-colors mb-2" />
+                                <p class="text-sm text-muted-foreground">
+                                    <span class="font-bold text-primary">{{ 'Cliquez pour uploader' | trans }}</span> {{ 'ou glissez-déposez' | trans }}
+                                </p>
+                                <p class="text-xs text-muted-foreground mt-1">PDF, DOCX, ZIP (Max 10MB)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="inline-flex items-center justify-center w-full sm:w-auto rounded-lg bg-primary px-8 py-3 text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity">
                         {{ 'Envoyer le devoir' | trans }}
                     </button>
                 </form>

@@ -79,11 +79,15 @@ class CohortController extends AbstractController
         // Events
         $events = $eventRepository->findUpdatedEvents($cohort);
 
+        // Resume lesson logic
+        $lastLesson = $completionRepository->findLastInteractedLesson($user);
+
         return $this->render('cohort/index.html.twig', [
             'cohort' => $cohort,
             'myCourses' => $myCoursesData, 
             'events' => $events,
             'newLessonsCount' => $newLessonsCount,
+            'lastLesson' => $lastLesson,
             'stats' => [
                 'ongoing' => $ongoingCoursesCount,
                 'completed' => $completedCoursesCount,

@@ -39,6 +39,9 @@ final class LessonItem
     #[LiveProp(writable: true)]
     public bool $isCompleted = false;
 
+    #[LiveProp(writable: true)]
+    public bool $needsReview = false;
+
     #[LiveProp]
     public bool $isLocked = false;
 
@@ -94,5 +97,34 @@ final class LessonItem
         }
 
         $this->isCompleted = $newStatus;
+    }
+
+    #[LiveAction]
+    public function toggleNeedsReview(): void
+    {
+        /** @var \App\Entity\User|null $user */
+        $user = $this->security->getUser();
+        if (!$user || $this->isLocked) {
+            return;
+        }
+
+        $newStatus = !$this->needsReview;
+
+        $completion = $this->completionRepository->findOneBy([
+            'user' => $user,
+            'lesson' => $this->lesson,
+        ]);
+
+        if (!$completion) {
+            $completion = new \App\Entity\Completion();
+            $completion->setUser($user);
+            $completion->setLesson($this->lesson);
+        }
+
+        $completion->setNeedsReview($newStatus);
+        $this->entityManager->persist($completion);
+        $this->entityManager->flush();
+
+        $this->needsReview = $newStatus;
     }
 }

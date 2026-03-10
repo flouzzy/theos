@@ -20,6 +20,9 @@ class Completion
     #[ORM\Column(nullable: true)]
     private ?bool $completed = false;
 
+    #[ORM\Column(options: ["default" => false])]
+    private bool $needsReview = false;
+
     #[ORM\Column(nullable: true)]
     private ?float $score = null;
 
@@ -62,6 +65,18 @@ class Completion
     public function setCompleted(?bool $completed): static
     {
         $this->completed = $completed;
+
+        return $this;
+    }
+
+    public function isNeedsReview(): bool
+    {
+        return $this->needsReview;
+    }
+
+    public function setNeedsReview(bool $needsReview): static
+    {
+        $this->needsReview = $needsReview;
 
         return $this;
     }

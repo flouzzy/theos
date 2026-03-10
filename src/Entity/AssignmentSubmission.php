@@ -37,9 +37,24 @@ class AssignmentSubmission
     #[ORM\OneToMany(mappedBy: 'submission', targetEntity: PeerReview::class)]
     private Collection $reviews;
 
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $filePath = null;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+    }
+
+    public function getFilePath(): ?string
+    {
+        return $this->filePath;
+    }
+
+    public function setFilePath(?string $filePath): static
+    {
+        $this->filePath = $filePath;
+
+        return $this;
     }
 
     public function getId(): ?int

@@ -1,0 +1,72 @@
+<div {{ attributes }} x-data="{ isOpen: false }" 
+     @keydown.window.cmd.k.prevent="isOpen = true" 
+     @keydown.window.ctrl.k.prevent="isOpen = true"
+     @keydown.window.escape="isOpen = false"
+>
+    {# Trigger button (invisible but catches shortcut via Alpine) #}
+    
+    <div x-show="isOpen" class="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 md:p-20" role="dialog" aria-modal="true" style="display: none;">
+        <div x-show="isOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" @click="isOpen = false"></div>
+
+        <div x-show="isOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="mx-auto max-w-2xl transform divide-y divide-slate-100 overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
+            <div class="relative">
+                <twig:ux:icon name="lucide:search" class="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
+                <input type="text" 
+                       data-model="debounce(300)|query"
+                       class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm outline-none" 
+                       placeholder="{{ 'Rechercher...' | trans }} (cmd+k)"
+                       x-ref="searchInput"
+                       @show-search.window="setTimeout(() => $refs.searchInput.focus(), 100)"
+                >
+            </div>
+
+            {% if this.query %}
+                {% set results = this.results %}
+                {% if results.courses is empty and results.lessons is empty %}
+                    <div class="px-6 py-14 text-center sm:px-14">
+                        <twig:ux:icon name="lucide:frown" class="mx-auto h-6 w-6 text-slate-400" />
+                        <p class="mt-4 text-sm text-slate-900">{{ 'Aucun résultat pour' | trans }} "{{ this.query }}"</p>
+                    </div>
+                {% else %}
+                    <ul class="max-h-96 scroll-py-3 overflow-y-auto p-3" id="options" role="listbox">
+                        {% if results.courses|length > 0 %}
+                            <li class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'Cours' | trans }}</li>
+                            {% for course in results.courses %}
+                                <li>
+                                    <a href="{{ path('course_show', {slug: course.slug}) }}" class="group flex cursor-default select-none items-center rounded-xl px-3 py-2 hover:bg-primary hover:text-white transition-colors">
+                                        <twig:ux:icon name="lucide:book" class="h-5 w-5 flex-none text-slate-400 group-hover:text-white" />
+                                        <span class="ml-3 flex-auto truncate">{{ course.title }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if results.lessons|length > 0 %}
+                            <li class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-2">{{ 'Leçons' | trans }}</li>
+                            {% for lesson in results.lessons %}
+                                <li>
+                                    <a href="{{ path('lesson_show', {courseSlug: lesson.module.courses.first.slug, moduleSlug: lesson.module.slug, lessonId: lesson.id}) }}" class="group flex cursor-default select-none items-center rounded-xl px-3 py-2 hover:bg-primary hover:text-white transition-colors">
+                                        <twig:ux:icon name="lucide:play-circle" class="h-5 w-5 flex-none text-slate-400 group-hover:text-white" />
+                                        <div class="ml-3 flex-auto truncate">
+                                            <span class="block">{{ lesson.title }}</span>
+                                            <span class="block text-xs text-slate-400 group-hover:text-primary-foreground/70">{{ lesson.module.title }}</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                {% endif %}
+            {% else %}
+                <div class="px-6 py-14 text-center sm:px-14">
+                    <twig:ux:icon name="lucide:command" class="mx-auto h-6 w-6 text-slate-400" />
+                    <p class="mt-4 text-sm text-slate-900">{{ 'Tapez au moins 2 caractères pour rechercher' | trans }}</p>
+                </div>
+            {% endif %}
+
+            <div class="flex flex-wrap items-center bg-slate-50 px-4 py-2.5 text-xs text-slate-700">
+                {{ 'Appuyez sur' | trans }} <kbd class="mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white font-semibold text-slate-900 sm:mx-2">ESC</kbd> {{ 'pour fermer' | trans }}.
+            </div>
+        </div>
+    </div>
+</div>

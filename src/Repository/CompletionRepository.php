@@ -116,4 +116,17 @@ class CompletionRepository extends ServiceEntityRepository
             ->setMaxResults($limit);
         return $paginator;
     }
+
+    public function findLastInteractedLesson(User $user): ?\App\Entity\Lesson
+    {
+        $completion = $this->createQueryBuilder('c')
+            ->where('c.user = :user')
+            ->orderBy('c.updatedAt', 'DESC')
+            ->setMaxResults(1)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $completion?->getLesson();
+    }
 }
