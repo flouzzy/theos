@@ -5,7 +5,7 @@
                 {{ skill.name }}
                 <button 
                     type="button"
-                    data-action="live#action"
+                    data-action="click->live#action"
                     data-live-action-param="removeSkill"
                     data-live-skill-id-param="{{ skill.id }}"
                     class="ml-2 hover:text-indigo-600 transition-colors"
@@ -21,7 +21,7 @@
     </div>
 
     <div class="mt-4">
-        <form data-action="live#action:prevent" data-live-action-param="addSkill" class="flex gap-2">
+        <form data-action="submit->live#action:prevent" data-live-action-param="addSkill" class="flex gap-2">
             <input 
                 type="text" 
                 data-model="newSkillName"
