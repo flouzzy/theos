@@ -31,7 +31,7 @@
 		<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/favicon/apple-touch-icon.png') }}">
 		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon/favicon-32x32.png') }}">
 		<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon/favicon-16x16.png') }}">
-		<link rel="manifest" href="{{ asset('site.webmanifest') }}">
+		<link rel="manifest" href="{{ asset('manifest.json') }}">
 		<link rel="mask-icon" href="{{ asset('images/favicon/safari-pinned-tab.svg')}}" color="#6c5bd9">
 
 		<link rel="apple-touch-startup-image" href="images/screens/launch-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
@@ -56,10 +56,21 @@
 			<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
 		{% endblock %}
 
-		{% block javascripts %}
+        {% block javascripts %}
             <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
             {% block importmap %}{{ importmap('app') }}{% endblock %}
-		{% endblock %}
+            <script>
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', () => {
+                        navigator.serviceWorker.register('/sw.js').then(registration => {
+                            console.log('SW registered: ', registration);
+                        }).catch(registrationError => {
+                            console.log('SW registration failed: ', registrationError);
+                        });
+                    });
+                }
+            </script>
+        {% endblock %}
 	</head>
 	<body data-controller="app pwa confetti">
 		{% set currentroute = app.request.attributes.get('_route') %}

@@ -234,6 +234,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\ManyToOne(inversedBy: 'members')]
     private ?Team $team = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $jwtSecret = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -1245,6 +1248,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setTeam(?Team $team): static
     {
         $this->team = $team;
+
+        return $this;
+    }
+
+    public function getJwtSecret(): ?string
+    {
+        return $this->jwtSecret;
+    }
+
+    public function setJwtSecret(?string $jwtSecret): static
+    {
+        $this->jwtSecret = $jwtSecret;
 
         return $this;
     }
