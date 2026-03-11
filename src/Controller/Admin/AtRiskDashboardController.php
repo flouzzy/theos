@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Cohort;
+use App\Entity\Course;
 use App\Service\EngagementAnalyzer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,6 +35,27 @@ class AtRiskDashboardController extends AbstractController
 
         return $this->render('admin/instructor/cohort_select.html.twig', [
             'cohorts' => $cohorts,
+        ]);
+    }
+
+    #[Route('/content-efficacy/{id}', name: 'content_efficacy')]
+    public function contentEfficacy(Course $course, EngagementAnalyzer $engagementAnalyzer): Response
+    {
+        $efficacyData = $engagementAnalyzer->getContentEfficacy($course);
+
+        return $this->render('admin/instructor/content_efficacy.html.twig', [
+            'course' => $course,
+            'efficacyData' => $efficacyData,
+        ]);
+    }
+
+    #[Route('/content-efficacy', name: 'course_select')]
+    public function courseSelect(EntityManagerInterface $entityManager): Response
+    {
+        $courses = $entityManager->getRepository(Course::class)->findAll();
+
+        return $this->render('admin/instructor/course_select.html.twig', [
+            'courses' => $courses,
         ]);
     }
 }

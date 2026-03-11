@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\Cohort;
+use App\Entity\Course;
 use App\Repository\CompletionRepository;
 use App\Repository\EvaluationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -86,6 +87,45 @@ class EngagementAnalyzer
         usort($atRisk, fn($a, $b) => $b['riskScore'] <=> $a['riskScore']);
 
         return $atRisk;
+    }
+
+    /**
+     * Analyse l'efficacité du contenu d'un cours.
+     */
+    public function getContentEfficacy(Course $course): array
+    {
+        $efficacyData = [];
+        foreach ($course->getModules() as $module) {
+            foreach ($module->getLessons() as $lesson) {
+                $completions = $this->completionRepository->findBy(['lesson' => $lesson]);
+                $totalCompletions = count($completions);
+                
+                $avgScore = 0;
+                $scoredCompletions = array_filter($completions, fn($c) => $c->getScore() !== null);
+                if (count($scoredCompletions) > 0) {
+                    $avgScore = array_sum(array_map(fn($c) => $c->getScore(), $scoredCompletions)) / count($scoredCompletions);
+                }
+
+                $efficacyData[] = [
+                    'lesson' => $lesson,
+                    'module' => $module,
+                    'completionCount' => $totalCompletions,
+                    'avgScore' => round($avgScore, 2),
+                    'status' => $this->getEfficacyStatus($avgScore, $totalCompletions)
+                ];
+            }
+        }
+
+        return $efficacyData;
+    }
+
+    private function getEfficacyStatus(float $avgScore, int $completionCount): string
+    {
+        if ($completionCount === 0) return 'Pas assez de données';
+        if ($avgScore > 0 && $avgScore < 10) return 'Faible';
+        if ($avgScore >= 10 && $avgScore < 15) return 'Moyen';
+        if ($avgScore >= 15) return 'Excellent';
+        return 'Bon';
     }
 
     private function getRiskStatus(int $score): string

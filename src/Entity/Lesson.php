@@ -86,7 +86,6 @@ class Lesson
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->notes = new ArrayCollection();
-        $this->notes = new ArrayCollection();
         $this->completions = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->quizzes = new ArrayCollection();

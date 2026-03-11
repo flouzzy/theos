@@ -110,6 +110,20 @@ class Course
         return $this;
     }
 
+    public function getExcerpt(int $length = 100): string
+    {
+        if (!$this->description) {
+            return '';
+        }
+
+        $cleanDescription = strip_tags($this->description);
+        if (mb_strlen($cleanDescription) <= $length) {
+            return $cleanDescription;
+        }
+
+        return mb_substr($cleanDescription, 0, $length) . '...';
+    }
+
 
     public function isUserSubscribed(User $user): bool
     {

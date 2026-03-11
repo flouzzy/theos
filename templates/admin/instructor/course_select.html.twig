@@ -1,0 +1,33 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'SÉLECTIONNER UN COURS' | trans }}{% endblock %}
+
+{% block content %}
+    <div class="mb-10">
+        <h1 class="text-4xl font-black text-slate-900 leading-tight mb-2">
+            {{ 'Efficacité du Contenu' | trans }}
+        </h1>
+        <p class="text-slate-500 font-medium italic">
+            {{ 'Analysez la performance des leçons et identifiez les contenus à améliorer.' | trans }}
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for course in courses %}
+            <a href="{{ path('admin_analytics_content_efficacy', {id: course.id}) }}" class="group bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-primary transition-all duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                        <twig:ux:icon name="lucide:book-open" class="w-6 h-6" />
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition-colors uppercase tracking-widest">{{ course.modules|length }} Modules</span>
+                </div>
+                <h3 class="text-xl font-serif font-bold text-slate-900 mb-2 truncate">{{ course.title }}</h3>
+                <p class="text-slate-500 text-sm line-clamp-2 mb-4">{{ course.getExcerpt(100) }}</p>
+                <div class="flex items-center text-emerald-600 text-sm font-bold">
+                    {{ 'Analyser le contenu' | trans }}
+                    <twig:ux:icon name="lucide:arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
