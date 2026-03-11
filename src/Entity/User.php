@@ -237,6 +237,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $jwtSecret = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $linkedinId = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -1260,6 +1266,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setJwtSecret(?string $jwtSecret): static
     {
         $this->jwtSecret = $jwtSecret;
+
+        return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): static
+    {
+        $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    public function getLinkedinId(): ?string
+    {
+        return $this->linkedinId;
+    }
+
+    public function setLinkedinId(?string $linkedinId): static
+    {
+        $this->linkedinId = $linkedinId;
 
         return $this;
     }

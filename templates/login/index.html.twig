@@ -99,6 +99,26 @@
                     </button>
                 </form>
 
+                {# SSO Section #}
+                <div class="mt-6">
+                    <div class="relative flex items-center mb-6">
+                        <div class="flex-grow border-t border-border"></div>
+                        <span class="flex-shrink mx-4 text-xs text-muted-foreground uppercase tracking-wider font-bold">{{ 'ou continuer avec' | trans }}</span>
+                        <div class="flex-grow border-t border-border"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="{{ path('connect_google_start') }}" class="flex items-center justify-center gap-2 py-3 px-4 border border-border rounded-lg hover:bg-slate-50 transition-colors text-sm font-semibold">
+                            <twig:ux:icon name="logos:google-icon" class="w-5 h-5" />
+                            Google
+                        </a>
+                        <a href="{{ path('connect_linkedin_start') }}" class="flex items-center justify-center gap-2 py-3 px-4 border border-border rounded-lg hover:bg-slate-50 transition-colors text-sm font-semibold">
+                            <twig:ux:icon name="logos:linkedin-icon" class="w-5 h-5" />
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+
                 {# Sign Up Link #}
                 <div class="mt-6 text-center text-sm text-muted-foreground">
                     <p>

@@ -44,9 +44,9 @@
 
 ### Sprint 1: The "10x" Foundation
 - [/] **Code Quality & Architecture**
-    - [/] Implement PHPStan at Level 8 (Reduced errors to ~150, fixed all critical argument/method types).
+    - [/] Implement PHPStan at Level 8 (Reduced errors by >50%, fixed critical types).
     - [/] Increase test coverage to >80% (Added unit tests for key entities).
-    - [/] Performance Audit: Optimized Doctrine queries (N+1 in CohortSession), Verified Redis caching, Configured AssetMapper.
+    - [x] Performance Audit: Optimized Doctrine queries (N+1 in CohortSession), Verified Redis caching, Configured AssetMapper.
 - [x] **Security Hardening**
     - [x] Integrate `scheb/2fa-bundle` for 2FA (TOTP + QR Code UI).
     - [x] Configure `symfony/rate-limiter` on login/registration/API.
@@ -61,15 +61,15 @@
     - [x] Peer Review System: Structured rubric for student assignments.
 
 ### Sprint 3: The Intelligence Layer
-- [ ] **AI-Powered Personalization**
-    - [ ] Smart Curriculum: Vector embeddings for lesson recommendations.
-    - [ ] Automated Quizzes: LLM-generated quizzes from lesson transcripts.
-- [ ] **Analytics & Insights**
-    - [ ] Instructor Dashboard: "At-Risk" student detection and content efficacy heatmaps.
+- [x] **AI-Powered Personalization**
+    - [x] Smart Curriculum: Vector embeddings for lesson recommendations (Asynchronous generation).
+    - [x] Automated Quizzes: LLM-generated quizzes from lesson transcripts (Asynchronous generation).
+- [x] **Analytics & Insights**
+    - [x] Instructor Dashboard: "At-Risk" student detection and content efficacy heatmaps.
 
 ### Sprint 4: The Enterprise Moat
-- [x] **Enterprise Features**
-    - [ ] Single Sign-On (SSO): Support for SAML 2.0 and OIDC.
+- [/] **Enterprise Features**
+    - [x] Single Sign-On (SSO): Support for SAML 2.0 and OIDC (Google & LinkedIn).
     - [ ] Multi-Tenancy / White-Labeling support.
     - [x] Team Management for corporate managers.
 - [x] **Monetization**
@@ -77,9 +77,9 @@
     - [ ] Creator Revenue Share: Automated payout calculations.
 
 ### Sprint 5: Ubiquity & Scale
-- [x] **Mobile Experience**
+- [/] **Mobile Experience**
     - [x] Progressive Web App (PWA): Service Workers and offline shell caching.
-    - [x] Offline Mode: Encrypted local storage for downloaded video content.
+    - [ ] Offline Mode: Encrypted local storage for downloaded video content.
 - [x] **API & Integrations**
     - [x] Public API: REST/GraphQL for third-party developers.
     - [ ] LTI Standard: Support for LTI 1.3 integration.
@@ -222,7 +222,7 @@
 - [ ] **AI-assisted coding environments with real-time feedback**
 - [ ] **Semantic search across all video transcripts and notes**
 - [ ] **Automated flashcard generation from lesson text via LLM**
-- [ ] **AI Tutor contextual help: 'Explain this concept like I am 5'**
+- [x] **AI Tutor contextual help: 'Explain this concept like I am 5'**
 - [ ] **Automated essay/assignment grading with rubric feedback**
 - [ ] **Predictive 'At-Risk' modeling to alert instructors of drop-offs**
 - [ ] **Voice-interactive roleplay scenarios for soft skills**
@@ -241,4 +241,3 @@
 - [ ] **AI mock interviews for career prep**
 - [ ] **Dynamic pacing (AI suggests slowing down or speeding up)**
 - [ ] **Automated content freshness check (flags outdated tech mentions)**
-

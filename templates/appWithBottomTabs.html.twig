@@ -10,7 +10,9 @@
             {# Logo #}
             <div class="flex h-16 shrink-0 items-center justify-between">
                 <div class="flex items-center gap-3 overflow-hidden">
-                    <img src="{{ asset('images/logo.png') }}" alt="Le Rocher Académie" class="h-10 w-auto shrink-0 transition-all duration-300" :class="!desktopSidebarOpen && 'scale-75 origin-left'" />
+                    {% set activeCohort = active_cohort() %}
+                    {% set logoUrl = (activeCohort and activeCohort.logoPath) ? asset(activeCohort.logoPath) : asset('images/logo.png') %}
+                    <img src="{{ logoUrl }}" alt="Logo" class="h-10 w-auto shrink-0 transition-all duration-300" :class="!desktopSidebarOpen && 'scale-75 origin-left'" />
                 </div>
                 <button @click="desktopSidebarOpen = !desktopSidebarOpen" class="hidden lg:flex p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                     <svg class="w-5 h-5 transition-transform duration-300" :class="!desktopSidebarOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor">

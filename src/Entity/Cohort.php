@@ -57,6 +57,12 @@ class Cohort
     #[ORM\Column(length: 64, nullable: true, unique: true)]
     private ?string $invitationToken = null;
 
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $brandColor = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logoPath = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -268,6 +274,30 @@ class Cohort
     public function setInvitationToken(?string $invitationToken): static
     {
         $this->invitationToken = $invitationToken;
+
+        return $this;
+    }
+
+    public function getBrandColor(): ?string
+    {
+        return $this->brandColor;
+    }
+
+    public function setBrandColor(?string $brandColor): static
+    {
+        $this->brandColor = $brandColor;
+
+        return $this;
+    }
+
+    public function getLogoPath(): ?string
+    {
+        return $this->logoPath;
+    }
+
+    public function setLogoPath(?string $logoPath): static
+    {
+        $this->logoPath = $logoPath;
 
         return $this;
     }

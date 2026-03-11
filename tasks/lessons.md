@@ -64,3 +64,9 @@
 * **Performance:** Optimized `CohortSession` by caching the selected cohort in a private property to avoid redundant database queries during a single request (N+1 fix).
 * **Mistake:** Automated PHPStan fixes on Entities broke Doctrine mappings (ManyToMany).
 * **Correction:** Reverted risky Entity changes and focused on fixing Controllers and Services which are safer and more critical for Level 8.
+
+## 2026-03-11 - SSO & OAuth2 Integration
+* **Feature:** Implemented SSO via Google and LinkedIn using `knpuniversity/oauth2-client-bundle`.
+* **Technical:** Discovered that the modern namespace for the bundle is `KnpU\OAuth2ClientBundle` and not `KnpUniversity`.
+* **Security:** Configured `custom_authenticator` in `security.yaml` to allow multiple authentication methods (Form + Social).
+* **Entity:** Added `googleId` and `linkedinId` to the `User` entity to link social accounts.

@@ -54,6 +54,15 @@
 
 		{% block stylesheets %}
 			<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+            {% set activeCohort = active_cohort() %}
+            {% if activeCohort and activeCohort.brandColor %}
+                <style>
+                    :root {
+                        --primary: {{ activeCohort.brandColor }};
+                        --ring: {{ activeCohort.brandColor }};
+                    }
+                </style>
+            {% endif %}
 		{% endblock %}
 
         {% block javascripts %}
