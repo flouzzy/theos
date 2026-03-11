@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Transaction;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\StripeClient;
@@ -62,6 +63,12 @@ class SubscriptionService
         }
 
         switch ($event->type) {
+            case 'invoice.paid':
+                $invoice = $event->data->object;
+                if ($invoice instanceof \Stripe\Invoice) {
+                    $this->logTransaction($invoice);
+                }
+                break;
             case 'customer.subscription.created':
             case 'customer.subscription.updated':
                 $subscription = $event->data->object;
@@ -112,5 +119,21 @@ class SubscriptionService
             $_ENV['STRIPE_PRICE_YEARLY'] ?? '' => 'pro_yearly',
             default => 'custom'
         };
+    }
+
+    private function logTransaction(\Stripe\Invoice $invoice): void
+    {
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['stripeCustomerId' => (string) $invoice->customer]);
+        if ($user) {
+            $transaction = new Transaction();
+            $transaction->setUser($user);
+            $transaction->setStripePaymentId((string) ($invoice->payment_intent ?? $invoice->id));
+            $transaction->setAmount((int) $invoice->amount_paid);
+            $transaction->setCurrency((string) $invoice->currency);
+            $transaction->setStatus('succeeded');
+
+            $this->entityManager->persist($transaction);
+            $this->entityManager->flush();
+        }
     }
 }

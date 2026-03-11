@@ -55,6 +55,9 @@ class Course
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $itemOrder = null;
 
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 0])]
+    private int $revenueSharePercentage = 0;
+
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: CourseCompletion::class)]
     private Collection $completions;
 
@@ -266,6 +269,18 @@ class Course
     public function setItemOrder(?int $itemOrder): static
     {
         $this->itemOrder = $itemOrder;
+
+        return $this;
+    }
+
+    public function getRevenueSharePercentage(): int
+    {
+        return $this->revenueSharePercentage;
+    }
+
+    public function setRevenueSharePercentage(int $revenueSharePercentage): static
+    {
+        $this->revenueSharePercentage = $revenueSharePercentage;
 
         return $this;
     }
