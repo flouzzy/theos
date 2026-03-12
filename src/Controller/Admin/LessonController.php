@@ -52,10 +52,15 @@ class LessonController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(LessonRepository $lessonRepository): Response
+    public function index(LessonRepository $lessonRepository, \App\Service\PaginatorService $paginatorService): Response
     {
+        $qb = $lessonRepository->findAllWithModulesQueryBuilder();
+        $pagination = $paginatorService->paginate($qb);
+
         return $this->render('admin/lesson/index.html.twig', [
-            'lessons' => $lessonRepository->findAllWithModules(),
+            'lessons' => $pagination['data'],
+            'currentPage' => $pagination['currentPage'],
+            'totalPages' => $pagination['totalPages'],
         ]);
     }
 

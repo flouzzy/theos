@@ -15,11 +15,17 @@ use Symfony\Component\Routing\Attribute\Route;
 class NoteController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(NoteRepository $noteRepository): Response
+    public function index(NoteRepository $noteRepository, \App\Service\PaginatorService $paginatorService): Response
     {
+        $qb = $noteRepository->createQueryBuilder('n')
+            ->orderBy('n.createdAt', 'DESC');
+
+        $pagination = $paginatorService->paginate($qb);
+
         return $this->render('admin/note/index.html.twig', [
-            // Return all notes order by createdAt DESC
-            'notes' => $noteRepository->findBy([], ['createdAt' => 'DESC']),
+            'notes' => $pagination['data'],
+            'currentPage' => $pagination['currentPage'],
+            'totalPages' => $pagination['totalPages'],
         ]);
     }
 

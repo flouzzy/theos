@@ -15,10 +15,17 @@ use Symfony\Component\Routing\Attribute\Route;
 class NotificationController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(NotificationRepository $notificationRepository): Response
+    public function index(NotificationRepository $notificationRepository, \App\Service\PaginatorService $paginatorService): Response
     {
+        $qb = $notificationRepository->createQueryBuilder('n')
+            ->orderBy('n.createdAt', 'DESC');
+
+        $pagination = $paginatorService->paginate($qb);
+
         return $this->render('admin/notification/index.html.twig', [
-            'notifications' => $notificationRepository->findBy([], ['createdAt' => 'DESC']),
+            'notifications' => $pagination['data'],
+            'currentPage' => $pagination['currentPage'],
+            'totalPages' => $pagination['totalPages'],
         ]);
     }
 

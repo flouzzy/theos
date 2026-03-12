@@ -75,4 +75,10 @@
             </twig:Table:Body>
         </twig:Table>
     </div>
+
+    <twig:Pagination
+        currentPage="{{ currentPage }}"
+        totalPages="{{ totalPages }}"
+        routeName="admin_lesson_index"
+    />
 {% endblock %}
