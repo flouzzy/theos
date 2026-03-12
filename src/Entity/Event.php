@@ -32,6 +32,11 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?Calendar $calendar = null;
 
+    public function __clone()
+    {
+        $this->id = null;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
