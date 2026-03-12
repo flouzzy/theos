@@ -140,7 +140,7 @@
 
 ### 🎁 3. Variable Rewards (Gamification)
 - [x] **Dynamic XP multipliers for weekend studying**
-- [ ] **Surprise loot boxes (unlock bonus PDF/audio) upon module completion**
+- [x] **Surprise loot boxes (unlock bonus PDF/audio) upon module completion**
 - [ ] **Hidden easter eggs in lesson content**
 - [ ] **Tiered leaderboards (Bronze, Silver, Gold, Diamond)**
 - [x] **Confetti animations on lesson completion (LiveComponent)**

@@ -263,6 +263,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: PushSubscription::class, orphanRemoval: true)]
     private Collection $pushSubscriptions;
 
+    /**
+     * @var Collection<int, Bonus>
+     */
+    #[ORM\ManyToMany(targetEntity: Bonus::class)]
+    #[ORM\JoinTable(name: 'user_unlocked_bonuses')]
+    private Collection $unlockedBonuses;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -286,6 +293,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->chatMessages = new ArrayCollection();
         $this->xpTransactions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
+        $this->unlockedBonuses = new ArrayCollection();
     }
 
     public function __toString()
@@ -1478,5 +1486,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function isLoginTokenValid(): bool
     {
         return $this->loginToken && $this->loginTokenExpiresAt > new \DateTimeImmutable();
+    }
+
+    /**
+     * @return Collection<int, Bonus>
+     */
+    public function getUnlockedBonuses(): Collection
+    {
+        return $this->unlockedBonuses;
+    }
+
+    public function addUnlockedBonus(Bonus $bonus): static
+    {
+        if (!$this->unlockedBonuses->contains($bonus)) {
+            $this->unlockedBonuses->add($bonus);
+        }
+
+        return $this;
+    }
+
+    public function removeUnlockedBonus(Bonus $bonus): static
+    {
+        $this->unlockedBonuses->removeElement($bonus);
+
+        return $this;
     }
 }

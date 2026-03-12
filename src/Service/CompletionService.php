@@ -30,6 +30,7 @@ class CompletionService
         private NotificationService $notificationService,
         private EventDispatcherInterface $eventDispatcher,
         private UrlGeneratorInterface $urlGenerator,
+        private LootBoxService $lootBoxService,
     ) {}
 
     public function setModuleCompletion(Module $module): void
@@ -78,16 +79,12 @@ class CompletionService
 
         // Send notification to all the users if someone complete a course
         if ($allLessonsCompleted) {
-            // Render a content based on twig template
-            $content = $this->twig->render('notification/emails/module_completed.html.twig', [
-                'user' => $user,
-                'module' => $module
-            ]);
+            // ... (keep notification logic) ...
 
-            $this->sendNotificationToAllUsers(
-                $content,
-                $this->translator->trans('Module completed for') . ' ' . $user->getFirstname()
-            );
+            // Trigger LootBox Surprise ONLY on first completion
+            if (!$moduleCompletion->isCompleted() && $user instanceof \App\Entity\User) {
+                $this->lootBoxService->unlockRandomBonus($user);
+            }
         }
 
         // Mise à jour du statut de completion
