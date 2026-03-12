@@ -35,6 +35,45 @@ class TriggerService
             $this->processInactivityTrigger($user);
             $this->processMilestoneTrigger($user);
             $this->processFomoTrigger($user);
+            $this->processMorningRoutineTrigger($user);
+        }
+    }
+
+    /**
+     * Trigger #21: Morning routine integration (audio lesson trigger)
+     */
+    private function processMorningRoutineTrigger(User $user): void
+    {
+        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $hour = (int)$now->format('H');
+
+        // Target 06:00 - 09:00 window
+        if ($hour < 6 || $hour >= 9) {
+            return;
+        }
+
+        // Find an uncompleted lesson with audio
+        foreach ($user->getCourses() as $course) {
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    if (!$lesson->getAudioPath()) continue;
+
+                    $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
+                    if (!$completion || !$completion->isCompleted()) {
+                        $this->notificationService->addNotification(
+                            $user,
+                            "☕ Ta routine matinale",
+                            sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
+                            $this->urlGenerator->generate('lesson_show', [
+                                'courseSlug' => $course->getSlug(),
+                                'moduleSlug' => $module->getSlug(),
+                                'lessonId' => $lesson->getId()
+                            ], UrlGeneratorInterface::ABSOLUTE_URL)
+                        );
+                        return; // Suggest only one
+                    }
+                }
+            }
         }
     }
 
