@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use App\Event\LessonCompleteEvent;
 use App\Service\CompletionService;
 use App\Service\GamificationService;
+use App\Service\NotificationService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -14,6 +15,7 @@ class LessonSubscriber implements EventSubscriberInterface
     public function __construct(
         private CompletionService $completionService,
         private GamificationService $gamificationService,
+        private NotificationService $notificationService,
         private TranslatorInterface $translator,
         private Environment $twig
     ) {
@@ -30,6 +32,19 @@ class LessonSubscriber implements EventSubscriberInterface
     {
         if (!$event->getCompleted()) {
             return;
+        }
+
+        $user = $event->getUser();
+        $now = new \DateTimeImmutable();
+        $hour = (int)$now->format('H');
+
+        // Study time anomaly detection: late night (00:00 - 05:00)
+        if ($hour >= 0 && $hour < 5) {
+            $this->notificationService->addNotification(
+                $user,
+                "🌙 Tu étudies tard !",
+                "C'est super d'être motivé, mais n'oublie pas que le sommeil est essentiel pour bien mémoriser ce que tu apprends. Repose-toi bien !"
+            );
         }
 
         // Send notification to all users
