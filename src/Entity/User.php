@@ -280,6 +280,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         }
     }
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $emailNotifications = true;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $pushNotifications = true;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $lessonReminders = true;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $weeklySummary = false;
+
     #[ORM\PrePersist]
     public function setUserDetails(): void
     {
@@ -1291,6 +1303,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setLinkedinId(?string $linkedinId): static
     {
         $this->linkedinId = $linkedinId;
+
+        return $this;
+    }
+
+    public function isEmailNotifications(): bool
+    {
+        return $this->emailNotifications;
+    }
+
+    public function setEmailNotifications(bool $emailNotifications): static
+    {
+        $this->emailNotifications = $emailNotifications;
+
+        return $this;
+    }
+
+    public function isPushNotifications(): bool
+    {
+        return $this->pushNotifications;
+    }
+
+    public function setPushNotifications(bool $pushNotifications): static
+    {
+        $this->pushNotifications = $pushNotifications;
+
+        return $this;
+    }
+
+    public function isLessonReminders(): bool
+    {
+        return $this->lessonReminders;
+    }
+
+    public function setLessonReminders(bool $lessonReminders): static
+    {
+        $this->lessonReminders = $lessonReminders;
+
+        return $this;
+    }
+
+    public function isWeeklySummary(): bool
+    {
+        return $this->weeklySummary;
+    }
+
+    public function setWeeklySummary(bool $weeklySummary): static
+    {
+        $this->weeklySummary = $weeklySummary;
 
         return $this;
     }
