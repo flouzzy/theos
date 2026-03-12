@@ -78,6 +78,18 @@ RUN set -eux; \
 
 COPY --link frankenphp/conf.d/20-app.dev.ini $PHP_INI_DIR/app.conf.d/
 
+# install dev dependencies
+COPY --link composer.* symfony.* ./
+RUN set -eux; \
+	composer install --no-cache --prefer-dist --no-autoloader --no-scripts --no-progress --ignore-platform-reqs
+
+COPY --link --exclude=frankenphp/ . ./
+
+RUN set -eux; \
+	composer dump-autoload --classmap-authoritative; \
+	php bin/console importmap:install; \
+	chmod +x bin/console; sync;
+
 CMD [ "frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile", "--watch" ]
 
 # Prod FrankenPHP image

@@ -3,7 +3,11 @@
 ENV ?= $(shell (grep "^APP_ENV=" .env.local 2>/dev/null || grep "^APP_ENV=" .env 2>/dev/null || echo "dev") | cut -d= -f2 | tr -d '"' | head -n 1)
 
 # Base Docker Compose command
-DK_COMPOSE_CMD = docker compose
+ifeq ($(ENV),test)
+    DK_COMPOSE_CMD = docker compose -p academie_test
+else
+    DK_COMPOSE_CMD = docker compose
+endif
 
 # Environment Configuration
 ifeq ($(ENV),prod)
@@ -279,7 +283,9 @@ prod-deploy:
 
 # --- Tests ---
 tests:
-	$(MAKE) up ENV=test
+	$(MAKE) ENV=test _run-tests
+
+_run-tests: up
 	$(PHP_EXEC) bin/console doctrine:schema:drop --force --env=test || true
 	$(PHP_EXEC) bin/console doctrine:schema:create --env=test
 	$(PHP_EXEC) bin/phpunit

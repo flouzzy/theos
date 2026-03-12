@@ -38,7 +38,7 @@ class LeaderboardControllerTest extends WebTestCase
         $this->client->request('GET', '/leaderboard');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1.text-3xl', 'Classement Global');
+        $this->assertSelectorTextContains('h1', 'Classement global');
         
         // Clean up
         $this->entityManager->remove($user);

@@ -21,8 +21,9 @@
                     </div>
                     <span class="text-xs font-bold text-slate-400 group-hover:text-primary transition-colors uppercase tracking-widest">{{ cohort.users|length }} Étudiants</span>
                 </div>
-                <h3 class="text-xl font-serif font-bold text-slate-900 mb-2 truncate">{{ cohort.name }}</h3>
-                <p class="text-slate-500 text-sm line-clamp-2 mb-4">{{ cohort.course.title }}</p>
+                <h3 class="text-xl font-serif font-bold text-slate-900 mb-2 truncate">{{ cohort.title }}</h3>
+
+                <p class="text-slate-500 text-sm line-clamp-2 mb-4">{{ cohort.courses|first ? cohort.courses|first.title : 'Aucun cours' }}</p>
                 <div class="flex items-center text-primary text-sm font-bold">
                     {{ 'Voir les analyses' | trans }}
                     <twig:ux:icon name="lucide:arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
