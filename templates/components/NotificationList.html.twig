@@ -13,7 +13,8 @@
         <div class="flex items-center justify-between mb-6 px-2">
             <h2 class="text-2xl font-black tracking-tight">{{ 'Notifications' | trans }}</h2>
             <button 
-                data-action="live#action"
+                type="button"
+                data-action="click->live#action"
                 data-live-action-param="markAllAsRead"
                 class="flex items-center gap-2 text-sm font-bold text-primary hover:text-primary/80 transition-colors bg-primary/5 px-4 py-2 rounded-xl cursor-pointer"
             >
@@ -63,7 +64,8 @@
                             <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 {% if not notification.isRead %}
                                     <button 
-                                        data-action="live#action"
+                                        type="button"
+                                        data-action="click->live#action"
                                         data-live-action-param="markAsRead" 
                                         data-live-id-param="{{ notification.id }}"
                                         class="text-xs font-bold text-primary hover:underline cursor-pointer"
