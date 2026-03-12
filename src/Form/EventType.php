@@ -4,9 +4,9 @@ namespace App\Form;
 
 use App\Entity\Calendar;
 use App\Entity\Event;
+use App\Entity\EventCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,13 +35,9 @@ class EventType extends AbstractType
                 'required' => false,
                 'label' => 'Lieu / URL de réunion',
             ])
-            ->add('type', ChoiceType::class, [
-                'choices' => [
-                    'Webinaire' => 'webinar',
-                    'Atelier' => 'workshop',
-                    'Conférence' => 'conference',
-                    'Autre' => 'other',
-                ],
+            ->add('type', EntityType::class, [
+                'class' => EventCategory::class,
+                'choice_label' => 'name',
                 'label' => 'Type d\'événement',
             ])
             ->add('calendar', EntityType::class, [
