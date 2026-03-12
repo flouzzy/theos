@@ -64,6 +64,8 @@ export default class extends Controller {
                 video.playbackRate = Math.max(0.5, video.playbackRate - 0.25);
                 break;
         }
+    }
+
     async togglePiP() {
         const video = this.element.querySelector('video');
         if (!video) return;
