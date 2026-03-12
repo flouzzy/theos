@@ -117,6 +117,26 @@ class CalendarController extends AbstractController
         ]);
     }
 
+    #[Route('/event/{id}/duplicate', name: 'event_duplicate', methods: ['POST'])]
+    public function eventDuplicate(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $calendarId = $event->getCalendar() ? $event->getCalendar()->getId() : null;
+
+        if ($this->isCsrfTokenValid('duplicate' . $event->getId(), $request->request->getString('_token'))) {
+            $duplicatedEvent = clone $event;
+            $duplicatedEvent->setTitle($event->getTitle() . ' (copie)');
+
+            $entityManager->persist($duplicatedEvent);
+            $entityManager->flush();
+            $this->addFlash('success', 'Événement dupliqué.');
+        }
+
+        if ($calendarId) {
+            return $this->redirectToRoute('admin_calendar_show', ['id' => $calendarId]);
+        }
+        return $this->redirectToRoute('admin_calendar_index');
+    }
+
     #[Route('/event/{id}/delete', name: 'event_delete', methods: ['POST'])]
     public function eventDelete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
