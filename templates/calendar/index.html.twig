@@ -30,9 +30,20 @@
                 {% endif %}
 
                 {% if calendar and calendar.url %}
-                    <a href="{{ calendar.url }}" target="_blank" class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-primary text-primary-foreground font-bold rounded-xl hover:opacity-90 transition-all shadow-md shadow-primary/20">
-                        <twig:ux:icon name="lucide:external-link" class="w-4 h-4" />
-                        {{ 'Consulter le calendrier externe' | trans }}
+                    <div class="flex flex-wrap gap-3 mt-4">
+                        <a href="{{ calendar.url }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-bold rounded-xl hover:opacity-90 transition-all shadow-md shadow-primary/20">
+                            <twig:ux:icon name="lucide:external-link" class="w-4 h-4" />
+                            {{ 'Consulter le calendrier externe' | trans }}
+                        </a>
+                        <a href="{{ path('calendar_export', {id: calendar.id}) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-all">
+                            <twig:ux:icon name="lucide:download" class="w-4 h-4" />
+                            {{ 'Exporter (.ics)' | trans }}
+                        </a>
+                    </div>
+                {% elseif calendar %}
+                    <a href="{{ path('calendar_export', {id: calendar.id}) }}" class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-all">
+                        <twig:ux:icon name="lucide:download" class="w-4 h-4" />
+                        {{ 'Exporter le calendrier (.ics)' | trans }}
                     </a>
                 {% endif %}
             </div>

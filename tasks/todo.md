@@ -95,7 +95,7 @@
 - [x] **Browser notification for new peer review requests**
 - [x] **In-app modal: 'New badge available in your current module'**
 - [x] **Weekly recap email with personalized infographics**
-- [ ] **Calendar integration (Google/Outlook) for study blocks**
+- [x] **Calendar integration (Google/Outlook) for study blocks**
 - [x] **Notification: 'A mentor replied to your comment'**
 - [x] **Inactivity trigger: 'We miss you, here is a 5-min micro-lesson'**
 - [x] **Milestone reminder: 'You are 1 lesson away from completing the course'**
