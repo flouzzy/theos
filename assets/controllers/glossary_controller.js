@@ -3,14 +3,14 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     connect() {
         this.terms = {
-            'Théologie': 'Étude des questions religieuses fondée sur les textes sacrés, les dogmes et la tradition.',
-            'Théologique': 'Qui se rapporte à la théologie.',
-            'Exégèse': 'Étude approfondie et critique d\\'un texte biblique.',
-            'Herméneutique': 'Science de l\\'interprétation des textes sacrés.',
-            'Sotériologie': 'Partie de la théologie qui traite du salut.',
-            'Eschatologie': 'Étude des fins dernières de l\\'homme et du monde.',
-            'Christologie': 'Étude de la personne et de l\\'œuvre de Jésus-Christ.',
-            'Ecclésiologie': 'Étude de l\\'Église en tant qu\\'institution et communauté.'
+            'Théologie': "Étude des questions religieuses fondée sur les textes sacrés, les dogmes et la tradition.",
+            'Théologique': "Qui se rapporte à la théologie.",
+            'Exégèse': "Étude approfondie et critique d'un texte biblique.",
+            'Herméneutique': "Science de l'interprétation des textes sacrés.",
+            'Sotériologie': "Partie de la théologie qui traite du salut.",
+            'Eschatologie': "Étude des fins dernières de l'homme et du monde.",
+            'Christologie': "Étude de la personne et de l'œuvre de Jésus-Christ.",
+            'Ecclésiologie': "Étude de l'Église en tant qu'institution et communauté."
         };
 
         this.highlightTerms();
