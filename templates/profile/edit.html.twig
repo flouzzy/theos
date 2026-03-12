@@ -25,11 +25,49 @@
                 {{ 'Informations générales' | trans }}
             </h3>
             
-            <div class="space-y-4">
-                {{ form_row(profileForm.firstname) }}
-                {{ form_row(profileForm.lastname) }}
-                {{ form_row(profileForm.email) }}
-                {{ form_row(profileForm.imageFile) }}
+            <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        {{ form_label(profileForm.firstname, null, {'label_attr': {'class': 'block text-sm font-medium mb-2'}}) }}
+                        {{ form_widget(profileForm.firstname, {'attr': {'class': 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary'}}) }}
+                        <div class="text-sm text-destructive mt-1">{{ form_errors(profileForm.firstname) }}</div>
+                    </div>
+                    <div>
+                        {{ form_label(profileForm.lastname, null, {'label_attr': {'class': 'block text-sm font-medium mb-2'}}) }}
+                        {{ form_widget(profileForm.lastname, {'attr': {'class': 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary'}}) }}
+                        <div class="text-sm text-destructive mt-1">{{ form_errors(profileForm.lastname) }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    {{ form_label(profileForm.email, null, {'label_attr': {'class': 'block text-sm font-medium mb-2'}}) }}
+                    {{ form_widget(profileForm.email, {'attr': {'class': 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary'}}) }}
+                    <div class="text-sm text-destructive mt-1">{{ form_errors(profileForm.email) }}</div>
+                </div>
+
+                <div>
+                    {{ form_label(profileForm.address, null, {'label_attr': {'class': 'block text-sm font-medium mb-2'}}) }}
+                    {{ form_widget(profileForm.address, {'attr': {'class': 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary', 'rows': 3}}) }}
+                    <div class="text-sm text-destructive mt-1">{{ form_errors(profileForm.address) }}</div>
+                </div>
+
+                <div>
+                    {{ form_label(profileForm.birthDate, null, {'label_attr': {'class': 'block text-sm font-medium mb-2'}}) }}
+                    {{ form_widget(profileForm.birthDate, {'attr': {'class': 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary'}}) }}
+                    <div class="text-sm text-destructive mt-1">{{ form_errors(profileForm.birthDate) }}</div>
+                </div>
+
+                <div>
+                    {{ form_label(profileForm.bio, null, {'label_attr': {'class': 'block text-sm font-medium mb-2'}}) }}
+                    {{ form_widget(profileForm.bio, {'attr': {'class': 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary', 'rows': 4}}) }}
+                    <div class="text-sm text-destructive mt-1">{{ form_errors(profileForm.bio) }}</div>
+                </div>
+
+                <div>
+                    {{ form_label(profileForm.imageFile, null, {'label_attr': {'class': 'block text-sm font-medium mb-2'}}) }}
+                    {{ form_widget(profileForm.imageFile, {'attr': {'class': 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20'}}) }}
+                    <div class="text-sm text-destructive mt-1">{{ form_errors(profileForm.imageFile) }}</div>
+                </div>
             </div>
             
             <div class="mt-6 flex justify-end">
