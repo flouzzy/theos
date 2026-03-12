@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -27,6 +28,18 @@ class UserType extends AbstractType
             ->add('birthDate', DateType::class)
             ->add('bio', null, [
                 'attr' => ['rows' => 10, 'cols' => 50]
+            ])
+            ->add('emailNotifications', CheckboxType::class, [
+                'required' => false,
+            ])
+            ->add('pushNotifications', CheckboxType::class, [
+                'required' => false,
+            ])
+            ->add('lessonReminders', CheckboxType::class, [
+                'required' => false,
+            ])
+            ->add('weeklySummary', CheckboxType::class, [
+                'required' => false,
             ])
             ->add('imageFile', FileType::class, [
                 'label' => $this->translator->trans('Choose an image'),
