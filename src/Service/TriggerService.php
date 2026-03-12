@@ -36,7 +36,28 @@ class TriggerService
             $this->processMilestoneTrigger($user);
             $this->processFomoTrigger($user);
             $this->processMorningRoutineTrigger($user);
+            $this->processWeeklyReflectionTrigger($user);
         }
+    }
+
+    /**
+     * Trigger #22: End of week reflection prompt
+     */
+    private function processWeeklyReflectionTrigger(User $user): void
+    {
+        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        
+        // Target Sunday evening (after 18:00)
+        if ($now->format('N') !== '7' || (int)$now->format('H') < 18) {
+            return;
+        }
+
+        $this->notificationService->addNotification(
+            $user,
+            "📓 C'est l'heure du bilan !",
+            "La semaine se termine. Prends un instant pour réfléchir à ce que tu as appris et fixe tes objectifs pour la semaine prochaine.",
+            $this->urlGenerator->generate('profile_index', [], UrlGeneratorInterface::ABSOLUTE_URL)
+        );
     }
 
     /**

@@ -108,7 +108,7 @@
 - [x] **Personalized welcome back message after 3 days of inactivity**
 - [x] **FOMO trigger: '80% of your cohort has finished this lesson'**
 - [x] **Morning routine integration (audio lesson trigger)**
-- [ ] **End of week reflection prompt**
+- [x] **End of week reflection prompt**
 - [x] **Notification: 'Your certificate is ready to claim'**
 - [ ] **Goal reminder: 'Keep working towards your [Custom Goal]'**
 
