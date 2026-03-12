@@ -273,8 +273,10 @@
                     {% endif %}
 
                     <div class="prose prose-slate dark:prose-invert max-w-none animate-in fade-in slide-in-from-bottom-2" 
-                         data-controller="glossary recommendation-nudge"
-                         data-recommendation-nudge-url-value="{{ path('app_lesson_nudge', {id: currentLesson.id}) }}">
+                         data-controller="glossary recommendation-nudge easter-egg"
+                         data-recommendation-nudge-url-value="{{ path('app_lesson_nudge', {id: currentLesson.id}) }}"
+                         data-easter-egg-url-value="{{ path('lesson_claim_easter_egg') }}"
+                         data-easter-egg-token-value="{{ csrf_token('claim_egg') }}">
                         {{ currentLesson.content|default('')|sanitize_html('default') }}
                     </div>
 

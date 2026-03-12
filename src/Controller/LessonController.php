@@ -310,4 +310,28 @@ class LessonController extends AbstractController
         return null;
     }
 
+    #[Route('/easter-egg/claim', name: 'lesson_claim_easter_egg', methods: ['POST'])]
+    public function claimEasterEgg(Request $request, GamificationService $gamificationService): JsonResponse
+    {
+        /** @var \App\Entity\User|null $user */
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (!$this->isCsrfTokenValid('claim_egg', $request->getPayload()->getString('_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Award XP and Badge
+        $gamificationService->addXp($user, 50, 'easter_egg_found');
+        $gamificationService->awardBadge(
+            $user, 
+            'EASTER_EGG_HUNTER', 
+            'Chasseur de Trésors', 
+            'Bravo ! Tu as trouvé un secret caché dans les leçons.'
+        );
+
+        return new JsonResponse(['success' => true, 'message' => 'Félicitations ! Tu as trouvé un secret ! (+50 XP)']);
+    }
 }
