@@ -7,6 +7,7 @@ use App\Entity\Conversation;
 use App\Event\CohortContentUnlockedEvent;
 use App\Event\CourseSubscribedEvent;
 use App\Service\NotificationService;
+use App\Service\WebhookService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -16,7 +17,8 @@ class CohortSubscriber implements EventSubscriberInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private NotificationService $notificationService,
-        private UrlGeneratorInterface $urlGenerator
+        private UrlGeneratorInterface $urlGenerator,
+        private WebhookService $webhookService
     ) {}
 
     public static function getSubscribedEvents(): array
@@ -31,14 +33,24 @@ class CohortSubscriber implements EventSubscriberInterface
     {
         $cohort = $event->getCohort();
         $course = $event->getCourse();
+        $courseUrl = $this->urlGenerator->generate('course_show', ['slug' => $course->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $message = sprintf("🎁 Nouveau contenu débloqué pour la promotion %s : **%s**\nConsulter ici : %s", $cohort->getTitle(), $course->getTitle(), $courseUrl);
 
         foreach ($cohort->getUsers() as $user) {
             $this->notificationService->addNotification(
                 $user,
                 "🎁 Nouveau contenu débloqué !",
                 sprintf("Un nouveau cours est disponible pour votre promotion %s : %s", $cohort->getTitle(), $course->getTitle()),
-                $this->urlGenerator->generate('course_show', ['slug' => $course->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL)
+                $courseUrl
             );
+        }
+
+        if ($cohort->getDiscordWebhookUrl()) {
+            $this->webhookService->sendDiscordNotification($cohort->getDiscordWebhookUrl(), $message);
+        }
+
+        if ($cohort->getSlackWebhookUrl()) {
+            $this->webhookService->sendSlackNotification($cohort->getSlackWebhookUrl(), $message);
         }
     }
 

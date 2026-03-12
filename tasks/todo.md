@@ -101,7 +101,7 @@
 - [x] **Milestone reminder: 'You are 1 lesson away from completing the course'**
 - [x] **Notification: 'New exclusive content unlocked for your cohort'**
 - [x] **Desktop push notifications (PWA)**
-- [ ] **Discord/Slack bot integration for cohort announcements**
+- [x] **Discord/Slack bot integration for cohort announcements**
 - [ ] **Notification: 'Your note was upvoted by 5 people'**
 - [ ] **Study time anomaly detection ('You are studying late!')**
 - [ ] **Contextual nudges based on current page (e.g., related articles)**

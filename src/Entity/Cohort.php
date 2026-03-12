@@ -60,6 +60,12 @@ class Cohort
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logoPath = null;
 
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $discordWebhookUrl = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $slackWebhookUrl = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -254,6 +260,30 @@ class Cohort
     public function setLogoPath(?string $logoPath): static
     {
         $this->logoPath = $logoPath;
+
+        return $this;
+    }
+
+    public function getDiscordWebhookUrl(): ?string
+    {
+        return $this->discordWebhookUrl;
+    }
+
+    public function setDiscordWebhookUrl(?string $discordWebhookUrl): static
+    {
+        $this->discordWebhookUrl = $discordWebhookUrl;
+
+        return $this;
+    }
+
+    public function getSlackWebhookUrl(): ?string
+    {
+        return $this->slackWebhookUrl;
+    }
+
+    public function setSlackWebhookUrl(?string $slackWebhookUrl): static
+    {
+        $this->slackWebhookUrl = $slackWebhookUrl;
 
         return $this;
     }
