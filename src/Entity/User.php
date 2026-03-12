@@ -242,10 +242,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $googleId = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $linkedinId = null;
+    private ?string $customGoal = null;
+
+    #[ORM\Column(length: 128, nullable: true, unique: true)]
+    private ?string $loginToken = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $loginTokenExpiresAt = null;
 
     /**
      * @var Collection<int, XpTransaction>
+
      */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: XpTransaction::class, orphanRemoval: true)]
     private Collection $xpTransactions;
@@ -1442,5 +1449,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         }
 
         return $this;
+    }
+
+    public function getLoginToken(): ?string
+    {
+        return $this->loginToken;
+    }
+
+    public function setLoginToken(?string $loginToken): static
+    {
+        $this->loginToken = $loginToken;
+
+        return $this;
+    }
+
+    public function getLoginTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->loginTokenExpiresAt;
+    }
+
+    public function setLoginTokenExpiresAt(?\DateTimeImmutable $loginTokenExpiresAt): static
+    {
+        $this->loginTokenExpiresAt = $loginTokenExpiresAt;
+
+        return $this;
+    }
+
+    public function isLoginTokenValid(): bool
+    {
+        return $this->loginToken && $this->loginTokenExpiresAt > new \DateTimeImmutable();
     }
 }

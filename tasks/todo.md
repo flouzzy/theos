@@ -122,8 +122,8 @@
 - [x] **Offline lesson downloading via PWA**
 - [x] **Quick-add notes sidebar (LiveComponent)**
 - [x] **Voice-to-text for taking notes on mobile**
-- [ ] **Frictionless login (Magic Links)**
-- [ ] **Social Login (Google, LinkedIn, GitHub)**
+- [x] **Frictionless login (Magic Links)**
+- [x] **Social Login (Google, LinkedIn, GitHub)**
 - [x] **Instant search (cmd+k) for lessons and notes**
 - [x] **Dark mode / Light mode quick toggle**
 - [x] **Distraction-free reading mode for text lessons**
