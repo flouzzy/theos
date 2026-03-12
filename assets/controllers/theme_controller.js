@@ -17,13 +17,8 @@ export default class extends Controller {
     }
 
     updateTheme() {
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            this.setDarkIcon();
-        } else {
-            document.documentElement.classList.remove('dark');
-            this.setLightIcon();
-        }
+        document.documentElement.classList.remove('dark');
+        this.setLightIcon();
     }
 
     setDarkIcon() {

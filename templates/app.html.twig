@@ -261,11 +261,6 @@
                         </div>
                     </div>
 
-                    <button data-controller="theme"
- data-action="click->theme#toggle" class="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground">
-                        <twig:ux:icon name="lucide:sun" class="w-5 h-5 hidden" data-theme-icon="sun" />
-                        <twig:ux:icon name="lucide:moon" class="w-5 h-5 hidden" data-theme-icon="moon" />
-                    </button>
                     {% if app.user %}
                         <div class="flex items-center gap-1 bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full text-xs font-bold ring-1 ring-orange-200">
                             <span>🔥</span> {{ app.user.streak }}
