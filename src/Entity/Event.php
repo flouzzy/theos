@@ -26,8 +26,8 @@ class Event
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $location = null;
 
-    #[ORM\Column(length: 50, options: ['default' => 'webinar'])]
-    private ?string $type = 'webinar';
+    #[ORM\ManyToOne]
+    private ?EventCategory $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?Calendar $calendar = null;
@@ -85,12 +85,12 @@ class Event
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): ?EventCategory
     {
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?EventCategory $type): static
     {
         $this->type = $type;
 
