@@ -94,7 +94,7 @@
 - [x] **AI nudge: 'You usually study at 8 PM, ready to start?'**
 - [x] **Browser notification for new peer review requests**
 - [x] **In-app modal: 'New badge available in your current module'**
-- [ ] **Weekly recap email with personalized infographics**
+- [x] **Weekly recap email with personalized infographics**
 - [ ] **Calendar integration (Google/Outlook) for study blocks**
 - [x] **Notification: 'A mentor replied to your comment'**
 - [x] **Inactivity trigger: 'We miss you, here is a 5-min micro-lesson'**

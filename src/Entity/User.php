@@ -244,6 +244,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $linkedinId = null;
 
+    /**
+     * @var Collection<int, XpTransaction>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: XpTransaction::class, orphanRemoval: true)]
+    private Collection $xpTransactions;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -265,6 +271,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->peerReviews = new ArrayCollection();
         $this->evaluations = new ArrayCollection();
         $this->chatMessages = new ArrayCollection();
+        $this->xpTransactions = new ArrayCollection();
     }
 
     public function __toString()
@@ -1351,6 +1358,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setWeeklySummary(bool $weeklySummary): static
     {
         $this->weeklySummary = $weeklySummary;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, XpTransaction>
+     */
+    public function getXpTransactions(): Collection
+    {
+        return $this->xpTransactions;
+    }
+
+    public function addXpTransaction(XpTransaction $xpTransaction): static
+    {
+        if (!$this->xpTransactions->contains($xpTransaction)) {
+            $this->xpTransactions->add($xpTransaction);
+            $xpTransaction->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeXpTransaction(XpTransaction $xpTransaction): static
+    {
+        if ($this->xpTransactions->removeElement($xpTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($xpTransaction->getUser() === $this) {
+                $xpTransaction->setUser(null);
+            }
+        }
 
         return $this;
     }

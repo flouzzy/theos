@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Badge;
 use App\Entity\BadgeType;
 use App\Entity\Course;
+use App\Entity\XpTransaction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,6 +24,13 @@ class GamificationService
     {
         $oldXp = $user->getXp();
         $user->addXp($amount);
+
+        $transaction = new XpTransaction();
+        $transaction->setUser($user);
+        $transaction->setAmount($amount);
+        $transaction->setReason($reason);
+        $this->entityManager->persist($transaction);
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
