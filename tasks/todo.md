@@ -68,9 +68,9 @@
     - [x] Instructor Dashboard: "At-Risk" student detection and content efficacy heatmaps.
 
 ### Sprint 4: The Enterprise Moat
-- [/] **Enterprise Features**
+- [x] **Enterprise Features**
     - [x] Single Sign-On (SSO): Support for SAML 2.0 and OIDC (Google & LinkedIn).
-    - [ ] Multi-Tenancy / White-Labeling support.
+    - [x] Multi-Tenancy / White-Labeling support (via Cohort branding).
     - [x] Team Management for corporate managers.
 - [x] **Monetization**
     - [x] Subscription Tiers: Stripe integration and feature gating.
@@ -79,7 +79,7 @@
 ### Sprint 5: Ubiquity & Scale
 - [/] **Mobile Experience**
     - [x] Progressive Web App (PWA): Service Workers and offline shell caching.
-    - [ ] Offline Mode: Encrypted local storage for downloaded video content.
+    - [x] Offline Mode: Encrypted local storage for video content and offline dashboard.
 - [x] **API & Integrations**
     - [x] Public API: REST/GraphQL for third-party developers.
     - [ ] LTI Standard: Support for LTI 1.3 integration.
