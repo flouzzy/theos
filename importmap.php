@@ -37,4 +37,7 @@ return [
     'canvas-confetti' => [
         'version' => '1.9.4',
     ],
+    'alpinejs' => [
+        'version' => '3.14.8',
+    ],
 ];
