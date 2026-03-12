@@ -306,6 +306,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $weeklySummary = false;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $customGoal = null;
+
     #[ORM\PrePersist]
     public function setUserDetails(): void
     {
@@ -1365,6 +1368,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setWeeklySummary(bool $weeklySummary): static
     {
         $this->weeklySummary = $weeklySummary;
+
+        return $this;
+    }
+
+    public function getCustomGoal(): ?string
+    {
+        return $this->customGoal;
+    }
+
+    public function setCustomGoal(?string $customGoal): static
+    {
+        $this->customGoal = $customGoal;
 
         return $this;
     }

@@ -110,7 +110,7 @@
 - [x] **Morning routine integration (audio lesson trigger)**
 - [x] **End of week reflection prompt**
 - [x] **Notification: 'Your certificate is ready to claim'**
-- [ ] **Goal reminder: 'Keep working towards your [Custom Goal]'**
+- [x] **Goal reminder: 'Keep working towards your [Custom Goal]'**
 
 ### ⚡ 2. Actions (Frictionless UX/UI)
 - [x] **One-click 'Resume where I left off' on dashboard**

@@ -37,7 +37,32 @@ class TriggerService
             $this->processFomoTrigger($user);
             $this->processMorningRoutineTrigger($user);
             $this->processWeeklyReflectionTrigger($user);
+            $this->processGoalReminderTrigger($user);
         }
+    }
+
+    /**
+     * Trigger #24: Goal reminder: 'Keep working towards your [Custom Goal]'
+     */
+    private function processGoalReminderTrigger(User $user): void
+    {
+        if (!$user->getCustomGoal()) {
+            return;
+        }
+
+        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        
+        // Target Wednesday morning
+        if ($now->format('N') !== '3' || (int)$now->format('H') < 10 || (int)$now->format('H') > 12) {
+            return;
+        }
+
+        $this->notificationService->addNotification(
+            $user,
+            "🎯 Rappel de ton objectif",
+            sprintf("Garde le cap ! Tu travailles pour : '%s'. Une petite leçon aujourd'hui pour t'en rapprocher ?", $user->getCustomGoal()),
+            $this->urlGenerator->generate('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL)
+        );
     }
 
     /**
