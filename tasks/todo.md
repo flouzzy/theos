@@ -102,7 +102,7 @@
 - [x] **Notification: 'New exclusive content unlocked for your cohort'**
 - [x] **Desktop push notifications (PWA)**
 - [x] **Discord/Slack bot integration for cohort announcements**
-- [ ] **Notification: 'Your note was upvoted by 5 people'**
+- [x] **Notification: 'Your note was upvoted by 5 people'**
 - [ ] **Study time anomaly detection ('You are studying late!')**
 - [ ] **Contextual nudges based on current page (e.g., related articles)**
 - [ ] **Personalized welcome back message after 3 days of inactivity**

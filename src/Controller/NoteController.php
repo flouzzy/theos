@@ -8,18 +8,23 @@ use App\Entity\Module;
 use App\Entity\Note;
 use App\Form\NoteType;
 use App\Repository\NoteRepository;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/note', name: 'note_')]
 #[IsGranted('IS_AUTHENTICATED')]
 class NoteController extends AbstractController
 {
+    public function __construct(
+        private NotificationService $notificationService
+    ) {}
 
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(
@@ -144,5 +149,43 @@ class NoteController extends AbstractController
         }
 
         return $this->redirectToRoute('note_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/like', name: 'like', methods: ['POST'])]
+    public function like(Note $note, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        /** @var \App\Entity\User|null $user */
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$this->isCsrfTokenValid('like_note' . $note->getId(), $request->getPayload()->getString('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        if ($note->getLikes()->contains($user)) {
+            $note->removeLike($user);
+        } else {
+            $note->addLike($user);
+            
+            // Check for 5 likes milestone
+            if ($note->getLikes()->count() === 5) {
+                $this->notificationService->addNotification(
+                    $note->getUser(),
+                    "🎉 Ta note est populaire !",
+                    sprintf("Ta note sur la leçon '%s' a déjà reçu 5 likes. Félicitations !", $note->getLesson()->getTitle()),
+                    $this->generateUrl('lesson_show', [
+                        'courseSlug' => $note->getLesson()->getModule()->getCourses()->first()->getSlug(),
+                        'moduleSlug' => $note->getLesson()->getModule()->getSlug(),
+                        'lessonId' => $note->getLesson()->getId()
+                    ], UrlGeneratorInterface::ABSOLUTE_URL)
+                );
+            }
+        }
+
+        $entityManager->flush();
+
+        return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('note_index'));
     }
 }
