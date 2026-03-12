@@ -23,6 +23,14 @@ class GamificationService
     public function addXp(User $user, int $amount, string $reason = ''): void
     {
         $oldXp = $user->getXp();
+        
+        // Weekend Multiplier (1.5x on Saturday and Sunday)
+        $dayOfWeek = (int)(new \DateTimeImmutable())->format('N');
+        if ($dayOfWeek >= 6) {
+            $amount = (int)($amount * 1.5);
+            $reason .= ' (Weekend Bonus x1.5)';
+        }
+
         $user->addXp($amount);
 
         $transaction = new XpTransaction();

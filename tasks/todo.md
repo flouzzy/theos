@@ -139,7 +139,7 @@
 - [x] **Accessibility: Full screen reader compatibility and high contrast mode**
 
 ### 🎁 3. Variable Rewards (Gamification)
-- [ ] **Dynamic XP multipliers for weekend studying**
+- [x] **Dynamic XP multipliers for weekend studying**
 - [ ] **Surprise loot boxes (unlock bonus PDF/audio) upon module completion**
 - [ ] **Hidden easter eggs in lesson content**
 - [ ] **Tiered leaderboards (Bronze, Silver, Gold, Diamond)**
