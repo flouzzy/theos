@@ -34,6 +34,46 @@ class TriggerService
             $this->processHabitTrigger($user);
             $this->processInactivityTrigger($user);
             $this->processMilestoneTrigger($user);
+            $this->processFomoTrigger($user);
+        }
+    }
+
+    /**
+     * Trigger #20: FOMO trigger: '80% of your cohort has finished this lesson'
+     */
+    private function processFomoTrigger(User $user): void
+    {
+        foreach ($user->getCohorts() as $cohort) {
+            $totalUsers = count($cohort->getUsers());
+            if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
+
+            foreach ($cohort->getCourses() as $course) {
+                foreach ($course->getModules() as $module) {
+                    foreach ($module->getLessons() as $lesson) {
+                        $userCompletion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
+                        if ($userCompletion && $userCompletion->isCompleted()) {
+                            continue;
+                        }
+
+                        $othersCompletions = $this->completionRepository->count(['lesson' => $lesson, 'completed' => true]);
+                        $percentage = ($othersCompletions / $totalUsers) * 100;
+
+                        if ($percentage >= 80) {
+                            $this->notificationService->addNotification(
+                                $user,
+                                "🚀 Ne reste pas à la traîne !",
+                                sprintf("Déjà 80%% de ta promotion %s a terminé la leçon : %s. C'est ton tour !", $cohort->getTitle(), $lesson->getTitle()),
+                                $this->urlGenerator->generate('lesson_show', [
+                                    'courseSlug' => $course->getSlug(),
+                                    'moduleSlug' => $module->getSlug(),
+                                    'lessonId' => $lesson->getId()
+                                ], UrlGeneratorInterface::ABSOLUTE_URL)
+                            );
+                            return; // One FOMO at a time
+                        }
+                    }
+                }
+            }
         }
     }
 
