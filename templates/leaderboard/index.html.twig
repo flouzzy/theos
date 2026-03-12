@@ -53,6 +53,7 @@
                 <tr class="border-b border-border bg-muted/50">
                     <th class="p-4 font-semibold text-foreground">#</th>
                     <th class="p-4 font-semibold text-foreground">{{ 'Utilisateur' | trans }}</th>
+                    <th class="p-4 font-semibold text-foreground text-center">{{ 'Ligue' | trans }}</th>
                     <th class="p-4 font-semibold text-foreground text-center">XP</th>
                     <th class="p-4 font-semibold text-foreground text-center">{{ 'Série' | trans }}</th>
                     <th class="p-4 font-semibold text-foreground text-center">{{ 'Badges' | trans }}</th>
@@ -69,6 +70,17 @@
                             <twig:UserAvatar :user="user" />
                             <span class="font-medium {{ app.user == user ? 'text-indigo-600 dark:text-indigo-400' : 'text-foreground' }}">
                                 {{ user.fullname }}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider
+                                {% if 'Diamant' in user.tier %}bg-cyan-100 text-cyan-700 border border-cyan-200
+                                {% elseif 'Or' in user.tier %}bg-yellow-100 text-yellow-700 border border-yellow-200
+                                {% elseif 'Argent' in user.tier %}bg-slate-100 text-slate-700 border border-slate-200
+                                {% elseif 'Bronze' in user.tier %}bg-amber-100 text-amber-700 border border-amber-200
+                                {% else %}bg-emerald-50 text-emerald-600 border border-emerald-100
+                                {% endif %}">
+                                {{ user.tier }}
                             </span>
                         </td>
                         <td class="p-4 text-center font-bold text-indigo-600">{{ user.xp }} XP</td>

@@ -1488,6 +1488,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->loginToken && $this->loginTokenExpiresAt > new \DateTimeImmutable();
     }
 
+    public function getTier(): string
+    {
+        if ($this->xp >= 10000) return '💎 Diamant';
+        if ($this->xp >= 5000) return '🥇 Or';
+        if ($this->xp >= 2000) return '🥈 Argent';
+        if ($this->xp >= 500) return '🥉 Bronze';
+        return '🌱 Novice';
+    }
+
     /**
      * @return Collection<int, Bonus>
      */

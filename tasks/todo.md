@@ -142,7 +142,7 @@
 - [x] **Dynamic XP multipliers for weekend studying**
 - [x] **Surprise loot boxes (unlock bonus PDF/audio) upon module completion**
 - [x] **Hidden easter eggs in lesson content**
-- [ ] **Tiered leaderboards (Bronze, Silver, Gold, Diamond)**
+- [x] **Tiered leaderboards (Bronze, Silver, Gold, Diamond)**
 - [x] **Confetti animations on lesson completion (LiveComponent)**
 - [ ] **Unlockable avatar frames based on achievements**
 - [ ] **Rare 'Early Adopter' or 'Speed Learner' badges**
