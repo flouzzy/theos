@@ -168,6 +168,35 @@
                         {{ 'Sauvegarder hors-ligne' | trans }}
                     </button>
 
+                    {% if currentLesson.videoUrl %}
+                    <div data-controller="offline-video" 
+                         data-offline-video-lesson-id-value="{{ currentLesson.id }}"
+                         data-offline-video-url-value="{{ currentLesson.videoUrl }}"
+                         class="flex items-center gap-2">
+                        
+                        <button type="button" 
+                                data-offline-video-target="downloadBtn"
+                                data-action="click->offline-video#download"
+                                class="inline-flex items-center justify-center rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted transition-colors gap-2">
+                            <twig:ux:icon name="lucide:video" class="w-4 h-4" />
+                            {{ 'Vidéo hors-ligne' | trans }}
+                        </button>
+
+                        <div data-offline-video-target="progressBar" class="hidden h-9 w-32 bg-slate-100 rounded-lg overflow-hidden relative border border-slate-200">
+                            <div class="h-full bg-primary animate-pulse w-full"></div>
+                            <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-primary-foreground uppercase tracking-tighter">{{ 'Téléchargement...' | trans }}</span>
+                        </div>
+
+                        <button type="button" 
+                                data-offline-video-target="playBtn"
+                                data-action="click->offline-video#play"
+                                class="hidden inline-flex items-center justify-center rounded-lg border border-green-200 bg-green-50 text-green-700 px-4 py-2 text-sm font-medium hover:bg-green-100 transition-colors gap-2">
+                            <twig:ux:icon name="lucide:play-circle" class="w-4 h-4" />
+                            {{ 'Lecture hors-ligne' | trans }}
+                        </button>
+                    </div>
+                    {% endif %}
+
                     <button data-controller="distraction-free" data-action="click->distraction-free#toggle" class="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground hidden lg:flex" title="{{ 'Mode immersion' | trans }}">
                         <twig:ux:icon name="lucide:maximize-2" class="w-5 h-5" />
                     </button>
