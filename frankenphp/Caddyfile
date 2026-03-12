@@ -2,6 +2,10 @@
 	{$CADDY_GLOBAL_OPTIONS}
 	auto_https off
 
+	servers {
+		trusted_proxies static 172.16.0.0/12 192.168.0.0/16 10.0.0.0/8 127.0.0.1 ::1
+	}
+
 	frankenphp {
 		{$FRANKENPHP_CONFIG}
 
