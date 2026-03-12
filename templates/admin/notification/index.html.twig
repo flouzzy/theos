@@ -80,4 +80,10 @@
             </twig:Table:Body>
         </twig:Table>
     </div>
+
+    <twig:Pagination
+        currentPage="{{ currentPage }}"
+        totalPages="{{ totalPages }}"
+        routeName="admin_notification_index"
+    />
 {% endblock %}
