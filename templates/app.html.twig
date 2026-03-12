@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="min-h-screen bg-background" :class="app.user ? 'pb-16 lg:pb-0' : ''" x-data="{ mobileMenuOpen: false, moreMenuOpen: false, desktopSidebarOpen: true }">
+<div class="min-h-screen bg-background {{ app.user ? 'pb-16 lg:pb-0' : '' }}" x-data="{ mobileMenuOpen: false, moreMenuOpen: false, desktopSidebarOpen: true }">
     
     {# Desktop Sidebar - Fixed Left #}
     <aside class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:top-0 lg:bottom-0 lg:flex lg:flex-col lg:w-64 bg-sidebar border-r border-border transition-all duration-300 z-40" 
