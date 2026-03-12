@@ -4,21 +4,42 @@ namespace App\EventSubscriber;
 
 use App\Entity\Cohort;
 use App\Entity\Conversation;
+use App\Event\CohortContentUnlockedEvent;
 use App\Event\CourseSubscribedEvent;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CohortSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private NotificationService $notificationService,
+        private UrlGeneratorInterface $urlGenerator
     ) {}
 
     public static function getSubscribedEvents(): array
     {
         return [
             CourseSubscribedEvent::class => 'onCourseSubscribed',
+            CohortContentUnlockedEvent::class => 'onCohortContentUnlocked',
         ];
+    }
+
+    public function onCohortContentUnlocked(CohortContentUnlockedEvent $event): void
+    {
+        $cohort = $event->getCohort();
+        $course = $event->getCourse();
+
+        foreach ($cohort->getUsers() as $user) {
+            $this->notificationService->addNotification(
+                $user,
+                "🎁 Nouveau contenu débloqué !",
+                sprintf("Un nouveau cours est disponible pour votre promotion %s : %s", $cohort->getTitle(), $course->getTitle()),
+                $this->urlGenerator->generate('course_show', ['slug' => $course->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
+        }
     }
 
     public function onCourseSubscribed(CourseSubscribedEvent $event): void

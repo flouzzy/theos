@@ -5,8 +5,10 @@ namespace App\Controller\Admin;
 use App\Entity\Cohort;
 use App\Form\CohortType;
 use App\Repository\CohortRepository;
+use App\Event\CohortContentUnlockedEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -51,12 +53,20 @@ class CohortController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Cohort $cohort, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Cohort $cohort, EntityManagerInterface $entityManager, EventDispatcherInterface $dispatcher): Response
     {
+        $originalCourses = $cohort->getCourses()->toArray();
         $form = $this->createForm(CohortType::class, $cohort);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $newCourses = $cohort->getCourses();
+            foreach ($newCourses as $course) {
+                if (!in_array($course, $originalCourses, true)) {
+                    $dispatcher->dispatch(new CohortContentUnlockedEvent($cohort, $course));
+                }
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('admin_cohort_index', [], Response::HTTP_SEE_OTHER);
