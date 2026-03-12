@@ -101,6 +101,7 @@ RUN set -eux; \
 	mkdir -p var/cache var/log var/share; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	composer dump-env prod; \
+	php bin/console importmap:install; \
 	php bin/console tailwind:build; \
 	php bin/console asset-map:compile; \
 	composer run-script --no-dev post-install-cmd; \
