@@ -236,7 +236,7 @@
             {# Page Title #}
             <div class="flex-1 min-w-0">
                 <h1 class="text-base lg:text-lg font-bold truncate">
-                    {% block page_title %}{{ 'Le Rocher Académie' | trans }}{% endblock %}
+                    {% block page_title %}{{ block('title') }}{% endblock %}
                 </h1>
             </div>
 
