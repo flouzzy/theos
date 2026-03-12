@@ -105,7 +105,7 @@
 - [x] **Notification: 'Your note was upvoted by 5 people'**
 - [x] **Study time anomaly detection ('You are studying late!')**
 - [x] **Contextual nudges based on current page (e.g., related articles)**
-- [ ] **Personalized welcome back message after 3 days of inactivity**
+- [x] **Personalized welcome back message after 3 days of inactivity**
 - [ ] **FOMO trigger: '80% of your cohort has finished this lesson'**
 - [ ] **Morning routine integration (audio lesson trigger)**
 - [ ] **End of week reflection prompt**
