@@ -21,4 +21,15 @@ class RecommendationController extends AbstractController
             'recommendations' => $recommendations,
         ]);
     }
+
+    #[Route('/lesson/{id}/nudge', name: 'app_lesson_nudge')]
+    public function nudge(Lesson $lesson, RecommendationService $recommendationService): Response
+    {
+        $recommendations = $recommendationService->getRecommendations($lesson, 1);
+        $recommendation = count($recommendations) > 0 ? $recommendations[0] : null;
+
+        return $this->render('lesson/_nudge.html.twig', [
+            'recommendation' => $recommendation,
+        ]);
+    }
 }
