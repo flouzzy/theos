@@ -250,6 +250,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: XpTransaction::class, orphanRemoval: true)]
     private Collection $xpTransactions;
 
+    /**
+     * @var Collection<int, PushSubscription>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PushSubscription::class, orphanRemoval: true)]
+    private Collection $pushSubscriptions;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -272,6 +278,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->evaluations = new ArrayCollection();
         $this->chatMessages = new ArrayCollection();
         $this->xpTransactions = new ArrayCollection();
+        $this->pushSubscriptions = new ArrayCollection();
     }
 
     public function __toString()
@@ -1386,6 +1393,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
             // set the owning side to null (unless already changed)
             if ($xpTransaction->getUser() === $this) {
                 $xpTransaction->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PushSubscription>
+     */
+    public function getPushSubscriptions(): Collection
+    {
+        return $this->pushSubscriptions;
+    }
+
+    public function addPushSubscription(PushSubscription $pushSubscription): static
+    {
+        if (!$this->pushSubscriptions->contains($pushSubscription)) {
+            $this->pushSubscriptions->add($pushSubscription);
+            $pushSubscription->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePushSubscription(PushSubscription $pushSubscription): static
+    {
+        if ($this->pushSubscriptions->removeElement($pushSubscription)) {
+            // set the owning side to null (unless already changed)
+            if ($pushSubscription->getUser() === $this) {
+                $pushSubscription->setUser(null);
             }
         }
 

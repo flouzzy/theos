@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\Course;
 use App\Entity\Module;
 use App\Entity\Lesson;
+use App\Entity\PushSubscription;
 use App\Repository\CourseRepository;
 use App\Service\JWT;
 use Doctrine\ORM\EntityManagerInterface;
@@ -186,5 +187,40 @@ class ApiController extends AbstractController
         }
 
         return new JsonResponse($data);
+    }
+
+    #[Route('/push/subscribe', name: 'push_subscribe', methods: ['POST'])]
+    public function subscribe(Request $request, JWT $jwt, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->checkAuth($request, $jwt, $entityManager);
+        if (!$user) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $endpoint = $data['endpoint'] ?? null;
+        $keys = $data['keys'] ?? null;
+
+        if (!$endpoint || !$keys) {
+            return new JsonResponse(['error' => 'Invalid subscription data'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Avoid duplicates
+        $repo = $entityManager->getRepository(PushSubscription::class);
+        $existing = $repo->findOneBy(['endpoint' => $endpoint]);
+        
+        if ($existing) {
+            return new JsonResponse(['success' => true, 'message' => 'Already subscribed']);
+        }
+
+        $subscription = new PushSubscription();
+        $subscription->setUser($user);
+        $subscription->setEndpoint($endpoint);
+        $subscription->setKeys($keys);
+
+        $entityManager->persist($subscription);
+        $entityManager->flush();
+
+        return new JsonResponse(['success' => true]);
     }
 }

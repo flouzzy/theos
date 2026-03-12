@@ -100,7 +100,7 @@
 - [x] **Inactivity trigger: 'We miss you, here is a 5-min micro-lesson'**
 - [x] **Milestone reminder: 'You are 1 lesson away from completing the course'**
 - [x] **Notification: 'New exclusive content unlocked for your cohort'**
-- [ ] **Desktop push notifications (PWA)**
+- [x] **Desktop push notifications (PWA)**
 - [ ] **Discord/Slack bot integration for cohort announcements**
 - [ ] **Notification: 'Your note was upvoted by 5 people'**
 - [ ] **Study time anomaly detection ('You are studying late!')**
