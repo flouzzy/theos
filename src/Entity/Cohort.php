@@ -45,11 +45,8 @@ class Cohort
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $startAt = null;
 
-    #[ORM\OneToOne(mappedBy: 'cohort', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'cohorts')]
     private ?Calendar $calendar = null;
-
-    #[ORM\OneToMany(mappedBy: 'cohort', targetEntity: Event::class)]
-    private Collection $events;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Conversation $conversation = null;
@@ -69,7 +66,6 @@ class Cohort
 
         $this->year = (new \DateTime('now'))->format('Y');
         $this->users = new ArrayCollection();
-        $this->events = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -209,47 +205,7 @@ class Cohort
 
     public function setCalendar(?Calendar $calendar): static
     {
-        // unset the owning side of the relation if necessary
-        if ($calendar === null && $this->calendar !== null) {
-            $this->calendar->setCohort(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($calendar !== null && $calendar->getCohort() !== $this) {
-            $calendar->setCohort($this);
-        }
-
         $this->calendar = $calendar;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Event>
-     */
-    public function getEvents(): Collection
-    {
-        return $this->events;
-    }
-
-    public function addEvent(Event $event): static
-    {
-        if (!$this->events->contains($event)) {
-            $this->events->add($event);
-            $event->setCohort($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Event $event): static
-    {
-        if ($this->events->removeElement($event)) {
-            // set the owning side to null (unless already changed)
-            if ($event->getCohort() === $this) {
-                $event->setCohort(null);
-            }
-        }
 
         return $this;
     }

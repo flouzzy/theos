@@ -18,6 +18,7 @@
                 <twig:Table:Row>
                     <twig:Table:Header class="w-16">Id</twig:Table:Header>
                     <twig:Table:Header>{{ 'Titre' | trans }}</twig:Table:Header>
+                    <twig:Table:Header>{{ 'Calendrier' | trans }}</twig:Table:Header>
                     <twig:Table:Header>{{ 'Année' | trans }}</twig:Table:Header>
                     <twig:Table:Header>{{ 'Statut' | trans }}</twig:Table:Header>
                     <twig:Table:Header>{{ 'Créé le' | trans }}</twig:Table:Header>
@@ -39,6 +40,16 @@
                                 </div>
                                 <div class="font-semibold text-slate-900">{{ cohort.title }}</div>
                             </div>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell>
+                            {% if cohort.calendar %}
+                                <a href="{{ path('admin_calendar_show', {id: cohort.calendar.id}) }}" class="flex items-center gap-1.5 text-xs font-bold text-primary hover:underline group">
+                                    <twig:ux:icon name="lucide:calendar" class="w-3.5 h-3.5" />
+                                    {{ cohort.calendar.title }}
+                                </a>
+                            {% else %}
+                                <span class="text-[10px] text-slate-400 italic">{{ 'Aucun' | trans }}</span>
+                            {% endif %}
                         </twig:Table:Cell>
                         <twig:Table:Cell>
                             <span class="px-2.5 py-1 rounded-md bg-slate-50 text-slate-600 border border-slate-200 text-xs font-bold font-mono">
@@ -74,7 +85,7 @@
                     </twig:Table:Row>
                 {% else %}
                     <twig:Table:Row>
-                        <twig:Table:Cell colspan="6" class="py-12 text-center text-slate-400">
+                        <twig:Table:Cell colspan="7" class="py-12 text-center text-slate-400">
                             {{ 'Aucun enregistrement trouvé' | trans }}
                         </twig:Table:Cell>
                     </twig:Table:Row>

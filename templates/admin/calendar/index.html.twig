@@ -1,52 +1,67 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block menuBackButton %}
-	<ion-button href="{{path('admin_calendar_index')}}">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-		{{'Back' | trans}}
-	</ion-button>
-{% endblock %}
-
-{% block title %}
-	{{'Calendar' | trans}}
-{% endblock %}
+{% block title %}{{ 'Calendriers' | trans }}{% endblock %}
 
 {% block content %}
-	<h1>Calendar index</h1>
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900">{{ 'Calendriers Partagés' | trans }}</h1>
+            <p class="text-slate-500">{{ 'Créez des calendriers réutilisables pour vos promotions.' | trans }}</p>
+        </div>
+        <a href="{{ path('admin_calendar_new') }}" class="btn bg-primary text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform flex items-center gap-2">
+            <twig:ux:icon name="lucide:plus" class="w-5 h-5" />
+            {{ 'Créer un calendrier' | trans }}
+        </a>
+    </div>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Description</th>
-				<th>Promotion</th>
-				<th>Url</th>
-				<th>actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for calendar in calendars %}
-				<tr>
-					<td>{{ calendar.id }}</td>
-					<td>{{ calendar.description }}</td>
-					<td>{{ calendar.cohort ? calendar.cohort.title : 'Aucune' }}</td>
-					<td>{{ calendar.url }}</td>
-					<td class="flex items-center gap-2">
-						<a href="{{ path('admin_calendar_show', {'id': calendar.id}) }}" class="btn btn-sm btn-outline">{{ 'Détails' | trans }}</a>
-						<a href="{{ path('admin_calendar_edit', {'id': calendar.id}) }}" class="btn btn-sm btn-primary">{{ 'Modifier' | trans }}</a>
-                        <form method="post" action="{{ path('admin_calendar_duplicate', {'id': calendar.id}) }}" onsubmit="return confirm('Voulez-vous vraiment dupliquer ce calendrier ?');" style="display:inline-block">
-                            <input type="hidden" name="_token" value="{{ csrf_token('duplicate' ~ calendar.id) }}">
-                            <button class="btn btn-sm btn-secondary cursor-pointer">{{ 'Dupliquer' | trans }}</button>
-                        </form>
-					</td>
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="5">no records found</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for calendar in calendars %}
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                            <twig:ux:icon name="lucide:calendar" class="w-6 h-6" />
+                        </div>
+                        <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg uppercase tracking-wider">
+                            {{ calendar.events|length }} {{ 'Événements' | trans }}
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">{{ calendar.title }}</h3>
+                    <p class="text-slate-500 text-sm line-clamp-2 mb-6">
+                        {{ calendar.description ?: 'Pas de description.' | trans }}
+                    </p>
 
-	<a href="{{ path('admin_calendar_new') }}">Create new</a>
+                    <div class="flex items-center gap-2 pt-4 border-t border-slate-100">
+                        <a href="{{ path('admin_calendar_show', {'id': calendar.id}) }}" class="flex-1 btn bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl py-2 text-sm font-bold transition-colors text-center">
+                            {{ 'Gérer' | trans }}
+                        </a>
+                        <a href="{{ path('admin_calendar_edit', {'id': calendar.id}) }}" class="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
+                            <twig:ux:icon name="lucide:edit" class="w-5 h-5" />
+                        </a>
+                    </div>
+                </div>
+                
+                {% if calendar.cohorts|length > 0 %}
+                    <div class="bg-slate-50 px-6 py-3 border-t border-slate-100 flex items-center gap-2">
+                        <twig:ux:icon name="lucide:users" class="w-4 h-4 text-slate-400" />
+                        <span class="text-xs font-medium text-slate-500">
+                            {{ 'Utilisé par' | trans }} {{ calendar.cohorts|length }} {{ 'promos' | trans }}
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="col-span-full py-20 text-center bg-white rounded-3xl border border-dashed border-slate-300">
+                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                    <twig:ux:icon name="lucide:calendar-x" class="w-10 h-10" />
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">{{ 'Aucun calendrier' | trans }}</h3>
+                <p class="text-slate-500 mb-8">{{ 'Commencez par créer votre premier calendrier partagé.' | trans }}</p>
+                <a href="{{ path('admin_calendar_new') }}" class="btn bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20">
+                    {{ 'Créer un calendrier' | trans }}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

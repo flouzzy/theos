@@ -1,20 +1,27 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block menuBackButton %}
-	<ion-button href="{{path('admin_calendar_index')}}">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-		{{'Back' | trans}}
-	</ion-button>
-{% endblock %}
-
-{% block title %}
-	{{'Edit calendar' | trans}}
-{% endblock %}
+{% block title %}{{ 'Modifier calendrier' | trans }}{% endblock %}
 
 {% block content %}
-	{{ include('admin/calendar/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="mb-8 flex justify-between items-end">
+        <div>
+            <a href="{{ path('admin_calendar_show', {id: calendar.id}) }}" class="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors mb-2 group">
+                <twig:ux:icon name="lucide:arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                {{ 'Retour au calendrier' | trans }}
+            </a>
+            <h1 class="text-3xl font-black text-slate-900">{{ 'Modifier le calendrier' | trans }}</h1>
+        </div>
+        
+        <form method="post" action="{{ path('admin_calendar_delete', {'id': calendar.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce calendrier ? Tous les événements associés seront supprimés.');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ calendar.id) }}">
+            <button class="btn bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl font-bold transition-colors flex items-center gap-2">
+                <twig:ux:icon name="lucide:trash-2" class="w-4 h-4" />
+                {{ 'Supprimer' | trans }}
+            </button>
+        </form>
+    </div>
 
-	<a href="{{ path('admin_calendar_index') }}">back to list</a>
-
-	{{ include('admin/calendar/_delete_form.html.twig') }}
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden max-w-2xl">
+        {{ include('admin/calendar/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
 {% endblock %}

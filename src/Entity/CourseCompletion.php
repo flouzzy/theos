@@ -21,6 +21,7 @@ class CourseCompletion
     private ?Course $course = null;
 
     #[ORM\ManyToOne(inversedBy: 'courseCompletions')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column(nullable: true)]

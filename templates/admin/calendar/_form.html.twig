@@ -1,4 +1,33 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<div class="p-8">
+    {{ form_start(form) }}
+        <div class="space-y-6">
+            {{ form_row(form.title, {
+                'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+            }) }}
+            
+            {{ form_row(form.description, {
+                'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+            }) }}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    {{ form_row(form.url, {
+                        'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+                    }) }}
+                </div>
+                
+                <div class="md:col-span-2">
+                    {{ form_row(form.embed, {
+                        'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+                    }) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex justify-end">
+            <button class="btn bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                {{ button_label|default('Enregistrer') }}
+            </button>
+        </div>
+    {{ form_end(form) }}
+</div>

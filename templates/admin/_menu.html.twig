@@ -10,6 +10,10 @@
         <twig:ux:icon name="lucide:users" class="w-5 h-5" />
         {{ 'Cohorts' | trans }}
     </a>
+    <a href="{{ path('admin_calendar_index') }}" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors {% if currentroute starts with 'admin_calendar' %}bg-slate-800 text-white{% else %}text-slate-400 hover:bg-slate-800/50 hover:text-white{% endif %}">
+        <twig:ux:icon name="lucide:calendar" class="w-5 h-5" />
+        {{ 'Calendriers' | trans }}
+    </a>
     <a href="{{ path('admin_course_index') }}" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors {% if currentroute == 'admin_course_index' %}bg-slate-800 text-white{% else %}text-slate-400 hover:bg-slate-800/50 hover:text-white{% endif %}">
         <twig:ux:icon name="lucide:book-open" class="w-5 h-5" />
         {{ 'Courses' | trans }}

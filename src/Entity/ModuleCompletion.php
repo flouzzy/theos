@@ -22,6 +22,7 @@ class ModuleCompletion
     private ?Module $module = null;
 
     #[ORM\ManyToOne(inversedBy: 'moduleCompletions')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column(nullable: true)]

@@ -1,0 +1,53 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'Modifier événement' | trans }}{% endblock %}
+
+{% block content %}
+    <div class="mb-8">
+        <a href="{{ path('admin_calendar_show', {id: event.calendar.id}) }}" class="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors mb-2 group">
+            <twig:ux:icon name="lucide:arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            {{ 'Retour au calendrier' | trans }}
+        </a>
+        <h1 class="text-3xl font-black text-slate-900">{{ 'Modifier l\'événement' | trans }}</h1>
+        <p class="text-slate-500">Pour le calendrier : <span class="font-bold">{{ event.calendar.title }}</span></p>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden max-w-2xl">
+        <div class="p-8">
+            {{ form_start(form) }}
+                <div class="space-y-6">
+                    {{ form_row(form.title, {
+                        'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+                    }) }}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {{ form_row(form.startAt, {
+                            'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+                        }) }}
+                        {{ form_row(form.endAt, {
+                            'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+                        }) }}
+                    </div>
+
+                    {{ form_row(form.type, {
+                        'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+                    }) }}
+
+                    {{ form_row(form.location, {
+                        'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all'}
+                    }) }}
+
+                    <div class="hidden">
+                        {{ form_row(form.calendar) }}
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-end">
+                    <button class="btn bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                        {{ 'Mettre à jour' | trans }}
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

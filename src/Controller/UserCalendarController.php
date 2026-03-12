@@ -13,11 +13,12 @@ class UserCalendarController extends AbstractController
     public function index(CohortSession $cohortSession): Response
     {
         $cohort = $cohortSession->getSelectedCohort();
+        $calendar = $cohort ? $cohort->getCalendar() : null;
 
         return $this->render('calendar/index.html.twig', [
             'cohort' => $cohort,
-            'calendar' => $cohort ? $cohort->getCalendar() : null,
-            'events' => $cohort ? $cohort->getEvents() : [],
+            'calendar' => $calendar,
+            'events' => $calendar ? $calendar->getEvents() : [],
         ]);
     }
 }

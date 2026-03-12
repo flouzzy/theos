@@ -3,7 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Calendar;
+use App\Entity\Event;
 use App\Form\CalendarType;
+use App\Form\EventType;
 use App\Repository\CalendarRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +35,8 @@ class CalendarController extends AbstractController
             $entityManager->persist($calendar);
             $entityManager->flush();
 
-            return $this->redirectToRoute('admin_calendar_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Calendrier créé avec succès.');
+            return $this->redirectToRoute('admin_calendar_show', ['id' => $calendar->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/calendar/new.html.twig', [
@@ -59,7 +62,8 @@ class CalendarController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('admin_calendar_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Calendrier mis à jour.');
+            return $this->redirectToRoute('admin_calendar_show', ['id' => $calendar->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/calendar/edit.html.twig', [
@@ -68,53 +72,75 @@ class CalendarController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/duplicate', name: 'duplicate', methods: ['POST'])]
-    public function duplicate(Request $request, Calendar $calendar, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/event/new', name: 'event_new', methods: ['GET', 'POST'])]
+    public function eventNew(Request $request, Calendar $calendar, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('duplicate' . $calendar->getId(), $request->request->getString('_token'))) {
-            $newCalendar = clone $calendar;
-            
-            // Note: The 'clone' in PHP is shallow. We need to handle related entities if needed.
-            // But Calendar has a OneToOne with Cohort. We should probably NOT clone the cohort link
-            // to avoid unique constraint violations.
-            $newCalendar->setCohort(null);
-            $newCalendar->setDescription($calendar->getDescription() . ' (Copy)');
-            
-            $entityManager->persist($newCalendar);
+        $event = new Event();
+        $event->setCalendar($calendar);
+        
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
 
-            // Clone events associated with the original cohort if we want to keep them for the new calendar
-            // Wait, events are linked to Cohort, not Calendar directly according to the schema.
-            // Cohort has OneToOne Calendar. Cohort has OneToMany Event.
-            // If we duplicate a calendar, we probably want to associate it with a new cohort later.
-            // If the user wants to duplicate "the planning", they might mean cloning events too.
-            if ($calendar->getCohort()) {
-                foreach ($calendar->getCohort()->getEvents() as $event) {
-                    $newEvent = clone $event;
-                    // We don't have a new cohort yet, so we leave it null or link to same if needed?
-                    // User said "copy another (duplicate)". 
-                    // Usually implies creating a draft for a new promo.
-                    $newEvent->setCohort(null); 
-                    // This might be tricky because Event doesn't have a direct link to Calendar.
-                    // Let's stick to cloning the Calendar object first.
-                    $entityManager->persist($newEvent);
-                }
-            }
-
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($event);
             $entityManager->flush();
-            $this->addFlash('success', 'Calendrier dupliqué avec succès.');
 
-            return $this->redirectToRoute('admin_calendar_edit', ['id' => $newCalendar->getId()]);
+            $this->addFlash('success', 'Événement ajouté au calendrier.');
+            return $this->redirectToRoute('admin_calendar_show', ['id' => $calendar->getId()]);
         }
 
+        return $this->render('admin/calendar/event_new.html.twig', [
+            'calendar' => $calendar,
+            'event' => $event,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/event/{id}/edit', name: 'event_edit', methods: ['GET', 'POST'])]
+    public function eventEdit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $calendar = $event->getCalendar();
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Événement mis à jour.');
+            return $this->redirectToRoute('admin_calendar_show', ['id' => $calendar->getId()]);
+        }
+
+        return $this->render('admin/calendar/event_edit.html.twig', [
+            'calendar' => $calendar,
+            'event' => $event,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/event/{id}/delete', name: 'event_delete', methods: ['POST'])]
+    public function eventDelete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $calendarId = $event->getCalendar() ? $event->getCalendar()->getId() : null;
+        
+        if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->request->getString('_token'))) {
+            $entityManager->remove($event);
+            $entityManager->flush();
+            $this->addFlash('success', 'Événement supprimé.');
+        }
+
+        if ($calendarId) {
+            return $this->redirectToRoute('admin_calendar_show', ['id' => $calendarId]);
+        }
         return $this->redirectToRoute('admin_calendar_index');
     }
 
-    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Calendar $calendar, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $calendar->getId(), $request->request->getString('_token'))) {
             $entityManager->remove($calendar);
             $entityManager->flush();
+            $this->addFlash('success', 'Calendrier supprimé.');
         }
 
         return $this->redirectToRoute('admin_calendar_index', [], Response::HTTP_SEE_OTHER);

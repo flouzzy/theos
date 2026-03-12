@@ -30,7 +30,7 @@ class Event
     private ?string $type = 'webinar';
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    private ?Cohort $cohort = null;
+    private ?Calendar $calendar = null;
 
     public function getId(): ?int
     {
@@ -97,14 +97,14 @@ class Event
         return $this;
     }
 
-    public function getCohort(): ?Cohort
+    public function getCalendar(): ?Calendar
     {
-        return $this->cohort;
+        return $this->calendar;
     }
 
-    public function setCohort(?Cohort $cohort): static
+    public function setCalendar(?Calendar $calendar): static
     {
-        $this->cohort = $cohort;
+        $this->calendar = $calendar;
 
         return $this;
     }

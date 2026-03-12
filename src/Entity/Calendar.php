@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CalendarRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,6 +16,9 @@ class Calendar
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
@@ -23,12 +28,38 @@ class Calendar
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $embed = null;
 
-    #[ORM\OneToOne(inversedBy: 'calendar', cascade: ['persist', 'remove'])]
-    private ?Cohort $cohort = null;
+    #[ORM\OneToMany(mappedBy: 'calendar', targetEntity: Event::class, cascade: ['persist', 'remove'])]
+    private Collection $events;
+
+    #[ORM\OneToMany(mappedBy: 'calendar', targetEntity: Cohort::class)]
+    private Collection $cohorts;
+
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+        $this->cohorts = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->title ?? 'Nouveau calendrier';
+    }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
     }
 
     public function getDescription(): ?string
@@ -67,14 +98,62 @@ class Calendar
         return $this;
     }
 
-    public function getCohort(): ?Cohort
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
     {
-        return $this->cohort;
+        return $this->events;
     }
 
-    public function setCohort(?Cohort $cohort): static
+    public function addEvent(Event $event): static
     {
-        $this->cohort = $cohort;
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->setCalendar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            // set the owning side to null (unless already changed)
+            if ($event->getCalendar() === $this) {
+                $event->setCalendar(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cohort>
+     */
+    public function getCohorts(): Collection
+    {
+        return $this->cohorts;
+    }
+
+    public function addCohort(Cohort $cohort): static
+    {
+        if (!$this->cohorts->contains($cohort)) {
+            $this->cohorts->add($cohort);
+            $cohort->setCalendar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCohort(Cohort $cohort): static
+    {
+        if ($this->cohorts->removeElement($cohort)) {
+            // set the owning side to null (unless already changed)
+            if ($cohort->getCalendar() === $this) {
+                $cohort->setCalendar(null);
+            }
+        }
 
         return $this;
     }

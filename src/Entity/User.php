@@ -113,19 +113,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     /**
      * @var Collection<int, CourseCompletion>
      */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CourseCompletion::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CourseCompletion::class, orphanRemoval: true)]
     private Collection $courseCompletions;
 
     /**
      * @var Collection<int, ModuleCompletion>
      */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ModuleCompletion::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ModuleCompletion::class, orphanRemoval: true)]
     private Collection $moduleCompletions;
 
     /**
      * @var Collection<int, Notification>
      */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, orphanRemoval: true)]
     private Collection $notifications;
 
     #[ORM\Column(nullable: true)]
@@ -156,7 +156,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private Collection $cohorts;
 
     #[ORM\ManyToOne(targetEntity: Cohort::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Cohort $currentCohort = null;
 
     /**
@@ -210,8 +210,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     /**
      * @var Collection<int, Evaluation>
      */
-    #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'user')]
-    private Collection $cohort;
+    #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $evaluations;
 
     /**
      * @var Collection<int, ChatMessage>
@@ -232,6 +232,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $subscriptionPlan = null;
 
     #[ORM\ManyToOne(inversedBy: 'members')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Team $team = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -262,7 +263,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->portfolioProjects = new ArrayCollection();
         $this->assignmentSubmissions = new ArrayCollection();
         $this->peerReviews = new ArrayCollection();
-        $this->cohort = new ArrayCollection();
+        $this->evaluations = new ArrayCollection();
         $this->chatMessages = new ArrayCollection();
     }
 

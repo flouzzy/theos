@@ -32,11 +32,12 @@ class EventRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('e');
 
-        if ($cohort) {
-            $qb->andWhere('(e.cohort IS NULL OR e.cohort = :cohort)')
-               ->setParameter('cohort', $cohort);
+        if ($cohort && $cohort->getCalendar()) {
+            $qb->andWhere('e.calendar = :calendar')
+               ->setParameter('calendar', $cohort->getCalendar());
         } else {
-            $qb->andWhere('e.cohort IS NULL');
+            // If no cohort or no calendar, we only return events that have NO calendar (global/public events)
+            $qb->andWhere('e.calendar IS NULL');
         }
 
         return $qb

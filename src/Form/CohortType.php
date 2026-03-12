@@ -41,6 +41,12 @@ class CohortType extends AbstractType
                 'choice_label' => 'title',
                 'multiple' => true,
             ])
+            ->add('calendar', EntityType::class, [
+                'class' => \App\Entity\Calendar::class,
+                'choice_label' => 'title',
+                'required' => false,
+                'placeholder' => 'Sélectionnez un calendrier',
+            ])
         ;
     }
 
