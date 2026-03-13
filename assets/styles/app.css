@@ -315,7 +315,7 @@
         display: inline-block;
     }
 }
-/* Video Embed Scaling Fix */
+/* Video Embed Scaling */
 .aspect-video iframe {
     width: 100% !important;
     height: 100% !important;
