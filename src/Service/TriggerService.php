@@ -5,10 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\Lesson;
 use App\Repository\UserRepository;
-use App\Repository\LessonRepository;
 use App\Repository\CompletionRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TriggerService
