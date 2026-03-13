@@ -94,10 +94,18 @@ class EngagementAnalyzer
      */
     public function getContentEfficacy(Course $course): array
     {
+        $lessons = $course->getLessons()->toArray();
+        $allCompletions = $this->completionRepository->findByLessons($lessons);
+
+        $completionsByLesson = [];
+        foreach ($allCompletions as $completion) {
+            $completionsByLesson[$completion->getLesson()->getId()][] = $completion;
+        }
+
         $efficacyData = [];
         foreach ($course->getModules() as $module) {
             foreach ($module->getLessons() as $lesson) {
-                $completions = $this->completionRepository->findBy(['lesson' => $lesson]);
+                $completions = $completionsByLesson[$lesson->getId()] ?? [];
                 $totalCompletions = count($completions);
                 
                 $avgScore = 0;

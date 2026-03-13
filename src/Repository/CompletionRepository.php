@@ -176,4 +176,21 @@ class CompletionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * @param array<\App\Entity\Lesson> $lessons
+     * @return Completion[]
+     */
+    public function findByLessons(array $lessons): array
+    {
+        if (empty($lessons)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('c')
+            ->where('c.lesson IN (:lessons)')
+            ->setParameter('lessons', $lessons)
+            ->getQuery()
+            ->getResult();
+    }
 }
