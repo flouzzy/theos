@@ -1,4 +1,31 @@
 <div{{ attributes }} class="p-8 max-w-[1600px] mx-auto">
+{% block fallback %}
+    <div class="animate-pulse">
+        <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2">
+                <div class="h-10 w-64 bg-muted rounded-xl"></div>
+                <div class="h-4 w-96 bg-muted rounded"></div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-40 bg-muted rounded-xl"></div>
+                <div class="h-10 w-40 bg-muted rounded-xl"></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="h-48 bg-muted rounded-3xl"></div>
+            <div class="h-48 bg-muted rounded-3xl"></div>
+            <div class="h-48 bg-muted rounded-3xl"></div>
+            <div class="h-48 bg-muted rounded-3xl"></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 h-64 bg-muted rounded-3xl"></div>
+            <div class="space-y-6">
+                <div class="h-48 bg-muted rounded-3xl"></div>
+                <div class="h-32 bg-muted rounded-3xl"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
     {% set dashboard = this %}
     
     {# Header Premium #}
