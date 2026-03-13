@@ -4,7 +4,7 @@
 <div class="min-h-screen bg-background {{ app.user ? 'pb-16 lg:pb-0' : '' }}" x-data="{ mobileMenuOpen: false, moreMenuOpen: false, desktopSidebarOpen: true }">
     
     {# Desktop Sidebar - Fixed Left #}
-    <aside class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:top-0 lg:bottom-0 lg:flex lg:flex-col lg:w-64 bg-sidebar border-r border-border transition-all duration-300 z-40" 
+    <aside id="desktop-sidebar" data-turbo-permanent="true" class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:top-0 lg:bottom-0 lg:flex lg:flex-col lg:w-64 bg-sidebar border-r border-border transition-all duration-300 z-40"
            :class="desktopSidebarOpen ? 'lg:w-64' : 'lg:w-20'">
         <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 py-6" :class="!desktopSidebarOpen && 'px-3'">
             {# Logo #}
@@ -286,7 +286,7 @@
 
     {# Mobile Bottom Navigation (Fixed) #}
     {% if app.user %}
-    <nav class="fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-md border-t border-border lg:hidden pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+    <nav id="mobile-bottom-nav" data-turbo-permanent="true" class="fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-md border-t border-border lg:hidden pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
         <div class="flex justify-around items-center h-16 px-1">
             {# Tab 1: Accueil #}
             <a href="{{ path('cohort_index') }}" class="tab-item {{ app.request.attributes.get('_route') == 'cohort_index' ? 'text-primary' : 'text-muted-foreground' }} flex-1 flex flex-col items-center justify-center gap-1 group">

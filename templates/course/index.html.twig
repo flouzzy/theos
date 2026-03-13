@@ -13,6 +13,6 @@
         <p class="text-muted-foreground text-lg">{{ 'Explorez tous les cours disponibles' | trans }}</p>
     </div>
 
-    <twig:CourseCatalog :subscribedCourseIds="subscribedCourseIds" />
+    <twig:CourseCatalog :subscribedCourseIds="subscribedCourseIds" lazy="true" />
 </div>
 {% endblock %}

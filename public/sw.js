@@ -25,18 +25,47 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Stratégie : Cache First for static assets, Network First for others
+    const url = new URL(event.request.url);
+
+    // Stratégie "Cache First" pour les assets statiques (fonts, images, assets mapper CSS/JS)
+    if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/images/') || url.hostname.includes('fonts.googleapis.com') || url.hostname.includes('fonts.gstatic.com')) {
+        event.respondWith(
+            caches.match(event.request).then((cachedResponse) => {
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                return fetch(event.request).then((networkResponse) => {
+                    return caches.open(CACHE_NAME).then((cache) => {
+                        // Cache la réponse pour les futures requêtes
+                        cache.put(event.request, networkResponse.clone());
+                        return networkResponse;
+                    });
+                });
+            })
+        );
+        return;
+    }
+
+    // Stratégie "Network First, fallback to Cache" pour le reste (HTML, API, etc.)
     event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request).then((fetchResponse) => {
-                // Optionnel : mettre en cache dynamiquement certaines requêtes
-                return fetchResponse;
-            });
-        }).catch(() => {
-            // Fallback hors-ligne
-            if (event.request.mode === 'navigate') {
-                return caches.match('/');
+        fetch(event.request).then((response) => {
+            if (event.request.method === 'GET' && response.ok) {
+                const responseClone = response.clone();
+                caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, responseClone);
+                });
             }
+            return response;
+        }).catch(() => {
+            // Fallback vers le cache hors-ligne
+            return caches.match(event.request).then((cachedResponse) => {
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                if (event.request.mode === 'navigate') {
+                    return caches.match('/');
+                }
+            });
         })
     );
 });

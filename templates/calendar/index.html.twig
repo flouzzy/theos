@@ -65,7 +65,7 @@
             </h3>
 
             {% if calendar %}
-                {{ component('EventList', { calendar: calendar }) }}
+                {{ component('EventList', { calendar: calendar, lazy: true }) }}
             {% else %}
                 <div class="p-8 text-center bg-card/50 border border-dashed border-border rounded-3xl text-muted-foreground">
                     {{ 'Aucun calendrier associé.' | trans }}
