@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Service\WebhookService;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -13,27 +12,25 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class WebhookServiceTest extends TestCase
 {
-    /** @var HttpClientInterface&MockObject */
     private HttpClientInterface $httpClient;
-
-    /** @var LoggerInterface&MockObject */
     private LoggerInterface $logger;
-
     private WebhookService $webhookService;
 
     protected function setUp(): void
     {
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->webhookService = new WebhookService($this->httpClient, $this->logger);
+
+        $this->webhookService = new WebhookService(
+            $this->httpClient,
+            $this->logger
+        );
     }
 
-    public function testSendDiscordNotificationSuccess(): void
+    public function testSendDiscordNotification(): void
     {
         $url = 'https://discord.com/api/webhooks/test';
-        $message = 'Test discord message';
-
-        $responseMock = $this->createMock(ResponseInterface::class);
+        $message = 'Test Discord Message';
 
         $this->httpClient->expects($this->once())
             ->method('request')
@@ -43,7 +40,7 @@ class WebhookServiceTest extends TestCase
                     'username' => 'Le Rocher Académie',
                 ],
             ])
-            ->willReturn($responseMock);
+            ->willReturn($this->createMock(ResponseInterface::class));
 
         $this->logger->expects($this->never())
             ->method('error');
@@ -51,29 +48,27 @@ class WebhookServiceTest extends TestCase
         $this->webhookService->sendDiscordNotification($url, $message);
     }
 
-    public function testSendDiscordNotificationException(): void
+    public function testSendDiscordNotificationError(): void
     {
         $url = 'https://discord.com/api/webhooks/test';
-        $message = 'Test discord message';
-        $errorMessage = 'Network error';
+        $message = 'Test Discord Message';
+        $exceptionMessage = 'Connection timeout';
 
         $this->httpClient->expects($this->once())
             ->method('request')
-            ->willThrowException(new \Exception($errorMessage));
+            ->willThrowException(new \Exception($exceptionMessage));
 
         $this->logger->expects($this->once())
             ->method('error')
-            ->with('Discord Webhook Error: ' . $errorMessage);
+            ->with('Discord Webhook Error: ' . $exceptionMessage);
 
         $this->webhookService->sendDiscordNotification($url, $message);
     }
 
-    public function testSendSlackNotificationSuccess(): void
+    public function testSendSlackNotification(): void
     {
         $url = 'https://hooks.slack.com/services/test';
-        $message = 'Test slack message';
-
-        $responseMock = $this->createMock(ResponseInterface::class);
+        $message = 'Test Slack Message';
 
         $this->httpClient->expects($this->once())
             ->method('request')
@@ -82,7 +77,7 @@ class WebhookServiceTest extends TestCase
                     'text' => $message,
                 ],
             ])
-            ->willReturn($responseMock);
+            ->willReturn($this->createMock(ResponseInterface::class));
 
         $this->logger->expects($this->never())
             ->method('error');
@@ -90,19 +85,19 @@ class WebhookServiceTest extends TestCase
         $this->webhookService->sendSlackNotification($url, $message);
     }
 
-    public function testSendSlackNotificationException(): void
+    public function testSendSlackNotificationError(): void
     {
         $url = 'https://hooks.slack.com/services/test';
-        $message = 'Test slack message';
-        $errorMessage = 'Network error';
+        $message = 'Test Slack Message';
+        $exceptionMessage = 'Invalid payload';
 
         $this->httpClient->expects($this->once())
             ->method('request')
-            ->willThrowException(new \Exception($errorMessage));
+            ->willThrowException(new \Exception($exceptionMessage));
 
         $this->logger->expects($this->once())
             ->method('error')
-            ->with('Slack Webhook Error: ' . $errorMessage);
+            ->with('Slack Webhook Error: ' . $exceptionMessage);
 
         $this->webhookService->sendSlackNotification($url, $message);
     }
