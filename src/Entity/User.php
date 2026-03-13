@@ -321,7 +321,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private bool $weeklySummary = false;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $customGoal = null;
 
     #[ORM\PrePersist]
     public function setUserDetails(): void
