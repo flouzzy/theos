@@ -39,7 +39,20 @@ class CohortSessionTest extends TestCase
 
     public function testGetSelectedCohortReturnsNullIfNoUser(): void
     {
-        $this->security->method('getUser')->willReturn(null);
+        $this->security->expects($this->once())
+            ->method('getUser')
+            ->willReturn(null);
+
+        $this->assertNull($this->cohortSession->getSelectedCohort());
+    }
+
+    public function testGetSelectedCohortReturnsNullIfUserIsNotAppUser(): void
+    {
+        $mockUser = $this->createMock(\Symfony\Component\Security\Core\User\UserInterface::class);
+        $this->security->expects($this->once())
+            ->method('getUser')
+            ->willReturn($mockUser);
+
         $this->assertNull($this->cohortSession->getSelectedCohort());
     }
 
