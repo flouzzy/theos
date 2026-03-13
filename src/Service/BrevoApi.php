@@ -10,7 +10,6 @@ use Brevo\Client\Api;
 use Exception;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BrevoApi
 {
