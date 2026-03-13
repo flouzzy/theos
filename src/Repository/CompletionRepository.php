@@ -176,4 +176,31 @@ class CompletionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * @param int[] $lessonIds
+     * @return array<int, int> [lessonId => count]
+     */
+    public function countCompletionsForLessons(array $lessonIds): array
+    {
+        if (empty($lessonIds)) {
+            return [];
+        }
+
+        $results = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.lesson) as lessonId', 'COUNT(c.id) as completionsCount')
+            ->where('c.lesson IN (:lessonIds)')
+            ->andWhere('c.completed = true')
+            ->setParameter('lessonIds', $lessonIds)
+            ->groupBy('c.lesson')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($results as $row) {
+            $counts[(int) $row['lessonId']] = (int) $row['completionsCount'];
+        }
+
+        return $counts;
+    }
 }
