@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Lesson;
 use App\Entity\Note;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
