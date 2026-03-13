@@ -320,6 +320,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $weeklySummary = false;
 
+    #[ORM\Column(length: 255, nullable: true)]
+
     #[ORM\PrePersist]
     public function setUserDetails(): void
     {

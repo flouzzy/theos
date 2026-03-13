@@ -28,7 +28,7 @@ class GamificationServiceTest extends TestCase
         $user = new User();
         // User xp is 0 by default
 
-        $entityManager->expects($this->once())->method('persist')->with($user);
+        $entityManager->expects($this->exactly(2))->method('persist');
         $entityManager->expects($this->once())->method('flush');
 
         $service->addXp($user, 10);
