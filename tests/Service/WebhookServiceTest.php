@@ -9,16 +9,11 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class WebhookServiceTest extends TestCase
 {
-    /** @var HttpClientInterface&MockObject */
-    private HttpClientInterface $httpClient;
-
-    /** @var LoggerInterface&MockObject */
-    private LoggerInterface $logger;
-
+    private HttpClientInterface&MockObject $httpClient;
+    private LoggerInterface&MockObject $logger;
     private WebhookService $webhookService;
 
     protected function setUp(): void
@@ -33,8 +28,6 @@ class WebhookServiceTest extends TestCase
         $url = 'https://discord.com/api/webhooks/123/abc';
         $message = 'Test message';
 
-        $response = $this->createMock(ResponseInterface::class);
-
         $this->httpClient->expects($this->once())
             ->method('request')
             ->with('POST', $url, [
@@ -42,34 +35,25 @@ class WebhookServiceTest extends TestCase
                     'content' => $message,
                     'username' => 'Le Rocher Académie',
                 ],
-            ])
-            ->willReturn($response);
+            ]);
 
-        $this->logger->expects($this->never())
-            ->method('error');
+        $this->logger->expects($this->never())->method('error');
 
         $this->webhookService->sendDiscordNotification($url, $message);
     }
 
-    public function testSendDiscordNotificationErrorHandling(): void
+    public function testSendDiscordNotificationError(): void
     {
         $url = 'https://discord.com/api/webhooks/123/abc';
         $message = 'Test message';
-        $exceptionMessage = 'Network connection failed';
 
         $this->httpClient->expects($this->once())
             ->method('request')
-            ->with('POST', $url, [
-                'json' => [
-                    'content' => $message,
-                    'username' => 'Le Rocher Académie',
-                ],
-            ])
-            ->willThrowException(new \Exception($exceptionMessage));
+            ->willThrowException(new \Exception('Connection failed'));
 
         $this->logger->expects($this->once())
             ->method('error')
-            ->with('Discord Webhook Error: ' . $exceptionMessage);
+            ->with('Discord Webhook Error: Connection failed');
 
         $this->webhookService->sendDiscordNotification($url, $message);
     }
@@ -79,41 +63,31 @@ class WebhookServiceTest extends TestCase
         $url = 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX';
         $message = 'Test message';
 
-        $response = $this->createMock(ResponseInterface::class);
-
         $this->httpClient->expects($this->once())
             ->method('request')
             ->with('POST', $url, [
                 'json' => [
                     'text' => $message,
                 ],
-            ])
-            ->willReturn($response);
+            ]);
 
-        $this->logger->expects($this->never())
-            ->method('error');
+        $this->logger->expects($this->never())->method('error');
 
         $this->webhookService->sendSlackNotification($url, $message);
     }
 
-    public function testSendSlackNotificationErrorHandling(): void
+    public function testSendSlackNotificationError(): void
     {
         $url = 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX';
         $message = 'Test message';
-        $exceptionMessage = 'DNS resolution failed';
 
         $this->httpClient->expects($this->once())
             ->method('request')
-            ->with('POST', $url, [
-                'json' => [
-                    'text' => $message,
-                ],
-            ])
-            ->willThrowException(new \Exception($exceptionMessage));
+            ->willThrowException(new \Exception('Connection failed'));
 
         $this->logger->expects($this->once())
             ->method('error')
-            ->with('Slack Webhook Error: ' . $exceptionMessage);
+            ->with('Slack Webhook Error: Connection failed');
 
         $this->webhookService->sendSlackNotification($url, $message);
     }
