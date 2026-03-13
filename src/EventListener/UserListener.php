@@ -19,20 +19,13 @@ class UserListener
     {
     }
 
-    // public function prePersist(User $user, PrePersistEventArgs $event): void {}
-
     public function postPersist(User $user, PostPersistEventArgs $event): void
     {
-        // $entity = $event->getObject();
         $this->brevoApi->addOrUpdateContact($user);
     }
 
-
-    // the entity listener methods receive two arguments:
-    // the entity instance and the lifecycle event
     public function postUpdate(User $user, PostUpdateEventArgs $event): void
     {
-        // ... do something to notify the changes
         $this->brevoApi->addOrUpdateContact($user);
     }
 }
