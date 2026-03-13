@@ -50,12 +50,20 @@ class SubscriptionService
     }
 
     /**
+     * Protégé pour permettre le mock dans les tests.
+     */
+    protected function constructEvent(string $payload, string $sigHeader, string $webhookSecret): \Stripe\Event
+    {
+        return \Stripe\Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
+    }
+
+    /**
      * Gère les événements webhook de Stripe.
      */
     public function handleWebhook(string $payload, string $sigHeader, string $webhookSecret): void
     {
         try {
-            $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
+            $event = $this->constructEvent($payload, $sigHeader, $webhookSecret);
         } catch (\UnexpectedValueException $e) {
             throw new \Exception('Invalid payload');
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
