@@ -323,15 +323,14 @@ class TriggerService
 
     private function findNextLesson(User $user): ?Lesson
     {
+        // Fetch all completed lesson IDs for the user in a single query
+        $completedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
+
         // Find the first non-completed lesson in the user's courses
         foreach ($user->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
-                    $completion = $this->completionRepository->findOneBy([
-                        'user' => $user,
-                        'lesson' => $lesson
-                    ]);
-                    if (!$completion || !$completion->isCompleted()) {
+                    if (!in_array($lesson->getId(), $completedLessonIds, true)) {
                         return $lesson;
                     }
                 }
