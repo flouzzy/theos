@@ -132,19 +132,35 @@ class TriggerService
      */
     private function processFomoTrigger(User $user): void
     {
+        $userCompletedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
+
         foreach ($user->getCohorts() as $cohort) {
             $totalUsers = count($cohort->getUsers());
             if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
 
+            $cohortLessonIds = [];
             foreach ($cohort->getCourses() as $course) {
                 foreach ($course->getModules() as $module) {
                     foreach ($module->getLessons() as $lesson) {
-                        $userCompletion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
-                        if ($userCompletion && $userCompletion->isCompleted()) {
+                        $cohortLessonIds[] = $lesson->getId();
+                    }
+                }
+            }
+
+            if (empty($cohortLessonIds)) {
+                continue;
+            }
+
+            $completionsCountMap = $this->completionRepository->countCompletionsForLessons($cohortLessonIds);
+
+            foreach ($cohort->getCourses() as $course) {
+                foreach ($course->getModules() as $module) {
+                    foreach ($module->getLessons() as $lesson) {
+                        if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
                             continue;
                         }
 
-                        $othersCompletions = $this->completionRepository->count(['lesson' => $lesson, 'completed' => true]);
+                        $othersCompletions = $completionsCountMap[$lesson->getId()] ?? 0;
                         $percentage = ($othersCompletions / $totalUsers) * 100;
 
                         if ($percentage >= 80) {
