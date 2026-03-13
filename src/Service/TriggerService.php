@@ -98,13 +98,20 @@ class TriggerService
             return;
         }
 
+        // Pre-fetch all user completions to prevent N+1 queries
+        $allCompletions = $this->completionRepository->findBy(['user' => $user]);
+        $completionMap = [];
+        foreach ($allCompletions as $completion) {
+            $completionMap[$completion->getLesson()->getId()] = $completion;
+        }
+
         // Find an uncompleted lesson with audio
         foreach ($user->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
                     if (!$lesson->getAudioPath()) continue;
 
-                    $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
+                    $completion = $completionMap[$lesson->getId()] ?? null;
                     if (!$completion || !$completion->isCompleted()) {
                         $this->notificationService->addNotification(
                             $user,
