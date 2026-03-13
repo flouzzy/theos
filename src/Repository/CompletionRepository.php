@@ -38,6 +38,38 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param User[] $users
+     * @return array<int, int>
+     */
+    public function countByUsersAndCohort(array $users, \App\Entity\Cohort $cohort): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $qb = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.user) as userId', 'COUNT(c.id) as completionsCount')
+            ->join('c.lesson', 'l')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'co')
+            ->where('c.user IN (:users)')
+            ->andWhere('c.completed = true')
+            ->andWhere('co IN (:courses)')
+            ->setParameter('users', $users)
+            ->setParameter('courses', $cohort->getCourses())
+            ->groupBy('c.user');
+
+        $result = $qb->getQuery()->getResult();
+
+        $counts = [];
+        foreach ($result as $row) {
+            $counts[(int) $row['userId']] = (int) $row['completionsCount'];
+        }
+
+        return $counts;
+    }
+
+    /**
      * @return int[]
      */
     public function findCompletedLessonIdsByCourse(User $user, Course $course): array
