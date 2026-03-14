@@ -181,7 +181,7 @@
 - [ ] **Write reviews and testimonials for courses**
 - [x] **Translate community subtitles (crowdsourcing)**
 - [x] **Track external learning (books read, podcasts)**
-- [ ] **Earn 'Equity' (reputation points) that give forum moderation powers**
+- [x] **Earn 'Equity' (reputation points) that give forum moderation powers**
 - [ ] **Pin favorite lessons to top of dashboard**
 - [ ] **Create a 'learning manifesto' on profile**
 - [ ] **Connect external accounts (GitHub, StackOverflow) to show skills**
