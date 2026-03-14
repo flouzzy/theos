@@ -185,6 +185,26 @@ class GamificationService
         }
     }
 
+    public function awardHelpfulBadge(User $user, bool $flush = true): void
+    {
+        $helpfulCount = 0;
+        foreach ($user->getComments() as $comment) {
+            $helpfulCount += $comment->getLikes()->count();
+        }
+
+        if ($helpfulCount >= 10) {
+            $this->awardBadge(
+                $user, 
+                'HELPFUL_MEMBER', 
+                'Membre Utile', 
+                'Tu as reçu 10 votes "Utile" sur tes commentaires !',
+                'Helpful Member',
+                'Awarded for being helpful in the community',
+                $flush
+            );
+        }
+    }
+
     }
 
     public function awardBadge(

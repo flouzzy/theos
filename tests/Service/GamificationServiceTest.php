@@ -93,4 +93,25 @@ class GamificationServiceTest extends TestCase
 
         $this->assertEquals(5, $user->getStreak());
     }
+
+    public function testAwardHelpfulBadge(): void
+    {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $service = $this->createService($entityManager);
+
+        $user = $this->createMock(User::class);
+        $comment = $this->createMock(\App\Entity\Comment::class);
+        $likes = $this->createMock(\Doctrine\Common\Collections\Collection::class);
+        $likes->method('count')->willReturn(10);
+        $comment->method('getLikes')->willReturn($likes);
+        
+        $user->method('getComments')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([$comment]));
+        
+        // On vérifie que la méthode est bien appelée
+        // Note: awardBadge déclenche persist/flush, donc on les attend
+        $entityManager->expects($this->atLeastOnce())->method('persist');
+        $entityManager->expects($this->atLeastOnce())->method('flush');
+
+        $service->awardHelpfulBadge($user);
+    }
 }

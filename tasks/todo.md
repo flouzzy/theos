@@ -146,7 +146,7 @@
 - [x] **Confetti animations on lesson completion (LiveComponent)**
 - [x] **Unlockable avatar frames based on achievements**
 - [x] **Rare 'Early Adopter' or 'Speed Learner' badges**
-- [ ] **Peer-awarded 'Helpful' badges in forums**
+- [x] **Peer-awarded 'Helpful' badges in forums**
 - [ ] **Progress bar that accelerates visually near the end**
 - [ ] **Streak flames that change color (e.g., blue fire at 30 days)**
 - [ ] **Sound effects for positive reinforcement (level up chime)**
