@@ -7,10 +7,13 @@ use App\Entity\Course;
 use App\Entity\User;
 use App\Event\CourseSubscribedEvent;
 use App\EventSubscriber\CohortSubscriber;
+use App\Service\NotificationService;
+use App\Service\WebhookService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CohortSubscriberTest extends TestCase
 {
@@ -35,7 +38,11 @@ class CohortSubscriberTest extends TestCase
         $entityManager->expects($this->never())->method('persist');
         $entityManager->expects($this->never())->method('flush');
 
-        $subscriber = new CohortSubscriber($entityManager);
+        $notificationService = $this->createMock(NotificationService::class);
+        $urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $webhookService = $this->createMock(WebhookService::class);
+
+        $subscriber = new CohortSubscriber($entityManager, $notificationService, $urlGenerator, $webhookService);
         $subscriber->onCourseSubscribed($event);
     }
 
@@ -78,8 +85,12 @@ class CohortSubscriberTest extends TestCase
         $entityManager->expects($this->once())
             ->method('flush');
 
+        $notificationService = $this->createMock(NotificationService::class);
+        $urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $webhookService = $this->createMock(WebhookService::class);
+
         $event = new CourseSubscribedEvent($course, $user);
-        $subscriber = new CohortSubscriber($entityManager);
+        $subscriber = new CohortSubscriber($entityManager, $notificationService, $urlGenerator, $webhookService);
         $subscriber->onCourseSubscribed($event);
 
         $this->assertTrue($existingCohort->getUsers()->contains($user));
@@ -120,7 +131,11 @@ class CohortSubscriberTest extends TestCase
             ->method('flush');
 
         $event = new CourseSubscribedEvent($course, $user);
-        $subscriber = new CohortSubscriber($entityManager);
+        $notificationService = $this->createMock(NotificationService::class);
+        $urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $webhookService = $this->createMock(WebhookService::class);
+
+        $subscriber = new CohortSubscriber($entityManager, $notificationService, $urlGenerator, $webhookService);
         $subscriber->onCourseSubscribed($event);
     }
 }

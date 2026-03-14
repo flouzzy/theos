@@ -11,7 +11,7 @@ use App\Repository\CompletionRepository;
 use App\Service\CoachDataService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -51,10 +51,10 @@ class CoachDataServiceTest extends TestCase
         $completion2 = $this->createMock(Completion::class);
         $completion2->method('getCreatedAt')->willReturn($wednesday);
 
-        $query = $this->getMockBuilder(AbstractQuery::class)
+        $query = $this->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getResult'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $query->method('getResult')->willReturn([$completion1, $completion2]);
 
@@ -152,10 +152,10 @@ class CoachDataServiceTest extends TestCase
         $completion = $this->createMock(Completion::class);
         $completion->method('getLesson')->willReturn($lesson);
 
-        $query = $this->getMockBuilder(AbstractQuery::class)
+        $query = $this->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getOneOrNullResult'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $query->method('getOneOrNullResult')->willReturn($completion);
 
@@ -216,7 +216,7 @@ class CoachDataServiceTest extends TestCase
         $this->assertEquals([
             'message' => 'Complète une leçon pour atteindre 401 jours',
             'nextTarget' => 430, // 400 + 30
-            'progress' => 100, // 400 - 365 = 35, range is 430 - 365 = 65, 35/65*100 = 54 -> No wait, it should be 430 next target, previous is 365, progress calculation: 35 / 65 * 100 = 54
+            'progress' => 54, // (400 - 365) / (430 - 365) * 100 = 35 / 65 * 100 = 53.8 -> 54
         ], $result);
     }
 }

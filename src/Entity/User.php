@@ -269,6 +269,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\JoinTable(name: 'user_unlocked_bonuses')]
     private Collection $unlockedBonuses;
 
+    /**
+     * @var Collection<int, AvatarFrame>
+     */
+    #[ORM\ManyToMany(targetEntity: AvatarFrame::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_unlocked_frames')]
+    private Collection $unlockedFrames;
+
+    #[ORM\ManyToOne]
+    private ?AvatarFrame $activeFrame = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -293,6 +303,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->xpTransactions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
         $this->unlockedBonuses = new ArrayCollection();
+        $this->unlockedFrames = new ArrayCollection();
     }
 
     public function __toString()
@@ -319,8 +330,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $weeklySummary = false;
-
-    #[ORM\Column(length: 255, nullable: true)]
 
     #[ORM\PrePersist]
     public function setUserDetails(): void
@@ -1515,6 +1524,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function removeUnlockedBonus(Bonus $bonus): static
     {
         $this->unlockedBonuses->removeElement($bonus);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AvatarFrame>
+     */
+    public function getUnlockedFrames(): Collection
+    {
+        return $this->unlockedFrames;
+    }
+
+    public function addUnlockedFrame(AvatarFrame $unlockedFrame): static
+    {
+        if (!$this->unlockedFrames->contains($unlockedFrame)) {
+            $this->unlockedFrames->add($unlockedFrame);
+        }
+
+        return $this;
+    }
+
+    public function removeUnlockedFrame(AvatarFrame $unlockedFrame): static
+    {
+        $this->unlockedFrames->removeElement($unlockedFrame);
+
+        return $this;
+    }
+
+    public function getActiveFrame(): ?AvatarFrame
+    {
+        return $this->activeFrame;
+    }
+
+    public function setActiveFrame(?AvatarFrame $activeFrame): static
+    {
+        $this->activeFrame = $activeFrame;
 
         return $this;
     }

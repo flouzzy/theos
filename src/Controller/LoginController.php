@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Controller;
+
 use App\Entity\User;
 use App\Service\SendMail;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +17,6 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 
 class LoginController extends AbstractController
 {
-...
     #[Route('/login/magic-request', name: 'request_magic_link', methods: ['POST'])]
     public function requestMagicLink(Request $request, EntityManagerInterface $entityManager, SendMail $sendMail): Response
     {
@@ -69,7 +70,6 @@ class LoginController extends AbstractController
             $request
         );
     }
-}
 
     #[Route('/login', name: 'login')]
     public function index(AuthenticationUtils $authenticationUtils): Response

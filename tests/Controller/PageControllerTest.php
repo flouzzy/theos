@@ -19,8 +19,6 @@ class PageControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-
         // Nettoyer la base de données
         $page = $this->entityManager->getRepository(Page::class)->findOneBy(['slug' => 'test-page-slug']);
         if ($page) {
@@ -29,6 +27,7 @@ class PageControllerTest extends WebTestCase
         }
 
         $this->entityManager->close();
+        parent::tearDown();
     }
 
     public function testShowPageIsSuccessful(): void
@@ -47,7 +46,7 @@ class PageControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('title', 'Test Page Title');
-        $this->assertSelectorTextContains('p', 'Test Page Content');
+        $this->assertSelectorTextContains('.prose p', 'Test Page Content');
     }
 
     public function testShowPageNotFound(): void

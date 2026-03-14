@@ -9,7 +9,7 @@
     {# Compact Stats Banner #}
     <div class="flex flex-wrap items-center gap-3">
         <div class="flex items-center gap-2 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-bold border border-orange-100">
-            🔥 {{ streak }} {{ 'jours' | trans }}
+            <twig:StreakBadge streak="{{ streak }}" size="sm" showValue="true" /> {{ 'jours' | trans }}
         </div>
         <div class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold border border-indigo-100">
             ⚡ {{ xp }} XP

@@ -144,8 +144,8 @@
 - [x] **Hidden easter eggs in lesson content**
 - [x] **Tiered leaderboards (Bronze, Silver, Gold, Diamond)**
 - [x] **Confetti animations on lesson completion (LiveComponent)**
-- [ ] **Unlockable avatar frames based on achievements**
-- [ ] **Rare 'Early Adopter' or 'Speed Learner' badges**
+- [x] **Unlockable avatar frames based on achievements**
+- [x] **Rare 'Early Adopter' or 'Speed Learner' badges**
 - [ ] **Peer-awarded 'Helpful' badges in forums**
 - [ ] **Progress bar that accelerates visually near the end**
 - [ ] **Streak flames that change color (e.g., blue fire at 30 days)**

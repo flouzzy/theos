@@ -75,7 +75,11 @@
         <twig:StatCard value="{{ stats.completed }}" label="{{ 'Cours complétés' | trans }}" icon="🎓" class="flex-row items-center gap-4 text-left p-6" />
 
         {# Streak #}
-        <twig:StatCard value="{{ app.user.streak ?? 0 }} {{ 'Jours' | trans }}" label="{{ 'Série en cours' | trans }}" icon="🔥" class="flex-row items-center gap-4 text-left p-6 text-orange-500" />
+        <twig:StatCard value="{{ app.user.streak ?? 0 }} {{ 'Jours' | trans }}" label="{{ 'Série en cours' | trans }}" class="flex-row items-center gap-4 text-left p-6 text-orange-500">
+            <twig:block name="icon">
+                <twig:StreakBadge streak="{{ app.user.streak ?? 0 }}" size="lg" />
+            </twig:block>
+        </twig:StatCard>
     </div>
 
     {% if premium_access %}

@@ -266,9 +266,7 @@
                     </div>
 
                     {% if app.user %}
-                        <div class="flex items-center gap-1 bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full text-xs font-bold ring-1 ring-orange-200">
-                            <span>🔥</span> {{ app.user.streak }}
-                        </div>
+                        <twig:StreakBadge streak="{{ app.user.streak }}" size="sm" showValue="true" class="bg-muted px-2.5 py-1 rounded-full ring-1 ring-border" />
                     {% endif %}
                  {% endblock %}
             </div>
