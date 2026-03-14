@@ -168,7 +168,7 @@
 - [x] **Customizable public learner profile**
 - [x] **Curate and share personal 'Playlists' of lessons**
 - [x] **Build a public portfolio of assignments/projects**
-- [ ] **Contribute to community wiki/glossary**
+- [x] **Contribute to community wiki/glossary**
 - [ ] **Mentorship program (volunteer to mentor newbies)**
 - [ ] **Set personal weekly learning goals (hours or lessons)**
 - [ ] **Detailed private notes database with tags**
