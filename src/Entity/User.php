@@ -277,6 +277,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: PushSubscription::class, orphanRemoval: true)]
     private Collection $pushSubscriptions;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Playlist::class, orphanRemoval: true)]
+    private Collection $playlists;
+
     /**
      * @var Collection<int, Bonus>
      */
@@ -317,6 +320,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->chatMessages = new ArrayCollection();
         $this->xpTransactions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
+        $this->playlists = new ArrayCollection();
         $this->unlockedBonuses = new ArrayCollection();
         $this->unlockedFrames = new ArrayCollection();
     }

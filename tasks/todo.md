@@ -166,7 +166,7 @@
 
 ### 🏦 4. Investment (Personalization & Commitment)
 - [x] **Customizable public learner profile**
-- [ ] **Curate and share personal 'Playlists' of lessons**
+- [x] **Curate and share personal 'Playlists' of lessons**
 - [ ] **Build a public portfolio of assignments/projects**
 - [ ] **Contribute to community wiki/glossary**
 - [ ] **Mentorship program (volunteer to mentor newbies)**
