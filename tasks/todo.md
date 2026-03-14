@@ -156,7 +156,7 @@
 - [x] **Virtual currency ('Rocher Coins') to 'buy' profile cosmetics**
 - [x] **Access to exclusive VIP cohort events for top performers**
 - [x] **Mystery mentor 1-on-1 session raffle for active users**
-- [ ] **Dynamic 'Skill Tree' visualization unlocking new branches**
+- [x] **Dynamic 'Skill Tree' visualization unlocking new branches**
 - [ ] **Certificate design variations based on final score**
 - [ ] **Public shoutouts on the dashboard for 'Student of the week'**
 - [ ] **Hidden 'Night Owl' badge for studying past midnight**
