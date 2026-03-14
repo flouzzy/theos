@@ -246,6 +246,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 20, options: ['default' => 'light'])]
     private string $theme = 'light';
 
+    #[ORM\Column(length: 20, options: ['default' => 'default'])]
+    private string $confettiColor = 'default';
+
     #[ORM\Column(length: 128, nullable: true, unique: true)]
     private ?string $loginToken = null;
 
@@ -1589,6 +1592,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setActiveFrame(?AvatarFrame $activeFrame): static
     {
         $this->activeFrame = $activeFrame;
+
+        return $this;
+    }
+
+    public function getConfettiColor(): string
+    {
+        return $this->confettiColor;
+    }
+
+    public function setConfettiColor(string $confettiColor): static
+    {
+        $this->confettiColor = $confettiColor;
 
         return $this;
     }

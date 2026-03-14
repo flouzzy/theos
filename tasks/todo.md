@@ -162,7 +162,7 @@
 - [x] **Hidden 'Night Owl' badge for studying past midnight**
 - [x] **Consecutive correct quiz answers combo multiplier**
 - [x] **Unlockable behind-the-scenes content from instructors**
-- [ ] **Interactive confetti customization**
+- [x] **Interactive confetti customization**
 
 ### 🏦 4. Investment (Personalization & Commitment)
 - [ ] **Customizable public learner profile**
