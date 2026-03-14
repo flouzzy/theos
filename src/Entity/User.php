@@ -246,8 +246,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 20, options: ['default' => 'light'])]
     private string $theme = 'light';
 
-    #[ORM\Column(length: 20, options: ['default' => 'default'])]
-    private string $confettiColor = 'default';
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $bio = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $websiteUrl = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $githubUrl = null;
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $isProfilePublic = true;
 
     #[ORM\Column(length: 128, nullable: true, unique: true)]
     private ?string $loginToken = null;
@@ -1601,10 +1610,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->confettiColor;
     }
 
-    public function setConfettiColor(string $confettiColor): static
-    {
-        $this->confettiColor = $confettiColor;
-
-        return $this;
-    }
-}
+    public function getBio(): ?string { return $this->bio; }
+    public function setBio(?string $bio): static { $this->bio = $bio; return $this; }
+    public function getWebsiteUrl(): ?string { return $this->websiteUrl; }
+    public function setWebsiteUrl(?string $websiteUrl): static { $this->websiteUrl = $websiteUrl; return $this; }
+    public function getGithubUrl(): ?string { return $this->githubUrl; }
+    public function setGithubUrl(?string $githubUrl): static { $this->githubUrl = $githubUrl; return $this; }
+    public function isProfilePublic(): bool { return $this->isProfilePublic; }
+    public function setIsProfilePublic(bool $isProfilePublic): static { $this->isProfilePublic = $isProfilePublic; return $this; }

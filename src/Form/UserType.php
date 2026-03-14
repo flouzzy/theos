@@ -29,8 +29,11 @@ class UserType extends AbstractType
             ->add('address', TextareaType::class)
             ->add('birthDate', DateType::class)
             ->add('bio', null, [
-                'attr' => ['rows' => 10, 'cols' => 50]
+                'attr' => ['rows' => 5, 'cols' => 50]
             ])
+            ->add('websiteUrl', null, ['required' => false])
+            ->add('githubUrl', null, ['required' => false])
+            ->add('isProfilePublic', CheckboxType::class, ['required' => false])
             ->add('activeFrame', EntityType::class, [
                 'class' => AvatarFrame::class,
                 'choice_label' => 'name',

@@ -165,7 +165,7 @@
 - [x] **Interactive confetti customization**
 
 ### 🏦 4. Investment (Personalization & Commitment)
-- [ ] **Customizable public learner profile**
+- [x] **Customizable public learner profile**
 - [ ] **Curate and share personal 'Playlists' of lessons**
 - [ ] **Build a public portfolio of assignments/projects**
 - [ ] **Contribute to community wiki/glossary**

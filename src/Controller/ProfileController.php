@@ -232,4 +232,13 @@ class ProfileController extends AbstractController
             'stats' => $stats,
         ]);
     }
+
+    #[Route('/profile/{id}', name: 'profile_public', methods: ['GET'])]
+    public function publicProfile(User $user): Response
+    {
+        if (!$user->isProfilePublic()) {
+            throw $this->createNotFoundException('Profil privé');
+        }
+        return $this->render('profile/public.html.twig', ['user' => $user]);
+    }
 }
