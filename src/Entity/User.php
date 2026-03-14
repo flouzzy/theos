@@ -1510,13 +1510,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->loginToken && $this->loginTokenExpiresAt > new \DateTimeImmutable();
     }
 
-    public function getTier(): string
+    #[ORM\Column(options: ['default' => 0])]
+    private int $rocherCoins = 0;
+
+    public function getRocherCoins(): int
     {
-        if ($this->xp >= 10000) return '💎 Diamant';
-        if ($this->xp >= 5000) return '🥇 Or';
-        if ($this->xp >= 2000) return '🥈 Argent';
-        if ($this->xp >= 500) return '🥉 Bronze';
-        return '🌱 Novice';
+        return $this->rocherCoins;
+    }
+
+    public function setRocherCoins(int $rocherCoins): static
+    {
+        $this->rocherCoins = $rocherCoins;
+
+        return $this;
     }
 
     /**

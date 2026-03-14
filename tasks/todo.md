@@ -153,7 +153,7 @@
 - [x] **Unlockable exclusive themes (e.g., 'Matrix mode')**
 - [x] **Personalized 'Year in Review' (Spotify Wrapped style)**
 - [x] **Randomized daily trivia questions for bonus XP**
-- [ ] **Virtual currency ('Rocher Coins') to 'buy' profile cosmetics**
+- [x] **Virtual currency ('Rocher Coins') to 'buy' profile cosmetics**
 - [ ] **Access to exclusive VIP cohort events for top performers**
 - [ ] **Mystery mentor 1-on-1 session raffle for active users**
 - [ ] **Dynamic 'Skill Tree' visualization unlocking new branches**
