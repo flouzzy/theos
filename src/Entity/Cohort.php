@@ -66,6 +66,9 @@ class Cohort
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $slackWebhookUrl = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isVip = false;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -284,6 +287,18 @@ class Cohort
     public function setSlackWebhookUrl(?string $slackWebhookUrl): static
     {
         $this->slackWebhookUrl = $slackWebhookUrl;
+
+        return $this;
+    }
+
+    public function isVip(): bool
+    {
+        return $this->isVip;
+    }
+
+    public function setIsVip(bool $isVip): static
+    {
+        $this->isVip = $isVip;
 
         return $this;
     }
