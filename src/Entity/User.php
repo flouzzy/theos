@@ -250,6 +250,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 20, options: ['default' => 'light'])]
     private string $theme = 'light';
 
+    #[ORM\Column(length: 20, options: ['default' => 'encouraging'])]
+    private string $aiPersonality = 'encouraging';
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 

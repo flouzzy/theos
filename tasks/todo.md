@@ -188,7 +188,7 @@
 - [x] **Design own study schedule with drag-and-drop calendar**
 - [x] **Opt-in to intensive 'Bootcamp' mode**
 - [x] **Leave legacy tips for future cohorts on lessons**
-- [ ] **Customize AI tutor personality (Strict, Encouraging, Socratic)**
+- [x] **Customize AI tutor personality (Strict, Encouraging, Socratic)**
 
 ### 🌐 5. Network Effects (Social Learning)
 - [ ] **Live presence indicators ('3 others are studying this right now')**
