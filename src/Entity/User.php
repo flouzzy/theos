@@ -243,6 +243,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $customGoal = null;
 
+    #[ORM\Column(length: 20, options: ['default' => 'light'])]
+    private string $theme = 'light';
+
     #[ORM\Column(length: 128, nullable: true, unique: true)]
     private ?string $loginToken = null;
 
@@ -1402,6 +1405,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setCustomGoal(?string $customGoal): static
     {
         $this->customGoal = $customGoal;
+
+        return $this;
+    }
+
+    public function getTheme(): string
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(string $theme): static
+    {
+        $this->theme = $theme;
 
         return $this;
     }
