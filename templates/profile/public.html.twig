@@ -9,7 +9,14 @@
         <h1 class="text-3xl font-bold mb-2">{{ user.fullname }}</h1>
         <p class="text-muted-foreground mb-6">{{ user.bio }}</p>
         
-        <div class="flex justify-center gap-4">
+        {% if user.learningManifesto %}
+            <div class="mt-8 text-left border-t border-border pt-6">
+                <h3 class="text-xl font-bold mb-4">{{ 'Manifeste d\'apprentissage' | trans }}</h3>
+                <div class="bg-muted/30 p-6 rounded-xl border border-border">
+                    {{ user.learningManifesto|nl2br }}
+                </div>
+            </div>
+        {% endif %}
             {% if user.websiteUrl %}
                 <a href="{{ user.websiteUrl }}" target="_blank" class="btn btn-outline">{{ 'Site web' | trans }}</a>
             {% endif %}

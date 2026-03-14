@@ -31,6 +31,7 @@ class UserType extends AbstractType
             ->add('bio', null, [
                 'attr' => ['rows' => 5, 'cols' => 50]
             ])
+            ->add('learningManifesto', TextareaType::class, ['required' => false])
             ->add('websiteUrl', null, ['required' => false])
             ->add('githubUrl', null, ['required' => false])
             ->add('isProfilePublic', CheckboxType::class, ['required' => false])

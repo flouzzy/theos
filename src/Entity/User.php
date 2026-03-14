@@ -91,6 +91,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $learningManifesto = null;
+
     /**
      * @var Collection<int, Note>
      */
@@ -249,6 +252,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $learningManifesto = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $websiteUrl = null;
@@ -1656,6 +1662,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getBio(): ?string { return $this->bio; }
     public function setBio(?string $bio): static { $this->bio = $bio; return $this; }
+    public function getLearningManifesto(): ?string { return $this->learningManifesto; }
+    public function setLearningManifesto(?string $learningManifesto): static { $this->learningManifesto = $learningManifesto; return $this; }
     public function getWebsiteUrl(): ?string { return $this->websiteUrl; }
     public function setWebsiteUrl(?string $websiteUrl): static { $this->websiteUrl = $websiteUrl; return $this; }
     public function getGithubUrl(): ?string { return $this->githubUrl; }
