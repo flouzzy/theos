@@ -1414,9 +1414,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->theme;
     }
 
-    public function setTheme(string $theme): static
+    #[ORM\Column(options: ['default' => 0])]
+    private int $quizCombo = 0;
+
+    public function getQuizCombo(): int
     {
-        $this->theme = $theme;
+        return $this->quizCombo;
+    }
+
+    public function setQuizCombo(int $quizCombo): static
+    {
+        $this->quizCombo = $quizCombo;
 
         return $this;
     }

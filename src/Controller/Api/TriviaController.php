@@ -34,9 +34,15 @@ class TriviaController extends AbstractController
         if (!$q) return $this->json(['error' => 'Invalid question'], Response::HTTP_BAD_REQUEST);
 
         if ($q->getCorrectAnswer() === ($data['answer'] ?? '')) {
-            $gam->addXp($this->getUser(), 20, 'trivia_win');
-            return $this->json(['correct' => true]);
+            $user = $this->getUser();
+            $user->setQuizCombo($user->getQuizCombo() + 1);
+            $multiplier = 1 + (int)($user->getQuizCombo() / 5) * 0.1; // +10% tous les 5
+            $gam->addXp($user, (int)(20 * $multiplier), 'trivia_win');
+            $entityManager->flush();
+            return $this->json(['correct' => true, 'combo' => $user->getQuizCombo()]);
         }
+        $user->setQuizCombo(0);
+        $entityManager->flush();
         return $this->json(['correct' => false]);
     }
 }
