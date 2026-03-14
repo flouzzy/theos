@@ -186,7 +186,7 @@
 - [x] **Create a 'learning manifesto' on profile**
 - [x] **Connect external accounts (GitHub, StackOverflow) to show skills**
 - [x] **Design own study schedule with drag-and-drop calendar**
-- [ ] **Opt-in to intensive 'Bootcamp' mode**
+- [x] **Opt-in to intensive 'Bootcamp' mode**
 - [ ] **Leave legacy tips for future cohorts on lessons**
 - [ ] **Customize AI tutor personality (Strict, Encouraging, Socratic)**
 

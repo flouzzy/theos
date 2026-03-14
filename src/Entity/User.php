@@ -1434,8 +1434,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(options: ['default' => 0])]
     private int $weeklyGoalHours = 0;
 
-    public function getWeeklyGoalHours(): int { return $this->weeklyGoalHours; }
-    public function setWeeklyGoalHours(int $weeklyGoalHours): static { $this->weeklyGoalHours = $weeklyGoalHours; return $this; }
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isBootcampMode = false;
+
+    public function isBootcampMode(): bool { return $this->isBootcampMode; }
+    public function setIsBootcampMode(bool $isBootcampMode): static { $this->isBootcampMode = $isBootcampMode; return $this; }
 
     public function setCustomGoal(?string $customGoal): static
     {
