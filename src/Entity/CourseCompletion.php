@@ -27,6 +27,12 @@ class CourseCompletion
     #[ORM\Column(nullable: true)]
     private ?bool $completed = false;
 
+    #[ORM\Column(length: 20, options: ['default' => 'simple'])]
+    private string $certificateType = 'simple';
+
+    public function getCertificateType(): string { return $this->certificateType; }
+    public function setCertificateType(string $certificateType): static { $this->certificateType = $certificateType; return $this; }
+
     public function getId(): ?int
     {
         return $this->id;
