@@ -158,7 +158,7 @@
 - [x] **Mystery mentor 1-on-1 session raffle for active users**
 - [x] **Dynamic 'Skill Tree' visualization unlocking new branches**
 - [x] **Certificate design variations based on final score**
-- [ ] **Public shoutouts on the dashboard for 'Student of the week'**
+- [x] **Public shoutouts on the dashboard for 'Student of the week'**
 - [ ] **Hidden 'Night Owl' badge for studying past midnight**
 - [ ] **Consecutive correct quiz answers combo multiplier**
 - [ ] **Unlockable behind-the-scenes content from instructors**

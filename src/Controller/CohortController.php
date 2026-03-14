@@ -17,7 +17,8 @@ class CohortController extends AbstractController
         \App\Repository\CourseRepository $courseRepository,
         \App\Repository\CompletionRepository $completionRepository,
         \App\Repository\CourseCompletionRepository $courseCompletionRepository,
-        CohortSession $cohortSession
+        CohortSession $cohortSession,
+        \App\Service\LeaderboardService $leaderboardService
     ): Response {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -88,6 +89,7 @@ class CohortController extends AbstractController
             'events' => $events,
             'newLessonsCount' => $newLessonsCount,
             'lastLesson' => $lastLesson,
+            'topStudent' => $leaderboardService->getStudentOfTheWeek(),
             'stats' => [
                 'ongoing' => $ongoingCoursesCount,
                 'completed' => $completedCoursesCount,
