@@ -147,7 +147,7 @@
 - [x] **Unlockable avatar frames based on achievements**
 - [x] **Rare 'Early Adopter' or 'Speed Learner' badges**
 - [x] **Peer-awarded 'Helpful' badges in forums**
-- [ ] **Progress bar that accelerates visually near the end**
+- [x] **Progress bar that accelerates visually near the end**
 - [ ] **Streak flames that change color (e.g., blue fire at 30 days)**
 - [ ] **Sound effects for positive reinforcement (level up chime)**
 - [ ] **Unlockable exclusive themes (e.g., 'Matrix mode')**
