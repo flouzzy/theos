@@ -280,6 +280,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Playlist::class, orphanRemoval: true)]
     private Collection $playlists;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PortfolioProject::class, orphanRemoval: true)]
+    private Collection $portfolioProjects;
+
     /**
      * @var Collection<int, Bonus>
      */
@@ -321,6 +324,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->xpTransactions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
         $this->playlists = new ArrayCollection();
+        $this->portfolioProjects = new ArrayCollection();
         $this->unlockedBonuses = new ArrayCollection();
         $this->unlockedFrames = new ArrayCollection();
     }
@@ -1503,6 +1507,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, PortfolioProject>
+     */
+    public function getPortfolioProjects(): Collection
+    {
+        return $this->portfolioProjects;
+    }
+
+    public function addPortfolioProject(PortfolioProject $portfolioProject): static
+    {
+        if (!$this->portfolioProjects->contains($portfolioProject)) {
+            $this->portfolioProjects->add($portfolioProject);
+            $portfolioProject->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioProject(PortfolioProject $portfolioProject): static
+    {
+        if ($this->portfolioProjects->removeElement($portfolioProject)) {
+            // set the owning side to null (unless already changed)
+            if ($portfolioProject->getUser() === $this) {
+                $portfolioProject->setUser(null);
+            }
+        }
+
+        return $this;
+    }
     }
 
     public function getLoginToken(): ?string
