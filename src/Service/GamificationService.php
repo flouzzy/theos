@@ -205,6 +205,24 @@ class GamificationService
         }
     }
 
+    public function checkNightOwlBadge(User $user, bool $flush = true): void
+    {
+        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $hour = (int)$now->format('H');
+
+        if ($hour >= 0 && $hour < 5) {
+            $this->awardBadge(
+                $user,
+                'NIGHT_OWL',
+                'Night Owl',
+                'Tu étudies en pleine nuit !',
+                'Night Owl',
+                'Awarded for studying past midnight',
+                $flush
+            );
+        }
+    }
+
     }
 
     public function awardBadge(
