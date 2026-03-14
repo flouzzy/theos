@@ -293,6 +293,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: PortfolioProject::class, orphanRemoval: true)]
     private Collection $portfolioProjects;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ExternalAccount::class, orphanRemoval: true)]
+    private Collection $externalAccounts;
+
     /**
      * @var Collection<int, Bonus>
      */
@@ -334,6 +337,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->xpTransactions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
         $this->playlists = new ArrayCollection();
+        $this->externalAccounts = new ArrayCollection();
         $this->portfolioProjects = new ArrayCollection();
         $this->unlockedBonuses = new ArrayCollection();
         $this->unlockedFrames = new ArrayCollection();
@@ -1549,8 +1553,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, ExternalAccount>
+     */
+    public function getExternalAccounts(): Collection
+    {
+        return $this->externalAccounts;
     }
 
+    public function addExternalAccount(ExternalAccount $externalAccount): static
+    {
+        if (!$this->externalAccounts->contains($externalAccount)) {
+            $this->externalAccounts->add($externalAccount);
+            $externalAccount->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExternalAccount(ExternalAccount $externalAccount): static
+    {
+        if ($this->externalAccounts->removeElement($externalAccount)) {
+            // set the owning side to null (unless already changed)
+            if ($externalAccount->getUser() === $this) {
+                $externalAccount->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+    }
     public function getLoginToken(): ?string
     {
         return $this->loginToken;

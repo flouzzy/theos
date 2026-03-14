@@ -184,7 +184,7 @@
 - [x] **Earn 'Equity' (reputation points) that give forum moderation powers**
 - [ ] **Pin favorite lessons to top of dashboard**
 - [x] **Create a 'learning manifesto' on profile**
-- [ ] **Connect external accounts (GitHub, StackOverflow) to show skills**
+- [x] **Connect external accounts (GitHub, StackOverflow) to show skills**
 - [ ] **Design own study schedule with drag-and-drop calendar**
 - [ ] **Opt-in to intensive 'Bootcamp' mode**
 - [ ] **Leave legacy tips for future cohorts on lessons**
