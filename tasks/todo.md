@@ -149,7 +149,7 @@
 - [x] **Peer-awarded 'Helpful' badges in forums**
 - [x] **Progress bar that accelerates visually near the end**
 - [x] **Streak flames that change color (e.g., blue fire at 30 days)**
-- [ ] **Sound effects for positive reinforcement (level up chime)**
+- [x] **Sound effects for positive reinforcement (level up chime)**
 - [ ] **Unlockable exclusive themes (e.g., 'Matrix mode')**
 - [ ] **Personalized 'Year in Review' (Spotify Wrapped style)**
 - [ ] **Randomized daily trivia questions for bonus XP**
