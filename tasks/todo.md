@@ -172,7 +172,7 @@
 - [x] **Mentorship program (volunteer to mentor newbies)**
 - [x] **Set personal weekly learning goals (hours or lessons)**
 - [x] **Detailed private notes database with tags**
-- [ ] **Upload custom profile cover photo**
+- [x] **Upload custom profile cover photo**
 - [ ] **Create and share custom flashcard decks**
 - [ ] **Vote on future course topics (roadmap voting)**
 - [ ] **Submit own resources/links for peer review**

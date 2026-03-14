@@ -238,7 +238,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $jwtSecret = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $googleId = null;
+    private ?string $coverPhoto = null;
+
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $customGoal = null;
