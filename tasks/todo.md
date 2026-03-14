@@ -152,7 +152,7 @@
 - [x] **Sound effects for positive reinforcement (level up chime)**
 - [x] **Unlockable exclusive themes (e.g., 'Matrix mode')**
 - [x] **Personalized 'Year in Review' (Spotify Wrapped style)**
-- [ ] **Randomized daily trivia questions for bonus XP**
+- [x] **Randomized daily trivia questions for bonus XP**
 - [ ] **Virtual currency ('Rocher Coins') to 'buy' profile cosmetics**
 - [ ] **Access to exclusive VIP cohort events for top performers**
 - [ ] **Mystery mentor 1-on-1 session raffle for active users**
