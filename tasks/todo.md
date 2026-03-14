@@ -155,7 +155,7 @@
 - [x] **Randomized daily trivia questions for bonus XP**
 - [x] **Virtual currency ('Rocher Coins') to 'buy' profile cosmetics**
 - [x] **Access to exclusive VIP cohort events for top performers**
-- [ ] **Mystery mentor 1-on-1 session raffle for active users**
+- [x] **Mystery mentor 1-on-1 session raffle for active users**
 - [ ] **Dynamic 'Skill Tree' visualization unlocking new branches**
 - [ ] **Certificate design variations based on final score**
 - [ ] **Public shoutouts on the dashboard for 'Student of the week'**
