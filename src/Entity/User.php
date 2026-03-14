@@ -1417,10 +1417,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    public function getCustomGoal(): ?string
-    {
-        return $this->customGoal;
-    }
+    #[ORM\Column(options: ['default' => 0])]
+    private int $weeklyGoalHours = 0;
+
+    public function getWeeklyGoalHours(): int { return $this->weeklyGoalHours; }
+    public function setWeeklyGoalHours(int $weeklyGoalHours): static { $this->weeklyGoalHours = $weeklyGoalHours; return $this; }
 
     public function setCustomGoal(?string $customGoal): static
     {

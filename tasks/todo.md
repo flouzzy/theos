@@ -170,7 +170,7 @@
 - [x] **Build a public portfolio of assignments/projects**
 - [x] **Contribute to community wiki/glossary**
 - [x] **Mentorship program (volunteer to mentor newbies)**
-- [ ] **Set personal weekly learning goals (hours or lessons)**
+- [x] **Set personal weekly learning goals (hours or lessons)**
 - [ ] **Detailed private notes database with tags**
 - [ ] **Upload custom profile cover photo**
 - [ ] **Create and share custom flashcard decks**
