@@ -241,4 +241,11 @@ class ProfileController extends AbstractController
         }
         return $this->render('profile/public.html.twig', ['user' => $user]);
     }
+
+    #[Route('/profile/{id}/blog', name: 'profile_blog_feed')]
+    public function blogFeed(User $user, \App\Service\RssFeedService $rssFeedService): Response
+    {
+        $posts = $user->getRssFeedUrl() ? $rssFeedService->getLatestPosts($user->getRssFeedUrl()) : [];
+        return $this->render('profile/_blog_feed.html.twig', ['posts' => $posts]);
+    }
 }

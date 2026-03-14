@@ -254,7 +254,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $websiteUrl = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $githubUrl = null;
+    private ?string $rssFeedUrl = null;
+
+    public function getRssFeedUrl(): ?string { return $this->rssFeedUrl; }
+    public function setRssFeedUrl(?string $rssFeedUrl): static { $this->rssFeedUrl = $rssFeedUrl; return $this; }
 
     #[ORM\Column(options: ['default' => true])]
     private bool $isProfilePublic = true;

@@ -177,7 +177,7 @@
 - [x] **Vote on future course topics (roadmap voting)**
 - [x] **Submit own resources/links for peer review**
 - [x] **Customizable dashboard widget layout**
-- [ ] **Integrate personal blog RSS to profile**
+- [x] **Integrate personal blog RSS to profile**
 - [ ] **Write reviews and testimonials for courses**
 - [ ] **Translate community subtitles (crowdsourcing)**
 - [ ] **Track external learning (books read, podcasts)**
