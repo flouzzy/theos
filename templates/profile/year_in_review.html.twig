@@ -1,0 +1,22 @@
+{% extends 'app.html.twig' %}
+
+{% block content %}
+<div class="h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6 text-center">
+    <h1 class="text-4xl font-black mb-12">Ton Année {{ "now"|date("Y") }}</h1>
+    
+    <div class="space-y-8 animate-pulse">
+        <div class="text-6xl font-bold text-primary">{{ stats.xp }} XP</div>
+        <p class="text-xl">gagnés cette année !</p>
+        
+        <div class="text-6xl font-bold text-emerald-400">{{ stats.completions }}</div>
+        <p class="text-xl">leçons terminées.</p>
+        
+        <div class="text-6xl font-bold text-yellow-400">{{ stats.badges }}</div>
+        <p class="text-xl">badges collectionnés.</p>
+    </div>
+
+    <a href="{{ path('profile_index') }}" class="mt-16 btn btn-primary px-12 py-4 text-lg">
+        {{ 'Retour au profil' | trans }}
+    </a>
+</div>
+{% endblock %}

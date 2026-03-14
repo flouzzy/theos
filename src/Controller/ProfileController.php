@@ -220,4 +220,16 @@ class ProfileController extends AbstractController
 
         return $this->redirectToRoute('profile_index');
     }
+
+    #[Route('/profile/year-in-review', name: 'profile_year_in_review')]
+    public function yearInReview(\App\Service\YearInReviewService $service): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $stats = $service->getYearlyStats($user, (int)date('Y'));
+        
+        return $this->render('profile/year_in_review.html.twig', [
+            'stats' => $stats,
+        ]);
+    }
 }
