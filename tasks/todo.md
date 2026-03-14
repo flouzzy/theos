@@ -171,7 +171,7 @@
 - [x] **Contribute to community wiki/glossary**
 - [x] **Mentorship program (volunteer to mentor newbies)**
 - [x] **Set personal weekly learning goals (hours or lessons)**
-- [ ] **Detailed private notes database with tags**
+- [x] **Detailed private notes database with tags**
 - [ ] **Upload custom profile cover photo**
 - [ ] **Create and share custom flashcard decks**
 - [ ] **Vote on future course topics (roadmap voting)**
