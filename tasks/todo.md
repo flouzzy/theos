@@ -174,7 +174,7 @@
 - [x] **Detailed private notes database with tags**
 - [x] **Upload custom profile cover photo**
 - [x] **Create and share custom flashcard decks**
-- [ ] **Vote on future course topics (roadmap voting)**
+- [x] **Vote on future course topics (roadmap voting)**
 - [ ] **Submit own resources/links for peer review**
 - [ ] **Customizable dashboard widget layout**
 - [ ] **Integrate personal blog RSS to profile**
