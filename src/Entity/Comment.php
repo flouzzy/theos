@@ -39,6 +39,9 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?Lesson $lesson = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $timestamp = null;
+
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'likedComments')]
     private Collection $likes;
 
@@ -163,6 +166,18 @@ class Comment
     public function removeLike(User $like): static
     {
         $this->likes->removeElement($like);
+
+        return $this;
+    }
+
+    public function getTimestamp(): ?int
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(?int $timestamp): static
+    {
+        $this->timestamp = $timestamp;
 
         return $this;
     }
