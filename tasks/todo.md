@@ -201,7 +201,7 @@
 - [x] **Activity feed ('User X just earned the Master badge')**
 - [x] **Upvote/Downvote system for Q&A (StackOverflow style)**
 - [x] **Share achievements directly to LinkedIn/Twitter**
-- [ ] **Invite-only exclusive sub-forums**
+- [x] **Invite-only exclusive sub-forums**
 - [ ] **Peer-to-peer code review or assignment review system**
 - [ ] **Live virtual 'Pomodoro' study rooms**
 - [ ] **User-generated study groups with custom topics**
