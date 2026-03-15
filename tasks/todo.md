@@ -206,7 +206,7 @@
 - [x] **Live virtual 'Pomodoro' study rooms**
 - [x] **User-generated study groups with custom topics**
 - [x] **Mentor matching algorithm based on skill gaps**
-- [ ] **Endorse peers for specific skills**
+- [x] **Endorse peers for specific skills**
 - [ ] **Collaborative 'mind map' building for complex modules**
 - [ ] **Leaderboard rivalry notifications ('User Y is catching up!')**
 - [ ] **Alumni AMA (Ask Me Anything) sessions**

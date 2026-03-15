@@ -299,6 +299,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ExternalAccount::class, orphanRemoval: true)]
     private Collection $externalAccounts;
 
+    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: SkillEndorsement::class, orphanRemoval: true)]
+    private Collection $receivedEndorsements;
+
     /**
      * @var Collection<int, Bonus>
      */
@@ -341,6 +344,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->pushSubscriptions = new ArrayCollection();
         $this->playlists = new ArrayCollection();
         $this->externalAccounts = new ArrayCollection();
+        $this->receivedEndorsements = new ArrayCollection();
         $this->portfolioProjects = new ArrayCollection();
         $this->unlockedBonuses = new ArrayCollection();
         $this->unlockedFrames = new ArrayCollection();
