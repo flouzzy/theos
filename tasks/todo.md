@@ -196,7 +196,7 @@
 - [x] **Cohort-wide collaborative note document**
 - [x] **Threaded discussions mapped to specific video timestamps**
 - [x] **Alumni network directory with filtering**
-- [ ] **Direct messaging between connected peers**
+- [x] **Direct messaging between connected peers**
 - [ ] **Group challenges ('As a cohort, complete 100 lessons this week')**
 - [ ] **Activity feed ('User X just earned the Master badge')**
 - [ ] **Upvote/Downvote system for Q&A (StackOverflow style)**
