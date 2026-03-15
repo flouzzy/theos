@@ -200,7 +200,7 @@
 - [x] **Group challenges ('As a cohort, complete 100 lessons this week')**
 - [x] **Activity feed ('User X just earned the Master badge')**
 - [x] **Upvote/Downvote system for Q&A (StackOverflow style)**
-- [ ] **Share achievements directly to LinkedIn/Twitter**
+- [x] **Share achievements directly to LinkedIn/Twitter**
 - [ ] **Invite-only exclusive sub-forums**
 - [ ] **Peer-to-peer code review or assignment review system**
 - [ ] **Live virtual 'Pomodoro' study rooms**

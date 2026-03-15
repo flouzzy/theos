@@ -223,17 +223,18 @@ class GamificationService
         }
     }
 
+    public function getShareUrl(string $platform, string $title, string $description): string
+    {
+        $url = urlencode($this->urlGenerator->generate('home', [], UrlGeneratorInterface::ABSOLUTE_URL));
+        $text = urlencode("$title - $description");
+
+        return match($platform) {
+            'linkedin' => "https://www.linkedin.com/sharing/share-offsite/?url=$url",
+            'twitter' => "https://twitter.com/intent/tweet?text=$text&url=$url",
+            default => '#',
+        };
     }
 
-    public function awardBadge(
-        User $user,
-        string $code,
-        string $badgeTitle,
-        string $badgeDesc,
-        ?string $typeTitle = null,
-        ?string $typeDesc = null,
-        bool $flush = true
-    ): void {
         $badgeTypeRepo = $this->entityManager->getRepository(BadgeType::class);
         $badgeType = $badgeTypeRepo->findOneBy(['code' => $code]);
 
