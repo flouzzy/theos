@@ -10,8 +10,9 @@
 - [x] **Refactor onboarding: One-click setup via SSO only, deferred profile completion.**
 - [x] **Skeleton loading states for all dashboard widgets.**
 
-- [ ] Haptic-feedback integration (Vibration API) for "Complete Lesson".
-- [ ] Intelligent "Autosave" for all text inputs (Notes, comments) in LocalStorage.
+- [x] **Haptic-feedback integration (Vibration API) for "Complete Lesson".**
+- [ ] **Intelligent "Autosave" for all text inputs (Notes, comments) in LocalStorage.**
+
 
 ### Dopamine Loops (Behavioral Scientist)
 - [ ] Implement "Streak Repair" shop using Rocher Coins.
