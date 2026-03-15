@@ -178,8 +178,8 @@
 - [x] **Submit own resources/links for peer review**
 - [x] **Customizable dashboard widget layout**
 - [x] **Integrate personal blog RSS to profile**
-- [ ] **Write reviews and testimonials for courses**
-- [x] **Translate community subtitles (crowdsourcing)**
+- [x] **Write reviews and testimonials for courses**
+- [ ] **Translate community subtitles (crowdsourcing)**
 - [x] **Track external learning (books read, podcasts)**
 - [x] **Earn 'Equity' (reputation points) that give forum moderation powers**
 - [ ] **Pin favorite lessons to top of dashboard**
