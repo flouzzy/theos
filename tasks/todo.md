@@ -202,7 +202,7 @@
 - [x] **Upvote/Downvote system for Q&A (StackOverflow style)**
 - [x] **Share achievements directly to LinkedIn/Twitter**
 - [x] **Invite-only exclusive sub-forums**
-- [ ] **Peer-to-peer code review or assignment review system**
+- [x] **Peer-to-peer code review or assignment review system**
 - [ ] **Live virtual 'Pomodoro' study rooms**
 - [ ] **User-generated study groups with custom topics**
 - [ ] **Mentor matching algorithm based on skill gaps**
