@@ -193,7 +193,7 @@
 ### 🌐 5. Network Effects (Social Learning)
 - [x] **Live presence indicators ('3 others are studying this right now')**
 - [x] **Auto-match with a 'Study Buddy' based on timezone and goals**
-- [ ] **Cohort-wide collaborative note document**
+- [x] **Cohort-wide collaborative note document**
 - [ ] **Threaded discussions mapped to specific video timestamps**
 - [ ] **Alumni network directory with filtering**
 - [ ] **Direct messaging between connected peers**
