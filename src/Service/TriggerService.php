@@ -8,6 +8,8 @@ use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use Psr\Clock\ClockInterface;
+
 class TriggerService
 {
     public function __construct(
@@ -16,11 +18,17 @@ class TriggerService
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
+        private ?ClockInterface $clock = null,
     ) {}
 
     /**
      * Process daily triggers for all active users.
      */
+    private function now(): \DateTimeImmutable
+    {
+        return $this->clock ? $this->clock->now() : new \DateTimeImmutable();
+    }
+
     public function processDailyTriggers(): void
     {
         $users = $this->userRepository->findAll();
@@ -47,7 +55,7 @@ class TriggerService
             return;
         }
 
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
         
         // Target Wednesday morning
         if ($now->format('N') !== '3' || (int)$now->format('H') < 10 || (int)$now->format('H') > 12) {
@@ -67,7 +75,7 @@ class TriggerService
      */
     private function processWeeklyReflectionTrigger(User $user): void
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
         
         // Target Sunday evening (after 18:00)
         if ($now->format('N') !== '7' || (int)$now->format('H') < 18) {
@@ -87,7 +95,7 @@ class TriggerService
      */
     private function processMorningRoutineTrigger(User $user): void
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
         $hour = (int)$now->format('H');
 
         // Target 06:00 - 09:00 window
@@ -187,7 +195,7 @@ class TriggerService
      */
     private function processInactivityTrigger(User $user): void
     {
-        $now = new \DateTimeImmutable();
+        $now = $this->now();
         $lastConnection = $user->getLastConnectionAt();
 
         if ($lastConnection && $now->diff($lastConnection)->days === 3) {
@@ -262,7 +270,7 @@ class TriggerService
         $frequency = current($hours);
 
         if ($frequency >= 3) {
-            $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+            $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
             $currentHour = (int)$now->format('H');
 
             if ($currentHour === $usualHour) {
@@ -288,7 +296,7 @@ class TriggerService
             return;
         }
 
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
         $lastStreakDate = $user->getLastStreakDate();
 
         if (!$lastStreakDate) {
@@ -316,7 +324,7 @@ class TriggerService
     private function processDailyDigestTrigger(User $user): void
     {
         // For simplicity, we send it if they haven't connected in 24h
-        $now = new \DateTimeImmutable();
+        $now = $this->now();
         if ($user->getLastConnectionAt() && $now->diff($user->getLastConnectionAt())->days < 1) {
             // They are active, maybe no need for digest? 
             // Or send it anyway in the morning. Let's say morning digest at 8 AM.
