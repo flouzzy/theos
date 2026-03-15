@@ -15,8 +15,9 @@
 
 
 ### Dopamine Loops (Behavioral Scientist)
-- [ ] Implement "Streak Repair" shop using Rocher Coins.
-- [ ] Add "Level Up" animations with multi-stage confetti and camera shake.
+- [x] **Implement "Streak Repair" shop using Rocher Coins.**
+- [ ] **Add "Level Up" animations with multi-stage confetti and camera shake.**
+
 - [ ] "Daily Win" notification: AI generates a summary of the best learning moment of the day.
 - [ ] "Completion Soundscapes": Adaptive audio that changes as the user approaches 100%.
 
