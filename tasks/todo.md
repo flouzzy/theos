@@ -11,7 +11,7 @@
 - [x] **Skeleton loading states for all dashboard widgets.**
 
 - [x] **Haptic-feedback integration (Vibration API) for "Complete Lesson".**
-- [ ] **Intelligent "Autosave" for all text inputs (Notes, comments) in LocalStorage.**
+- [x] **Intelligent "Autosave" for all text inputs (Notes, comments) in LocalStorage.**
 
 
 ### Dopamine Loops (Behavioral Scientist)
