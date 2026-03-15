@@ -198,7 +198,7 @@
 - [x] **Alumni network directory with filtering**
 - [x] **Direct messaging between connected peers**
 - [x] **Group challenges ('As a cohort, complete 100 lessons this week')**
-- [ ] **Activity feed ('User X just earned the Master badge')**
+- [x] **Activity feed ('User X just earned the Master badge')**
 - [ ] **Upvote/Downvote system for Q&A (StackOverflow style)**
 - [ ] **Share achievements directly to LinkedIn/Twitter**
 - [ ] **Invite-only exclusive sub-forums**
