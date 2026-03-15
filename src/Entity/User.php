@@ -1443,12 +1443,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function isBootcampMode(): bool { return $this->isBootcampMode; }
     public function setIsBootcampMode(bool $isBootcampMode): static { $this->isBootcampMode = $isBootcampMode; return $this; }
 
-    public function setCustomGoal(?string $customGoal): static
-    {
-        $this->customGoal = $customGoal;
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isAlumni = false;
 
-        return $this;
-    }
+    public function isAlumni(): bool { return $this->isAlumni; }
+    public function setIsAlumni(bool $isAlumni): static { $this->isAlumni = $isAlumni; return $this; }
+
 
     public function getTheme(): string
     {

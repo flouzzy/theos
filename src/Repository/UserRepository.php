@@ -144,4 +144,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $counts;
     }
+
+    public function findAlumni(): array
+    {
+        return $this->findBy(['isAlumni' => true]);
+    }
 }
