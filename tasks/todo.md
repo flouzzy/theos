@@ -205,7 +205,7 @@
 - [x] **Peer-to-peer code review or assignment review system**
 - [x] **Live virtual 'Pomodoro' study rooms**
 - [x] **User-generated study groups with custom topics**
-- [ ] **Mentor matching algorithm based on skill gaps**
+- [x] **Mentor matching algorithm based on skill gaps**
 - [ ] **Endorse peers for specific skills**
 - [ ] **Collaborative 'mind map' building for complex modules**
 - [ ] **Leaderboard rivalry notifications ('User Y is catching up!')**
