@@ -204,7 +204,7 @@
 - [x] **Invite-only exclusive sub-forums**
 - [x] **Peer-to-peer code review or assignment review system**
 - [x] **Live virtual 'Pomodoro' study rooms**
-- [ ] **User-generated study groups with custom topics**
+- [x] **User-generated study groups with custom topics**
 - [ ] **Mentor matching algorithm based on skill gaps**
 - [ ] **Endorse peers for specific skills**
 - [ ] **Collaborative 'mind map' building for complex modules**
