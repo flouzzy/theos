@@ -24,8 +24,9 @@
 
 
 ### Viral Loops (Growth Designer)
-- [ ] "Co-learning invitation": Generating a unique link for a study session that grants bonus XP to both.
-- [ ] "Social Proof Heatmap": Show "Active learners" on course catalog cards.
+- [x] **"Co-learning invitation": Generating a unique link for a study session that grants bonus XP to both.**
+- [ ] **"Social Proof Heatmap": Show "Active learners" on course catalog cards.**
+
 - [ ] Referral System: Unlocks exclusive "Expert" badges for successful peer mentoring.
 - [ ] Shareable "Learning Summary" infographics for LinkedIn.
 
