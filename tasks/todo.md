@@ -25,7 +25,8 @@
 ### 🎁 3. Variable Rewards (Gamification)
 - [x] Unlockable avatar frames based on achievements
 - [x] **Rare 'Early Adopter' or 'Speed Learner' badges**
-- [ ] **Peer-awarded 'Helpful' badges in forums**
+- [x] Peer-awarded 'Helpful' badges in forums
+
 
 - [ ] Progress bar that accelerates visually near the end
 - [ ] Unlockable exclusive themes (e.g., 'Matrix mode')
