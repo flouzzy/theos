@@ -302,6 +302,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: SkillEndorsement::class, orphanRemoval: true)]
     private Collection $receivedEndorsements;
 
+    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'members')]
+    private Collection $teams;
+
     /**
      * @var Collection<int, Bonus>
      */
@@ -345,6 +348,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->playlists = new ArrayCollection();
         $this->externalAccounts = new ArrayCollection();
         $this->receivedEndorsements = new ArrayCollection();
+        $this->teams = new ArrayCollection();
         $this->portfolioProjects = new ArrayCollection();
         $this->unlockedBonuses = new ArrayCollection();
         $this->unlockedFrames = new ArrayCollection();
