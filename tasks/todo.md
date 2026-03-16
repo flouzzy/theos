@@ -173,6 +173,6 @@
 - [x] **Alumni AMA (Ask Me Anything) sessions**
 - [x] **Job board shared by alumni and partners**
 - [x] **Cross-cohort 'Hackathon' or project events**
-- [ ] **Shared resource library updated by users**
+- [x] **Shared resource library updated by users**
 - [ ] **Team-based learning (enroll as a company/team)**
 - [ ] **Public 'Proof of Work' verifiable links**
