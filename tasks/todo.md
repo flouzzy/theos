@@ -19,8 +19,9 @@
 - [x] Add "Level Up" animations with multi-stage confetti and camera shake.
 
 
-- [ ] "Daily Win" notification: AI generates a summary of the best learning moment of the day.
-- [ ] "Completion Soundscapes": Adaptive audio that changes as the user approaches 100%.
+- [x] **"Daily Win" notification: AI generates a summary of the best learning moment of the day.**
+- [ ] **"Completion Soundscapes": Adaptive audio that changes as the user approaches 100%.**
+
 
 ### Viral Loops (Growth Designer)
 - [ ] "Co-learning invitation": Generating a unique link for a study session that grants bonus XP to both.
