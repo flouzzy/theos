@@ -38,7 +38,7 @@ class ContentSecurityPolicySubscriberTest extends TestCase
         $subscriber->onKernelResponse($event);
 
         $this->assertTrue($response->headers->has('Content-Security-Policy'));
-        $expectedPolicy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; frame-ancestors 'none'; frame-src 'self' https://www.youtube.com https://youtube.com https://docs.google.com;";
+        $expectedPolicy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; frame-ancestors 'none'; frame-src 'self' https://www.youtube.com https://youtube.com https://docs.google.com;";
         $this->assertSame($expectedPolicy, $response->headers->get('Content-Security-Policy'));
     }
 }

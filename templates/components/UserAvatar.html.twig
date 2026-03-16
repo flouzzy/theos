@@ -1,5 +1,8 @@
 <div class="relative group inline-block {{ wrapperClass|default('') }}">
     <div class="{{ class|default('w-10 h-10') }} rounded-full overflow-hidden border border-border bg-muted flex-shrink-0 relative shadow-sm">
+        {% if user and user.activeFrame %}
+            <div class="absolute inset-0 rounded-full z-10 {{ user.activeFrame.cssClass }} pointer-events-none ring-inset"></div>
+        {% endif %}
         {% if user and user.image %}
             <img src="{{ asset(user.image) }}" alt="{{ user.fullname|default('Utilisateur') }}" class="w-full h-full object-cover">
         {% elseif user %}

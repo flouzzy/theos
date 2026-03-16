@@ -1,0 +1,13 @@
+<div class="mt-8">
+    <h3 class="text-xl font-bold mb-4">{{ 'Mon blog' | trans }}</h3>
+    <div class="space-y-4">
+        {% for post in posts %}
+            <a href="{{ post.link }}" target="_blank" class="block p-4 border rounded-xl hover:bg-muted">
+                <h4 class="font-bold">{{ post.title }}</h4>
+                <p class="text-xs text-muted-foreground">{{ post.pubDate }}</p>
+            </a>
+        {% else %}
+            <p class="text-sm text-muted-foreground">{{ 'Aucun article récent.' | trans }}</p>
+        {% endfor %}
+    </div>
+</div>

@@ -68,7 +68,11 @@
         <twig:StatCard value="{{ stats.hours }}h" label="{{ 'Heures d\'apprentissage' | trans }}" />
         <twig:StatCard value="{{ stats.notes }}" label="{{ 'Notes prises' | trans }}" />
         <twig:StatCard value="{{ stats.xp }}" label="XP" />
-        <twig:StatCard value="{{ stats.streak }}" label="{{ 'Série' | trans }}" icon="🔥" />
+        <twig:StatCard value="{{ stats.streak }}" label="{{ 'Série' | trans }}">
+            <twig:block name="icon">
+                <twig:StreakBadge streak="{{ stats.streak }}" size="xs" />
+            </twig:block>
+        </twig:StatCard>
     </div>
 
     {# Achievements #}

@@ -72,7 +72,7 @@
             </script>
         {% endblock %}
 	</head>
-	<body data-controller="app pwa confetti">
+	<body data-controller="app pwa confetti" class="{{ app.user and app.user.theme == 'matrix' ? 'theme-matrix' : '' }}">
 		{% set currentroute = app.request.attributes.get('_route') %}
 		{% set colorActive = 'light' %}
 		{% include "partials/_app_install.html.twig" %}

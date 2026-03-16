@@ -8,6 +8,7 @@ use App\Event\LessonCompleteEvent;
 use App\EventSubscriber\LessonSubscriber;
 use App\Service\CompletionService;
 use App\Service\GamificationService;
+use App\Service\NotificationService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -17,6 +18,7 @@ class LessonSubscriberTest extends TestCase
 {
     private CompletionService|MockObject $completionService;
     private GamificationService|MockObject $gamificationService;
+    private NotificationService|MockObject $notificationService;
     private TranslatorInterface|MockObject $translator;
     private Environment|MockObject $twig;
     private LessonSubscriber $subscriber;
@@ -25,12 +27,14 @@ class LessonSubscriberTest extends TestCase
     {
         $this->completionService = $this->createMock(CompletionService::class);
         $this->gamificationService = $this->createMock(GamificationService::class);
+        $this->notificationService = $this->createMock(NotificationService::class);
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->twig = $this->createMock(Environment::class);
 
         $this->subscriber = new LessonSubscriber(
             $this->completionService,
             $this->gamificationService,
+            $this->notificationService,
             $this->translator,
             $this->twig
         );

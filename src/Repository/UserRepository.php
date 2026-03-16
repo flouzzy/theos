@@ -144,4 +144,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $counts;
     }
+
+    public function findAlumni(): array
+    {
+        return $this->findBy(['isAlumni' => true]);
+    }
+
+    public function countActiveLearnersOnLesson(int $lessonId, \Redis $redis): int
+    {
+        return (int) $redis->sCard('active_lesson_' . $lessonId);
+    }
 }

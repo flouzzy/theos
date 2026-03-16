@@ -42,5 +42,8 @@ export default class extends Controller {
                 origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
             });
         }, 250);
+
+        document.body.classList.add('animate-shake');
+        setTimeout(() => document.body.classList.remove('animate-shake'), 500);
     }
 }

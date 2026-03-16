@@ -1,0 +1,17 @@
+{% extends 'app.html.twig' %}
+
+{% block content %}
+<div class="max-w-md mx-auto p-6 text-center">
+    <h1 class="text-3xl font-bold mb-8">{{ 'Ton année 2026' | trans }}</h1>
+    
+    <div class="bg-gradient-to-br from-primary to-secondary text-white p-8 rounded-2xl shadow-xl">
+        <p class="text-2xl mb-4">{{ 'Tu as complété' | trans }}</p>
+        <div class="text-6xl font-black mb-8">{{ stats.totalCourses }}</div>
+        <p class="text-xl">{{ 'cours cette année !' | trans }}</p>
+    </div>
+
+    <div class="mt-6 flex justify-center gap-4">
+        <a href="{{ path('profile_public', {id: app.user.id}) }}" class="btn">{{ 'Retour profil' | trans }}</a>
+    </div>
+</div>
+{% endblock %}

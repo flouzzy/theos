@@ -28,11 +28,13 @@ class GamificationServiceTest extends TestCase
         $user = new User();
         // User xp is 0 by default
 
-        $entityManager->expects($this->once())->method('persist')->with($user);
+        $entityManager->expects($this->exactly(2))->method('persist');
         $entityManager->expects($this->once())->method('flush');
 
         $service->addXp($user, 10);
-        $this->assertEquals(10, $user->getXp());
+        $dayOfWeek = (int)(new \DateTimeImmutable())->format('N');
+        $expectedXp = ($dayOfWeek >= 6) ? 15 : 10;
+        $this->assertEquals($expectedXp, $user->getXp());
     }
 
     public function testUpdateStreakIncrement(): void
@@ -90,5 +92,26 @@ class GamificationServiceTest extends TestCase
         $service->updateStreak($user);
 
         $this->assertEquals(5, $user->getStreak());
+    }
+
+    public function testAwardHelpfulBadge(): void
+    {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $service = $this->createService($entityManager);
+
+        $user = $this->createMock(User::class);
+        $comment = $this->createMock(\App\Entity\Comment::class);
+        $likes = $this->createMock(\Doctrine\Common\Collections\Collection::class);
+        $likes->method('count')->willReturn(10);
+        $comment->method('getLikes')->willReturn($likes);
+        
+        $user->method('getComments')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([$comment]));
+        
+        // On vérifie que la méthode est bien appelée
+        // Note: awardBadge déclenche persist/flush, donc on les attend
+        $entityManager->expects($this->atLeastOnce())->method('persist');
+        $entityManager->expects($this->atLeastOnce())->method('flush');
+
+        $service->awardHelpfulBadge($user);
     }
 }

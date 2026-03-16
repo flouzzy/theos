@@ -38,9 +38,13 @@ class Note
     #[ORM\JoinTable(name: 'note_likes')]
     private Collection $likes;
 
+    #[ORM\ManyToMany(targetEntity: NoteTag::class, inversedBy: 'notes')]
+    private Collection $tags;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
 
@@ -105,6 +109,30 @@ class Note
     public function removeLike(User $user): static
     {
         $this->likes->removeElement($user);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NoteTag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(NoteTag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(NoteTag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }

@@ -91,6 +91,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $learningManifesto = null;
+
     /**
      * @var Collection<int, Note>
      */
@@ -238,10 +241,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $jwtSecret = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $googleId = null;
+    private ?string $coverPhoto = null;
+
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $customGoal = null;
+
+    #[ORM\Column(length: 20, options: ['default' => 'light'])]
+    private string $theme = 'light';
+
+    #[ORM\Column(length: 20, options: ['default' => 'encouraging'])]
+    private string $aiPersonality = 'encouraging';
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $bio = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $learningManifesto = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $websiteUrl = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $rssFeedUrl = null;
+
+    public function getRssFeedUrl(): ?string { return $this->rssFeedUrl; }
+    public function setRssFeedUrl(?string $rssFeedUrl): static { $this->rssFeedUrl = $rssFeedUrl; return $this; }
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $isProfilePublic = true;
 
     #[ORM\Column(length: 128, nullable: true, unique: true)]
     private ?string $loginToken = null;
@@ -262,12 +290,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: PushSubscription::class, orphanRemoval: true)]
     private Collection $pushSubscriptions;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Playlist::class, orphanRemoval: true)]
+    private Collection $playlists;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PortfolioProject::class, orphanRemoval: true)]
+    private Collection $portfolioProjects;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ExternalAccount::class, orphanRemoval: true)]
+    private Collection $externalAccounts;
+
+    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: SkillEndorsement::class, orphanRemoval: true)]
+    private Collection $receivedEndorsements;
+
+    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'members')]
+    private Collection $teams;
+
     /**
      * @var Collection<int, Bonus>
      */
     #[ORM\ManyToMany(targetEntity: Bonus::class)]
     #[ORM\JoinTable(name: 'user_unlocked_bonuses')]
     private Collection $unlockedBonuses;
+
+    /**
+     * @var Collection<int, AvatarFrame>
+     */
+    #[ORM\ManyToMany(targetEntity: AvatarFrame::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_unlocked_frames')]
+    private Collection $unlockedFrames;
+
+    #[ORM\ManyToOne]
+    private ?AvatarFrame $activeFrame = null;
 
     public function __construct()
     {
@@ -292,7 +345,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->chatMessages = new ArrayCollection();
         $this->xpTransactions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
+        $this->playlists = new ArrayCollection();
+        $this->externalAccounts = new ArrayCollection();
+        $this->receivedEndorsements = new ArrayCollection();
+        $this->teams = new ArrayCollection();
+        $this->portfolioProjects = new ArrayCollection();
         $this->unlockedBonuses = new ArrayCollection();
+        $this->unlockedFrames = new ArrayCollection();
     }
 
     public function __toString()
@@ -1384,14 +1443,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    public function getCustomGoal(): ?string
+    #[ORM\Column(options: ['default' => 0])]
+    private int $weeklyGoalHours = 0;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isBootcampMode = false;
+
+    public function isBootcampMode(): bool { return $this->isBootcampMode; }
+    public function setIsBootcampMode(bool $isBootcampMode): static { $this->isBootcampMode = $isBootcampMode; return $this; }
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isAlumni = false;
+
+    public function isAlumni(): bool { return $this->isAlumni; }
+    public function setIsAlumni(bool $isAlumni): static { $this->isAlumni = $isAlumni; return $this; }
+
+
+    public function getTheme(): string
     {
-        return $this->customGoal;
+        return $this->theme;
     }
 
-    public function setCustomGoal(?string $customGoal): static
+    #[ORM\Column(options: ['default' => 0])]
+    private int $quizCombo = 0;
+
+    public function getQuizCombo(): int
     {
-        $this->customGoal = $customGoal;
+        return $this->quizCombo;
+    }
+
+    public function setQuizCombo(int $quizCombo): static
+    {
+        $this->quizCombo = $quizCombo;
 
         return $this;
     }
@@ -1456,6 +1539,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
+    /**
+     * @return Collection<int, PortfolioProject>
+     */
+    public function getPortfolioProjects(): Collection
+    {
+        return $this->portfolioProjects;
+    }
+
+    public function addPortfolioProject(PortfolioProject $portfolioProject): static
+    {
+        if (!$this->portfolioProjects->contains($portfolioProject)) {
+            $this->portfolioProjects->add($portfolioProject);
+            $portfolioProject->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioProject(PortfolioProject $portfolioProject): static
+    {
+        if ($this->portfolioProjects->removeElement($portfolioProject)) {
+            // set the owning side to null (unless already changed)
+            if ($portfolioProject->getUser() === $this) {
+                $portfolioProject->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExternalAccount>
+     */
+    public function getExternalAccounts(): Collection
+    {
+        return $this->externalAccounts;
+    }
+
+    public function addExternalAccount(ExternalAccount $externalAccount): static
+    {
+        if (!$this->externalAccounts->contains($externalAccount)) {
+            $this->externalAccounts->add($externalAccount);
+            $externalAccount->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExternalAccount(ExternalAccount $externalAccount): static
+    {
+        if ($this->externalAccounts->removeElement($externalAccount)) {
+            // set the owning side to null (unless already changed)
+            if ($externalAccount->getUser() === $this) {
+                $externalAccount->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+    }
     public function getLoginToken(): ?string
     {
         return $this->loginToken;
@@ -1485,13 +1628,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->loginToken && $this->loginTokenExpiresAt > new \DateTimeImmutable();
     }
 
-    public function getTier(): string
+    #[ORM\Column(options: ['default' => 0])]
+    private int $rocherCoins = 0;
+
+    public function getRocherCoins(): int
     {
-        if ($this->xp >= 10000) return '💎 Diamant';
-        if ($this->xp >= 5000) return '🥇 Or';
-        if ($this->xp >= 2000) return '🥈 Argent';
-        if ($this->xp >= 500) return '🥉 Bronze';
-        return '🌱 Novice';
+        return $this->rocherCoins;
+    }
+
+    public function setRocherCoins(int $rocherCoins): static
+    {
+        $this->rocherCoins = $rocherCoins;
+
+        return $this;
     }
 
     /**
@@ -1517,4 +1666,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
         return $this;
     }
-}
+
+    /**
+     * @return Collection<int, AvatarFrame>
+     */
+    public function getUnlockedFrames(): Collection
+    {
+        return $this->unlockedFrames;
+    }
+
+    public function addUnlockedFrame(AvatarFrame $unlockedFrame): static
+    {
+        if (!$this->unlockedFrames->contains($unlockedFrame)) {
+            $this->unlockedFrames->add($unlockedFrame);
+        }
+
+        return $this;
+    }
+
+    public function removeUnlockedFrame(AvatarFrame $unlockedFrame): static
+    {
+        $this->unlockedFrames->removeElement($unlockedFrame);
+
+        return $this;
+    }
+
+    public function getActiveFrame(): ?AvatarFrame
+    {
+        return $this->activeFrame;
+    }
+
+    public function setActiveFrame(?AvatarFrame $activeFrame): static
+    {
+        $this->activeFrame = $activeFrame;
+
+        return $this;
+    }
+
+    public function getConfettiColor(): string
+    {
+        return $this->confettiColor;
+    }
+
+    public function getBio(): ?string { return $this->bio; }
+    public function setBio(?string $bio): static { $this->bio = $bio; return $this; }
+    public function getLearningManifesto(): ?string { return $this->learningManifesto; }
+    public function setLearningManifesto(?string $learningManifesto): static { $this->learningManifesto = $learningManifesto; return $this; }
+    public function getWebsiteUrl(): ?string { return $this->websiteUrl; }
+    public function setWebsiteUrl(?string $websiteUrl): static { $this->websiteUrl = $websiteUrl; return $this; }
+    public function getGithubUrl(): ?string { return $this->githubUrl; }
+    public function setGithubUrl(?string $githubUrl): static { $this->githubUrl = $githubUrl; return $this; }
+    public function isProfilePublic(): bool { return $this->isProfilePublic; }
+    public function setIsProfilePublic(bool $isProfilePublic): static { $this->isProfilePublic = $isProfilePublic; return $this; }

@@ -86,9 +86,7 @@
                         <td class="p-4 text-center font-bold text-indigo-600">{{ user.xp }} XP</td>
                         <td class="p-4 text-center">
                             {% if user.streak > 0 %}
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
-                                    🔥 {{ user.streak }}
-                                </span>
+                                <twig:StreakBadge streak="{{ user.streak }}" size="xs" showValue="true" />
                             {% else %}
                                 <span class="text-muted-foreground text-xs">-</span>
                             {% endif %}

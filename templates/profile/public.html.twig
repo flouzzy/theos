@@ -1,0 +1,29 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ user.fullname }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto p-6">
+    <div class="bg-card border border-border rounded-2xl shadow-sm p-8 text-center">
+        <twig:UserAvatar :user="user" class="w-32 h-32 mx-auto mb-6" />
+        <h1 class="text-3xl font-bold mb-2">{{ user.fullname }}</h1>
+        <p class="text-muted-foreground mb-6">{{ user.bio }}</p>
+        
+        {% if user.learningManifesto %}
+            <div class="mt-8 text-left border-t border-border pt-6">
+                <h3 class="text-xl font-bold mb-4">{{ 'Manifeste d\'apprentissage' | trans }}</h3>
+                <div class="bg-muted/30 p-6 rounded-xl border border-border">
+                    {{ user.learningManifesto|nl2br }}
+                </div>
+            </div>
+        {% endif %}
+            {% if user.websiteUrl %}
+                <a href="{{ user.websiteUrl }}" target="_blank" class="btn btn-outline">{{ 'Site web' | trans }}</a>
+            {% endif %}
+            {% if user.githubUrl %}
+                <a href="{{ user.githubUrl }}" target="_blank" class="btn btn-outline">GitHub</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

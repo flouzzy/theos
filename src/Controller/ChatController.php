@@ -6,6 +6,7 @@ use App\Entity\Cohort;
 use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Entity\User;
+use App\Repository\ConversationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,6 +61,28 @@ class ChatController extends AbstractController
         return $this->render('chat/show.html.twig', [
             'cohort' => $cohort,
             'conversation' => $conversation
+        ]);
+    }
+
+    #[Route('/private/{id}', name: 'private')]
+    public function private(User $targetUser, EntityManagerInterface $em, ConversationRepository $repo): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($user === $targetUser) return $this->redirectToRoute('cohort_index');
+
+        $conversation = $repo->findPrivateConversation($user, $targetUser) ?: new Conversation();
+        if (!$conversation->getId()) {
+            $conversation->setIsPrivate(true);
+            $conversation->addParticipant($user);
+            $conversation->addParticipant($targetUser);
+            $em->persist($conversation);
+            $em->flush();
+        }
+
+        return $this->render('chat/show.html.twig', [
+            'conversation' => $conversation,
+            'targetUser' => $targetUser
         ]);
     }
 }
