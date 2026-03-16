@@ -28,7 +28,13 @@ class StudyGroup
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $members;
 
+    #[ORM\Column(options: ['default' => 10])]
+    private int $maxMembers = 10;
+
     public function __construct() { $this->members = new ArrayCollection(); }
+    
+    public function getMaxMembers(): int { return $this->maxMembers; }
+    public function setMaxMembers(int $maxMembers): static { $this->maxMembers = $maxMembers; return $this; }
 
     public function getId(): ?int { return $this->id; }
     public function getName(): string { return $this->name; }
