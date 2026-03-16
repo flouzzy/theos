@@ -27,7 +27,7 @@
 - [x] **"Co-learning invitation": Generating a unique link for a study session that grants bonus XP to both.**
 - [x] **"Social Proof Heatmap": Show "Active learners" on course catalog cards.**
 - [x] Referral System: Unlocks exclusive "Expert" badges for successful peer mentoring.
-- [ ] Shareable "Learning Summary" infographics for LinkedIn.
+- [x] Shareable "Learning Summary" infographics for LinkedIn.
 
 
 ### Sprint 1: The "10x" Foundation
