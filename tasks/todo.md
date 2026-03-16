@@ -29,7 +29,8 @@
 
 
 - [x] **Progress bar that accelerates visually near the end**
-- [ ] **Unlockable exclusive themes (e.g., 'Matrix mode')**
+- [x] Unlockable exclusive themes (e.g., 'Matrix mode')
+
 
 - [ ] Personalized 'Year in Review' (Spotify Wrapped style)
 - [ ] Randomized daily trivia questions for bonus XP
