@@ -168,7 +168,7 @@
 - [x] **User-generated study groups with custom topics**
 - [x] **Mentor matching algorithm based on skill gaps**
 - [x] **Endorse peers for specific skills**
-- [ ] **Collaborative 'mind map' building for complex modules**
+- [x] **Collaborative 'mind map' building for complex modules**
 - [ ] **Leaderboard rivalry notifications ('User Y is catching up!')**
 - [ ] **Alumni AMA (Ask Me Anything) sessions**
 - [ ] **Job board shared by alumni and partners**
