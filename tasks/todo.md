@@ -23,7 +23,7 @@
 ## 🚀 144 Features to 'Zero to One' & 'Hooked' Status
 
 ### 🎁 3. Variable Rewards (Gamification)
-- [ ] Unlockable avatar frames based on achievements
+- [x] Unlockable avatar frames based on achievements
 - [ ] Rare 'Early Adopter' or 'Speed Learner' badges
 - [ ] Peer-awarded 'Helpful' badges in forums
 - [ ] Progress bar that accelerates visually near the end
