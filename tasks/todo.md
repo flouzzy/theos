@@ -171,7 +171,7 @@
 - [x] **Collaborative 'mind map' building for complex modules**
 - [x] **Leaderboard rivalry notifications ('User Y is catching up!')**
 - [x] **Alumni AMA (Ask Me Anything) sessions**
-- [ ] **Job board shared by alumni and partners**
+- [x] **Job board shared by alumni and partners**
 - [ ] **Cross-cohort 'Hackathon' or project events**
 - [ ] **Shared resource library updated by users**
 - [ ] **Team-based learning (enroll as a company/team)**
