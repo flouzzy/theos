@@ -175,4 +175,4 @@
 - [x] **Cross-cohort 'Hackathon' or project events**
 - [x] **Shared resource library updated by users**
 - [ ] **Team-based learning (enroll as a company/team)**
-- [ ] **Public 'Proof of Work' verifiable links**
+- [x] **Public 'Proof of Work' verifiable links**
