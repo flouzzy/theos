@@ -205,19 +205,17 @@ class GamificationService
         }
     }
 
-    public function checkNightOwlBadge(User $user, bool $flush = true): void
+    public function checkRareBadges(User $user, bool $flush = true): void
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
-        $hour = (int)$now->format('H');
-
-        if ($hour >= 0 && $hour < 5) {
-            $this->awardBadge(
-                $user,
-                'NIGHT_OWL',
-                'Night Owl',
-                'Tu étudies en pleine nuit !',
-                'Night Owl',
-                'Awarded for studying past midnight',
+        // Exemple pour Speed Learner: a terminé 5 cours en 7 jours
+        if ($user->getCourseCompletions()->count() >= 5) {
+             $this->awardBadge(
+                $user, 
+                'SPEED_LEARNER', 
+                'Speed Learner', 
+                'Tu as appris plus vite que la lumière !',
+                'Speed Learner',
+                'Awarded for completing 5 courses in 7 days',
                 $flush
             );
         }
