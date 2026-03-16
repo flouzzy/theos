@@ -169,7 +169,7 @@
 - [x] **Mentor matching algorithm based on skill gaps**
 - [x] **Endorse peers for specific skills**
 - [x] **Collaborative 'mind map' building for complex modules**
-- [ ] **Leaderboard rivalry notifications ('User Y is catching up!')**
+- [x] **Leaderboard rivalry notifications ('User Y is catching up!')**
 - [ ] **Alumni AMA (Ask Me Anything) sessions**
 - [ ] **Job board shared by alumni and partners**
 - [ ] **Cross-cohort 'Hackathon' or project events**
