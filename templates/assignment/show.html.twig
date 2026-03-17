@@ -9,7 +9,7 @@
     <div>
         <h1 class="text-3xl font-bold mb-2">{{ assignment.title }}</h1>
         <div class="prose max-w-none text-muted-foreground">
-            {{ assignment.description|default('')|raw }}
+            {{ assignment.description|default('')|sanitize_html }}
         </div>
     </div>
 
