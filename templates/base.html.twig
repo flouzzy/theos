@@ -46,6 +46,7 @@
 
 		{% block stylesheets %}
 			<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+            <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
             {% set activeCohort = active_cohort() %}
             {% if activeCohort and activeCohort.brandColor %}
                 <style>
