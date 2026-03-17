@@ -247,57 +247,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $customGoal = null;
 
-    #[ORM\Column(length: 20, options: ['default' => 'light'])]
-    private string $theme = 'light';
-
-    #[ORM\Column(length: 20, options: ['default' => 'encouraging'])]
-    private string $aiPersonality = 'encouraging';
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $bio = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $learningManifesto = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $websiteUrl = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $rssFeedUrl = null;
-
-    public function getRssFeedUrl(): ?string { return $this->rssFeedUrl; }
-    public function setRssFeedUrl(?string $rssFeedUrl): static { $this->rssFeedUrl = $rssFeedUrl; return $this; }
-
-    #[ORM\Column(options: ['default' => true])]
-    private bool $isProfilePublic = true;
-
-    #[ORM\Column(length: 128, nullable: true, unique: true)]
-    private ?string $loginToken = null;
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $loginTokenExpiresAt = null;
-
-    /**
-     * @var Collection<int, XpTransaction>
-
-     */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: XpTransaction::class, orphanRemoval: true)]
-    private Collection $xpTransactions;
-
-    /**
-     * @var Collection<int, PushSubscription>
-     */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PushSubscription::class, orphanRemoval: true)]
-    private Collection $pushSubscriptions;
-
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Playlist::class, orphanRemoval: true)]
-    private Collection $playlists;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PortfolioProject::class, orphanRemoval: true)]
-    private Collection $portfolioProjects;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ExternalAccount::class, orphanRemoval: true)]
-    private Collection $externalAccounts;
 
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: SkillEndorsement::class, orphanRemoval: true)]
     private Collection $receivedEndorsements;
@@ -1598,7 +1547,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
         return $this;
     }
-    }
     public function getLoginToken(): ?string
     {
         return $this->loginToken;
@@ -1718,3 +1666,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setGithubUrl(?string $githubUrl): static { $this->githubUrl = $githubUrl; return $this; }
     public function isProfilePublic(): bool { return $this->isProfilePublic; }
     public function setIsProfilePublic(bool $isProfilePublic): static { $this->isProfilePublic = $isProfilePublic; return $this; }
+}
