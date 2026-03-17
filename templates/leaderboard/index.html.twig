@@ -13,6 +13,7 @@
     <div class="flex justify-center items-end gap-2 sm:gap-8 mb-16 mt-8 h-56 relative">
         {# 2ème #}
         {% set user2 = podiumUsers[1] %}
+        <div class="flex flex-col items-center w-28 sm:w-36 z-10 translate-y-6">
             <a href="{{ path('user_profile', {username: user2.username}) }}" class="flex flex-col items-center">
                 <twig:UserAvatar :user="user2" class="w-14 h-14 sm:w-16 sm:h-16 shadow-lg z-10 border-4 border-slate-300 dark:border-slate-600 mb-2" showBadge="true" badgeContent="2" wrapperClass="mb-2" />
                 <span class="font-bold text-sm text-center truncate w-full px-2" title="{{ user2.fullname }}">{{ user2.firstname }}</span>
@@ -69,7 +70,7 @@
                     {% set position = loop.index + 3 %}
                     <tr class="hover:bg-muted/30 transition-colors {{ app.user == user ? 'bg-indigo-50 dark:bg-indigo-900/20' : '' }}">
                         <td class="p-4 font-bold text-muted-foreground w-16">
-                            {% if loop.index == 1 %}🥇{% elseif loop.index == 2 %}🥈{% elseif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
+                            {{ position }}
                         </td>
                         <td class="p-4">
                             <a href="{{ path('user_profile', {username: user.username}) }}" class="flex items-center gap-3 group">
