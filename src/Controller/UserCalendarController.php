@@ -36,7 +36,7 @@ class UserCalendarController extends AbstractController
         ]);
     }
 
-    #[Route('/calendar/event/{id}/export', name: 'calendar_event_export')]
+    #[Route('/calendar/event/{id}/export', name: 'event_export_ics')]
     public function exportEvent(Event $event, CalendarExportService $exportService): Response
     {
         $icsContent = $exportService->generateIcsForEvent($event);
