@@ -1488,35 +1488,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    /**
-     * @return Collection<int, PortfolioProject>
-     */
-    public function getPortfolioProjects(): Collection
-    {
-        return $this->portfolioProjects;
-    }
-
-    public function addPortfolioProject(PortfolioProject $portfolioProject): static
-    {
-        if (!$this->portfolioProjects->contains($portfolioProject)) {
-            $this->portfolioProjects->add($portfolioProject);
-            $portfolioProject->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removePortfolioProject(PortfolioProject $portfolioProject): static
-    {
-        if ($this->portfolioProjects->removeElement($portfolioProject)) {
-            // set the owning side to null (unless already changed)
-            if ($portfolioProject->getUser() === $this) {
-                $portfolioProject->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, ExternalAccount>
@@ -1656,8 +1627,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->confettiColor;
     }
 
-    public function getBio(): ?string { return $this->bio; }
-    public function setBio(?string $bio): static { $this->bio = $bio; return $this; }
     public function getLearningManifesto(): ?string { return $this->learningManifesto; }
     public function setLearningManifesto(?string $learningManifesto): static { $this->learningManifesto = $learningManifesto; return $this; }
     public function getWebsiteUrl(): ?string { return $this->websiteUrl; }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
+use App\Service\GamificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,12 +85,6 @@ class CommentController extends AbstractController
         return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
     }
 
-use App\Entity\Comment;
-use App\Form\CommentType;
-use App\Repository\CommentRepository;
-use App\Service\GamificationService;
-use Doctrine\ORM\EntityManagerInterface;
-...
     #[Route('/{id}/like', name: 'app_comment_like', methods: ['POST'])]
     public function like(Comment $comment, EntityManagerInterface $entityManager, Request $request, GamificationService $gamificationService): Response
     {

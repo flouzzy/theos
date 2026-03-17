@@ -232,7 +232,8 @@ class GamificationService
             default => '#',
         };
     }
-
+    public function awardBadge(User $user, string $code, string $badgeTitle, string $badgeDesc, ?string $typeTitle = null, ?string $typeDesc = null, bool $flush = true): void
+    {
         $badgeTypeRepo = $this->entityManager->getRepository(BadgeType::class);
         $badgeType = $badgeTypeRepo->findOneBy(['code' => $code]);
 
