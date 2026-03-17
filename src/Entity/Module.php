@@ -24,7 +24,7 @@ class Module
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, length: 16777215, nullable: true)]
     private ?string $description = null;
 
     #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'modules')]

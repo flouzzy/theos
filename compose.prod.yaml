@@ -7,6 +7,8 @@ services:
       target: frankenphp_prod
     environment:
       APP_ENV: prod
+      SERVER_NAME: "http://academie.lerocher.fr"
       APP_SECRET: ${APP_SECRET}
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+      TRUSTED_PROXIES: "*"

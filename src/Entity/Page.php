@@ -22,7 +22,7 @@ class Page
     #[ORM\Column(length: 100)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, length: 16777215)]
     private ?string $content = null;
 
     #[ORM\Column(length: 100)]
