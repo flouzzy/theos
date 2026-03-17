@@ -31,6 +31,17 @@ class Team
     #[ORM\Column(options: ['default' => 0])]
     private int $completedLessons = 0;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'teams')]
+    private Collection $members;
+
+    public function __construct()
+    {
+        $this->members = new ArrayCollection();
+    }
+
     public function getCohort(): ?Cohort { return $this->cohort; }
     public function setCohort(?Cohort $cohort): static { $this->cohort = $cohort; return $this; }
     public function getCompletedLessons(): int { return $this->completedLessons; }
@@ -43,6 +54,33 @@ class Team
     public function setCompany(string $company): static { $this->company = $company; return $this; }
     public function getOwner(): User { return $this->owner; }
     public function setOwner(User $owner): static { $this->owner = $owner; return $this; }
-    public function getMembers(): Collection { return $this->members; }
-    public function addMember(User $user): static { if (!$this->members->contains($user)) $this->members->add($user); return $this; }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getMembers(): Collection
+    {
+        return $this->members;
+    }
+
+    public function addMember(User $user): static
+    {
+        if (!$this->members->contains($user)) {
+            $this->members->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeMember(User $user): static
+    {
+        $this->members->removeElement($user);
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }

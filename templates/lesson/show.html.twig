@@ -281,7 +281,8 @@
                     </div>
 
                     {# Recommendations Section #}
-                    {{ render(controller('App\\Controller\\RecommendationController::index', {id: currentLesson.id})) }}
+                    {{ component('Recommendation', { lesson: currentLesson, lazy: true }) }}
+
                 </div>
 
                 <div x-show="tab === 'resources'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
@@ -297,33 +298,7 @@
                 </div>
 
                 <div x-show="tab === 'transcript'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
-                    <div class="bg-card rounded-2xl border border-border p-6 md:p-8" data-controller="video-sync">
-                        <div class="flex items-center gap-3 mb-6">
-                            <twig:ux:icon name="lucide:align-left" class="w-6 h-6 text-primary" />
-                            <h3 class="text-xl font-bold">{{ 'Transcription de la leçon' | trans }}</h3>
-                        </div>
-
-                        <div class="space-y-6">
-                            {# Mocked Transcript for now, ideally from DB #}
-                            <div class="flex gap-4 group">
-                                <button data-action="click->video-sync#seek" data-timestamp="00:00" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">00:00</button>
-                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed italic">Introduction à la leçon et présentation des concepts clés.</p>
-                            </div>
-                            <div class="flex gap-4 group">
-                                <button data-action="click->video-sync#seek" data-timestamp="00:45" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">00:45</button>
-                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Développement du premier point théologique important concernant l'herméneutique.</p>
-                            </div>
-                            <div class="flex gap-4 group">
-                                <button data-action="click->video-sync#seek" data-timestamp="01:30" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">01:30</button>
-                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Analyse contextuelle des textes originaux et applications pratiques pour aujourd'hui.</p>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 pt-6 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-                            <p>Transcription générée automatiquement par IA</p>
-                            <button class="hover:text-foreground underline">Signaler une erreur</button>
-                        </div>
-                    </div>
+                    {{ component('Transcript', { lesson: currentLesson }) }}
                 </div>
 
                 <div x-show="tab === 'comments'"

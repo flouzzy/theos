@@ -20,7 +20,7 @@ class PortfolioProject
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $link = null;
+    private ?string $url = null;
 
     #[ORM\ManyToOne(inversedBy: 'portfolioProjects')]
     #[ORM\JoinColumn(nullable: false)]
@@ -31,8 +31,8 @@ class PortfolioProject
     public function setTitle(string $title): static { $this->title = $title; return $this; }
     public function getDescription(): ?string { return $this->description; }
     public function setDescription(?string $description): static { $this->description = $description; return $this; }
-    public function getLink(): ?string { return $this->link; }
-    public function setLink(?string $link): static { $this->link = $link; return $this; }
+    public function getUrl(): ?string { return $this->url; }
+    public function setUrl(?string $url): static { $this->url = $url; return $this; }
     public function getUser(): User { return $this->user; }
     public function setUser(User $user): static { $this->user = $user; return $this; }
 }

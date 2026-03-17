@@ -36,16 +36,10 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'register', priority: 3)]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, #[Autowire(service: 'limiter.registration')] RateLimiterFactory $registrationLimiter): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security): Response
     {
-        $limiter = $registrationLimiter->create($request->getClientIp());
-        if (false === $limiter->consume(1)->isAccepted()) {
-            throw new TooManyRequestsHttpException();
-        }
-
-        // Connecté ?
+        // Check if user is already logged in
         if ($this->getUser()) {
-            // Redirection vers la home
             return $this->redirectToRoute('home');
         }
 

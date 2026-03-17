@@ -173,6 +173,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private int $streak = 0;
 
+    #[ORM\Column(length: 100, options: ['default' => 'Bronze'])]
+    private string $tier = 'Bronze';
+
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $lastStreakDate = null;
 
@@ -241,11 +244,64 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $jwtSecret = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $coverPhoto = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $linkedinId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $websiteUrl = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $githubUrl = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isProfilePublic = false;
+
+    #[ORM\Column(length: 7, options: ['default' => '#000000'])]
+    private string $confettiColor = '#000000';
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $customGoal = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $rssFeedUrl = null;
+
+    #[ORM\Column(length: 20, options: ['default' => 'light'])]
+    private string $theme = 'light';
+
+    /**
+     * @var Collection<int, XpTransaction>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: XpTransaction::class, orphanRemoval: true)]
+    private Collection $xpTransactions;
+
+    /**
+     * @var Collection<int, PushSubscription>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PushSubscription::class, orphanRemoval: true)]
+    private Collection $pushSubscriptions;
+
+    /**
+     * @var Collection<int, ExternalAccount>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ExternalAccount::class, orphanRemoval: true)]
+    private Collection $externalAccounts;
+
+    #[ORM\Column(length: 128, nullable: true, unique: true)]
+    private ?string $loginToken = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $loginTokenExpiresAt = null;
+
+    /**
+     * @var Collection<int, Playlist>
+     */
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Playlist::class, orphanRemoval: true)]
+    private Collection $playlists;
 
 
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: SkillEndorsement::class, orphanRemoval: true)]
@@ -298,7 +354,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->externalAccounts = new ArrayCollection();
         $this->receivedEndorsements = new ArrayCollection();
         $this->teams = new ArrayCollection();
-        $this->portfolioProjects = new ArrayCollection();
         $this->unlockedBonuses = new ArrayCollection();
         $this->unlockedFrames = new ArrayCollection();
     }
@@ -1047,6 +1102,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
+    public function getTier(): string
+    {
+        return $this->tier;
+    }
+
+    public function setTier(string $tier): static
+    {
+        $this->tier = $tier;
+
+        return $this;
+    }
+
     public function getLastStreakDate(): ?\DateTimeImmutable
     {
         return $this->lastStreakDate;
@@ -1332,6 +1399,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
+    public function getCoverPhoto(): ?string
+    {
+        return $this->coverPhoto;
+    }
+
+    public function setCoverPhoto(?string $coverPhoto): static
+    {
+        $this->coverPhoto = $coverPhoto;
+
+        return $this;
+    }
+
     public function getLinkedinId(): ?string
     {
         return $this->linkedinId;
@@ -1411,6 +1490,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function getTheme(): string
     {
         return $this->theme;
+    }
+
+    public function setTheme(string $theme): static
+    {
+        $this->theme = $theme;
+
+        return $this;
     }
 
     #[ORM\Column(options: ['default' => 0])]
@@ -1627,6 +1713,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->confettiColor;
     }
 
+    public function setConfettiColor(string $confettiColor): static
+    {
+        $this->confettiColor = $confettiColor;
+
+        return $this;
+    }
+    /**
+     * @return Collection<int, Playlist>
+     */
+    public function getPlaylists(): Collection
+    {
+        return $this->playlists;
+    }
+
+    public function addPlaylist(Playlist $playlist): static
+    {
+        if (!$this->playlists->contains($playlist)) {
+            $this->playlists->add($playlist);
+            $playlist->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlaylist(Playlist $playlist): static
+    {
+        if ($this->playlists->removeElement($playlist)) {
+            // set the owning side to null (unless already changed)
+            if ($playlist->getOwner() === $this) {
+                $playlist->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getLearningManifesto(): ?string { return $this->learningManifesto; }
     public function setLearningManifesto(?string $learningManifesto): static { $this->learningManifesto = $learningManifesto; return $this; }
     public function getWebsiteUrl(): ?string { return $this->websiteUrl; }
@@ -1635,4 +1757,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setGithubUrl(?string $githubUrl): static { $this->githubUrl = $githubUrl; return $this; }
     public function isProfilePublic(): bool { return $this->isProfilePublic; }
     public function setIsProfilePublic(bool $isProfilePublic): static { $this->isProfilePublic = $isProfilePublic; return $this; }
+
+    public function getCustomGoal(): ?string { return $this->customGoal; }
+    public function setCustomGoal(?string $customGoal): static { $this->customGoal = $customGoal; return $this; }
+
+    public function getRssFeedUrl(): ?string { return $this->rssFeedUrl; }
+    public function setRssFeedUrl(?string $rssFeedUrl): static { $this->rssFeedUrl = $rssFeedUrl; return $this; }
 }

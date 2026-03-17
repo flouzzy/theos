@@ -32,6 +32,9 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?Calendar $calendar = null;
 
+    #[ORM\ManyToOne]
+    private ?Cohort $cohort = null;
+
     public function __clone()
     {
         $this->id = null;
@@ -110,6 +113,18 @@ class Event
     public function setCalendar(?Calendar $calendar): static
     {
         $this->calendar = $calendar;
+
+        return $this;
+    }
+
+    public function getCohort(): ?Cohort
+    {
+        return $this->cohort;
+    }
+
+    public function setCohort(?Cohort $cohort): static
+    {
+        $this->cohort = $cohort;
 
         return $this;
     }
