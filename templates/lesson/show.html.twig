@@ -69,7 +69,7 @@
           data-swipe-navigation-prev-url-value="{{ prevLesson ? path('lesson_show', {courseSlug: course.slug, moduleSlug: prevLesson.module.slug, lessonId: prevLesson.id}) : '' }}"
           data-offline-lesson-lesson-id-value="{{ currentLesson.id }}"
           data-offline-lesson-title-value="{{ currentLesson.title }}"
-          data-offline-lesson-content-value="{{ currentLesson.content|default('')|raw }}"
+          data-offline-lesson-content-value="{{ currentLesson.content|default('') }}"
     >
         {# Offline Indicator #}
         <div data-offline-lesson-target="offlineStatus" class="hidden sticky top-0 z-50 bg-amber-500 text-white py-2 px-4 text-center text-sm font-bold shadow-md">
