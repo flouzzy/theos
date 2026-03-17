@@ -9,6 +9,12 @@ export default class extends Controller {
     static targets = ["input"];
 
     connect() {
+        console.log("Quill controller connected");
+        if (!this.hasInputTarget) {
+            console.error("Quill: No input target found!");
+            return;
+        }
+        
         // Create editor container
         this.container = document.createElement("div");
         this.container.classList.add("quill-editor-container");
