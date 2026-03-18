@@ -83,6 +83,9 @@ class LessonSubscriberTest extends TestCase
             ->method('sendNotificationToAllUsers')
             ->with('email content', 'Lesson completed for John');
 
+        // checkNightOwlBadge might be called depending on test execution time, so we allow it
+        $this->gamificationService->method('checkNightOwlBadge');
+
         $this->gamificationService->expects($this->once())
             ->method('addXp')
             ->with($user, 10, 'lesson_completed');
@@ -112,6 +115,9 @@ class LessonSubscriberTest extends TestCase
         $this->completionService->expects($this->once())
             ->method('sendNotificationToAllUsers')
             ->with('email content', 'Lesson completed for John');
+
+        // checkNightOwlBadge might be called depending on test execution time, so we allow it
+        $this->gamificationService->method('checkNightOwlBadge');
 
         // Should NOT award XP
         $this->gamificationService->expects($this->never())->method('addXp');

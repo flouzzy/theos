@@ -11,6 +11,7 @@ class CalendarExportService
 {
     public function generateIcsForEvent(Event $event): string
     {
+        $utc = new \DateTimeZone('UTC');
         $ics = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
@@ -19,11 +20,11 @@ class CalendarExportService
             'UID:' . uniqid() . '@academie.lerocher.fr',
             'DTSTAMP:' . gmdate('Ymd\THis\Z'),
             'SUMMARY:' . $this->escapeString($event->getTitle()),
-            'DTSTART:' . $event->getStartAt()->format('Ymd\THis\Z'),
+            'DTSTART:' . $event->getStartAt()->setTimezone($utc)->format('Ymd\THis\Z'),
         ];
 
         if ($event->getEndAt()) {
-            $ics[] = 'DTEND:' . $event->getEndAt()->format('Ymd\THis\Z');
+            $ics[] = 'DTEND:' . $event->getEndAt()->setTimezone($utc)->format('Ymd\THis\Z');
         }
 
         if ($event->getLocation()) {
@@ -38,6 +39,7 @@ class CalendarExportService
 
     public function generateIcsForCalendar(Calendar $calendar): string
     {
+        $utc = new \DateTimeZone('UTC');
         $ics = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
@@ -50,10 +52,10 @@ class CalendarExportService
             $ics[] = 'UID:' . $event->getId() . '@academie.lerocher.fr';
             $ics[] = 'DTSTAMP:' . gmdate('Ymd\THis\Z');
             $ics[] = 'SUMMARY:' . $this->escapeString($event->getTitle());
-            $ics[] = 'DTSTART:' . $event->getStartAt()->format('Ymd\THis\Z');
+            $ics[] = 'DTSTART:' . $event->getStartAt()->setTimezone($utc)->format('Ymd\THis\Z');
             
             if ($event->getEndAt()) {
-                $ics[] = 'DTEND:' . $event->getEndAt()->format('Ymd\THis\Z');
+                $ics[] = 'DTEND:' . $event->getEndAt()->setTimezone($utc)->format('Ymd\THis\Z');
             }
 
             if ($event->getLocation()) {
@@ -111,8 +113,11 @@ class CalendarExportService
 
     private function formatDateRange(Event $event): string
     {
-        $start = $event->getStartAt()->format('Ymd\THis\Z');
-        $end = $event->getEndAt() ? $event->getEndAt()->format('Ymd\THis\Z') : $event->getStartAt()->modify('+1 hour')->format('Ymd\THis\Z');
+        $utc = new \DateTimeZone('UTC');
+        $start = $event->getStartAt()->setTimezone($utc)->format('Ymd\THis\Z');
+        
+        $endDate = $event->getEndAt() ?? $event->getStartAt()->modify('+1 hour');
+        $end = $endDate->setTimezone($utc)->format('Ymd\THis\Z');
         
         return $start . '/' . $end;
     }

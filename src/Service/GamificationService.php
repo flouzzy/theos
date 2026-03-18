@@ -274,6 +274,19 @@ class GamificationService
         }
     }
 
+    public function checkNightOwlBadge(User $user, bool $flush = true): void
+    {
+        $this->awardBadge(
+            $user,
+            'NIGHT_OWL',
+            'Oiseau de Nuit',
+            'Tu as terminé une leçon entre minuit et 5h du matin. Quel dévouement !',
+            'Performance',
+            'Awarded for learning late at night',
+            $flush
+        );
+    }
+
     public function unlockFrame(User $user, string $identifier, bool $flush = true): void
     {
         $frameRepo = $this->entityManager->getRepository(AvatarFrame::class);
