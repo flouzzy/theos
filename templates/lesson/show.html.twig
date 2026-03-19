@@ -3,10 +3,29 @@
 {% block title %}{{ currentLesson.title }}{% endblock %}
 
 {% block content %}
-<div class="flex h-[calc(100vh-64px)] overflow-hidden bg-background" x-data="{ showNotes: false }">
+<div class="flex h-[calc(100vh-64px)] overflow-hidden bg-background" x-data="{ showNotes: false, showSyllabus: false }">
     
+    {# Mobile Overlay for Syllabus #}
+    <div x-show="showSyllabus"
+         x-transition.opacity
+         @click="showSyllabus = false"
+         class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+         style="display: none;"
+         x-cloak>
+    </div>
+
     {# 1. Left Sidebar (Syllabus) #}
-    <aside class="w-80 flex-shrink-0 border-r border-border bg-muted/30 overflow-y-auto hidden lg:block">
+    <aside class="flex-shrink-0 border-r border-border bg-background lg:bg-muted/30 overflow-y-auto lg:block lg:w-80 lg:static lg:translate-x-0 fixed inset-y-0 left-0 z-[60] w-80 shadow-xl transition-transform duration-300"
+           :class="showSyllabus ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+        <div class="p-4 border-b border-border flex items-center justify-between lg:hidden bg-muted/20">
+            <h2 class="font-bold text-lg flex items-center gap-2">
+                <twig:ux:icon name="lucide:list" class="w-5 h-5 text-primary" />
+                {{ 'Sommaire' | trans }}
+            </h2>
+            <button @click="showSyllabus = false" class="p-2 hover:bg-muted rounded-full transition-colors">
+                <twig:ux:icon name="lucide:x" class="w-5 h-5" />
+            </button>
+        </div>
         <div class="p-6">
             <h3 class="font-serif font-bold text-lg mb-1">{{ course.title }}</h3>
             <div class="w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
@@ -346,7 +365,7 @@
 
 {# Mobile Sidebar Toggle (Floating, bottom left or top left) #}
 <div class="lg:hidden fixed bottom-6 left-6 z-50">
-     <button class="h-12 w-12 rounded-full bg-background border border-border text-foreground shadow-lg flex items-center justify-center">
+     <button @click="showSyllabus = !showSyllabus" class="h-12 w-12 rounded-full bg-background border border-border text-foreground shadow-lg flex items-center justify-center" :class="showSyllabus ? 'hidden' : ''">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
         </svg>
