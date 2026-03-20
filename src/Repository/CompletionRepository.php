@@ -69,6 +69,7 @@ class CompletionRepository extends ServiceEntityRepository
         return $counts;
     }
 
+
     /**
      * @return int[]
      */
@@ -231,6 +232,25 @@ class CompletionRepository extends ServiceEntityRepository
         $counts = [];
         foreach ($results as $row) {
             $counts[(int) $row['lessonId']] = (int) $row['completionsCount'];
+        }
+
+        return $counts;
+    }
+
+    /**
+     * @return array<int, int> [userId => completionsCount]
+     */
+    public function countAllByUser(): array
+    {
+        $results = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.user) as userId', 'COUNT(c.id) as completionsCount')
+            ->groupBy('c.user')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($results as $row) {
+            $counts[(int) $row['userId']] = (int) $row['completionsCount'];
         }
 
         return $counts;

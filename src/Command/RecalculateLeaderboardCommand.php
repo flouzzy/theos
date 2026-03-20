@@ -35,12 +35,12 @@ class RecalculateLeaderboardCommand extends Command
         $io->title('Recalculating leaderboard XP');
 
         $users = $this->userRepository->findAll();
+        $allCompletionCounts = $this->completionRepository->countAllByUser();
         $updatedCount = 0;
 
         foreach ($users as $user) {
-            // Count completions for this user
-            $completions = $this->completionRepository->findBy(['user' => $user]);
-            $completionCount = count($completions);
+            // Get completion count for this user from pre-fetched data
+            $completionCount = $allCompletionCounts[$user->getId()] ?? 0;
             $expectedXp = $completionCount * self::XP_PER_COMPLETION;
 
             $currentXp = $user->getXp();
