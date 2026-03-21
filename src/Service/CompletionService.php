@@ -110,89 +110,13 @@ class CompletionService
          * @var \App\Entity\User $user
          */
         $user = $this->security->getUser();
-        $courseCompletion = $this->entityManager->getRepository(CourseCompletion::class)->findOneBy([
-            'user' => $user,
-            'course' => $course
-        ]);
 
-        if (!$courseCompletion) {
-            $courseCompletion = new CourseCompletion();
-            $courseCompletion->setUser($user);
-            $courseCompletion->setCourse($course);
-        }
-
-        // On vérifie que tous les modules sont completés (ou non)
-        $allModulesCompleted = true;
-        $modules = $course->getModules();
-
-        $allLessons = [];
-        foreach ($modules as $courseModule) {
-            foreach ($courseModule->getLessons() as $lesson) {
-                $allLessons[] = $lesson;
-            }
-        }
-
-        if (count($allLessons) > 0) {
-            $completions = $this->entityManager->getRepository(Completion::class)->findBy([
-                'user' => $user,
-                'lesson' => $allLessons
-            ]);
-
-            $completionMap = [];
-            foreach ($completions as $completion) {
-                if ($completion->getLesson()) {
-                    $completionMap[$completion->getLesson()->getId()] = $completion;
-                }
-            }
-
-            foreach ($modules as $courseModule) {
-                // On aurait pu simplement vérifié le statut de completion du module sans passer par les leçons
-                // mais dans ce cas on risquerait de passer à côté des modules qui ne sont associés à aucune leçon (cygne noir)
-                $moduleLessons = $courseModule->getLessons();
-                foreach ($moduleLessons as $lesson) {
-                    $completion = $completionMap[$lesson->getId()] ?? null;
-
-                    if (!$completion || !$completion->isCompleted()) {
-                        $allModulesCompleted = false;
-                        break 2; // Sort des deux boucles si une leçon non complétée est trouvée
-                    }
-                }
-            }
-        }
+        $courseCompletion = $this->getOrCreateCourseCompletion($user, $course);
+        $allModulesCompleted = $this->areAllCourseLessonsCompleted($user, $course);
 
         // Send notification to all the users if someone complete a course
         if ($allModulesCompleted) {
-            // Render a content based on twig template
-            $content = $this->twig->render('notification/emails/course_completed.html.twig', [
-                'user' => $user,
-                'course' => $course
-            ]);
-
-            $this->sendNotificationToAllUsers(
-                $content,
-                $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
-            );
-
-            // Award Badges via GamificationService
-            // Flush is false to allow atomic transaction commit by caller (or later flush)
-            $this->gamificationService->awardCourseCompletionBadge($user, $course, false);
-            $this->gamificationService->awardEarlyBirdBadge(
-                $user,
-                $course,
-                $courseCompletion->getCreatedAt() ?? new \DateTimeImmutable(),
-                false
-            );
-
-            // Personal Notification
-            $this->notificationService->addNotification(
-                $user,
-                "🎓 Félicitations !",
-                sprintf("Tu as terminé le cours '%s'. Ton certificat est prêt !", $course->getTitle()),
-                $this->urlGenerator->generate('certificate_show', ['id' => $course->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
-            );
-
-            // Dispatch TrainingCompletionEvent
-            $this->eventDispatcher->dispatch(new TrainingCompletionEvent($user, $course));
+            $this->handleCourseCompletionRewards($user, $course, $courseCompletion);
         }
 
         // MAj du statut du parcours
@@ -204,5 +128,96 @@ class CompletionService
     public function sendNotificationToAllUsers(string $content, string $title): void
     {
         $this->bus->dispatch(new \App\Message\Notification($content, $title));
+    }
+
+    private function getOrCreateCourseCompletion(\App\Entity\User $user, \App\Entity\Course $course): CourseCompletion
+    {
+        $courseCompletion = $this->entityManager->getRepository(CourseCompletion::class)->findOneBy([
+            'user' => $user,
+            'course' => $course
+        ]);
+
+        if (!$courseCompletion) {
+            $courseCompletion = new CourseCompletion();
+            $courseCompletion->setUser($user);
+            $courseCompletion->setCourse($course);
+        }
+
+        return $courseCompletion;
+    }
+
+    private function areAllCourseLessonsCompleted(\App\Entity\User $user, \App\Entity\Course $course): bool
+    {
+        $modules = $course->getModules();
+        $allLessons = [];
+        foreach ($modules as $courseModule) {
+            foreach ($courseModule->getLessons() as $lesson) {
+                $allLessons[] = $lesson;
+            }
+        }
+
+        if (count($allLessons) === 0) {
+            return true;
+        }
+
+        $completions = $this->entityManager->getRepository(Completion::class)->findBy([
+            'user' => $user,
+            'lesson' => $allLessons
+        ]);
+
+        $completionMap = [];
+        foreach ($completions as $completion) {
+            if ($completion->getLesson()) {
+                $completionMap[$completion->getLesson()->getId()] = $completion;
+            }
+        }
+
+        foreach ($course->getModules() as $courseModule) {
+            $moduleLessons = $courseModule->getLessons();
+            foreach ($moduleLessons as $lesson) {
+                $completion = $completionMap[$lesson->getId()] ?? null;
+
+                if (!$completion || !$completion->isCompleted()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private function handleCourseCompletionRewards(\App\Entity\User $user, \App\Entity\Course $course, CourseCompletion $courseCompletion): void
+    {
+        // Render a content based on twig template
+        $content = $this->twig->render('notification/emails/course_completed.html.twig', [
+            'user' => $user,
+            'course' => $course
+        ]);
+
+        $this->sendNotificationToAllUsers(
+            $content,
+            $this->translator->trans('Course completed for') . ' ' . $user->getFirstname()
+        );
+
+        // Award Badges via GamificationService
+        // Flush is false to allow atomic transaction commit by caller (or later flush)
+        $this->gamificationService->awardCourseCompletionBadge($user, $course, false);
+        $this->gamificationService->awardEarlyBirdBadge(
+            $user,
+            $course,
+            $courseCompletion->getCreatedAt() ?? new \DateTimeImmutable(),
+            false
+        );
+
+        // Personal Notification
+        $this->notificationService->addNotification(
+            $user,
+            "🎓 Félicitations !",
+            sprintf("Tu as terminé le cours '%s'. Ton certificat est prêt !", $course->getTitle()),
+            $this->urlGenerator->generate('certificate_show', ['id' => $course->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
+        );
+
+        // Dispatch TrainingCompletionEvent
+        $this->eventDispatcher->dispatch(new TrainingCompletionEvent($user, $course));
     }
 }
