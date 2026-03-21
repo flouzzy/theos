@@ -32,6 +32,23 @@ class PayoutService
         }
 
         // 2. Total completions in period
+        $courseCompletionsData = $this->getCourseCompletions($start, $end);
+        $totalCompletions = $courseCompletionsData['totalCompletions'];
+        $courseCompletions = $courseCompletionsData['courseCompletions'];
+
+        if ($totalCompletions <= 0) {
+            return [];
+        }
+
+        // 3. Calculate and save payouts
+        return $this->calculateAndSavePayouts($courseCompletions, $totalCompletions, $totalRevenue, $start, $end);
+    }
+
+    /**
+     * @return array{totalCompletions: int, courseCompletions: array<int, array{course: Course, count: int}>}
+     */
+    private function getCourseCompletions(\DateTimeImmutable $start, \DateTimeImmutable $end): array
+    {
         $courses = $this->courseRepository->findAll();
         $totalCompletions = 0;
         $courseCompletions = [];
@@ -47,11 +64,23 @@ class PayoutService
             }
         }
 
-        if ($totalCompletions <= 0) {
-            return [];
-        }
+        return [
+            'totalCompletions' => $totalCompletions,
+            'courseCompletions' => $courseCompletions,
+        ];
+    }
 
-        // 3. Calculate and save payouts
+    /**
+     * @param array<int, array{course: Course, count: int}> $courseCompletions
+     * @return array<Payout>
+     */
+    private function calculateAndSavePayouts(
+        array $courseCompletions,
+        int $totalCompletions,
+        int $totalRevenue,
+        \DateTimeImmutable $start,
+        \DateTimeImmutable $end
+    ): array {
         $payouts = [];
         foreach ($courseCompletions as $data) {
             /** @var Course $course */
