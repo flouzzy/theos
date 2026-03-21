@@ -305,12 +305,8 @@ class TriggerServiceTest extends TestCase
             ->method('findAll')
             ->willReturn([$user]);
 
-        $completion1 = $this->createMock(Completion::class);
-        $completion1->method('isCompleted')->willReturn(true);
-        $completion1->method('getLesson')->willReturn($lesson1);
-
-        $this->completionRepository->method('findBy')
-            ->willReturn([$completion1]);
+        $this->completionRepository->method('findCompletedLessonIdsByUser')
+            ->willReturn([1]); // lesson1 id is 1, so it is completed
 
         $this->urlGenerator->method('generate')->willReturn('http://example.com/course/1');
 
