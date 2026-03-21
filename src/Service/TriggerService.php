@@ -214,6 +214,8 @@ class TriggerService
      */
     private function processMilestoneTrigger(User $user): void
     {
+        $userCompletedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
+
         foreach ($user->getCourses() as $course) {
             $allLessons = [];
             foreach ($course->getModules() as $module) {
@@ -224,14 +226,11 @@ class TriggerService
 
             if (empty($allLessons)) continue;
 
-            $completions = $this->completionRepository->findBy([
-                'user' => $user,
-                'lesson' => $allLessons
-            ]);
-
             $completedCount = 0;
-            foreach ($completions as $c) {
-                if ($c->isCompleted()) $completedCount++;
+            foreach ($allLessons as $lesson) {
+                if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
+                    $completedCount++;
+                }
             }
 
             $remaining = count($allLessons) - $completedCount;
