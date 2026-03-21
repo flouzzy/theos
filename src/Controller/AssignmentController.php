@@ -16,7 +16,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Entity\User;
 use App\Entity\PeerReviewScore;
-use App\Entity\Rubric;
 
 use App\Service\MediaManager;
 
