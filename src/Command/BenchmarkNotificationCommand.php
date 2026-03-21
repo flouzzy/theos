@@ -45,6 +45,19 @@ class BenchmarkNotificationCommand extends Command
         $mode = $input->getOption('mode');
 
         $email = 'benchmark_user_' . uniqid() . '@example.com';
+
+        $userId = $this->createTestUser($email);
+
+        $io->text("Creating $count notifications for user $email...");
+        $this->createNotifications($userId, $count);
+
+        $io->text("Notifications created. Starting benchmark ($mode)...");
+
+        return $this->runBenchmark($email, $mode, $io);
+    }
+
+    private function createTestUser(string $email): int
+    {
         $user = new User();
         $user->setEmail($email);
         $user->setPassword('password');
@@ -56,8 +69,11 @@ class BenchmarkNotificationCommand extends Command
         $userId = $user->getId();
         $this->entityManager->clear();
 
-        $io->text("Creating $count notifications for user $email...");
+        return $userId;
+    }
 
+    private function createNotifications(int $userId, int $count): void
+    {
         $batchSize = 500;
         for ($i = 0; $i < $count; $i++) {
             $userRef = $this->entityManager->getReference(User::class, $userId);
@@ -74,9 +90,10 @@ class BenchmarkNotificationCommand extends Command
         }
         $this->entityManager->flush();
         $this->entityManager->clear();
+    }
 
-        $io->text("Notifications created. Starting benchmark ($mode)...");
-
+    private function runBenchmark(string $email, string $mode, SymfonyStyle $io): int
+    {
         // Re-fetch user to ensure clean state
         /** @var User|null $user */
         $user = $this->userRepository->findOneBy(['email' => $email]);
