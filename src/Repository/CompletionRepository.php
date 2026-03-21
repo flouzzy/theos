@@ -235,4 +235,32 @@ class CompletionRepository extends ServiceEntityRepository
 
         return $counts;
     }
+
+    /**
+     * @return array<int, array{completionCount: int, avgScore: float}> [lessonId => stats]
+     */
+    public function getEfficacyDataForLessons(array $lessonIds): array
+    {
+        if (empty($lessonIds)) {
+            return [];
+        }
+
+        $results = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.lesson) as lessonId', 'COUNT(c.id) as completionCount', 'AVG(c.score) as avgScore')
+            ->where('c.lesson IN (:lessonIds)')
+            ->setParameter('lessonIds', $lessonIds)
+            ->groupBy('c.lesson')
+            ->getQuery()
+            ->getArrayResult();
+
+        $stats = [];
+        foreach ($results as $row) {
+            $stats[(int) $row['lessonId']] = [
+                'completionCount' => (int) $row['completionCount'],
+                'avgScore' => (float) $row['avgScore'],
+            ];
+        }
+
+        return $stats;
+    }
 }
