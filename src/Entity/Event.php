@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
 {
+    public const TYPE_STREAK_LOGIN = 'streak_login';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -31,6 +33,12 @@ class Event
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?Calendar $calendar = null;
+
+    #[ORM\ManyToOne]
+    private ?User $user = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function __clone()
     {
@@ -110,6 +118,30 @@ class Event
     public function setCalendar(?Calendar $calendar): static
     {
         $this->calendar = $calendar;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

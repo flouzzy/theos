@@ -240,9 +240,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $customGoal = null;
-
     #[ORM\Column(length: 128, nullable: true, unique: true)]
     private ?string $loginToken = null;
 
