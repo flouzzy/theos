@@ -71,6 +71,18 @@ class CoachDataService
     {
         $completedIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
 
+        // Preload courses, modules, and lessons to prevent N+1 queries
+        $this->entityManager->createQueryBuilder()
+            ->select('u', 'c', 'm', 'l')
+            ->from(User::class, 'u')
+            ->leftJoin('u.courses', 'c')
+            ->leftJoin('c.modules', 'm')
+            ->leftJoin('m.lessons', 'l')
+            ->where('u = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+
         foreach ($user->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
                 $sortedLessons = $module->getLessons()->toArray();
