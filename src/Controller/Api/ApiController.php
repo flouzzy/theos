@@ -145,7 +145,7 @@ class ApiController extends AbstractController
             return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $course = $entityManager->getRepository(Course::class)->findCourseWithModulesAndLessonsBySlug($slug);
+        $course = $entityManager->getRepository(Course::class)->findOneBy(['slug' => $slug]);
         if (!$course) {
             return new JsonResponse(['error' => 'Course not found'], Response::HTTP_NOT_FOUND);
         }

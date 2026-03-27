@@ -2,12 +2,10 @@
 
 namespace App\Service;
 
-use App\Entity\Cohort;
 use App\Entity\User;
 use App\Entity\Lesson;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
-use App\Repository\LessonRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Psr\Clock\ClockInterface;
@@ -17,11 +15,9 @@ class TriggerService
     public function __construct(
         private UserRepository $userRepository,
         private CompletionRepository $completionRepository,
-        private LessonRepository $lessonRepository,
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
-        private LessonRepository $lessonRepository,
         private ?ClockInterface $clock = null,
     ) {}
 
@@ -107,51 +103,36 @@ class TriggerService
             return;
         }
 
-        $result = $this->lessonRepository->findFirstUncompletedAudioLessonWithContext($user);
+        // Pre-fetch all user completions to prevent N+1 queries
+        $allCompletions = $this->completionRepository->findBy(['user' => $user]);
+        $completionMap = [];
+        foreach ($allCompletions as $completion) {
+            $completionMap[$completion->getLesson()->getId()] = $completion;
+        }
 
         // Find an uncompleted lesson with audio
-        $uncompletedAudioLessonData = $this->getUncompletedAudioLessonData($user, $completionMap);
-
-        if ($uncompletedAudioLessonData) {
-            $course = $uncompletedAudioLessonData['course'];
-            $module = $uncompletedAudioLessonData['module'];
-            $lesson = $uncompletedAudioLessonData['lesson'];
-
-            $this->notificationService->addNotification(
-                $user,
-                "☕ Ta routine matinale",
-                sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
-                $this->urlGenerator->generate('lesson_show', [
-                    'courseSlug' => $course->getSlug(),
-                    'moduleSlug' => $module->getSlug(),
-                    'lessonId' => $lesson->getId()
-                ], UrlGeneratorInterface::ABSOLUTE_URL)
-            );
-        }
-    }
-
-    private function getUncompletedAudioLessonData(User $user, array $completionMap): ?array
-    {
         foreach ($user->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
-                    if (!$lesson->getAudioPath()) {
-                        continue;
-                    }
+                    if (!$lesson->getAudioPath()) continue;
 
                     $completion = $completionMap[$lesson->getId()] ?? null;
                     if (!$completion || !$completion->isCompleted()) {
-                        return [
-                            'course' => $course,
-                            'module' => $module,
-                            'lesson' => $lesson
-                        ];
+                        $this->notificationService->addNotification(
+                            $user,
+                            "☕ Ta routine matinale",
+                            sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
+                            $this->urlGenerator->generate('lesson_show', [
+                                'courseSlug' => $course->getSlug(),
+                                'moduleSlug' => $module->getSlug(),
+                                'lessonId' => $lesson->getId()
+                            ], UrlGeneratorInterface::ABSOLUTE_URL)
+                        );
+                        return; // Suggest only one
                     }
                 }
             }
         }
-
-        return null;
     }
 
     /**
@@ -165,7 +146,14 @@ class TriggerService
             $totalUsers = count($cohort->getUsers());
             if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
 
-            $cohortLessonIds = $this->lessonRepository->findLessonIdsByCohort($cohort);
+            $cohortLessonIds = [];
+            foreach ($cohort->getCourses() as $course) {
+                foreach ($course->getModules() as $module) {
+                    foreach ($module->getLessons() as $lesson) {
+                        $cohortLessonIds[] = $lesson->getId();
+                    }
+                }
+            }
 
             if (empty($cohortLessonIds)) {
                 continue;

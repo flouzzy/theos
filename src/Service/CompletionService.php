@@ -148,35 +148,42 @@ class CompletionService
 
     private function areAllCourseLessonsCompleted(\App\Entity\User $user, \App\Entity\Course $course): bool
     {
-        $totalLessonsCount = (int) $this->entityManager->createQuery('
-            SELECT COUNT(DISTINCT l.id)
-            FROM App\Entity\Course c
-            JOIN c.modules m
-            JOIN m.lessons l
-            WHERE c = :course
-        ')
-        ->setParameter('course', $course)
-        ->getSingleScalarResult();
+        $modules = $course->getModules();
+        $allLessons = [];
+        foreach ($modules as $courseModule) {
+            foreach ($courseModule->getLessons() as $lesson) {
+                $allLessons[] = $lesson;
+            }
+        }
 
-        if ($totalLessonsCount === 0) {
+        if (count($allLessons) === 0) {
             return true;
         }
 
-        $completedLessonsCount = (int) $this->entityManager->createQuery('
-            SELECT COUNT(DISTINCT l.id)
-            FROM App\Entity\Completion comp
-            JOIN comp.lesson l
-            JOIN l.module m
-            JOIN m.courses c
-            WHERE comp.user = :user
-            AND comp.completed = true
-            AND c = :course
-        ')
-        ->setParameter('user', $user)
-        ->setParameter('course', $course)
-        ->getSingleScalarResult();
+        $completions = $this->entityManager->getRepository(Completion::class)->findBy([
+            'user' => $user,
+            'lesson' => $allLessons
+        ]);
 
-        return $totalLessonsCount === $completedLessonsCount;
+        $completionMap = [];
+        foreach ($completions as $completion) {
+            if ($completion->getLesson()) {
+                $completionMap[$completion->getLesson()->getId()] = $completion;
+            }
+        }
+
+        foreach ($course->getModules() as $courseModule) {
+            $moduleLessons = $courseModule->getLessons();
+            foreach ($moduleLessons as $lesson) {
+                $completion = $completionMap[$lesson->getId()] ?? null;
+
+                if (!$completion || !$completion->isCompleted()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private function handleCourseCompletionRewards(\App\Entity\User $user, \App\Entity\Course $course, CourseCompletion $courseCompletion): void

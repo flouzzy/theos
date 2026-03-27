@@ -12,9 +12,11 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserManagementType extends AbstractType
 {
+    public function __construct(private readonly TranslatorInterface $translator) {}
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -38,7 +40,7 @@ class UserManagementType extends AbstractType
             ->add('isVerified')
             ->add('paymentStatus', ChoiceType::class, [
                 'choices' => PaymentStatusEnum::cases(),
-                'choice_label' => fn(PaymentStatusEnum $enum) => ucfirst(strtolower(str_replace('_', ' ', $enum->name))),
+                'choice_label' => fn(PaymentStatusEnum $enum) => $this->translator->trans(ucfirst(strtolower(str_replace('_', ' ', $enum->name)))),
                 'choice_value' => fn(?PaymentStatusEnum $enum) => $enum?->value,
             ])
             ->add('firstname')

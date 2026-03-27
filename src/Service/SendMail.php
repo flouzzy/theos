@@ -60,7 +60,18 @@ class SendMail
             // Pour Brevo, on doit d'abord rendre le template Twig en HTML
             $htmlContent = $this->twig->render($template, $context);
 
-            $toList = $this->formatRecipientsForBrevo($to);
+            $toList = [];
+            if (is_string($to)) {
+                $toList[] = ['email' => $to];
+            } else {
+                foreach ($to as $recipient) {
+                    if ($recipient instanceof Address) {
+                        $toList[] = ['email' => $recipient->getAddress(), 'name' => $recipient->getName()];
+                    } else {
+                        $toList[] = ['email' => $recipient];
+                    }
+                }
+            }
             
             // On ajoute le sujet et le contenu HTML au contexte pour BrevoApi
             $context['subject'] = $subject;
@@ -77,28 +88,5 @@ class SendMail
                 $this->logger->error($te->getDebug());
             }
         }
-    }
-
-    /**
-     * @param array<string|Address>|string $to
-     * @return array<int, array{email: string, name?: string}>
-     */
-    private function formatRecipientsForBrevo(array|string $to): array
-    {
-        if (is_string($to)) {
-            return [['email' => $to]];
-        }
-
-        $toList = [];
-        foreach ($to as $recipient) {
-            if ($recipient instanceof Address) {
-                $toList[] = ['email' => $recipient->getAddress(), 'name' => $recipient->getName()];
-                continue;
-            }
-
-            $toList[] = ['email' => $recipient];
-        }
-
-        return $toList;
     }
 }

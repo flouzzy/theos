@@ -6,16 +6,12 @@ use App\Entity\User;
 use App\Service\AchievementService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
-use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
 #[AsLiveComponent]
 class AchievementsComponent
 {
     use DefaultActionTrait;
-
-    #[LiveProp]
-    public ?User $user = null;
 
     public function __construct(
         private Security $security,
@@ -28,11 +24,12 @@ class AchievementsComponent
      */
     public function getAchievements(): array
     {
-        $targetUser = $this->user ?? $this->security->getUser();
-        if (!$targetUser instanceof User) {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        if (!$user) {
             return [];
         }
 
-        return $this->achievementService->getAchievements($targetUser);
+        return $this->achievementService->getAchievements($user);
     }
 }
