@@ -1,13 +1,30 @@
-<?php
+<<<<<<< SEARCH
+class AchievementsComponent
+{
+    use DefaultActionTrait;
 
-namespace App\Twig\Components;
+    public function __construct(
+        private Security $security,
+        private AchievementService $achievementService
+    ) {
+    }
 
-use App\Entity\User;
-use App\Service\AchievementService;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+    /**
+     * @return array<int, array{icon: string, title: string, date: \DateTimeInterface|null, reached: bool, description?: string|null}>
+     */
+    public function getAchievements(): array
+    {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        if (!$user) {
+            return [];
+        }
+
+        return $this->achievementService->getAchievements($user);
+    }
+}
+=======
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
-use Symfony\UX\LiveComponent\DefaultActionTrait;
 
 #[AsLiveComponent]
 class AchievementsComponent
@@ -29,6 +46,7 @@ class AchievementsComponent
     public function getAchievements(): array
     {
         $targetUser = $this->user ?? $this->security->getUser();
+
         if (!$targetUser instanceof User) {
             return [];
         }
@@ -36,3 +54,4 @@ class AchievementsComponent
         return $this->achievementService->getAchievements($targetUser);
     }
 }
+>>>>>>> REPLACE
