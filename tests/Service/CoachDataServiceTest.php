@@ -104,7 +104,7 @@ class CoachDataServiceTest extends TestCase
         $lesson3->method('getId')->willReturn(3);
         $lesson3->method('getItemOrder')->willReturn(3);
 
-        $module->method('getLessons')->willReturn(new ArrayCollection([$lesson3, $lesson1, $lesson2]));
+        $module->method('getSortedLessons')->willReturn([$lesson1, $lesson2, $lesson3]);
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
 
@@ -129,7 +129,7 @@ class CoachDataServiceTest extends TestCase
         $lesson->method('getId')->willReturn(1);
         $lesson->method('getItemOrder')->willReturn(1);
 
-        $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
+        $module->method('getSortedLessons')->willReturn([$lesson]);
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
 
