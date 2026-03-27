@@ -6,6 +6,6 @@
 
 {% block content %}
 	<div class="max-w-4xl mx-auto p-6 md:p-10 space-y-8 prose prose-slate dark:prose-invert">
-		{{ page.content | raw }}
+		{{ page.content | sanitize_html('video') }}
 	</div>
 {% endblock %}
