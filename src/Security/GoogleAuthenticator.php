@@ -50,25 +50,27 @@ class GoogleAuthenticator extends OAuth2Authenticator
                 // 1. Recheche par googleId
                 $user = $this->entityManager->getRepository(User::class)->findOneBy(['googleId' => $googleUser->getId()]);
 
-                if (!$user) {
-                    // 2. Recherche par email
-                    $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-                    
-                    if (!$user) {
-                        // 3. Création
-                        $user = new User();
-                        $user->setEmail($email);
-                        $user->setFirstname($googleUser->getFirstName() ?? '');
-                        $user->setLastname($googleUser->getLastName() ?? '');
-                        $user->setFullname($googleUser->getName() ?? ($user->getFirstname() . ' ' . $user->getLastname()));
-                        $user->setIsVerified(true);
-                        $user->setPassword('oauth_placeholder'); // Inutile mais requis par l'entité si non nullable
-                        $this->entityManager->persist($user);
-                    }
-                    
-                    $user->setGoogleId($googleUser->getId());
-                    $this->entityManager->flush();
+                if ($user) {
+                    return $user;
                 }
+
+                // 2. Recherche par email
+                $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+                if (!$user) {
+                    // 3. Création
+                    $user = new User();
+                    $user->setEmail($email);
+                    $user->setFirstname($googleUser->getFirstName() ?? '');
+                    $user->setLastname($googleUser->getLastName() ?? '');
+                    $user->setFullname($googleUser->getName() ?? ($user->getFirstname() . ' ' . $user->getLastname()));
+                    $user->setIsVerified(true);
+                    $user->setPassword('oauth_placeholder'); // Inutile mais requis par l'entité si non nullable
+                    $this->entityManager->persist($user);
+                }
+
+                $user->setGoogleId($googleUser->getId());
+                $this->entityManager->flush();
 
                 return $user;
             })
