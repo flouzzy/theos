@@ -50,11 +50,25 @@ class InstructorController extends AbstractController
 
         $atRisk = $engagementAnalyzer->getAtRiskStudents($cohort, 30);
         
-        $efficacyData = [];
+        $modules = [];
         foreach ($cohort->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
-                $efficacyData[$module->getTitle()] = $lessonRepository->findEfficacyStatsByModule($module);
+                $modules[] = $module;
             }
+        }
+
+        $allStats = $lessonRepository->findEfficacyStatsByModules($modules);
+        $statsByModuleId = [];
+        foreach ($allStats as $stat) {
+            $moduleId = $stat['moduleId'];
+            // remove moduleId from the stat array to match the original return shape
+            unset($stat['moduleId']);
+            $statsByModuleId[$moduleId][] = $stat;
+        }
+
+        $efficacyData = [];
+        foreach ($modules as $module) {
+            $efficacyData[$module->getTitle()] = $statsByModuleId[$module->getId()] ?? [];
         }
 
         return $this->render('admin/instructor/cohort_detail.html.twig', [
