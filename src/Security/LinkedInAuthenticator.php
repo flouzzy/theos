@@ -50,26 +50,28 @@ class LinkedInAuthenticator extends OAuth2Authenticator
                 // 1. Recheche par linkedinId
                 $user = $this->entityManager->getRepository(User::class)->findOneBy(['linkedinId' => $linkedinUser->getId()]);
 
-                if (!$user) {
-                    // 2. Recherche par email
-                    $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-                    
-                    if (!$user) {
-                        // 3. Création
-                        $user = new User();
-                        $user->setEmail($email);
-                        $user->setFirstname($linkedinUser->getFirstName() ?? '');
-                        $user->setLastname($linkedinUser->getLastName() ?? '');
-                        // On n'a pas forcément getName() sur l'objet de base league pour LinkedIn, à vérifier selon la version
-                        $user->setFullname($user->getFirstname() . ' ' . $user->getLastname());
-                        $user->setIsVerified(true);
-                        $user->setPassword('oauth_placeholder');
-                        $this->entityManager->persist($user);
-                    }
-                    
-                    $user->setLinkedinId((string)$linkedinUser->getId());
-                    $this->entityManager->flush();
+                if ($user) {
+                    return $user;
                 }
+
+                // 2. Recherche par email
+                $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+                if (!$user) {
+                    // 3. Création
+                    $user = new User();
+                    $user->setEmail($email);
+                    $user->setFirstname($linkedinUser->getFirstName() ?? '');
+                    $user->setLastname($linkedinUser->getLastName() ?? '');
+                    // On n'a pas forcément getName() sur l'objet de base league pour LinkedIn, à vérifier selon la version
+                    $user->setFullname($user->getFirstname() . ' ' . $user->getLastname());
+                    $user->setIsVerified(true);
+                    $user->setPassword('oauth_placeholder');
+                    $this->entityManager->persist($user);
+                }
+
+                $user->setLinkedinId((string)$linkedinUser->getId());
+                $this->entityManager->flush();
 
                 return $user;
             })
