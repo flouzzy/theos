@@ -56,28 +56,19 @@ class LessonRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findFirstUncompletedAudioLessonWithContext(\App\Entity\User $user): ?array
+    /**
+     * @return int[]
+     */
+    public function findLessonIdsByCohort(\App\Entity\Cohort $cohort): array
     {
-        $result = $this->getEntityManager()->createQueryBuilder()
-            ->select('l AS lesson', 'm AS module', 'c AS course')
-            ->from(\App\Entity\User::class, 'u')
-            ->join('u.courses', 'c')
-            ->join('c.modules', 'm')
-            ->join('m.lessons', 'l')
-            ->where('u = :user')
-            ->andWhere('l.audioPath IS NOT NULL AND l.audioPath != \'\'')
-            ->andWhere('NOT EXISTS (
-                SELECT comp FROM App\Entity\Completion comp
-                WHERE comp.lesson = l AND comp.user = :user AND comp.completed = true
-            )')
-            ->orderBy('c.id', 'ASC')
-            ->addOrderBy('m.itemOrder', 'ASC')
-            ->addOrderBy('l.itemOrder', 'ASC')
-            ->setMaxResults(1)
-            ->setParameter('user', $user)
+        return $this->createQueryBuilder('l')
+            ->select('l.id')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'c')
+            ->join('c.cohorts', 'co')
+            ->where('co = :cohort')
+            ->setParameter('cohort', $cohort)
             ->getQuery()
-            ->getResult();
-
-        return !empty($result) ? $result[0] : null;
+            ->getSingleColumnResult();
     }
 }

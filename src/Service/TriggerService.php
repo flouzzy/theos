@@ -17,6 +17,7 @@ class TriggerService
     public function __construct(
         private UserRepository $userRepository,
         private CompletionRepository $completionRepository,
+        private LessonRepository $lessonRepository,
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
@@ -137,7 +138,7 @@ class TriggerService
             $totalUsers = count($cohort->getUsers());
             if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
 
-            $cohortLessonIds = $this->getCohortLessonIds($cohort);
+            $cohortLessonIds = $this->lessonRepository->findLessonIdsByCohort($cohort);
 
             if (empty($cohortLessonIds)) {
                 continue;
