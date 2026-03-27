@@ -204,22 +204,34 @@ class LessonController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        if (!empty(trim((string)$content))) {
-            /** @var \App\Entity\User|null $user */
-            $user = $this->getUser();
-            if ($user) {
-                $comment = new Comment();
-                $comment->setContent((string)$content);
-                $comment->setUser($user);
-                $comment->setLesson($lesson);
-
-                $this->entityManager->persist($comment);
-                $this->entityManager->flush();
-
-                $this->gamificationService->addXp($user, 5, 'comment_posted');
-                $this->addFlash('success', $this->translator->trans('Commentaire ajouté !'));
-            }
+        if (empty(trim((string)$content))) {
+            return $this->redirectToRoute('lesson_show', [
+                'courseSlug' => $course->getSlug(),
+                'moduleSlug' => $module->getSlug(),
+                'lessonId' => $lesson->getId()
+            ]);
         }
+
+        /** @var \App\Entity\User|null $user */
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('lesson_show', [
+                'courseSlug' => $course->getSlug(),
+                'moduleSlug' => $module->getSlug(),
+                'lessonId' => $lesson->getId()
+            ]);
+        }
+
+        $comment = new Comment();
+        $comment->setContent((string)$content);
+        $comment->setUser($user);
+        $comment->setLesson($lesson);
+
+        $this->entityManager->persist($comment);
+        $this->entityManager->flush();
+
+        $this->gamificationService->addXp($user, 5, 'comment_posted');
+        $this->addFlash('success', $this->translator->trans('Commentaire ajouté !'));
 
         return $this->redirectToRoute('lesson_show', [
             'courseSlug' => $course->getSlug(),
@@ -247,46 +259,58 @@ class LessonController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        if (!empty(trim((string)$content))) {
-            /** @var \App\Entity\User|null $user */
-            $user = $this->getUser();
-            if ($user) {
-                $comment = new Comment();
-                $comment->setContent((string)$content);
-                $comment->setUser($user);
-                $comment->setLesson($lesson);
-                $comment->setParent($parent);
-
-                $this->entityManager->persist($comment);
-                $this->entityManager->flush();
-
-                $this->gamificationService->addXp($user, 2, 'reply_posted');
-                
-                // Notify parent comment author if they are not the same person
-                if ($parent->getUser() && $parent->getUser()->getId() !== $user->getId()) {
-                    $title = "💬 Nouveau message";
-                    $msg = sprintf("%s a répondu à votre commentaire dans la leçon : %s", $user->getFullname(), $lesson->getTitle());
-                    
-                    if ($this->isGranted('ROLE_COACH') || $this->isGranted('ROLE_ADMIN')) {
-                        $title = "💡 Un mentor vous a répondu !";
-                        $msg = sprintf("Bonne nouvelle ! Le mentor %s a répondu à votre question dans la leçon : %s", $user->getFullname(), $lesson->getTitle());
-                    }
-
-                    $this->notificationService->addNotification(
-                        $parent->getUser(),
-                        $title,
-                        $msg,
-                        $this->generateUrl('lesson_show', [
-                            'courseSlug' => $course->getSlug(),
-                            'moduleSlug' => $module->getSlug(),
-                            'lessonId' => $lesson->getId()
-                        ], UrlGeneratorInterface::ABSOLUTE_URL)
-                    );
-                }
-
-                $this->addFlash('success', $this->translator->trans('Réponse ajoutée !'));
-            }
+        if (empty(trim((string)$content))) {
+            return $this->redirectToRoute('lesson_show', [
+                'courseSlug' => $course->getSlug(),
+                'moduleSlug' => $module->getSlug(),
+                'lessonId' => $lesson->getId()
+            ]);
         }
+
+        /** @var \App\Entity\User|null $user */
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('lesson_show', [
+                'courseSlug' => $course->getSlug(),
+                'moduleSlug' => $module->getSlug(),
+                'lessonId' => $lesson->getId()
+            ]);
+        }
+
+        $comment = new Comment();
+        $comment->setContent((string)$content);
+        $comment->setUser($user);
+        $comment->setLesson($lesson);
+        $comment->setParent($parent);
+
+        $this->entityManager->persist($comment);
+        $this->entityManager->flush();
+
+        $this->gamificationService->addXp($user, 2, 'reply_posted');
+
+        // Notify parent comment author if they are not the same person
+        if ($parent->getUser() && $parent->getUser()->getId() !== $user->getId()) {
+            $title = "💬 Nouveau message";
+            $msg = sprintf("%s a répondu à votre commentaire dans la leçon : %s", $user->getFullname(), $lesson->getTitle());
+
+            if ($this->isGranted('ROLE_COACH') || $this->isGranted('ROLE_ADMIN')) {
+                $title = "💡 Un mentor vous a répondu !";
+                $msg = sprintf("Bonne nouvelle ! Le mentor %s a répondu à votre question dans la leçon : %s", $user->getFullname(), $lesson->getTitle());
+            }
+
+            $this->notificationService->addNotification(
+                $parent->getUser(),
+                $title,
+                $msg,
+                $this->generateUrl('lesson_show', [
+                    'courseSlug' => $course->getSlug(),
+                    'moduleSlug' => $module->getSlug(),
+                    'lessonId' => $lesson->getId()
+                ], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
+        }
+
+        $this->addFlash('success', $this->translator->trans('Réponse ajoutée !'));
 
         return $this->redirectToRoute('lesson_show', [
             'courseSlug' => $course->getSlug(),
