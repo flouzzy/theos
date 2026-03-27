@@ -111,28 +111,52 @@ class TriggerService
         }
 
         // Find an uncompleted lesson with audio
+        $uncompletedAudioLessonData = $this->findUncompletedAudioLessonData($user, $completionMap);
+
+        if ($uncompletedAudioLessonData) {
+            $course = $uncompletedAudioLessonData['course'];
+            $module = $uncompletedAudioLessonData['module'];
+            $lesson = $uncompletedAudioLessonData['lesson'];
+
+            $this->notificationService->addNotification(
+                $user,
+                "☕ Ta routine matinale",
+                sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
+                $this->urlGenerator->generate('lesson_show', [
+                    'courseSlug' => $course->getSlug(),
+                    'moduleSlug' => $module->getSlug(),
+                    'lessonId' => $lesson->getId()
+                ], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
+        }
+    }
+
+    /**
+     * @param array<int, \App\Entity\Completion> $completionMap
+     * @return array{course: \App\Entity\Course, module: \App\Entity\Module, lesson: \App\Entity\Lesson}|null
+     */
+    private function findUncompletedAudioLessonData(User $user, array $completionMap): ?array
+    {
         foreach ($user->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
-                    if (!$lesson->getAudioPath()) continue;
+                    if (!$lesson->getAudioPath()) {
+                        continue;
+                    }
 
                     $completion = $completionMap[$lesson->getId()] ?? null;
                     if (!$completion || !$completion->isCompleted()) {
-                        $this->notificationService->addNotification(
-                            $user,
-                            "☕ Ta routine matinale",
-                            sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
-                            $this->urlGenerator->generate('lesson_show', [
-                                'courseSlug' => $course->getSlug(),
-                                'moduleSlug' => $module->getSlug(),
-                                'lessonId' => $lesson->getId()
-                            ], UrlGeneratorInterface::ABSOLUTE_URL)
-                        );
-                        return; // Suggest only one
+                        return [
+                            'course' => $course,
+                            'module' => $module,
+                            'lesson' => $lesson,
+                        ];
                     }
                 }
             }
         }
+
+        return null;
     }
 
     /**
