@@ -109,10 +109,13 @@ class TriggerService
 
         $result = $this->lessonRepository->findFirstUncompletedAudioLessonWithContext($user);
 
-        if ($result) {
-            $lesson = $result['lesson'];
-            $module = $result['module'];
-            $course = $result['course'];
+        // Find an uncompleted lesson with audio
+        $uncompletedAudioLessonData = $this->findUncompletedAudioLessonData($user, $completionMap);
+
+        if ($uncompletedAudioLessonData) {
+            $course = $uncompletedAudioLessonData['course'];
+            $module = $uncompletedAudioLessonData['module'];
+            $lesson = $uncompletedAudioLessonData['lesson'];
 
             $this->notificationService->addNotification(
                 $user,
@@ -125,6 +128,34 @@ class TriggerService
                 ], UrlGeneratorInterface::ABSOLUTE_URL)
             );
         }
+    }
+
+    /**
+     * @param array<int, \App\Entity\Completion> $completionMap
+     * @return array{course: \App\Entity\Course, module: \App\Entity\Module, lesson: \App\Entity\Lesson}|null
+     */
+    private function findUncompletedAudioLessonData(User $user, array $completionMap): ?array
+    {
+        foreach ($user->getCourses() as $course) {
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    if (!$lesson->getAudioPath()) {
+                        continue;
+                    }
+
+                    $completion = $completionMap[$lesson->getId()] ?? null;
+                    if (!$completion || !$completion->isCompleted()) {
+                        return [
+                            'course' => $course,
+                            'module' => $module,
+                            'lesson' => $lesson,
+                        ];
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
