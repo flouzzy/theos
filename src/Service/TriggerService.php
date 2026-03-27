@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Cohort;
 use App\Entity\User;
 use App\Entity\Lesson;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
+use App\Repository\LessonRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Psr\Clock\ClockInterface;
@@ -15,9 +17,11 @@ class TriggerService
     public function __construct(
         private UserRepository $userRepository,
         private CompletionRepository $completionRepository,
+        private LessonRepository $lessonRepository,
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
+        private LessonRepository $lessonRepository,
         private ?ClockInterface $clock = null,
     ) {}
 
@@ -103,12 +107,7 @@ class TriggerService
             return;
         }
 
-        // Pre-fetch all user completions to prevent N+1 queries
-        $allCompletions = $this->completionRepository->findBy(['user' => $user]);
-        $completionMap = [];
-        foreach ($allCompletions as $completion) {
-            $completionMap[$completion->getLesson()->getId()] = $completion;
-        }
+        $result = $this->lessonRepository->findFirstUncompletedAudioLessonWithContext($user);
 
         // Find an uncompleted lesson with audio
         $uncompletedAudioLessonData = $this->findUncompletedAudioLessonData($user, $completionMap);
@@ -170,14 +169,7 @@ class TriggerService
             $totalUsers = count($cohort->getUsers());
             if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
 
-            $cohortLessonIds = [];
-            foreach ($cohort->getCourses() as $course) {
-                foreach ($course->getModules() as $module) {
-                    foreach ($module->getLessons() as $lesson) {
-                        $cohortLessonIds[] = $lesson->getId();
-                    }
-                }
-            }
+            $cohortLessonIds = $this->lessonRepository->findLessonIdsByCohort($cohort);
 
             if (empty($cohortLessonIds)) {
                 continue;
@@ -185,33 +177,56 @@ class TriggerService
 
             $completionsCountMap = $this->completionRepository->countCompletionsForLessons($cohortLessonIds);
 
-            foreach ($cohort->getCourses() as $course) {
-                foreach ($course->getModules() as $module) {
-                    foreach ($module->getLessons() as $lesson) {
-                        if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
-                            continue;
-                        }
+            if ($this->checkAndNotifyCohortFomo($user, $cohort, $userCompletedLessonIds, $totalUsers, $completionsCountMap)) {
+                return;
+            }
+        }
+    }
 
-                        $othersCompletions = $completionsCountMap[$lesson->getId()] ?? 0;
-                        $percentage = ($othersCompletions / $totalUsers) * 100;
+    private function getCohortLessonIds(Cohort $cohort): array
+    {
+        $cohortLessonIds = [];
+        foreach ($cohort->getCourses() as $course) {
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    $cohortLessonIds[] = $lesson->getId();
+                }
+            }
+        }
 
-                        if ($percentage >= 80) {
-                            $this->notificationService->addNotification(
-                                $user,
-                                "🚀 Ne reste pas à la traîne !",
-                                sprintf("Déjà 80%% de ta promotion %s a terminé la leçon : %s. C'est ton tour !", $cohort->getTitle(), $lesson->getTitle()),
-                                $this->urlGenerator->generate('lesson_show', [
-                                    'courseSlug' => $course->getSlug(),
-                                    'moduleSlug' => $module->getSlug(),
-                                    'lessonId' => $lesson->getId()
-                                ], UrlGeneratorInterface::ABSOLUTE_URL)
-                            );
-                            return; // One FOMO at a time
-                        }
+        return $cohortLessonIds;
+    }
+
+    private function checkAndNotifyCohortFomo(User $user, Cohort $cohort, array $userCompletedLessonIds, int $totalUsers, array $completionsCountMap): bool
+    {
+        foreach ($cohort->getCourses() as $course) {
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
+                        continue;
+                    }
+
+                    $othersCompletions = $completionsCountMap[$lesson->getId()] ?? 0;
+                    $percentage = ($othersCompletions / $totalUsers) * 100;
+
+                    if ($percentage >= 80) {
+                        $this->notificationService->addNotification(
+                            $user,
+                            "🚀 Ne reste pas à la traîne !",
+                            sprintf("Déjà 80%% de ta promotion %s a terminé la leçon : %s. C'est ton tour !", $cohort->getTitle(), $lesson->getTitle()),
+                            $this->urlGenerator->generate('lesson_show', [
+                                'courseSlug' => $course->getSlug(),
+                                'moduleSlug' => $module->getSlug(),
+                                'lessonId' => $lesson->getId()
+                            ], UrlGeneratorInterface::ABSOLUTE_URL)
+                        );
+                        return true; // One FOMO at a time
                     }
                 }
             }
         }
+
+        return false;
     }
 
     /**

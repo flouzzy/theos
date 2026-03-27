@@ -55,4 +55,21 @@ class LessonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findEfficacyStatsByModules(array $modules): array
+    {
+        if (empty($modules)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('l')
+            ->select('l.id', 'l.title', 'AVG(c.score) as avgScore', 'COUNT(c.id) as completionCount', 'IDENTITY(l.module) as moduleId')
+            ->leftJoin('l.completions', 'c')
+            ->where('l.module IN (:modules)')
+            ->andWhere('c.completed = true OR c.id IS NULL')
+            ->setParameter('modules', $modules)
+            ->groupBy('l.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

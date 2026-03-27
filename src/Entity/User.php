@@ -246,29 +246,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $coverPhoto = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $linkedinId = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $websiteUrl = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $githubUrl = null;
-
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    private bool $isProfilePublic = false;
-
-    #[ORM\Column(length: 7, options: ['default' => '#000000'])]
-    private string $confettiColor = '#000000';
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $customGoal = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $rssFeedUrl = null;
+    #[ORM\Column(length: 128, nullable: true, unique: true)]
+    private ?string $loginToken = null;
 
     #[ORM\Column(length: 20, options: ['default' => 'light'])]
     private string $theme = 'light';

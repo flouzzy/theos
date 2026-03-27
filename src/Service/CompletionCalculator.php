@@ -68,27 +68,15 @@ class CompletionCalculator
         $completedLessonMap = array_flip($completedLessonIds);
 
         foreach ($coursesEntities as $course) {
-            $courseLessonsCount = 0;
-            $courseCompletedCount = 0;
+            $metrics = $this->calculateCourseMetrics($course, $completedLessonMap);
 
-            foreach ($course->getModules() as $module) {
-                foreach ($module->getLessons() as $lesson) {
-                    $totalMinutes += $lesson->getDuration() ?? 0;
-                    $courseLessonsCount++;
-                    $totalLessons++;
-
-                    if (isset($completedLessonMap[$lesson->getId()])) {
-                        $courseCompletedCount++;
-                        $totalCompletedLessons++;
-                    }
-                }
-            }
-
-            $progress = $courseLessonsCount > 0 ? round(($courseCompletedCount / $courseLessonsCount) * 100) : 0;
+            $totalMinutes += $metrics['courseMinutes'];
+            $totalLessons += $metrics['courseLessonsCount'];
+            $totalCompletedLessons += $metrics['courseCompletedCount'];
 
             $myCoursesData[] = [
                 'course' => $course,
-                'progress' => $progress,
+                'progress' => $metrics['progress'],
             ];
         }
 
@@ -98,5 +86,31 @@ class CompletionCalculator
             'totalHours' => floor($totalMinutes / 60),
             'newLessonsCount' => $totalLessons - $totalCompletedLessons,
         ];
+    }
+
+    private function calculateCourseMetrics(Course $course, array $completedLessonMap): array
+    {
+        $metrics = [
+            'courseLessonsCount' => 0,
+            'courseCompletedCount' => 0,
+            'courseMinutes' => 0,
+        ];
+
+        foreach ($course->getModules() as $module) {
+            foreach ($module->getLessons() as $lesson) {
+                $metrics['courseMinutes'] += $lesson->getDuration() ?? 0;
+                $metrics['courseLessonsCount']++;
+
+                if (isset($completedLessonMap[$lesson->getId()])) {
+                    $metrics['courseCompletedCount']++;
+                }
+            }
+        }
+
+        $metrics['progress'] = $metrics['courseLessonsCount'] > 0
+            ? round(($metrics['courseCompletedCount'] / $metrics['courseLessonsCount']) * 100)
+            : 0;
+
+        return $metrics;
     }
 }
