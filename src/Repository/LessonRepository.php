@@ -56,19 +56,20 @@ class LessonRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return int[]
-     */
-    public function findLessonIdsByCohort(\App\Entity\Cohort $cohort): array
+    public function findEfficacyStatsByModules(array $modules): array
     {
+        if (empty($modules)) {
+            return [];
+        }
+
         return $this->createQueryBuilder('l')
-            ->select('l.id')
-            ->join('l.module', 'm')
-            ->join('m.courses', 'c')
-            ->join('c.cohorts', 'co')
-            ->where('co = :cohort')
-            ->setParameter('cohort', $cohort)
+            ->select('l.id', 'l.title', 'AVG(c.score) as avgScore', 'COUNT(c.id) as completionCount', 'IDENTITY(l.module) as moduleId')
+            ->leftJoin('l.completions', 'c')
+            ->where('l.module IN (:modules)')
+            ->andWhere('c.completed = true OR c.id IS NULL')
+            ->setParameter('modules', $modules)
+            ->groupBy('l.id')
             ->getQuery()
-            ->getSingleColumnResult();
+            ->getResult();
     }
 }
