@@ -10,6 +10,7 @@ use App\Entity\Completion;
 use App\Entity\Cohort;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
+use App\Repository\LessonRepository;
 use App\Service\TriggerService;
 use App\Service\NotificationService;
 use App\Service\CoachAIAgent;
@@ -28,6 +29,7 @@ class TriggerServiceTest extends TestCase
     private CoachAIAgent&MockObject $aiAgent;
     private UrlGeneratorInterface&MockObject $urlGenerator;
     private MockClock $clock;
+    private LessonRepository&MockObject $lessonRepository;
     private TriggerService $triggerService;
 
     protected function setUp(): void
@@ -38,6 +40,7 @@ class TriggerServiceTest extends TestCase
         $this->aiAgent = $this->createMock(CoachAIAgent::class);
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $this->clock = new MockClock();
+        $this->lessonRepository = $this->createMock(LessonRepository::class);
 
         $this->triggerService = new TriggerService(
             $this->userRepository,
@@ -45,6 +48,7 @@ class TriggerServiceTest extends TestCase
             $this->notificationService,
             $this->aiAgent,
             $this->urlGenerator,
+            $this->lessonRepository,
             $this->clock
         );
     }
@@ -142,6 +146,8 @@ class TriggerServiceTest extends TestCase
         $course->method('getSlug')->willReturn('course-1');
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
 
+        $module->method('getCourses')->willReturn(new ArrayCollection([$course]));
+
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
 
         $this->clock->modify('2023-11-01 07:00:00');
@@ -150,9 +156,14 @@ class TriggerServiceTest extends TestCase
             ->method('findAll')
             ->willReturn([$user]);
 
-        $this->completionRepository->expects($this->any())
-            ->method('findBy')
-            ->willReturn([]);
+        $this->lessonRepository->expects($this->once())
+            ->method('findFirstUncompletedAudioLessonWithContext')
+            ->with($user)
+            ->willReturn([
+                'lesson' => $lesson,
+                'module' => $module,
+                'course' => $course,
+            ]);
 
         $this->completionRepository->method('findCompletedLessonIdsByUser')->willReturn([1, 2]);
 
