@@ -55,4 +55,20 @@ class LessonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return int[]
+     */
+    public function findLessonIdsByCohort(\App\Entity\Cohort $cohort): array
+    {
+        return $this->createQueryBuilder('l')
+            ->select('l.id')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'c')
+            ->join('c.cohorts', 'co')
+            ->where('co = :cohort')
+            ->setParameter('cohort', $cohort)
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
 }

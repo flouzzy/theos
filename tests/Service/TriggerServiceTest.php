@@ -10,6 +10,7 @@ use App\Entity\Completion;
 use App\Entity\Cohort;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
+use App\Repository\LessonRepository;
 use App\Service\TriggerService;
 use App\Service\NotificationService;
 use App\Service\CoachAIAgent;
@@ -24,6 +25,7 @@ class TriggerServiceTest extends TestCase
 {
     private UserRepository&MockObject $userRepository;
     private CompletionRepository&MockObject $completionRepository;
+    private LessonRepository&MockObject $lessonRepository;
     private NotificationService&MockObject $notificationService;
     private CoachAIAgent&MockObject $aiAgent;
     private UrlGeneratorInterface&MockObject $urlGenerator;
@@ -34,6 +36,7 @@ class TriggerServiceTest extends TestCase
     {
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->completionRepository = $this->createMock(CompletionRepository::class);
+        $this->lessonRepository = $this->createMock(LessonRepository::class);
         $this->notificationService = $this->createMock(NotificationService::class);
         $this->aiAgent = $this->createMock(CoachAIAgent::class);
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
@@ -42,6 +45,7 @@ class TriggerServiceTest extends TestCase
         $this->triggerService = new TriggerService(
             $this->userRepository,
             $this->completionRepository,
+            $this->lessonRepository,
             $this->notificationService,
             $this->aiAgent,
             $this->urlGenerator,
@@ -214,6 +218,11 @@ class TriggerServiceTest extends TestCase
 
         $this->completionRepository->method('findCompletedLessonIdsByUser')
             ->willReturn([1]);
+
+        $this->lessonRepository->expects($this->once())
+            ->method('findLessonIdsByCohort')
+            ->with($cohort)
+            ->willReturn([1, 2]);
 
         $this->completionRepository->expects($this->once())
             ->method('countCompletionsForLessons')

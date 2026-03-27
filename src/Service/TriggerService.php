@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Lesson;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
+use App\Repository\LessonRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Psr\Clock\ClockInterface;
@@ -15,6 +16,7 @@ class TriggerService
     public function __construct(
         private UserRepository $userRepository,
         private CompletionRepository $completionRepository,
+        private LessonRepository $lessonRepository,
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
@@ -146,14 +148,7 @@ class TriggerService
             $totalUsers = count($cohort->getUsers());
             if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
 
-            $cohortLessonIds = [];
-            foreach ($cohort->getCourses() as $course) {
-                foreach ($course->getModules() as $module) {
-                    foreach ($module->getLessons() as $lesson) {
-                        $cohortLessonIds[] = $lesson->getId();
-                    }
-                }
-            }
+            $cohortLessonIds = $this->lessonRepository->findLessonIdsByCohort($cohort);
 
             if (empty($cohortLessonIds)) {
                 continue;
