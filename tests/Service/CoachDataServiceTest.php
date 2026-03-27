@@ -1,32 +1,39 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Tests\Service;
 
-use App\Entity\Event;
+use App\Entity\Completion;
+use App\Entity\Course;
+use App\Entity\Lesson;
+use App\Entity\Module;
 use App\Entity\User;
 use App\Repository\CompletionRepository;
-use App\Repository\EventRepository;
 use App\Service\CoachDataService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CoachDataServiceTest extends TestCase
 {
+    /** @var CompletionRepository&MockObject */
+    private CompletionRepository $completionRepository;
+
+    /** @var EntityManagerInterface&MockObject */
+    private EntityManagerInterface $entityManager;
+
     private CoachDataService $coachDataService;
-    private $eventRepository;
 
     protected function setUp(): void
     {
-        $completionRepository = $this->createMock(CompletionRepository::class);
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->eventRepository = $this->createMock(EventRepository::class);
+        $this->completionRepository = $this->createMock(CompletionRepository::class);
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
 
         $this->coachDataService = new CoachDataService(
-            $completionRepository,
-            $entityManager,
-            $this->eventRepository
+            $this->completionRepository,
+            $this->entityManager
         );
     }
 
@@ -97,7 +104,7 @@ class CoachDataServiceTest extends TestCase
         $lesson3->method('getId')->willReturn(3);
         $lesson3->method('getItemOrder')->willReturn(3);
 
-        $module->method('getSortedLessons')->willReturn([$lesson1, $lesson2, $lesson3]);
+        $module->method('getLessons')->willReturn(new ArrayCollection([$lesson3, $lesson1, $lesson2]));
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
 
@@ -122,7 +129,7 @@ class CoachDataServiceTest extends TestCase
         $lesson->method('getId')->willReturn(1);
         $lesson->method('getItemOrder')->willReturn(1);
 
-        $module->method('getSortedLessons')->willReturn([$lesson]);
+        $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
 
@@ -139,107 +146,77 @@ class CoachDataServiceTest extends TestCase
 
     public function testGetLastCompletedLesson(): void
     {
-        $event = new Event();
-        $event->setCreatedAt(new \DateTimeImmutable($dateString));
-        return $event;
+        $user = $this->createMock(User::class);
+        $lesson = $this->createMock(Lesson::class);
+
+        $completion = $this->createMock(Completion::class);
+        $completion->method('getLesson')->willReturn($lesson);
+
+        $query = $this->getMockBuilder(Query::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getOneOrNullResult'])
+            ->getMock();
+
+        $query->method('getOneOrNullResult')->willReturn($completion);
+
+        $queryBuilder = $this->createMock(QueryBuilder::class);
+        $queryBuilder->method('select')->willReturnSelf();
+        $queryBuilder->method('from')->willReturnSelf();
+        $queryBuilder->method('join')->willReturnSelf();
+        $queryBuilder->method('where')->willReturnSelf();
+        $queryBuilder->method('andWhere')->willReturnSelf();
+        $queryBuilder->method('setParameter')->willReturnSelf();
+        $queryBuilder->method('orderBy')->willReturnSelf();
+        $queryBuilder->method('setMaxResults')->willReturnSelf();
+        $queryBuilder->method('getQuery')->willReturn($query);
+
+        $this->entityManager->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
+        $result = $this->coachDataService->getLastCompletedLesson($user);
+
+        $this->assertSame($lesson, $result);
     }
 
-    /**
-     * @dataProvider streakEventDataProvider
-     */
-    public function testGetStreakInfoCalculatesProperly(array $eventDates, array $expected): void
+    public function testGetStreakInfoZeroStreak(): void
     {
         $user = $this->createMock(User::class);
-
-        $events = [];
-        foreach ($eventDates as $dateString) {
-            $events[] = $this->createEvent($dateString);
-        }
-
-        $this->eventRepository
-            ->method('findBy')
-            ->with(
-                ['user' => $user, 'type' => Event::TYPE_STREAK_LOGIN],
-                ['createdAt' => 'DESC']
-            )
-            ->willReturn($events);
+        $user->method('getStreak')->willReturn(0);
 
         $result = $this->coachDataService->getStreakInfo($user);
 
-        $this->assertEquals($expected, $result);
+        $this->assertEquals([
+            'message' => 'Commence ta première série !',
+            'nextTarget' => 3,
+            'progress' => 0,
+        ], $result);
     }
 
-    public static function streakEventDataProvider(): array
+    public function testGetStreakInfoMidwayStreak(): void
     {
-        $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $yesterday = (new \DateTimeImmutable('-1 days'))->format('Y-m-d');
-        $twoDaysAgo = (new \DateTimeImmutable('-2 days'))->format('Y-m-d');
-        $threeDaysAgo = (new \DateTimeImmutable('-3 days'))->format('Y-m-d');
-        $fiveDaysAgo = (new \DateTimeImmutable('-5 days'))->format('Y-m-d');
-        $sixDaysAgo = (new \DateTimeImmutable('-6 days'))->format('Y-m-d');
-        $sevenDaysAgo = (new \DateTimeImmutable('-7 days'))->format('Y-m-d');
+        $user = $this->createMock(User::class);
+        $user->method('getStreak')->willReturn(10); // Between 7 and 14
 
-        return [
-            '0 days streak (no events)' => [
-                [],
-                [
-                    'message' => 'Commence ta première série !',
-                    'nextTarget' => 3,
-                    'progress' => 0,
-                    'currentStreak' => 0,
-                    'bestStreak' => 0,
-                ]
-            ],
-            '1 day streak (today)' => [
-                [$today],
-                [
-                    'message' => 'Complète une leçon pour atteindre 2 jours',
-                    'nextTarget' => 3,
-                    'progress' => 33,
-                    'currentStreak' => 1,
-                    'bestStreak' => 1,
-                ]
-            ],
-            '1 day streak (yesterday)' => [
-                [$yesterday],
-                [
-                    'message' => 'Complète une leçon pour atteindre 2 jours',
-                    'nextTarget' => 3,
-                    'progress' => 33,
-                    'currentStreak' => 1,
-                    'bestStreak' => 1,
-                ]
-            ],
-            '0 days streak (last event 2 days ago)' => [
-                [$twoDaysAgo, $threeDaysAgo], // broken streak
-                [
-                    'message' => 'Commence ta première série !',
-                    'nextTarget' => 3,
-                    'progress' => 0,
-                    'currentStreak' => 0,
-                    'bestStreak' => 2, // 2 days in a row previously
-                ]
-            ],
-            '3 days streak (today, yesterday, 2 days ago)' => [
-                [$today, $yesterday, $twoDaysAgo],
-                [
-                    'message' => 'Complète une leçon pour atteindre 4 jours',
-                    'nextTarget' => 7,
-                    'progress' => 0,
-                    'currentStreak' => 3,
-                    'bestStreak' => 3,
-                ]
-            ],
-            '2 days streak current, but best streak is 3' => [
-                [$today, $yesterday, $fiveDaysAgo, $sixDaysAgo, $sevenDaysAgo],
-                [
-                    'message' => 'Complète une leçon pour atteindre 3 jours',
-                    'nextTarget' => 3,
-                    'progress' => 67,
-                    'currentStreak' => 2,
-                    'bestStreak' => 3,
-                ]
-            ],
-        ];
+        $result = $this->coachDataService->getStreakInfo($user);
+
+        $this->assertEquals([
+            'message' => 'Complète une leçon pour atteindre 11 jours',
+            'nextTarget' => 14,
+            'progress' => (int) round((10 - 7) / (14 - 7) * 100), // (3 / 7) * 100 = 43
+        ], $result);
+    }
+
+    public function testGetStreakInfoMaxStreak(): void
+    {
+        $user = $this->createMock(User::class);
+        $user->method('getStreak')->willReturn(400); // Beyond 365
+
+        $result = $this->coachDataService->getStreakInfo($user);
+
+        $this->assertEquals([
+            'message' => 'Complète une leçon pour atteindre 401 jours',
+            'nextTarget' => 430, // 400 + 30
+            'progress' => 54, // (400 - 365) / (430 - 365) * 100 = 35 / 65 * 100 = 53.8 -> 54
+        ], $result);
     }
 }

@@ -25,23 +25,6 @@ class CourseRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Course|null Returns a Course object with modules and lessons eager loaded
-     */
-    public function findCourseWithModulesAndLessonsBySlug(string $slug): ?Course
-    {
-        return $this->createQueryBuilder('c')
-            ->leftJoin('c.modules', 'm')
-            ->leftJoin('m.lessons', 'l')
-            ->addSelect('m', 'l')
-            ->where('c.slug = :slug')
-            ->setParameter('slug', $slug)
-            ->addOrderBy('m.itemOrder', 'ASC')
-            ->addOrderBy('m.id', 'ASC')
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    /**
      * @return Course[] Returns an array of Course objects with modules eager loaded
      */
     public function findAllPublished(): array

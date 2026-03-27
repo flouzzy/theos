@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Trait\DateTimeAble;
 use App\Repository\TransactionRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]

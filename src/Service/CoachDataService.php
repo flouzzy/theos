@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Entity\User;
-use App\Entity\Event;
 use App\Repository\CompletionRepository;
-use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CoachDataService
@@ -17,7 +14,6 @@ class CoachDataService
     public function __construct(
         private readonly CompletionRepository $completionRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly EventRepository $eventRepository,
     ) {
     }
 
@@ -72,37 +68,15 @@ class CoachDataService
     {
         $completedIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
 
-        // Preload courses, modules, and lessons to prevent N+1 queries
-        $this->entityManager->createQueryBuilder()
-            ->select('u', 'c', 'm', 'l')
-            ->from(User::class, 'u')
-            ->leftJoin('u.courses', 'c')
-            ->leftJoin('c.modules', 'm')
-            ->leftJoin('m.lessons', 'l')
-            ->where('u = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
-
         foreach ($user->getCourses() as $course) {
-            $lesson = $this->findFirstIncompleteLesson($course, $completedIds);
-            if ($lesson !== null) {
-                return $lesson;
-            }
-        }
+            foreach ($course->getModules() as $module) {
+                $sortedLessons = $module->getLessons()->toArray();
+                usort($sortedLessons, fn($a, $b) => $a->getItemOrder() <=> $b->getItemOrder());
 
-        return null;
-    }
-
-    /**
-     * @param array<int> $completedIds
-     */
-    private function findFirstIncompleteLesson(Course $course, array $completedIds): ?Lesson
-    {
-        foreach ($course->getModules() as $module) {
-            foreach ($module->getSortedLessons() as $lesson) {
-                if (!in_array($lesson->getId(), $completedIds, true)) {
-                    return $lesson;
+                foreach ($sortedLessons as $lesson) {
+                    if (!in_array($lesson->getId(), $completedIds)) {
+                        return $lesson;
+                    }
                 }
             }
         }
@@ -136,69 +110,18 @@ class CoachDataService
      */
     public function getStreakInfo(User $user): array
     {
-        $events = $this->eventRepository->findBy(
-            ['user' => $user, 'type' => Event::TYPE_STREAK_LOGIN],
-            ['createdAt' => 'DESC']
-        );
-
-        $currentStreak = 0;
-        $bestStreak = 0;
-        $tempStreak = 0;
-        $lastDate = null;
-
-        foreach ($events as $event) {
-            $date = $event->getCreatedAt()->format('Y-m-d');
-
-            if ($lastDate === null) {
-                $currentStreak = 1;
-                $tempStreak = 1;
-                $lastDate = $date;
-                continue;
-            }
-
-            $diff = (new \DateTimeImmutable($date))->diff(new \DateTimeImmutable($lastDate))->days; // Always positive difference since $lastDate is newer
-
-            if ($diff === 1) {
-                $tempStreak++;
-
-                // If this chain is contiguous from the very first event, it's the current streak
-                $diffFromLatest = (new \DateTimeImmutable($date))->diff(new \DateTimeImmutable($events[0]->getCreatedAt()->format('Y-m-d')))->days;
-                if ($tempStreak === ($diffFromLatest + 1)) {
-                    $currentStreak = $tempStreak;
-                }
-            } elseif ($diff > 1) {
-                $bestStreak = max($bestStreak, $tempStreak);
-                $tempStreak = 1;
-            }
-
-            $lastDate = $date;
-        }
-
-        $bestStreak = max($bestStreak, $tempStreak);
-
-        // A streak is broken if the last event was more than 1 day ago (neither today nor yesterday)
-        if (!empty($events)) {
-            $latestDate = $events[0]->getCreatedAt()->format('Y-m-d');
-            $today = (new \DateTimeImmutable())->format('Y-m-d');
-            $diffToday = (new \DateTimeImmutable($today))->diff(new \DateTimeImmutable($latestDate))->days;
-            if ($diffToday > 1) {
-                $currentStreak = 0;
-            }
-        }
-
-        $nextTarget = $this->getNextStreakMilestone($currentStreak);
-        $previousMilestone = $this->getPreviousStreakMilestone($currentStreak);
+        $streak = $user->getStreak();
+        $nextTarget = $this->getNextStreakMilestone($streak);
+        $previousMilestone = $this->getPreviousStreakMilestone($streak);
         $range = $nextTarget - $previousMilestone;
-        $progress = $range > 0 ? (int) round(($currentStreak - $previousMilestone) / $range * 100) : 100;
+        $progress = $range > 0 ? (int) round(($streak - $previousMilestone) / $range * 100) : 100;
 
         return [
-            'message' => $currentStreak > 0
-                ? sprintf('Complète une leçon pour atteindre %d jours', $currentStreak + 1)
+            'message' => $streak > 0
+                ? sprintf('Complète une leçon pour atteindre %d jours', $streak + 1)
                 : 'Commence ta première série !',
             'nextTarget' => $nextTarget,
             'progress' => min($progress, 100),
-            'currentStreak' => $currentStreak,
-            'bestStreak' => $bestStreak,
         ];
     }
 
