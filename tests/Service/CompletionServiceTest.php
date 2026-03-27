@@ -193,21 +193,8 @@ class CompletionServiceTest extends TestCase
         $this->security->method('getUser')->willReturn($user);
 
         $course = $this->createMock(Course::class);
-        $module = $this->createMock(Module::class);
-        $lesson = $this->createMock(Lesson::class);
 
-        $course->method('getModules')->willReturn(new ArrayCollection([$module]));
-        $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
-
-        $completionRepo = $this->createMock(EntityRepository::class);
         $courseCompletionRepo = $this->createMock(EntityRepository::class);
-
-        // Completion incomplete
-        $completionRepo->expects($this->once())
-            ->method('findBy')
-            ->with(['user' => $user, 'lesson' => [$lesson]])
-            ->willReturn([]);
-
         $courseCompletion = new CourseCompletion();
         $courseCompletionRepo->expects($this->once())
             ->method('findOneBy')
@@ -217,8 +204,17 @@ class CompletionServiceTest extends TestCase
         $this->entityManager->method('getRepository')
             ->will($this->returnValueMap([
                 [CourseCompletion::class, $courseCompletionRepo],
-                [Completion::class, $completionRepo],
             ]));
+
+        $query1 = $this->createMock(\Doctrine\ORM\AbstractQuery::class);
+        $query1->method('setParameter')->willReturnSelf();
+        $query1->method('getSingleScalarResult')->willReturn(5);
+
+        $query2 = $this->createMock(\Doctrine\ORM\AbstractQuery::class);
+        $query2->method('setParameter')->willReturnSelf();
+        $query2->method('getSingleScalarResult')->willReturn(3);
+
+        $this->entityManager->method('createQuery')->willReturnOnConsecutiveCalls($query1, $query2);
 
         $this->entityManager->expects($this->once())->method('persist')->with($courseCompletion);
         // Note: setCourseCompletion does not call flush
@@ -239,23 +235,8 @@ class CompletionServiceTest extends TestCase
         $this->security->method('getUser')->willReturn($user);
 
         $course = $this->createMock(Course::class);
-        $module = $this->createMock(Module::class);
-        $lesson = $this->createMock(Lesson::class);
-        $lesson->method('getId')->willReturn(1);
-
-        $course->method('getModules')->willReturn(new ArrayCollection([$module]));
-        $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
-
-        $completion = $this->createMock(Completion::class);
-        $completion->method('isCompleted')->willReturn(true);
-        $completion->method('getLesson')->willReturn($lesson);
 
         $user->method('getBadges')->willReturn(new ArrayCollection());
-
-        $completionRepo = $this->createMock(EntityRepository::class);
-        $completionRepo->method('findBy')
-            ->with(['user' => $user, 'lesson' => [$lesson]])
-            ->willReturn([$completion]);
 
         $courseCompletionRepo = $this->createMock(EntityRepository::class);
         $courseCompletion = new CourseCompletion();
@@ -266,8 +247,17 @@ class CompletionServiceTest extends TestCase
         $this->entityManager->method('getRepository')
             ->will($this->returnValueMap([
                 [CourseCompletion::class, $courseCompletionRepo],
-                [Completion::class, $completionRepo],
             ]));
+
+        $query1 = $this->createMock(\Doctrine\ORM\AbstractQuery::class);
+        $query1->method('setParameter')->willReturnSelf();
+        $query1->method('getSingleScalarResult')->willReturn(5);
+
+        $query2 = $this->createMock(\Doctrine\ORM\AbstractQuery::class);
+        $query2->method('setParameter')->willReturnSelf();
+        $query2->method('getSingleScalarResult')->willReturn(5);
+
+        $this->entityManager->method('createQuery')->willReturnOnConsecutiveCalls($query1, $query2);
 
         $this->entityManager->expects($this->once())->method('persist')->with($courseCompletion);
 
