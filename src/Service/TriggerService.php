@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Cohort;
 use App\Entity\User;
 use App\Entity\Lesson;
+use App\Entity\Module;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
 use App\Repository\LessonRepository;
@@ -394,11 +395,20 @@ class TriggerService
         // Find the first non-completed lesson in the user's courses
         foreach ($user->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
-                foreach ($module->getLessons() as $lesson) {
-                    if (!in_array($lesson->getId(), $completedLessonIds, true)) {
-                        return $lesson;
-                    }
+                $lesson = $this->findNextLessonInModule($module, $completedLessonIds);
+                if ($lesson !== null) {
+                    return $lesson;
                 }
+            }
+        }
+        return null;
+    }
+
+    private function findNextLessonInModule(Module $module, array $completedLessonIds): ?Lesson
+    {
+        foreach ($module->getLessons() as $lesson) {
+            if (!in_array($lesson->getId(), $completedLessonIds, true)) {
+                return $lesson;
             }
         }
         return null;
