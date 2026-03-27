@@ -110,7 +110,7 @@ class TriggerService
         $result = $this->lessonRepository->findFirstUncompletedAudioLessonWithContext($user);
 
         // Find an uncompleted lesson with audio
-        $uncompletedAudioLessonData = $this->findUncompletedAudioLessonData($user, $completionMap);
+        $uncompletedAudioLessonData = $this->getUncompletedAudioLessonData($user, $completionMap);
 
         if ($uncompletedAudioLessonData) {
             $course = $uncompletedAudioLessonData['course'];
@@ -130,11 +130,7 @@ class TriggerService
         }
     }
 
-    /**
-     * @param array<int, \App\Entity\Completion> $completionMap
-     * @return array{course: \App\Entity\Course, module: \App\Entity\Module, lesson: \App\Entity\Lesson}|null
-     */
-    private function findUncompletedAudioLessonData(User $user, array $completionMap): ?array
+    private function getUncompletedAudioLessonData(User $user, array $completionMap): ?array
     {
         foreach ($user->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
@@ -148,7 +144,7 @@ class TriggerService
                         return [
                             'course' => $course,
                             'module' => $module,
-                            'lesson' => $lesson,
+                            'lesson' => $lesson
                         ];
                     }
                 }
