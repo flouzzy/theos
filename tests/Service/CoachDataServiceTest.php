@@ -30,7 +30,114 @@ class CoachDataServiceTest extends TestCase
         );
     }
 
-    private function createEvent(string $dateString): Event
+    public function testGetWeeklyXpDataAndTotal(): void
+    {
+        $user = $this->createMock(User::class);
+
+        // We will mock two completions on Monday and Wednesday
+        $monday = new \DateTimeImmutable('monday this week 10:00:00');
+        $wednesday = new \DateTimeImmutable('wednesday this week 14:00:00');
+
+        $completion1 = $this->createMock(Completion::class);
+        $completion1->method('getCreatedAt')->willReturn($monday);
+
+        $completion2 = $this->createMock(Completion::class);
+        $completion2->method('getCreatedAt')->willReturn($wednesday);
+
+        $query = $this->getMockBuilder(Query::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getResult'])
+            ->getMock();
+
+        $query->method('getResult')->willReturn([$completion1, $completion2]);
+
+        $queryBuilder = $this->createMock(QueryBuilder::class);
+        $queryBuilder->method('select')->willReturnSelf();
+        $queryBuilder->method('from')->willReturnSelf();
+        $queryBuilder->method('where')->willReturnSelf();
+        $queryBuilder->method('andWhere')->willReturnSelf();
+        $queryBuilder->method('setParameter')->willReturnSelf();
+        $queryBuilder->method('getQuery')->willReturn($query);
+
+        $this->entityManager->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
+        $expectedData = [
+            'L' => 10,
+            'M' => 0,
+            'Me' => 10,
+            'J' => 0,
+            'V' => 0,
+            'S' => 0,
+            'D' => 0,
+        ];
+
+        $resultData = $this->coachDataService->getWeeklyXpData($user);
+        $this->assertEquals($expectedData, $resultData);
+
+        $resultTotal = $this->coachDataService->getWeeklyXpTotal($user);
+        $this->assertEquals(20, $resultTotal);
+    }
+
+    public function testGetNextLesson(): void
+    {
+        $user = $this->createMock(User::class);
+        $course = $this->createMock(Course::class);
+        $module = $this->createMock(Module::class);
+
+        $lesson1 = $this->createMock(Lesson::class);
+        $lesson1->method('getId')->willReturn(1);
+        $lesson1->method('getItemOrder')->willReturn(1);
+
+        $lesson2 = $this->createMock(Lesson::class);
+        $lesson2->method('getId')->willReturn(2);
+        $lesson2->method('getItemOrder')->willReturn(2);
+
+        $lesson3 = $this->createMock(Lesson::class);
+        $lesson3->method('getId')->willReturn(3);
+        $lesson3->method('getItemOrder')->willReturn(3);
+
+        $module->method('getSortedLessons')->willReturn([$lesson1, $lesson2, $lesson3]);
+        $course->method('getModules')->willReturn(new ArrayCollection([$module]));
+        $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
+
+        // Mark lesson 1 as completed
+        $this->completionRepository->method('findCompletedLessonIdsByUser')
+            ->with($user)
+            ->willReturn([1]);
+
+        $result = $this->coachDataService->getNextLesson($user);
+
+        // Lesson 2 is next based on item order
+        $this->assertSame($lesson2, $result);
+    }
+
+    public function testGetNextLessonAllCompleted(): void
+    {
+        $user = $this->createMock(User::class);
+        $course = $this->createMock(Course::class);
+        $module = $this->createMock(Module::class);
+
+        $lesson = $this->createMock(Lesson::class);
+        $lesson->method('getId')->willReturn(1);
+        $lesson->method('getItemOrder')->willReturn(1);
+
+        $module->method('getSortedLessons')->willReturn([$lesson]);
+        $course->method('getModules')->willReturn(new ArrayCollection([$module]));
+        $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
+
+        // Mark all as completed
+        $this->completionRepository->method('findCompletedLessonIdsByUser')
+            ->with($user)
+            ->willReturn([1]);
+
+        $result = $this->coachDataService->getNextLesson($user);
+
+        // No uncompleted lesson
+        $this->assertNull($result);
+    }
+
+    public function testGetLastCompletedLesson(): void
     {
         $event = new Event();
         $event->setCreatedAt(new \DateTimeImmutable($dateString));
