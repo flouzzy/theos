@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Entity\User;
 use App\Repository\CompletionRepository;
@@ -69,14 +70,24 @@ class CoachDataService
         $completedIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
 
         foreach ($user->getCourses() as $course) {
-            foreach ($course->getModules() as $module) {
-                $sortedLessons = $module->getLessons()->toArray();
-                usort($sortedLessons, fn($a, $b) => $a->getItemOrder() <=> $b->getItemOrder());
+            $lesson = $this->findFirstIncompleteLesson($course, $completedIds);
+            if ($lesson !== null) {
+                return $lesson;
+            }
+        }
 
-                foreach ($sortedLessons as $lesson) {
-                    if (!in_array($lesson->getId(), $completedIds)) {
-                        return $lesson;
-                    }
+        return null;
+    }
+
+    /**
+     * @param array<int> $completedIds
+     */
+    private function findFirstIncompleteLesson(Course $course, array $completedIds): ?Lesson
+    {
+        foreach ($course->getModules() as $module) {
+            foreach ($module->getSortedLessons() as $lesson) {
+                if (!in_array($lesson->getId(), $completedIds, true)) {
+                    return $lesson;
                 }
             }
         }
