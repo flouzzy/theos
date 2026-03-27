@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Cohort;
 use App\Entity\User;
 use App\Entity\Lesson;
 use App\Repository\UserRepository;
@@ -20,6 +21,7 @@ class TriggerService
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
+        private LessonRepository $lessonRepository,
         private ?ClockInterface $clock = null,
     ) {}
 
@@ -105,35 +107,23 @@ class TriggerService
             return;
         }
 
-        // Pre-fetch all user completions to prevent N+1 queries
-        $allCompletions = $this->completionRepository->findBy(['user' => $user]);
-        $completionMap = [];
-        foreach ($allCompletions as $completion) {
-            $completionMap[$completion->getLesson()->getId()] = $completion;
-        }
+        $result = $this->lessonRepository->findFirstUncompletedAudioLessonWithContext($user);
 
-        // Find an uncompleted lesson with audio
-        foreach ($user->getCourses() as $course) {
-            foreach ($course->getModules() as $module) {
-                foreach ($module->getLessons() as $lesson) {
-                    if (!$lesson->getAudioPath()) continue;
+        if ($result) {
+            $lesson = $result['lesson'];
+            $module = $result['module'];
+            $course = $result['course'];
 
-                    $completion = $completionMap[$lesson->getId()] ?? null;
-                    if (!$completion || !$completion->isCompleted()) {
-                        $this->notificationService->addNotification(
-                            $user,
-                            "☕ Ta routine matinale",
-                            sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
-                            $this->urlGenerator->generate('lesson_show', [
-                                'courseSlug' => $course->getSlug(),
-                                'moduleSlug' => $module->getSlug(),
-                                'lessonId' => $lesson->getId()
-                            ], UrlGeneratorInterface::ABSOLUTE_URL)
-                        );
-                        return; // Suggest only one
-                    }
-                }
-            }
+            $this->notificationService->addNotification(
+                $user,
+                "☕ Ta routine matinale",
+                sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
+                $this->urlGenerator->generate('lesson_show', [
+                    'courseSlug' => $course->getSlug(),
+                    'moduleSlug' => $module->getSlug(),
+                    'lessonId' => $lesson->getId()
+                ], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
         }
     }
 
@@ -156,33 +146,56 @@ class TriggerService
 
             $completionsCountMap = $this->completionRepository->countCompletionsForLessons($cohortLessonIds);
 
-            foreach ($cohort->getCourses() as $course) {
-                foreach ($course->getModules() as $module) {
-                    foreach ($module->getLessons() as $lesson) {
-                        if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
-                            continue;
-                        }
+            if ($this->checkAndNotifyCohortFomo($user, $cohort, $userCompletedLessonIds, $totalUsers, $completionsCountMap)) {
+                return;
+            }
+        }
+    }
 
-                        $othersCompletions = $completionsCountMap[$lesson->getId()] ?? 0;
-                        $percentage = ($othersCompletions / $totalUsers) * 100;
+    private function getCohortLessonIds(Cohort $cohort): array
+    {
+        $cohortLessonIds = [];
+        foreach ($cohort->getCourses() as $course) {
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    $cohortLessonIds[] = $lesson->getId();
+                }
+            }
+        }
 
-                        if ($percentage >= 80) {
-                            $this->notificationService->addNotification(
-                                $user,
-                                "🚀 Ne reste pas à la traîne !",
-                                sprintf("Déjà 80%% de ta promotion %s a terminé la leçon : %s. C'est ton tour !", $cohort->getTitle(), $lesson->getTitle()),
-                                $this->urlGenerator->generate('lesson_show', [
-                                    'courseSlug' => $course->getSlug(),
-                                    'moduleSlug' => $module->getSlug(),
-                                    'lessonId' => $lesson->getId()
-                                ], UrlGeneratorInterface::ABSOLUTE_URL)
-                            );
-                            return; // One FOMO at a time
-                        }
+        return $cohortLessonIds;
+    }
+
+    private function checkAndNotifyCohortFomo(User $user, Cohort $cohort, array $userCompletedLessonIds, int $totalUsers, array $completionsCountMap): bool
+    {
+        foreach ($cohort->getCourses() as $course) {
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
+                        continue;
+                    }
+
+                    $othersCompletions = $completionsCountMap[$lesson->getId()] ?? 0;
+                    $percentage = ($othersCompletions / $totalUsers) * 100;
+
+                    if ($percentage >= 80) {
+                        $this->notificationService->addNotification(
+                            $user,
+                            "🚀 Ne reste pas à la traîne !",
+                            sprintf("Déjà 80%% de ta promotion %s a terminé la leçon : %s. C'est ton tour !", $cohort->getTitle(), $lesson->getTitle()),
+                            $this->urlGenerator->generate('lesson_show', [
+                                'courseSlug' => $course->getSlug(),
+                                'moduleSlug' => $module->getSlug(),
+                                'lessonId' => $lesson->getId()
+                            ], UrlGeneratorInterface::ABSOLUTE_URL)
+                        );
+                        return true; // One FOMO at a time
                     }
                 }
             }
         }
+
+        return false;
     }
 
     /**
