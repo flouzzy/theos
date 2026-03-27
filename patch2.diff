@@ -1,0 +1,11 @@
+--- src/Service/TriggerService.php
++++ src/Service/TriggerService.php
+@@ -194,6 +194,8 @@
+                 }
+             }
++        }
++        return false;
++    }
+
+     /**
+      * Trigger #11: Inactivity trigger: 'We miss you, here is a 5-min micro-lesson'
