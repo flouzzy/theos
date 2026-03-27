@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Cohort;
 use App\Entity\User;
 use App\Entity\Lesson;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
+use App\Repository\LessonRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Psr\Clock\ClockInterface;
@@ -18,6 +20,7 @@ class TriggerService
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
+        private LessonRepository $lessonRepository,
         private ?ClockInterface $clock = null,
     ) {}
 
@@ -103,35 +106,23 @@ class TriggerService
             return;
         }
 
-        // Pre-fetch all user completions to prevent N+1 queries
-        $allCompletions = $this->completionRepository->findBy(['user' => $user]);
-        $completionMap = [];
-        foreach ($allCompletions as $completion) {
-            $completionMap[$completion->getLesson()->getId()] = $completion;
-        }
+        $result = $this->lessonRepository->findFirstUncompletedAudioLessonWithContext($user);
 
-        // Find an uncompleted lesson with audio
-        foreach ($user->getCourses() as $course) {
-            foreach ($course->getModules() as $module) {
-                foreach ($module->getLessons() as $lesson) {
-                    if (!$lesson->getAudioPath()) continue;
+        if ($result) {
+            $lesson = $result['lesson'];
+            $module = $result['module'];
+            $course = $result['course'];
 
-                    $completion = $completionMap[$lesson->getId()] ?? null;
-                    if (!$completion || !$completion->isCompleted()) {
-                        $this->notificationService->addNotification(
-                            $user,
-                            "☕ Ta routine matinale",
-                            sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
-                            $this->urlGenerator->generate('lesson_show', [
-                                'courseSlug' => $course->getSlug(),
-                                'moduleSlug' => $module->getSlug(),
-                                'lessonId' => $lesson->getId()
-                            ], UrlGeneratorInterface::ABSOLUTE_URL)
-                        );
-                        return; // Suggest only one
-                    }
-                }
-            }
+            $this->notificationService->addNotification(
+                $user,
+                "☕ Ta routine matinale",
+                sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
+                $this->urlGenerator->generate('lesson_show', [
+                    'courseSlug' => $course->getSlug(),
+                    'moduleSlug' => $module->getSlug(),
+                    'lessonId' => $lesson->getId()
+                ], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
         }
     }
 
