@@ -79,19 +79,7 @@ class AssignmentController extends AbstractController
             $this->gamificationService->addXp($user, 20, 'assignment_submitted');
 
             // Trigger #6: Browser notification for new peer review requests
-            $cohort = $user->getCurrentCohort();
-            if ($cohort) {
-                 foreach ($cohort->getUsers() as $peer) {
-                     if ($peer->getId() !== $user->getId()) {
-                         $this->notificationService->addNotification(
-                             $peer,
-                             "🤝 Nouvelle revue disponible",
-                             sprintf("%s a soumis un travail. Viens l'aider en le corrigeant !", $user->getFullname()),
-                             $this->generateUrl('assignment_review_pool', ['id' => $assignment->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
-                         );
-                     }
-                 }
-            }
+            $this->notifyPeers($user, $assignment);
         }
 
         $submission->setContent((string)$content);
@@ -219,6 +207,34 @@ class AssignmentController extends AbstractController
         }
 
         return $totalScore;
+    }
+
+    private function notifyPeers(User $user, Assignment $assignment): void
+    {
+        $cohort = $user->getCurrentCohort();
+        if (!$cohort) {
+            return;
+        }
+
+        $reviewUrl = $this->generateUrl(
+            'assignment_review_pool',
+            ['id' => $assignment->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+        $message = sprintf("%s a soumis un travail. Viens l'aider en le corrigeant !", $user->getFullname());
+
+        foreach ($cohort->getUsers() as $peer) {
+            if ($peer->getId() === $user->getId()) {
+                continue;
+            }
+
+            $this->notificationService->addNotification(
+                $peer,
+                "🤝 Nouvelle revue disponible",
+                $message,
+                $reviewUrl
+            );
+        }
     }
 
     private function notifyAndReward(User $reviewer, AssignmentSubmission $submission, Assignment $assignment): void
