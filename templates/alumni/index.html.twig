@@ -1,0 +1,22 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ 'Annuaire des Alumni' | trans }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-8">{{ 'Annuaire des Alumni' | trans }}</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for alumnus in alumni %}
+            <div class="bg-card border p-4 rounded-xl flex items-center gap-4">
+                <twig:UserAvatar :user="alumnus" class="w-16 h-16" />
+                <div>
+                    <h3 class="font-bold">{{ alumnus.fullname }}</h3>
+                    <a href="{{ path('profile_public', {id: alumnus.id}) }}" class="text-xs text-primary">{{ 'Voir profil' | trans }}</a>
+                </div>
+            </div>
+        {% else %}
+            <p>{{ 'Aucun alumni pour le moment.' | trans }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

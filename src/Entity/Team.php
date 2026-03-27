@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\TeamRepository;
@@ -10,22 +12,29 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
 class Team
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name;
 
-    #[ORM\ManyToOne]
+    #[ORM\Column(length: 255)]
+    private string $company;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    private User $owner;
+
+    #[ORM\ManyToOne(targetEntity: Cohort::class)]
+    private ?Cohort $cohort = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $completedLessons = 0;
 
     /**
      * @var Collection<int, User>
      */
-    #[ORM\OneToMany(mappedBy: 'team', targetEntity: User::class)]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'teams')]
     private Collection $members;
 
     public function __construct()
@@ -33,34 +42,18 @@ class Team
         $this->members = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getCohort(): ?Cohort { return $this->cohort; }
+    public function setCohort(?Cohort $cohort): static { $this->cohort = $cohort; return $this; }
+    public function getCompletedLessons(): int { return $this->completedLessons; }
+    public function setCompletedLessons(int $completedLessons): static { $this->completedLessons = $completedLessons; return $this; }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): static
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
+    public function getId(): ?int { return $this->id; }
+    public function getName(): string { return $this->name; }
+    public function setName(string $name): static { $this->name = $name; return $this; }
+    public function getCompany(): string { return $this->company; }
+    public function setCompany(string $company): static { $this->company = $company; return $this; }
+    public function getOwner(): User { return $this->owner; }
+    public function setOwner(User $owner): static { $this->owner = $owner; return $this; }
 
     /**
      * @return Collection<int, User>
@@ -70,25 +63,24 @@ class Team
         return $this->members;
     }
 
-    public function addMember(User $member): static
+    public function addMember(User $user): static
     {
-        if (!$this->members->contains($member)) {
-            $this->members->add($member);
-            $member->setTeam($this);
+        if (!$this->members->contains($user)) {
+            $this->members->add($user);
         }
 
         return $this;
     }
 
-    public function removeMember(User $member): static
+    public function removeMember(User $user): static
     {
-        if ($this->members->removeElement($member)) {
-            // set the owning side to null (unless already changed)
-            if ($member->getTeam() === $this) {
-                $member->setTeam(null);
-            }
-        }
+        $this->members->removeElement($user);
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }

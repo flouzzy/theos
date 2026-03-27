@@ -1,4 +1,4 @@
-<div data-controller="editor" class="space-y-12">
+<div data-controller="quill" class="space-y-12">
     {{ form_start(form, {'attr': {'class': 'divide-y divide-slate-100'}}) }}
         
         {# Section 1 : Informations Générales #}
@@ -67,7 +67,7 @@
             <div class="space-y-2 prose prose-slate max-w-none">
                 {{ form_label(form.content, 'Corps de la leçon'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
                 <div class="rounded-xl border border-slate-200 overflow-hidden focus-within:ring-4 focus-within:ring-primary/10 transition-all">
-                    {{ form_widget(form.content, {'attr': {'class': 'text-editor'}}) }}
+                    {{ form_widget(form.content, {'attr': {'class': 'quill-editor', 'data-quill-target': 'input'}}) }}
                 </div>
                 {{ form_errors(form.content) }}
             </div>

@@ -6,7 +6,6 @@ use GeminiAPI\Client;
 use GeminiAPI\Enums\Role;
 use GeminiAPI\Resources\Content;
 use GeminiAPI\Resources\Parts\TextPart;
-use GeminiAPI\Resources\ModelName;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Repository\SiteSettingRepository;
 

@@ -1,0 +1,32 @@
+<div {{ attributes }}>
+    <div class="bg-card rounded-2xl border border-border p-6 md:p-8" data-controller="video-sync">
+        <div class="flex items-center gap-3 mb-6">
+            <twig:ux:icon name="lucide:align-left" class="w-6 h-6 text-primary" />
+            <h3 class="text-xl font-bold">{{ 'Transcription de la leçon' | trans }}</h3>
+        </div>
+
+        <div class="space-y-6">
+            {% for item in this.parsedTranscript %}
+                <div class="flex gap-4 group">
+                    <button data-action="click->video-sync#seek" 
+                            data-timestamp="{{ item.timestamp }}" 
+                            class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">
+                        {{ item.timestamp }}
+                    </button>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed">{{ item.text }}</p>
+                </div>
+            {% else %}
+                <p class="text-muted-foreground italic text-center py-8">
+                    {{ 'Aucune transcription disponible pour le moment.' | trans }}
+                </p>
+            {% endfor %}
+        </div>
+
+        {% if this.parsedTranscript|length > 0 %}
+            <div class="mt-8 pt-6 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+                <p>{{ 'Transcription générée automatiquement par IA' | trans }}</p>
+                <button class="hover:text-foreground underline">{{ 'Signaler une erreur' | trans }}</button>
+            </div>
+        {% endif %}
+    </div>
+</div>

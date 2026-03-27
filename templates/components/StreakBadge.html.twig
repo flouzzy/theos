@@ -1,0 +1,57 @@
+{# templates/components/StreakBadge.html.twig #}
+{% set streak = streak|default(0) %}
+{% set size = size|default('md') %}
+{% set showLabel = showLabel|default(false) %}
+{% set showValue = showValue|default(false) %}
+
+{# Config by milestone #}
+{% if streak >= 100 %}
+    {% set colorClass = 'text-yellow-500 streak-glow-gold' %}
+    {% set animationClass = 'animate-intense-pulse' %}
+    {% set icon = '👑🔥' %}
+{% elseif streak >= 30 %}
+    {% set colorClass = 'text-blue-400 streak-glow-blue' %}
+    {% set animationClass = 'animate-flame' %}
+    {% set icon = '🔥' %}
+{% elseif streak >= 15 %}
+    {% set colorClass = 'text-purple-500 streak-glow-purple' %}
+    {% set animationClass = 'animate-float' %}
+    {% set icon = '🔥' %}
+{% elseif streak >= 8 %}
+    {% set colorClass = 'text-red-500 streak-glow-red' %}
+    {% set animationClass = 'animate-bounce-mini' %}
+    {% set icon = '🔥' %}
+{% elseif streak >= 4 %}
+    {% set colorClass = 'text-orange-500' %}
+    {% set animationClass = 'animate-flame' %}
+    {% set icon = '🔥' %}
+{% else %}
+    {% set colorClass = 'text-orange-400/50' %}
+    {% set animationClass = '' %}
+    {% set icon = '🔥' %}
+{% endif %}
+
+{# Size Map #}
+{% set sizeMap = {
+    'xs': 'text-xs',
+    'sm': 'text-sm',
+    'md': 'text-base',
+    'lg': 'text-3xl',
+    'xl': 'text-5xl'
+} %}
+
+<div class="inline-flex items-center gap-1.5 {{ attributes.get('class')|default('') }}" {{ attributes }}>
+    <div class="{{ sizeMap[size] }} {{ colorClass }} {{ animationClass }} flex items-center justify-center shrink-0">
+        {{ icon }}
+    </div>
+    {% if showValue or showLabel %}
+        <div class="flex flex-col items-start leading-none">
+            <div class="font-black {{ size == 'xl' ? 'text-4xl' : (size == 'lg' ? 'text-2xl' : 'text-sm') }} {{ colorClass }}">
+                {{ streak }}
+            </div>
+            {% if showLabel %}
+                <div class="text-[9px] uppercase font-bold text-muted-foreground tracking-tighter">{{ 'days'|trans }}</div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

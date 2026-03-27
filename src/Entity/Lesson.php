@@ -24,7 +24,7 @@ class Lesson
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, length: 16777215, nullable: true)]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'lessons')]
@@ -37,10 +37,10 @@ class Lesson
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, length: 16777215, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, length: 16777215, nullable: true)]
     private ?string $videoEmbeded = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -79,7 +79,7 @@ class Lesson
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $embeddings = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, length: 16777215, nullable: true)]
     private ?string $transcript = null;
 
     public function __construct()

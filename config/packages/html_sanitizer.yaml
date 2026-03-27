@@ -3,12 +3,15 @@ framework:
         sanitizers:
             default:
                 allow_safe_elements: true
+                max_input_length: -1
             notification:
                 allow_safe_elements: true
+                max_input_length: -1
                 allow_elements:
                     callout: '*'
             video:
                 allow_safe_elements: true
+                max_input_length: -1
                 allow_elements:
                     iframe: ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'title']
                     div: ['class', 'style']

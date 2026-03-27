@@ -2,11 +2,15 @@
 
 namespace App\Service;
 
+use App\Entity\Cohort;
 use App\Entity\User;
 use App\Entity\Lesson;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
+use App\Repository\LessonRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+use Psr\Clock\ClockInterface;
 
 class TriggerService
 {
@@ -16,11 +20,18 @@ class TriggerService
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
+        private LessonRepository $lessonRepository,
+        private ?ClockInterface $clock = null,
     ) {}
 
     /**
      * Process daily triggers for all active users.
      */
+    private function now(): \DateTimeImmutable
+    {
+        return $this->clock ? $this->clock->now() : new \DateTimeImmutable();
+    }
+
     public function processDailyTriggers(): void
     {
         $users = $this->userRepository->findAll();
@@ -47,7 +58,7 @@ class TriggerService
             return;
         }
 
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
         
         // Target Wednesday morning
         if ($now->format('N') !== '3' || (int)$now->format('H') < 10 || (int)$now->format('H') > 12) {
@@ -67,7 +78,7 @@ class TriggerService
      */
     private function processWeeklyReflectionTrigger(User $user): void
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
         
         // Target Sunday evening (after 18:00)
         if ($now->format('N') !== '7' || (int)$now->format('H') < 18) {
@@ -87,7 +98,7 @@ class TriggerService
      */
     private function processMorningRoutineTrigger(User $user): void
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
         $hour = (int)$now->format('H');
 
         // Target 06:00 - 09:00 window
@@ -95,35 +106,23 @@ class TriggerService
             return;
         }
 
-        // Pre-fetch all user completions to prevent N+1 queries
-        $allCompletions = $this->completionRepository->findBy(['user' => $user]);
-        $completionMap = [];
-        foreach ($allCompletions as $completion) {
-            $completionMap[$completion->getLesson()->getId()] = $completion;
-        }
+        $result = $this->lessonRepository->findFirstUncompletedAudioLessonWithContext($user);
 
-        // Find an uncompleted lesson with audio
-        foreach ($user->getCourses() as $course) {
-            foreach ($course->getModules() as $module) {
-                foreach ($module->getLessons() as $lesson) {
-                    if (!$lesson->getAudioPath()) continue;
+        if ($result) {
+            $lesson = $result['lesson'];
+            $module = $result['module'];
+            $course = $result['course'];
 
-                    $completion = $completionMap[$lesson->getId()] ?? null;
-                    if (!$completion || !$completion->isCompleted()) {
-                        $this->notificationService->addNotification(
-                            $user,
-                            "☕ Ta routine matinale",
-                            sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
-                            $this->urlGenerator->generate('lesson_show', [
-                                'courseSlug' => $course->getSlug(),
-                                'moduleSlug' => $module->getSlug(),
-                                'lessonId' => $lesson->getId()
-                            ], UrlGeneratorInterface::ABSOLUTE_URL)
-                        );
-                        return; // Suggest only one
-                    }
-                }
-            }
+            $this->notificationService->addNotification(
+                $user,
+                "☕ Ta routine matinale",
+                sprintf("Bonjour ! Commence ta journée en écoutant la leçon : %s. Parfait pour ton trajet !", $lesson->getTitle()),
+                $this->urlGenerator->generate('lesson_show', [
+                    'courseSlug' => $course->getSlug(),
+                    'moduleSlug' => $module->getSlug(),
+                    'lessonId' => $lesson->getId()
+                ], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
         }
     }
 
@@ -132,38 +131,70 @@ class TriggerService
      */
     private function processFomoTrigger(User $user): void
     {
+        $userCompletedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
+
         foreach ($user->getCohorts() as $cohort) {
             $totalUsers = count($cohort->getUsers());
             if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
 
-            foreach ($cohort->getCourses() as $course) {
-                foreach ($course->getModules() as $module) {
-                    foreach ($module->getLessons() as $lesson) {
-                        $userCompletion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
-                        if ($userCompletion && $userCompletion->isCompleted()) {
-                            continue;
-                        }
+            $cohortLessonIds = $this->getCohortLessonIds($cohort);
 
-                        $othersCompletions = $this->completionRepository->count(['lesson' => $lesson, 'completed' => true]);
-                        $percentage = ($othersCompletions / $totalUsers) * 100;
+            if (empty($cohortLessonIds)) {
+                continue;
+            }
 
-                        if ($percentage >= 80) {
-                            $this->notificationService->addNotification(
-                                $user,
-                                "🚀 Ne reste pas à la traîne !",
-                                sprintf("Déjà 80%% de ta promotion %s a terminé la leçon : %s. C'est ton tour !", $cohort->getTitle(), $lesson->getTitle()),
-                                $this->urlGenerator->generate('lesson_show', [
-                                    'courseSlug' => $course->getSlug(),
-                                    'moduleSlug' => $module->getSlug(),
-                                    'lessonId' => $lesson->getId()
-                                ], UrlGeneratorInterface::ABSOLUTE_URL)
-                            );
-                            return; // One FOMO at a time
-                        }
+            $completionsCountMap = $this->completionRepository->countCompletionsForLessons($cohortLessonIds);
+
+            if ($this->checkAndNotifyCohortFomo($user, $cohort, $userCompletedLessonIds, $totalUsers, $completionsCountMap)) {
+                return;
+            }
+        }
+    }
+
+    private function getCohortLessonIds(Cohort $cohort): array
+    {
+        $cohortLessonIds = [];
+        foreach ($cohort->getCourses() as $course) {
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    $cohortLessonIds[] = $lesson->getId();
+                }
+            }
+        }
+
+        return $cohortLessonIds;
+    }
+
+    private function checkAndNotifyCohortFomo(User $user, Cohort $cohort, array $userCompletedLessonIds, int $totalUsers, array $completionsCountMap): bool
+    {
+        foreach ($cohort->getCourses() as $course) {
+            foreach ($course->getModules() as $module) {
+                foreach ($module->getLessons() as $lesson) {
+                    if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
+                        continue;
+                    }
+
+                    $othersCompletions = $completionsCountMap[$lesson->getId()] ?? 0;
+                    $percentage = ($othersCompletions / $totalUsers) * 100;
+
+                    if ($percentage >= 80) {
+                        $this->notificationService->addNotification(
+                            $user,
+                            "🚀 Ne reste pas à la traîne !",
+                            sprintf("Déjà 80%% de ta promotion %s a terminé la leçon : %s. C'est ton tour !", $cohort->getTitle(), $lesson->getTitle()),
+                            $this->urlGenerator->generate('lesson_show', [
+                                'courseSlug' => $course->getSlug(),
+                                'moduleSlug' => $module->getSlug(),
+                                'lessonId' => $lesson->getId()
+                            ], UrlGeneratorInterface::ABSOLUTE_URL)
+                        );
+                        return true; // One FOMO at a time
                     }
                 }
             }
         }
+
+        return false;
     }
 
     /**
@@ -171,7 +202,7 @@ class TriggerService
      */
     private function processInactivityTrigger(User $user): void
     {
-        $now = new \DateTimeImmutable();
+        $now = $this->now();
         $lastConnection = $user->getLastConnectionAt();
 
         if ($lastConnection && $now->diff($lastConnection)->days === 3) {
@@ -190,6 +221,8 @@ class TriggerService
      */
     private function processMilestoneTrigger(User $user): void
     {
+        $userCompletedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
+
         foreach ($user->getCourses() as $course) {
             $allLessons = [];
             foreach ($course->getModules() as $module) {
@@ -200,14 +233,11 @@ class TriggerService
 
             if (empty($allLessons)) continue;
 
-            $completions = $this->completionRepository->findBy([
-                'user' => $user,
-                'lesson' => $allLessons
-            ]);
-
             $completedCount = 0;
-            foreach ($completions as $c) {
-                if ($c->isCompleted()) $completedCount++;
+            foreach ($allLessons as $lesson) {
+                if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
+                    $completedCount++;
+                }
             }
 
             $remaining = count($allLessons) - $completedCount;
@@ -246,7 +276,7 @@ class TriggerService
         $frequency = current($hours);
 
         if ($frequency >= 3) {
-            $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+            $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
             $currentHour = (int)$now->format('H');
 
             if ($currentHour === $usualHour) {
@@ -272,7 +302,7 @@ class TriggerService
             return;
         }
 
-        $now = new \DateTimeImmutable('now', new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
         $lastStreakDate = $user->getLastStreakDate();
 
         if (!$lastStreakDate) {
@@ -300,7 +330,7 @@ class TriggerService
     private function processDailyDigestTrigger(User $user): void
     {
         // For simplicity, we send it if they haven't connected in 24h
-        $now = new \DateTimeImmutable();
+        $now = $this->now();
         if ($user->getLastConnectionAt() && $now->diff($user->getLastConnectionAt())->days < 1) {
             // They are active, maybe no need for digest? 
             // Or send it anyway in the morning. Let's say morning digest at 8 AM.

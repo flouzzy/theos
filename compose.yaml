@@ -4,7 +4,7 @@ services:
     image: ${IMAGES_PREFIX:-}app-php
     restart: unless-stopped
     environment:
-      SERVER_NAME: ${SERVER_NAME:-:80}
+      SERVER_NAME: academie.lerocher.fr, :80
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@database:3306/${MYSQL_DB:-app}?serverVersion=${MYSQL_VERSION:-8.0}
@@ -28,6 +28,12 @@ services:
     image: ${IMAGES_PREFIX:-}app-php
     restart: unless-stopped
     command: php bin/console messenger:consume async --time-limit=3600 --memory-limit=128M
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f messenger:consume || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@database:3306/${MYSQL_DB:-app}?serverVersion=${MYSQL_VERSION:-8.0}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}

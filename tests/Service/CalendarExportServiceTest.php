@@ -47,4 +47,37 @@ class CalendarExportServiceTest extends TestCase
         $this->assertStringContainsString('X-WR-CALNAME:My Calendar', $ics);
         $this->assertStringContainsString('SUMMARY:Event 1', $ics);
     }
+
+    public function testGenerateGoogleUrl(): void
+    {
+        $event = $this->createMock(Event::class);
+        $event->method('getTitle')->willReturn('Test Event');
+        $event->method('getStartAt')->willReturn(new \DateTimeImmutable('2026-03-11 10:00:00'));
+        $event->method('getEndAt')->willReturn(new \DateTimeImmutable('2026-03-11 12:00:00'));
+        $event->method('getLocation')->willReturn('Paris');
+
+        $service = new CalendarExportService();
+        $url = $service->generateGoogleUrl($event);
+
+        $this->assertStringContainsString('google.com/calendar', $url);
+        $this->assertStringContainsString('text=Test+Event', $url);
+        $this->assertStringContainsString('dates=20260311T100000Z%2F20260311T120000Z', $url);
+        $this->assertStringContainsString('location=Paris', $url);
+    }
+
+    public function testGenerateOutlookUrl(): void
+    {
+        $event = $this->createMock(Event::class);
+        $event->method('getTitle')->willReturn('Test Event');
+        $event->method('getStartAt')->willReturn(new \DateTimeImmutable('2026-03-11 10:00:00'));
+        $event->method('getEndAt')->willReturn(new \DateTimeImmutable('2026-03-11 12:00:00'));
+        $event->method('getLocation')->willReturn('Paris');
+
+        $service = new CalendarExportService();
+        $url = $service->generateOutlookUrl($event);
+
+        $this->assertStringContainsString('outlook.live.com', $url);
+        $this->assertStringContainsString('subject=Test+Event', $url);
+        $this->assertStringContainsString('startdt=2026-03-11T10%3A00%3A00', $url);
+    }
 }

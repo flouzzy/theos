@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
+use App\Service\GamificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -85,7 +86,7 @@ class CommentController extends AbstractController
     }
 
     #[Route('/{id}/like', name: 'app_comment_like', methods: ['POST'])]
-    public function like(Comment $comment, EntityManagerInterface $entityManager, Request $request): Response
+    public function like(Comment $comment, EntityManagerInterface $entityManager, Request $request, GamificationService $gamificationService): Response
     {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -100,6 +101,12 @@ class CommentController extends AbstractController
             $comment->removeLike($user);
         } else {
             $comment->addLike($user);
+            
+            // Récompense si le créateur du commentaire atteint le palier
+            $commentAuthor = $comment->getUser();
+            if ($commentAuthor) {
+                $gamificationService->awardHelpfulBadge($commentAuthor);
+            }
         }
 
         $entityManager->flush();

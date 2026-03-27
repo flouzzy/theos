@@ -40,6 +40,7 @@ class LessonSubscriber implements EventSubscriberInterface
 
         // Study time anomaly detection: late night (00:00 - 05:00)
         if ($hour >= 0 && $hour < 5) {
+            $this->gamificationService->checkNightOwlBadge($user);
             $this->notificationService->addNotification(
                 $user,
                 "🌙 Tu étudies tard !",

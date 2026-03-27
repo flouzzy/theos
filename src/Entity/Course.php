@@ -25,7 +25,7 @@ class Course
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, length: 16777215, nullable: true)]
     private ?string $description = null;
 
 
@@ -61,6 +61,9 @@ class Course
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: CourseCompletion::class)]
     private Collection $completions;
 
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Review::class, cascade: ['persist', 'remove'])]
+    private Collection $reviews;
+
     #[ORM\ManyToMany(targetEntity: Cohort::class, mappedBy: 'courses')]
     private Collection $cohorts;
 
@@ -74,6 +77,7 @@ class Course
         $this->completions = new ArrayCollection();
         $this->cohorts = new ArrayCollection();
         $this->skills = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -364,6 +368,36 @@ class Course
     {
         if ($this->skills->removeElement($skill)) {
             $skill->removeCourse($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getCourse() === $this) {
+                $review->setCourse(null);
+            }
         }
 
         return $this;

@@ -26,9 +26,6 @@ security:
         - App\Security\GoogleAuthenticator
         - App\Security\LinkedInAuthenticator
 
-      login_throttling:
-        max_attempts: 5
-        interval: '1 minute'
 
       logout:
         path: /logout

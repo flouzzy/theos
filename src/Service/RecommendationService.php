@@ -9,10 +9,11 @@ use App\Repository\LessonRepository;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class RecommendationService
 {
-    private const EMBEDDING_MODEL = 'text-embedding-004';
+    private const EMBEDDING_MODEL = 'embedding-001';
     private const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/' . self::EMBEDDING_MODEL . ':embedContent';
 
     public function __construct(
@@ -20,6 +21,7 @@ class RecommendationService
         private string $apiKey,
         private LessonRepository $lessonRepository,
         private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger,
         private ?Client $client = null
     ) {
         $this->client = $client ?? new Client();
@@ -58,8 +60,7 @@ class RecommendationService
                 $this->entityManager->flush();
             }
         } catch (\Exception $e) {
-            // Log error or rethrow
-            throw new \Exception("Erreur lors de la génération de l'embedding : " . $e->getMessage());
+            $this->logger->error("Erreur lors de la génération de l'embedding : " . $e->getMessage());
         }
     }
 

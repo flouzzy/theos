@@ -13,10 +13,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -36,16 +34,10 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'register', priority: 3)]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, #[Autowire(service: 'limiter.registration')] RateLimiterFactory $registrationLimiter): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security): Response
     {
-        $limiter = $registrationLimiter->create($request->getClientIp());
-        if (false === $limiter->consume(1)->isAccepted()) {
-            throw new TooManyRequestsHttpException();
-        }
-
-        // Connecté ?
+        // Check if user is already logged in
         if ($this->getUser()) {
-            // Redirection vers la home
             return $this->redirectToRoute('home');
         }
 

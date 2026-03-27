@@ -38,6 +38,38 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param User[] $users
+     * @return array<int, int>
+     */
+    public function countByUsersAndCohort(array $users, \App\Entity\Cohort $cohort): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $qb = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.user) as userId', 'COUNT(c.id) as completionsCount')
+            ->join('c.lesson', 'l')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'co')
+            ->where('c.user IN (:users)')
+            ->andWhere('c.completed = true')
+            ->andWhere('co IN (:courses)')
+            ->setParameter('users', $users)
+            ->setParameter('courses', $cohort->getCourses())
+            ->groupBy('c.user');
+
+        $result = $qb->getQuery()->getResult();
+
+        $counts = [];
+        foreach ($result as $row) {
+            $counts[(int) $row['userId']] = (int) $row['completionsCount'];
+        }
+
+        return $counts;
+    }
+
+    /**
      * @return int[]
      */
     public function findCompletedLessonIdsByCourse(User $user, Course $course): array
@@ -175,5 +207,60 @@ class CompletionRepository extends ServiceEntityRepository
             ->setParameter('end', $end)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @param int[] $lessonIds
+     * @return array<int, int> [lessonId => count]
+     */
+    public function countCompletionsForLessons(array $lessonIds): array
+    {
+        if (empty($lessonIds)) {
+            return [];
+        }
+
+        $results = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.lesson) as lessonId', 'COUNT(c.id) as completionsCount')
+            ->where('c.lesson IN (:lessonIds)')
+            ->andWhere('c.completed = true')
+            ->setParameter('lessonIds', $lessonIds)
+            ->groupBy('c.lesson')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($results as $row) {
+            $counts[(int) $row['lessonId']] = (int) $row['completionsCount'];
+        }
+
+        return $counts;
+    }
+
+    /**
+     * @return array<int, array{completionCount: int, avgScore: float}> [lessonId => stats]
+     */
+    public function getEfficacyDataForLessons(array $lessonIds): array
+    {
+        if (empty($lessonIds)) {
+            return [];
+        }
+
+        $results = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.lesson) as lessonId', 'COUNT(c.id) as completionCount', 'AVG(c.score) as avgScore')
+            ->where('c.lesson IN (:lessonIds)')
+            ->setParameter('lessonIds', $lessonIds)
+            ->groupBy('c.lesson')
+            ->getQuery()
+            ->getArrayResult();
+
+        $stats = [];
+        foreach ($results as $row) {
+            $stats[(int) $row['lessonId']] = [
+                'completionCount' => (int) $row['completionCount'],
+                'avgScore' => (float) $row['avgScore'],
+            ];
+        }
+
+        return $stats;
     }
 }

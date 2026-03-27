@@ -3,10 +3,29 @@
 {% block title %}{{ currentLesson.title }}{% endblock %}
 
 {% block content %}
-<div class="flex h-[calc(100vh-64px)] overflow-hidden bg-background" x-data="{ showNotes: false }">
+<div class="flex h-[calc(100vh-64px)] overflow-hidden bg-background" x-data="{ showNotes: false, showSyllabus: false }">
     
+    {# Mobile Overlay for Syllabus #}
+    <div x-show="showSyllabus"
+         x-transition.opacity
+         @click="showSyllabus = false"
+         class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+         style="display: none;"
+         x-cloak>
+    </div>
+
     {# 1. Left Sidebar (Syllabus) #}
-    <aside class="w-80 flex-shrink-0 border-r border-border bg-muted/30 overflow-y-auto hidden lg:block">
+    <aside class="flex-shrink-0 border-r border-border bg-background lg:bg-muted/30 overflow-y-auto lg:block lg:w-80 lg:static lg:translate-x-0 fixed inset-y-0 left-0 z-[60] w-80 shadow-xl transition-transform duration-300"
+           :class="showSyllabus ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+        <div class="p-4 border-b border-border flex items-center justify-between lg:hidden bg-muted/20">
+            <h2 class="font-bold text-lg flex items-center gap-2">
+                <twig:ux:icon name="lucide:list" class="w-5 h-5 text-primary" />
+                {{ 'Sommaire' | trans }}
+            </h2>
+            <button @click="showSyllabus = false" class="p-2 hover:bg-muted rounded-full transition-colors">
+                <twig:ux:icon name="lucide:x" class="w-5 h-5" />
+            </button>
+        </div>
         <div class="p-6">
             <h3 class="font-serif font-bold text-lg mb-1">{{ course.title }}</h3>
             <div class="w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
@@ -69,7 +88,7 @@
           data-swipe-navigation-prev-url-value="{{ prevLesson ? path('lesson_show', {courseSlug: course.slug, moduleSlug: prevLesson.module.slug, lessonId: prevLesson.id}) : '' }}"
           data-offline-lesson-lesson-id-value="{{ currentLesson.id }}"
           data-offline-lesson-title-value="{{ currentLesson.title }}"
-          data-offline-lesson-content-value="{{ currentLesson.content|default('')|striptags }}"
+          data-offline-lesson-content-value="{{ currentLesson.content|default('') }}"
     >
         {# Offline Indicator #}
         <div data-offline-lesson-target="offlineStatus" class="hidden sticky top-0 z-50 bg-amber-500 text-white py-2 px-4 text-center text-sm font-bold shadow-md">
@@ -275,13 +294,14 @@
                     <div class="prose prose-slate dark:prose-invert max-w-none animate-in fade-in slide-in-from-bottom-2" 
                          data-controller="glossary recommendation-nudge easter-egg"
                          data-recommendation-nudge-url-value="{{ path('app_lesson_nudge', {id: currentLesson.id}) }}"
-                         data-easter-egg-url-value="{{ path('lesson_claim_easter_egg') }}"
+                         data-easter-egg-url-value="{{ path('lesson_claim_easter_egg', {courseSlug: course.slug, moduleSlug: module.slug}) }}"
                          data-easter-egg-token-value="{{ csrf_token('claim_egg') }}">
-                        {{ currentLesson.content|default('')|sanitize_html('default') }}
+                        {{ currentLesson.content|default('')|raw }}
                     </div>
 
                     {# Recommendations Section #}
-                    {{ render(controller('App\\Controller\\RecommendationController::index', {id: currentLesson.id})) }}
+                    {{ component('Recommendation', { lesson: currentLesson, lazy: true }) }}
+
                 </div>
 
                 <div x-show="tab === 'resources'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
@@ -297,33 +317,7 @@
                 </div>
 
                 <div x-show="tab === 'transcript'" style="display: none;" class="animate-in fade-in slide-in-from-bottom-2">
-                    <div class="bg-card rounded-2xl border border-border p-6 md:p-8" data-controller="video-sync">
-                        <div class="flex items-center gap-3 mb-6">
-                            <twig:ux:icon name="lucide:align-left" class="w-6 h-6 text-primary" />
-                            <h3 class="text-xl font-bold">{{ 'Transcription de la leçon' | trans }}</h3>
-                        </div>
-
-                        <div class="space-y-6">
-                            {# Mocked Transcript for now, ideally from DB #}
-                            <div class="flex gap-4 group">
-                                <button data-action="click->video-sync#seek" data-timestamp="00:00" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">00:00</button>
-                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed italic">Introduction à la leçon et présentation des concepts clés.</p>
-                            </div>
-                            <div class="flex gap-4 group">
-                                <button data-action="click->video-sync#seek" data-timestamp="00:45" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">00:45</button>
-                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Développement du premier point théologique important concernant l'herméneutique.</p>
-                            </div>
-                            <div class="flex gap-4 group">
-                                <button data-action="click->video-sync#seek" data-timestamp="01:30" class="flex-shrink-0 font-mono text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors h-fit mt-1">01:30</button>
-                                <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Analyse contextuelle des textes originaux et applications pratiques pour aujourd'hui.</p>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 pt-6 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-                            <p>Transcription générée automatiquement par IA</p>
-                            <button class="hover:text-foreground underline">Signaler une erreur</button>
-                        </div>
-                    </div>
+                    {{ component('Transcript', { lesson: currentLesson }) }}
                 </div>
 
                 <div x-show="tab === 'comments'"
@@ -371,7 +365,7 @@
 
 {# Mobile Sidebar Toggle (Floating, bottom left or top left) #}
 <div class="lg:hidden fixed bottom-6 left-6 z-50">
-     <button class="h-12 w-12 rounded-full bg-background border border-border text-foreground shadow-lg flex items-center justify-center">
+     <button @click="showSyllabus = !showSyllabus" class="h-12 w-12 rounded-full bg-background border border-border text-foreground shadow-lg flex items-center justify-center" :class="showSyllabus ? 'hidden' : ''">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
         </svg>

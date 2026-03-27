@@ -220,4 +220,32 @@ class ProfileController extends AbstractController
 
         return $this->redirectToRoute('profile_index');
     }
+
+    #[Route('/profile/year-in-review', name: 'profile_year_in_review')]
+    public function yearInReview(\App\Service\YearInReviewService $service): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $stats = $service->getYearlyStats($user, (int)date('Y'));
+        
+        return $this->render('profile/year_in_review.html.twig', [
+            'stats' => $stats,
+        ]);
+    }
+
+    #[Route('/profile/{id}', name: 'profile_public', methods: ['GET'])]
+    public function publicProfile(User $user): Response
+    {
+        if (!$user->isProfilePublic()) {
+            throw $this->createNotFoundException('Profil privé');
+        }
+        return $this->render('profile/public.html.twig', ['user' => $user]);
+    }
+
+    #[Route('/profile/{id}/blog', name: 'profile_blog_feed')]
+    public function blogFeed(User $user, \App\Service\RssFeedService $rssFeedService): Response
+    {
+        $posts = $user->getRssFeedUrl() ? $rssFeedService->getLatestPosts($user->getRssFeedUrl()) : [];
+        return $this->render('profile/_blog_feed.html.twig', ['posts' => $posts]);
+    }
 }

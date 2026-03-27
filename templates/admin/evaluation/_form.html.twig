@@ -1,4 +1,69 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'divide-y divide-slate-100'}}) }}
+
+    {# Section 1 : Informations de l'Évaluation #}
+    <div class="pb-10">
+        <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <twig:ux:icon name="lucide:clipboard-list" class="w-4 h-4" />
+            </div>
+            <h2 class="text-lg font-bold text-slate-800">{{ 'Informations de l\'Évaluation' | trans }}</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-2">
+                {{ form_label(form.title, 'Titre'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium', 'placeholder': 'Ex: Examen Final'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
+            <div class="space-y-2">
+                {{ form_label(form.cohort, 'Promotion'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.cohort, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium'}}) }}
+                {{ form_errors(form.cohort) }}
+            </div>
+            <div class="space-y-2">
+                {{ form_label(form.user, 'Utilisateur'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.user, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium'}}) }}
+                {{ form_errors(form.user) }}
+            </div>
+        </div>
+    </div>
+
+    {# Section 2 : Notation & Feedback #}
+    <div class="py-10">
+        <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                <twig:ux:icon name="lucide:award" class="w-4 h-4" />
+            </div>
+            <h2 class="text-lg font-bold text-slate-800">{{ 'Notation & Feedback' | trans }}</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-2">
+                {{ form_label(form.score, 'Score'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.score, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium', 'placeholder': 'Ex: 15'}}) }}
+                {{ form_errors(form.score) }}
+            </div>
+            <div class="space-y-2">
+                {{ form_label(form.maxScore, 'Score Maximum'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.maxScore, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-900 font-medium', 'placeholder': 'Ex: 20'}}) }}
+                {{ form_errors(form.maxScore) }}
+            </div>
+            <div class="space-y-2 md:col-span-2">
+                {{ form_label(form.feedback, 'Commentaire (Feedback)'|trans, {'label_attr': {'class': 'text-xs font-bold text-slate-400 uppercase tracking-wider'}}) }}
+                {{ form_widget(form.feedback, {'attr': {'class': 'w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-slate-700 leading-relaxed', 'rows': 4, 'placeholder': 'Observations ou commentaires sur l\'évaluation...'}}) }}
+                {{ form_errors(form.feedback) }}
+            </div>
+        </div>
+    </div>
+
+    {# Actions #}
+    <div class="pt-10 flex items-center justify-end gap-4">
+        <twig:Button as="a" href="{{ path('app_admin_evaluation_index') }}" variant="ghost" class="text-slate-500 hover:bg-slate-100">
+            {{ 'Annuler' | trans }}
+        </twig:Button>
+        <twig:Button type="submit" variant="default" class="px-8 py-3 shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+            <twig:ux:icon name="lucide:save" class="w-5 h-5 mr-2" />
+            {{ button_label|default('Enregistrer')|trans }}
+        </twig:Button>
+    </div>
 {{ form_end(form) }}

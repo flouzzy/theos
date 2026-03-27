@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\Badge;
 use App\Entity\BadgeType;
+use App\Entity\AvatarFrame;
 use App\Entity\Course;
 use App\Entity\XpTransaction;
 use Doctrine\ORM\EntityManagerInterface;
@@ -131,6 +132,13 @@ class GamificationService
             $milestone = $milestones[$streak];
             $this->awardBadge($user, $milestone['code'], $milestone['title'], $milestone['desc']);
         }
+
+        // Unlock frames based on streak
+        if ($streak === 7) {
+            $this->unlockFrame($user, 'dedicated');
+        } elseif ($streak === 30) {
+            $this->unlockFrame($user, 'unstoppable');
+        }
     }
 
     public function awardCourseCompletionBadge(User $user, Course $course, bool $flush = true): void
@@ -143,31 +151,89 @@ class GamificationService
         $this->awardBadge($user, 'COURSE_COMPLETION', $badgeTitle, $badgeDesc, $typeTitle, $typeDesc, $flush);
     }
 
-    public function awardEarlyBirdBadge(User $user, Course $course, \DateTimeInterface $startDate, bool $flush = true): void
+    public function awardEarlyBirdBadge(User $user, Course $course, \DateTimeImmutable $startDate, bool $flush = true): void
     {
         $now = new \DateTimeImmutable();
         $diff = $now->diff($startDate);
 
-        // Ensure comparison accounts for absolute difference in days
         if ($diff->days < 7) {
-            $badgeTitle = 'Early Bird: ' . $course->getTitle();
-            $badgeDesc = 'Completed ' . $course->getTitle() . ' within 7 days';
-            $typeTitle = 'Early Bird';
-            $typeDesc = 'Completed a course within 7 days';
-
-            $this->awardBadge($user, 'EARLY_BIRD', $badgeTitle, $badgeDesc, $typeTitle, $typeDesc, $flush);
+            $this->awardBadge(
+                $user, 
+                'EARLY_BIRD_' . $course->getId(), 
+                'Early Bird: ' . $course->getTitle(), 
+                'Tu as terminé ce cours dans sa première semaine de sortie !',
+                'Early Bird',
+                'Completed a course within 7 days',
+                $flush
+            );
         }
     }
 
-    public function awardBadge(
-        User $user,
-        string $code,
-        string $badgeTitle,
-        string $badgeDesc,
-        ?string $typeTitle = null,
-        ?string $typeDesc = null,
-        bool $flush = true
-    ): void {
+    public function awardSpeedLearnerBadge(User $user, Course $course, \DateTimeImmutable $firstLessonDate, \DateTimeImmutable $completionDate, bool $flush = true): void
+    {
+        $diff = $completionDate->diff($firstLessonDate);
+        if ($diff->days <= 3) {
+            $this->awardBadge(
+                $user, 
+                'SPEED_LEARNER_' . $course->getId(), 
+                'Speed Learner: ' . $course->getTitle(), 
+                'Tu as terminé ce cours en un temps record !',
+                'Speed Learner',
+                'Completed a course in less than 3 days',
+                $flush
+            );
+        }
+    }
+
+    public function awardHelpfulBadge(User $user, bool $flush = true): void
+    {
+        $helpfulCount = 0;
+        foreach ($user->getComments() as $comment) {
+            $helpfulCount += $comment->getLikes()->count();
+        }
+
+        if ($helpfulCount >= 10) {
+            $this->awardBadge(
+                $user, 
+                'HELPFUL_MEMBER', 
+                'Membre Utile', 
+                'Tu as reçu 10 votes "Utile" sur tes commentaires !',
+                'Helpful Member',
+                'Awarded for being helpful in the community',
+                $flush
+            );
+        }
+    }
+
+    public function checkRareBadges(User $user, bool $flush = true): void
+    {
+        // Exemple pour Speed Learner: a terminé 5 cours en 7 jours
+        if ($user->getCourseCompletions()->count() >= 5) {
+             $this->awardBadge(
+                $user, 
+                'SPEED_LEARNER', 
+                'Speed Learner', 
+                'Tu as appris plus vite que la lumière !',
+                'Speed Learner',
+                'Awarded for completing 5 courses in 7 days',
+                $flush
+            );
+        }
+    }
+
+    public function getShareUrl(string $platform, string $title, string $description): string
+    {
+        $url = urlencode($this->urlGenerator->generate('home', [], UrlGeneratorInterface::ABSOLUTE_URL));
+        $text = urlencode("$title - $description");
+
+        return match($platform) {
+            'linkedin' => "https://www.linkedin.com/sharing/share-offsite/?url=$url",
+            'twitter' => "https://twitter.com/intent/tweet?text=$text&url=$url",
+            default => '#',
+        };
+    }
+    public function awardBadge(User $user, string $code, string $badgeTitle, string $badgeDesc, ?string $typeTitle = null, ?string $typeDesc = null, bool $flush = true): void
+    {
         $badgeTypeRepo = $this->entityManager->getRepository(BadgeType::class);
         $badgeType = $badgeTypeRepo->findOneBy(['code' => $code]);
 
@@ -199,6 +265,41 @@ class GamificationService
                 $user,
                 "🏅 Nouveau badge débloqué !",
                 sprintf("Félicitations ! Tu as remporté le badge : %s.", $badgeTitle),
+                $this->urlGenerator->generate('profile_index', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
+
+            if ($flush) {
+                $this->entityManager->flush();
+            }
+        }
+    }
+
+    public function checkNightOwlBadge(User $user, bool $flush = true): void
+    {
+        $this->awardBadge(
+            $user,
+            'NIGHT_OWL',
+            'Oiseau de Nuit',
+            'Tu as terminé une leçon entre minuit et 5h du matin. Quel dévouement !',
+            'Performance',
+            'Awarded for learning late at night',
+            $flush
+        );
+    }
+
+    public function unlockFrame(User $user, string $identifier, bool $flush = true): void
+    {
+        $frameRepo = $this->entityManager->getRepository(AvatarFrame::class);
+        $frame = $frameRepo->findOneBy(['identifier' => $identifier]);
+
+        if ($frame && !$user->getUnlockedFrames()->contains($frame)) {
+            $user->addUnlockedFrame($frame);
+            $this->entityManager->persist($user);
+
+            $this->notificationService->addNotification(
+                $user,
+                "🖼️ Nouveau cadre d'avatar débloqué !",
+                sprintf("Félicitations ! Tu as débloqué le cadre : %s. Personnalise ton profil pour l'utiliser !", $frame->getName()),
                 $this->urlGenerator->generate('profile_index', [], UrlGeneratorInterface::ABSOLUTE_URL)
             );
 

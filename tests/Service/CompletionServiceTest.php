@@ -13,6 +13,7 @@ use App\Entity\ModuleCompletion;
 use App\Entity\User;
 use App\Service\CompletionService;
 use App\Service\GamificationService;
+use App\Service\LootBoxService;
 use App\Service\NotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,8 +45,10 @@ class CompletionServiceTest extends TestCase
     private NotificationService $notificationService;
     /** @var EventDispatcherInterface&MockObject */
     private EventDispatcherInterface $eventDispatcher;
-    /** @var UrlGeneratorInterface&MockObject */
+    /** @var UrlGeneratorInterface|MockObject */
     private UrlGeneratorInterface $urlGenerator;
+    /** @var LootBoxService&MockObject */
+    private LootBoxService $lootBoxService;
 
     private CompletionService $completionService;
 
@@ -60,6 +63,7 @@ class CompletionServiceTest extends TestCase
         $this->notificationService = $this->createMock(NotificationService::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $this->lootBoxService = $this->createMock(LootBoxService::class);
 
         $this->completionService = new CompletionService(
             $this->entityManager,
@@ -70,7 +74,8 @@ class CompletionServiceTest extends TestCase
             $this->gamificationService,
             $this->notificationService,
             $this->eventDispatcher,
-            $this->urlGenerator
+            $this->urlGenerator,
+            $this->lootBoxService
         );
     }
 

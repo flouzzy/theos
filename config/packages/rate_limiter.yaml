@@ -2,8 +2,8 @@ framework:
     rate_limiter:
         registration:
             policy: fixed_window
-            limit: 5
-            interval: '60 minutes'
+            limit: 10
+            interval: '15 minutes'
         
         api:
             policy: token_bucket

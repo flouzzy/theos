@@ -26,7 +26,7 @@ class EngagementAnalyzer
      * Analyse l'engagement d'un utilisateur et retourne un score (0-100).
      * Plus le score est élevé, plus l'utilisateur est "à risque".
      */
-    public function calculateRiskScore(User $user, Cohort $cohort): int
+    public function calculateRiskScore(User $user, Cohort $cohort, ?array $prefetchedEvaluations = null, ?int $prefetchedCompletionsCount = null): int
     {
         $riskScore = 0;
 
@@ -42,7 +42,7 @@ class EngagementAnalyzer
         }
 
         // 2. Performance académique (30% du score)
-        $evaluations = $this->evaluationRepository->findBy(['user' => $user, 'cohort' => $cohort], ['createdAt' => 'DESC'], 5);
+        $evaluations = $prefetchedEvaluations ?? $this->evaluationRepository->findBy(['user' => $user, 'cohort' => $cohort], ['createdAt' => 'DESC'], 5);
         if (count($evaluations) > 0) {
             $avgScore = array_sum(array_map(fn($e) => $e->getScore(), $evaluations)) / count($evaluations);
             if ($avgScore < self::SCORE_THRESHOLD) {
@@ -53,7 +53,7 @@ class EngagementAnalyzer
         }
 
         // 3. Progression (30% du score)
-        $completionsCount = $this->completionRepository->countByUserAndCohort($user, $cohort);
+        $completionsCount = $prefetchedCompletionsCount ?? $this->completionRepository->countByUserAndCohort($user, $cohort);
         // On suppose qu'un cours moyen a 20 leçons (à affiner si on a le total réel)
         $estimatedTotalLessons = 20; 
         $completionRate = ($completionsCount / $estimatedTotalLessons) * 100;
@@ -73,8 +73,21 @@ class EngagementAnalyzer
     public function getAtRiskStudents(Cohort $cohort, int $threshold = 50): array
     {
         $atRisk = [];
-        foreach ($cohort->getUsers() as $user) {
-            $score = $this->calculateRiskScore($user, $cohort);
+
+        $users = $cohort->getUsers()->toArray();
+        if (empty($users)) {
+            return [];
+        }
+
+        $completionsCounts = $this->completionRepository->countByUsersAndCohort($users, $cohort);
+        $latestEvaluations = $this->evaluationRepository->findLatestByUsersAndCohort($users, $cohort, 5);
+
+        foreach ($users as $user) {
+            $userId = $user->getId();
+            $userCompletions = $completionsCounts[$userId] ?? 0;
+            $userEvaluations = $latestEvaluations[$userId] ?? [];
+
+            $score = $this->calculateRiskScore($user, $cohort, $userEvaluations, $userCompletions);
             if ($score >= $threshold) {
                 $atRisk[] = [
                     'user' => $user,
@@ -95,16 +108,22 @@ class EngagementAnalyzer
     public function getContentEfficacy(Course $course): array
     {
         $efficacyData = [];
+
+        $lessonIds = [];
         foreach ($course->getModules() as $module) {
             foreach ($module->getLessons() as $lesson) {
-                $completions = $this->completionRepository->findBy(['lesson' => $lesson]);
-                $totalCompletions = count($completions);
+                $lessonIds[] = $lesson->getId();
+            }
+        }
+
+        $stats = $this->completionRepository->getEfficacyDataForLessons($lessonIds);
+
+        foreach ($course->getModules() as $module) {
+            foreach ($module->getLessons() as $lesson) {
+                $lessonId = $lesson->getId();
                 
-                $avgScore = 0;
-                $scoredCompletions = array_filter($completions, fn($c) => $c->getScore() !== null);
-                if (count($scoredCompletions) > 0) {
-                    $avgScore = array_sum(array_map(fn($c) => $c->getScore(), $scoredCompletions)) / count($scoredCompletions);
-                }
+                $totalCompletions = $stats[$lessonId]['completionCount'] ?? 0;
+                $avgScore = $stats[$lessonId]['avgScore'] ?? 0.0;
 
                 $efficacyData[] = [
                     'lesson' => $lesson,

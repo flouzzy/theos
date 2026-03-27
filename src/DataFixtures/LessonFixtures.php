@@ -25,6 +25,7 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
             $lesson->setStatus('published');
             $lesson->setItemOrder($index);
             $lesson->setDuration(random_int(30, 120));
+            $lesson->setTranscript("[00:00] Introduction à la leçon " . $index . "\n[00:15] Développement du premier point.\n[01:00] Conclusion et perspectives.");
 
             /**
              * @var \App\Entity\User $author

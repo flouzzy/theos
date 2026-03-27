@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\AvatarFrame;
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -27,7 +29,19 @@ class UserType extends AbstractType
             ->add('address', TextareaType::class)
             ->add('birthDate', DateType::class)
             ->add('bio', null, [
-                'attr' => ['rows' => 10, 'cols' => 50]
+                'attr' => ['rows' => 5, 'cols' => 50]
+            ])
+            ->add('learningManifesto', TextareaType::class, ['required' => false])
+            ->add('websiteUrl', null, ['required' => false])
+            ->add('githubUrl', null, ['required' => false])
+            ->add('isProfilePublic', CheckboxType::class, ['required' => false])
+            ->add('activeFrame', EntityType::class, [
+                'class' => AvatarFrame::class,
+                'choice_label' => 'name',
+                'required' => false,
+                'placeholder' => 'No frame',
+                'choices' => $options['data'] ? $options['data']->getUnlockedFrames() : [],
+                'label' => $this->translator->trans('Avatar Frame'),
             ])
             ->add('emailNotifications', CheckboxType::class, [
                 'required' => false,

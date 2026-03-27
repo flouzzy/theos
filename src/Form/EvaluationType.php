@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\Cohort;
 use App\Entity\Evaluation;
 use App\Entity\User;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,19 +21,25 @@ class EvaluationType extends AbstractType
             ->add('score')
             ->add('maxScore')
             ->add('feedback')
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('updatedAt', null, [
-                'widget' => 'single_text',
-            ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => function (User $user) {
+                    return $user->getFullname() . ' (' . $user->getEmail() . ')';
+                },
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    return $er->createQueryBuilder('u')
+                        ->orderBy('u.fullname', 'ASC');
+                },
+                'attr' => ['class' => 'select2'],
             ])
             ->add('cohort', EntityType::class, [
                 'class' => Cohort::class,
-                'choice_label' => 'id',
+                'choice_label' => 'title',
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    return $er->createQueryBuilder('c')
+                        ->orderBy('c.title', 'ASC');
+                },
+                'attr' => ['class' => 'select2'],
             ])
         ;
     }

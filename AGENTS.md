@@ -17,6 +17,7 @@ Ce document définit les protocoles opérationnels que tout Agent (Jules, Gemini
 
 ### Règles de Code PHP Sensibles
 - **Imports:** Préférer systématiquement l'utilisation des déclarations `use` en haut de fichier plutôt que de type-hinter avec des FQCN (ex: `SiteSettingRepository` plutôt que `\App\Repository\SiteSettingRepository`).
+- **Composants UI:** Préférer l'utilisation des **Symfony UX LiveComponents** pour les parties modulaires de l'interface au lieu de longs templates Twig ou de `render(controller(...))`, afin de favoriser l'asynchronisme et la réutilisabilité.
 
 ### Gestion des Base de Données
 - Ne JAMAIS supprimer les données du volume `database_data` sans confirmation explicite.

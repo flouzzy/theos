@@ -1,0 +1,57 @@
+<<<<<<< SEARCH
+class AchievementsComponent
+{
+    use DefaultActionTrait;
+
+    public function __construct(
+        private Security $security,
+        private AchievementService $achievementService
+    ) {
+    }
+
+    /**
+     * @return array<int, array{icon: string, title: string, date: \DateTimeInterface|null, reached: bool, description?: string|null}>
+     */
+    public function getAchievements(): array
+    {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        if (!$user) {
+            return [];
+        }
+
+        return $this->achievementService->getAchievements($user);
+    }
+}
+=======
+use Symfony\UX\LiveComponent\Attribute\LiveProp;
+
+#[AsLiveComponent]
+class AchievementsComponent
+{
+    use DefaultActionTrait;
+
+    #[LiveProp]
+    public ?User $user = null;
+
+    public function __construct(
+        private Security $security,
+        private AchievementService $achievementService
+    ) {
+    }
+
+    /**
+     * @return array<int, array{icon: string, title: string, date: \DateTimeInterface|null, reached: bool, description?: string|null}>
+     */
+    public function getAchievements(): array
+    {
+        $targetUser = $this->user ?? $this->security->getUser();
+
+        if (!$targetUser instanceof User) {
+            return [];
+        }
+
+        return $this->achievementService->getAchievements($targetUser);
+    }
+}
+>>>>>>> REPLACE

@@ -1,7 +1,12 @@
-<span
-    class="{{ 'relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full ' ~ attributes.render('class')|tailwind_merge }}"
-    data-slot="avatar"
-    {{ attributes }}
->
-    {%- block content %}{% endblock -%}
-</span>
+<div class="relative inline-block">
+    {% if frame %}
+        <div class="absolute inset-[-4px] rounded-full z-10 {{ frame.cssClass }} pointer-events-none"></div>
+    {% endif %}
+    <span
+        class="{{ 'relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full ' ~ attributes.render('class')|tailwind_merge }}"
+        data-slot="avatar"
+        {{ attributes }}
+    >
+        {%- block content %}{% endblock -%}
+    </span>
+</div>

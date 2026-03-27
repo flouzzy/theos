@@ -18,6 +18,11 @@ Le projet se pilote entièrement via le `Makefile`.
 - `make cc` : Vide le cache Symfony.
 - `make db-migrate` : Applique les migrations Doctrine.
 
+## 🔐 SSL & Service Worker (Dev)
+En développement sur `https://localhost:8096`, le Service Worker peut échouer à cause du certificat auto-signé.
+- **Chrome/Edge** : Activer `chrome://flags/#allow-insecure-localhost`.
+- **Firefox** : Accepter l'exception de sécurité de manière permanente en visitant directement `https://localhost:8096`.
+
 ## 📁 Migration & Structure
 - **Dossier:** `/var/www/lerocher/academie` (anciennement `academie-v2`).
 - **Ancienne Version:** `/var/www/lerocher/academie-old`.

@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class RecommendationServiceTest extends TestCase
 {
@@ -34,8 +35,9 @@ class RecommendationServiceTest extends TestCase
 
         $lessonRepository = $this->createMock(LessonRepository::class);
         $entityManager = $this->createMock(EntityManagerInterface::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
-        $service = new RecommendationService('fake_key', $lessonRepository, $entityManager, $mockClient);
+        $service = new RecommendationService('fake_key', $lessonRepository, $entityManager, $logger, $mockClient);
         $service->updateLessonEmbedding($lesson);
 
         $this->assertEquals([0.1, 0.2, 0.3], $lesson->getEmbeddings());
@@ -60,8 +62,9 @@ class RecommendationServiceTest extends TestCase
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $mockClient = $this->createMock(Client::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
-        $service = new RecommendationService('fake_key', $lessonRepository, $entityManager, $mockClient);
+        $service = new RecommendationService('fake_key', $lessonRepository, $entityManager, $logger, $mockClient);
         $recommendations = $service->getRecommendations($lesson1, 1);
 
         $this->assertCount(1, $recommendations);

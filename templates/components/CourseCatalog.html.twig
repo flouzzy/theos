@@ -1,16 +1,18 @@
 <div {{ attributes }}>
 {% block fallback %}
-    <div class="space-y-8 animate-pulse">
+    {% if this is not defined %}
+    <div class="animate-pulse">
         <div class="flex flex-col md:flex-row gap-6 mb-8">
             <div class="h-14 bg-muted rounded-xl flex-1"></div>
             <div class="h-14 bg-muted rounded-xl w-full md:w-64"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="h-80 bg-muted rounded-2xl"></div>
-            <div class="h-80 bg-muted rounded-2xl hidden md:block"></div>
-            <div class="h-80 bg-muted rounded-2xl hidden lg:block"></div>
+            <div class="h-80 bg-muted rounded-3xl"></div>
+            <div class="h-80 bg-muted rounded-3xl"></div>
+            <div class="h-80 bg-muted rounded-3xl"></div>
         </div>
     </div>
+    {% endif %}
 {% endblock %}
     {# Search and Filter Bar #}
     <div class="flex flex-col md:flex-row gap-6 mb-8">

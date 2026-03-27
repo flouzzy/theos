@@ -44,6 +44,25 @@ class GeminiAudioService
             $text = "Lis de façon pédagogique, calme et posée : \"$text\"";
         }
 
+        $base64Audio = $this->callGeminiApi($text, $voiceName);
+        $pcmData = base64_decode($base64Audio);
+
+        $fileName = $this->convertPcmToMp3($pcmData, $lesson->getSlug());
+        $outputPath = $this->audioDir . '/' . $fileName;
+
+        // Update Lesson entity
+        $lesson->setAudioPath('uploads/audio/lessons/' . $fileName);
+
+        // Optionally get duration using ffprobe
+        $lesson->setAudioDuration($this->getAudioDuration($outputPath));
+
+        $this->entityManager->flush();
+
+        return $lesson->getAudioPath();
+    }
+
+    private function callGeminiApi(string $text, ?string $voiceName): string
+    {
         $payload = [
             'contents' => [
                 [
@@ -75,11 +94,15 @@ class GeminiAudioService
             throw new \Exception("Aucune donnée audio reçue de Gemini.");
         }
 
-        $pcmData = base64_decode($base64Audio);
+        return $base64Audio;
+    }
+
+    private function convertPcmToMp3(string $pcmData, string $slug): string
+    {
         $tempPcmFile = tempnam(sys_get_temp_dir(), 'gemini_audio_') . '.pcm';
         file_put_contents($tempPcmFile, $pcmData);
 
-        $fileName = $lesson->getSlug() . '-' . uniqid() . '.mp3';
+        $fileName = $slug . '-' . uniqid() . '.mp3';
         $outputPath = $this->audioDir . '/' . $fileName;
 
         // Gemini TTS outputs PCM s16le, 24000Hz, Mono.
@@ -106,15 +129,7 @@ class GeminiAudioService
         // Clean up temp file
         unlink($tempPcmFile);
 
-        // Update Lesson entity
-        $lesson->setAudioPath('uploads/audio/lessons/' . $fileName);
-        
-        // Optionally get duration using ffprobe
-        $lesson->setAudioDuration($this->getAudioDuration($outputPath));
-
-        $this->entityManager->flush();
-
-        return $lesson->getAudioPath();
+        return $fileName;
     }
 
     protected function createProcess(array $command): Process

@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -310,7 +311,7 @@ class LessonController extends AbstractController
         return null;
     }
 
-    #[Route('/easter-egg/claim', name: 'lesson_claim_easter_egg', methods: ['POST'])]
+    #[Route('/easter-egg/claim', name: 'claim_easter_egg', methods: ['POST'])]
     public function claimEasterEgg(Request $request, GamificationService $gamificationService): JsonResponse
     {
         /** @var \App\Entity\User|null $user */

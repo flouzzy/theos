@@ -22,11 +22,17 @@ class Conversation
     #[ORM\OrderBy(['createdAt' => 'ASC'])]
     private Collection $messages;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isPrivate = false;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
         $this->messages = new ArrayCollection();
     }
+
+    public function isPrivate(): bool { return $this->isPrivate; }
+    public function setIsPrivate(bool $isPrivate): static { $this->isPrivate = $isPrivate; return $this; }
 
     public function getId(): ?int
     {

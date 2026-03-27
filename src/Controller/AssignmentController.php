@@ -16,7 +16,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Entity\User;
 use App\Entity\PeerReviewScore;
-use App\Entity\Rubric;
 
 use App\Service\MediaManager;
 
@@ -189,6 +188,21 @@ class AssignmentController extends AbstractController
         $review->setReviewer($user);
         $review->setFeedback((string)$feedback);
 
+        $totalScore = $this->calculateReviewScore($assignment, $request, $review);
+        $review->setScore($totalScore);
+
+        $this->entityManager->persist($review);
+        $this->entityManager->flush();
+
+        $this->notifyAndReward($user, $submission, $assignment);
+
+        $this->addFlash('success', 'Review submitted successfully!');
+
+        return $this->redirectToRoute('assignment_show', ['id' => $assignment->getId()]);
+    }
+
+    private function calculateReviewScore(Assignment $assignment, Request $request, PeerReview $review): int
+    {
         $totalScore = 0;
         $rubric = $assignment->getRubricEntity();
         if ($rubric) {
@@ -204,25 +218,21 @@ class AssignmentController extends AbstractController
             $totalScore = (int) $request->request->get('score');
         }
 
-        $review->setScore($totalScore);
+        return $totalScore;
+    }
 
-        $this->entityManager->persist($review);
-        $this->entityManager->flush();
-
-        $this->gamificationService->addXp($user, 15, 'peer_review_completed');
+    private function notifyAndReward(User $reviewer, AssignmentSubmission $submission, Assignment $assignment): void
+    {
+        $this->gamificationService->addXp($reviewer, 15, 'peer_review_completed');
 
         // Notify author
         if ($submission->getUser() instanceof User) {
             $this->notificationService->addNotification(
                 $submission->getUser(),
                 "📝 Ton travail a été corrigé",
-                sprintf("%s a corrigé ton travail pour l'exercice : %s", $user->getFullname(), $assignment->getTitle()),
+                sprintf("%s a corrigé ton travail pour l'exercice : %s", $reviewer->getFullname(), $assignment->getTitle()),
                 $this->generateUrl('assignment_show', ['id' => $assignment->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
             );
         }
-
-        $this->addFlash('success', 'Review submitted successfully!');
-
-        return $this->redirectToRoute('assignment_show', ['id' => $assignment->getId()]);
     }
 }

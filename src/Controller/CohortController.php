@@ -17,7 +17,9 @@ class CohortController extends AbstractController
         \App\Repository\CourseRepository $courseRepository,
         \App\Repository\CompletionRepository $completionRepository,
         \App\Repository\CourseCompletionRepository $courseCompletionRepository,
-        CohortSession $cohortSession
+        CohortSession $cohortSession,
+        \App\Service\LeaderboardService $leaderboardService,
+        \App\Service\CompletionCalculator $completionCalculator
     ): Response {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -32,49 +34,11 @@ class CohortController extends AbstractController
         
         // Récupère les cours disponibles pour cette cohorte (Public + Restreint à cette cohorte)
         $myCoursesEntities = $courseRepository->findCoursesByVisibilityAndCohort($cohort);
-        $myCoursesData = [];
         
-        $totalMinutes = 0;
-        $totalLessons = 0;
-        $totalCompletedLessons = 0;
-        
-        // Optimisation: récupérer tous les IDs des leçons complétées par le user
-        $completedLessonIds = $completionRepository->findCompletedLessonIdsByUser($user);
-        $completedLessonMap = array_flip($completedLessonIds);
+        $progressData = $completionCalculator->calculateCohortProgress($user, $myCoursesEntities);
 
-        foreach ($myCoursesEntities as $course) {
-            $courseLessonsCount = 0;
-            $courseCompletedCount = 0;
-            
-            foreach ($course->getModules() as $module) {
-                foreach ($module->getLessons() as $lesson) {
-                    $totalMinutes += $lesson->getDuration() ?? 0;
-                    $courseLessonsCount++;
-                    $totalLessons++;
-                    
-                    if (isset($completedLessonMap[$lesson->getId()])) {
-                        $courseCompletedCount++;
-                        $totalCompletedLessons++;
-                    }
-                }
-            }
-            
-            $progress = $courseLessonsCount > 0 ? round(($courseCompletedCount / $courseLessonsCount) * 100) : 0;
-            
-            $myCoursesData[] = [
-                'course' => $course,
-                'progress' => $progress,
-            ];
-        }
-
-        // Stats Globales
-        $globalProgress = $totalLessons > 0 ? round(($totalCompletedLessons / $totalLessons) * 100) : 0;
         $completedCoursesCount = $courseCompletionRepository->countCompletedCoursesForUser($user);
         $ongoingCoursesCount = count($myCoursesEntities) - $completedCoursesCount;
-        $totalHours = floor($totalMinutes / 60);
-
-        // Calculate remaining lessons to discover
-        $newLessonsCount = $totalLessons - $totalCompletedLessons;
 
         // Events
         $events = $eventRepository->findUpdatedEvents($cohort);
@@ -84,15 +48,16 @@ class CohortController extends AbstractController
 
         return $this->render('cohort/index.html.twig', [
             'cohort' => $cohort,
-            'myCourses' => $myCoursesData, 
+            'myCourses' => $progressData['coursesData'],
             'events' => $events,
-            'newLessonsCount' => $newLessonsCount,
+            'newLessonsCount' => $progressData['newLessonsCount'],
             'lastLesson' => $lastLesson,
+            'topStudent' => $leaderboardService->getStudentOfTheWeek(),
             'stats' => [
                 'ongoing' => $ongoingCoursesCount,
                 'completed' => $completedCoursesCount,
-                'hours' => $totalHours,
-                'progress' => $globalProgress,
+                'hours' => $progressData['totalHours'],
+                'progress' => $progressData['globalProgress'],
             ]
         ]);
     }
