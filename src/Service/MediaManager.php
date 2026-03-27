@@ -48,7 +48,7 @@ class MediaManager
             throw new FileException('Invalid file extension: ' . $extension);
         }
 
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $extension;
+        $fileName = $safeFilename . '-' . bin2hex(random_bytes(8)) . '.' . $extension;
         $targetDirectory = $this->getTargetDirectory($mediaType);
 
         // On récupère uniquement le chemin après dossier public
@@ -235,7 +235,7 @@ class MediaManager
         $extension = $extensions[$mimeType];
 
         // Generate safe filename
-        $filename = uniqid('media_', true) . '.' . $extension;
+        $filename = 'media_' . bin2hex(random_bytes(8)) . '.' . $extension;
         $fileFullPath = $targetDirectory . '/' . $filename;
 
         $fileDownloaded = file_put_contents($fileFullPath, $content);
