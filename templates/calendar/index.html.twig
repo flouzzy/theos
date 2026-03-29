@@ -51,7 +51,7 @@
             {% if calendar and calendar.embed %}
                 <div class="aspect-video w-full bg-muted">
                     <div class="w-full h-full">
-                        {{ calendar.embed|raw }}
+                        {{ calendar.embed|default('')|sanitize_html('video') }}
                     </div>
                 </div>
             {% endif %}
