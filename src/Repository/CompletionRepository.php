@@ -263,4 +263,23 @@ class CompletionRepository extends ServiceEntityRepository
 
         return $stats;
     }
+
+    /**
+     * @return array<int, int> [userId => count]
+     */
+    public function countAllCompletionsGroupedByUser(): array
+    {
+        $results = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.user) as userId', 'COUNT(c.id) as completionsCount')
+            ->groupBy('c.user')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($results as $row) {
+            $counts[(int) $row['userId']] = (int) $row['completionsCount'];
+        }
+
+        return $counts;
+    }
 }
