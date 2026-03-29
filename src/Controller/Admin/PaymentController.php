@@ -6,7 +6,6 @@ use App\Entity\PaymentSetting;
 use App\Entity\User;
 use App\Form\PaymentSettingType;
 use App\Repository\PaymentSettingRepository;
-use App\Service\Payment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,12 +81,4 @@ class PaymentController extends AbstractController
         return $this->redirectToRoute('admin_payment_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/payment/{id}', name: 'validate', methods: ['POST'])]
-    public function validatePayment(User $user, Payment $payment): Response
-    {
-        $payment->validatePayment($user);
-        $this->addFlash('success', 'Payment validated successfully.');
-
-        return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
-    }
 }
