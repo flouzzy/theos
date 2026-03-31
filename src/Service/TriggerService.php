@@ -10,6 +10,8 @@ use App\Repository\CompletionRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Psr\Clock\ClockInterface;
+use DateTimeImmutable;
+use DateTimeZone;
 
 class TriggerService
 {
@@ -25,9 +27,9 @@ class TriggerService
     /**
      * Process daily triggers for all active users.
      */
-    private function now(): \DateTimeImmutable
+    private function now(): DateTimeImmutable
     {
-        return $this->clock ? $this->clock->now() : new \DateTimeImmutable();
+        return $this->clock ? $this->clock->now() : new DateTimeImmutable();
     }
 
     public function processDailyTriggers(): void
@@ -56,7 +58,7 @@ class TriggerService
             return;
         }
 
-        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new DateTimeZone($user->getTimezone()));
         
         // Target Wednesday morning
         if ($now->format('N') !== '3' || (int)$now->format('H') < 10 || (int)$now->format('H') > 12) {
@@ -76,7 +78,7 @@ class TriggerService
      */
     private function processWeeklyReflectionTrigger(User $user): void
     {
-        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new DateTimeZone($user->getTimezone()));
         
         // Target Sunday evening (after 18:00)
         if ($now->format('N') !== '7' || (int)$now->format('H') < 18) {
@@ -96,7 +98,7 @@ class TriggerService
      */
     private function processMorningRoutineTrigger(User $user): void
     {
-        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new DateTimeZone($user->getTimezone()));
         $hour = (int)$now->format('H');
 
         // Target 06:00 - 09:00 window
@@ -279,7 +281,7 @@ class TriggerService
         $frequency = current($hours);
 
         if ($frequency >= 3) {
-            $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
+            $now = $this->now()->setTimezone(new DateTimeZone($user->getTimezone()));
             $currentHour = (int)$now->format('H');
 
             if ($currentHour === $usualHour) {
@@ -305,14 +307,14 @@ class TriggerService
             return;
         }
 
-        $now = $this->now()->setTimezone(new \DateTimeZone($user->getTimezone()));
+        $now = $this->now()->setTimezone(new DateTimeZone($user->getTimezone()));
         $lastStreakDate = $user->getLastStreakDate();
 
         if (!$lastStreakDate) {
             return;
         }
 
-        $lastStreakDate = $lastStreakDate->setTimezone(new \DateTimeZone($user->getTimezone()));
+        $lastStreakDate = $lastStreakDate->setTimezone(new DateTimeZone($user->getTimezone()));
         
         // If last study was yesterday and hasn't studied today yet
         $diff = $now->diff($lastStreakDate->setTime(0, 0, 0));

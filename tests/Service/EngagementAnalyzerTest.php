@@ -63,7 +63,12 @@ class EngagementAnalyzerTest extends TestCase
         $completion2->method('getScore')->willReturn(16.0);
 
         $completionRepo = $this->createMock(CompletionRepository::class);
-        $completionRepo->method('findBy')->willReturn([$completion1, $completion2]);
+        $completionRepo->method('getEfficacyDataForLessons')->willReturn([
+            $lesson->getId() => [
+                'completionCount' => 2,
+                'avgScore' => 17.0
+            ]
+        ]);
 
         $evaluationRepo = $this->createMock(EvaluationRepository::class);
         $entityManager = $this->createMock(EntityManagerInterface::class);

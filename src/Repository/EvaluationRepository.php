@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Evaluation;
+use App\Entity\User;
+use App\Entity\Cohort;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -42,10 +44,10 @@ class EvaluationRepository extends ServiceEntityRepository
     //    }
 
     /**
-     * @param \App\Entity\User[] $users
+     * @param User[] $users
      * @return array<int, Evaluation[]> User ID => array of latest evaluations
      */
-    public function findLatestByUsersAndCohort(array $users, \App\Entity\Cohort $cohort, int $limit = 5): array
+    public function findLatestByUsersAndCohort(array $users, Cohort $cohort, int $limit = 5): array
     {
         if (empty($users)) {
             return [];

@@ -39,8 +39,8 @@ class ProgressHelperTest extends TestCase
         $result = $this->progressHelper->getVisualProgress(5, 10);
         $this->assertEqualsWithDelta(43.527, $result, 0.001);
 
-        // 9 / 10 is 90%. Formula: (90^1.2) / (100^0.2) = 221.32... / 2.51188... = 88.11...
+        // 9 / 10 is 90%. Formula: (90^1.2) / (100^0.2) ≈ 88.123...
         $result2 = $this->progressHelper->getVisualProgress(9, 10);
-        $this->assertEqualsWithDelta(88.11, $result2, 0.01);
+        $this->assertEqualsWithDelta(88.123, $result2, 0.001);
     }
 }

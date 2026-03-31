@@ -9,6 +9,8 @@ class ProgressHelper
     public function getVisualProgress(int $current, int $total): float
     {
         if ($total === 0) return 0.0;
+        if ($current >= $total) return 100.0;
+        
         $percent = ($current / $total) * 100;
         
         // Effet d'accélération : courbe quadratique pour booster visuellement la fin
