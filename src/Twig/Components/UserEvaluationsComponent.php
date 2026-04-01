@@ -53,13 +53,18 @@ class UserEvaluationsComponent
                 $maxScore = 20.0;
             }
             $evalScore = $eval->getScore() ?? 0.0;
-            $scaleScore = ((float)$evalScore / (float)$maxScore) * 20.0;
+            $scaleScore = ($evalScore / $maxScore) * 20.0;
+
+            $cohortTitle = 'Évaluation';
+            if ($eval->getCohort()) {
+                $cohortTitle = $eval->getCohort()->getTitle() ?? 'Évaluation';
+            }
 
             $evaluations[] = [
                 'title' => $eval->getTitle() ?? 'Évaluation',
-                'course' => $eval->getCohort() ? ($eval->getCohort()->getTitle() ?? 'Évaluation') : 'Évaluation',
-                'score' => (float)$evalScore,
-                'total' => (float)$maxScore,
+                'course' => $cohortTitle,
+                'score' => $evalScore,
+                'total' => $maxScore,
                 'grade' => $this->calculateGrade($scaleScore),
                 'date' => $eval->getCreatedAt(),
                 'duration' => null,
@@ -74,24 +79,22 @@ class UserEvaluationsComponent
             $mcScore = $mc->getScore();
             if ($mcScore !== null) {
                 $module = $mc->getModule();
+                $courses = $module ? $module->getCourses() : null;
+                $firstCourse = $courses ? $courses->first() : null;
+
                 // Filter by cohort if set
                 if ($cohort) {
-                    $courses = $module ? $module->getCourses() : null;
-                    $mcCourse = $courses ? $courses->first() : null;
-                    if (!$mcCourse || !$cohort->getCourses()->contains($mcCourse)) {
+                    if (!$firstCourse || !$cohort->getCourses()->contains($firstCourse)) {
                         continue;
                     }
                 }
-
-                $courses = $module ? $module->getCourses() : null;
-                $firstCourse = $courses ? $courses->first() : null;
 
                 $evaluations[] = [
                     'title' => $module ? ($module->getTitle() ?? 'Module') : 'Module',
                     'course' => $firstCourse ? ($firstCourse->getTitle() ?? 'Module') : 'Module',
                     'score' => $mcScore,
                     'total' => 20.0, // Assumed default
-                    'grade' => $this->calculateGrade((float)$mcScore),
+                    'grade' => $this->calculateGrade($mcScore),
                     'date' => $mc->getUpdatedAt() ?? $mc->getCreatedAt(),
                     'duration' => '30 min',
                     'feedback' => null,
@@ -107,11 +110,11 @@ class UserEvaluationsComponent
             if ($lcScore !== null) {
                 $lesson = $lc->getLesson();
                 $module = $lesson ? $lesson->getModule() : null;
+                $courses = $module ? $module->getCourses() : null;
+                $lcCourse = $courses ? $courses->first() : null;
 
                 // Filter by cohort if set
                 if ($cohort) {
-                    $courses = $module ? $module->getCourses() : null;
-                    $lcCourse = $courses ? $courses->first() : null;
                     if (!$lcCourse || !$cohort->getCourses()->contains($lcCourse)) {
                         continue;
                     }
@@ -122,9 +125,9 @@ class UserEvaluationsComponent
                     'course' => $module ? ($module->getTitle() ?? 'Lesson') : 'Lesson',
                     'score' => $lcScore,
                     'total' => 20.0,
-                    'grade' => $this->calculateGrade((float)$lcScore),
+                    'grade' => $this->calculateGrade($lcScore),
                     'date' => $lc->getUpdatedAt() ?? $lc->getCreatedAt(),
-                    'duration' => $lesson && $lesson->getDuration() ? $lesson->getDuration() . ' min' : '10 min',
+                    'duration' => $lesson && $lesson->getDuration() ? ((string)$lesson->getDuration() . ' min') : '10 min',
                     'feedback' => null,
                     'type' => 'lesson'
                 ];
@@ -133,8 +136,8 @@ class UserEvaluationsComponent
 
         // Sort by date desc
         usort($evaluations, function (array $a, array $b): int {
-            $dateA = (isset($a['date']) && $a['date'] instanceof \DateTimeInterface) ? $a['date'] : new \DateTimeImmutable('@0');
-            $dateB = (isset($b['date']) && $b['date'] instanceof \DateTimeInterface) ? $b['date'] : new \DateTimeImmutable('@0');
+            $dateA = isset($a['date']) ? $a['date'] : new \DateTimeImmutable('@0');
+            $dateB = isset($b['date']) ? $b['date'] : new \DateTimeImmutable('@0');
             return $dateB <=> $dateA;
         });
 
