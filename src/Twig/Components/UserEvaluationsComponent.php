@@ -32,9 +32,8 @@ class UserEvaluationsComponent
             return $this->evaluationsCache;
         }
 
-        /** @var User $user */
         $user = $this->security->getUser();
-        if (!$user) {
+        if (!$user instanceof User) {
             return [];
         }
 
@@ -50,16 +49,17 @@ class UserEvaluationsComponent
 
         foreach ($dbEvaluations as $eval) {
             $maxScore = $eval->getMaxScore();
-            if ($maxScore === null || $maxScore == 0) {
+            if ($maxScore === null || $maxScore == 0.0) {
                 $maxScore = 20.0;
             }
-            $scaleScore = ((float)$eval->getScore() / (float)$maxScore) * 20.0;
+            $evalScore = $eval->getScore() ?? 0.0;
+            $scaleScore = ((float)$evalScore / (float)$maxScore) * 20.0;
 
             $evaluations[] = [
-                'title' => $eval->getTitle(),
-                'course' => $eval->getCohort() ? $eval->getCohort()->getTitle() : 'Évaluation',
-                'score' => (float)$eval->getScore(),
-                'total' => (float)$eval->getMaxScore(),
+                'title' => $eval->getTitle() ?? 'Évaluation',
+                'course' => $eval->getCohort() ? ($eval->getCohort()->getTitle() ?? 'Évaluation') : 'Évaluation',
+                'score' => (float)$evalScore,
+                'total' => (float)$maxScore,
                 'grade' => $this->calculateGrade($scaleScore),
                 'date' => $eval->getCreatedAt(),
                 'duration' => null,
@@ -71,21 +71,27 @@ class UserEvaluationsComponent
         // 2. Process Module Completions
         $moduleCompletions = $this->moduleCompletionRepository->findWithScoreByUser($user);
         foreach ($moduleCompletions as $mc) {
-            if ($mc->getScore() !== null) {
+            $mcScore = $mc->getScore();
+            if ($mcScore !== null) {
+                $module = $mc->getModule();
                 // Filter by cohort if set
                 if ($cohort) {
-                    $mcCourse = $mc->getModule() && $mc->getModule()->getCourses()->first() ? $mc->getModule()->getCourses()->first() : null;
+                    $courses = $module ? $module->getCourses() : null;
+                    $mcCourse = $courses ? $courses->first() : null;
                     if (!$mcCourse || !$cohort->getCourses()->contains($mcCourse)) {
                         continue;
                     }
                 }
 
+                $courses = $module ? $module->getCourses() : null;
+                $firstCourse = $courses ? $courses->first() : null;
+
                 $evaluations[] = [
-                    'title' => $mc->getModule() ? $mc->getModule()->getTitle() : 'Module',
-                    'course' => $mc->getModule() && $mc->getModule()->getCourses()->first() ? $mc->getModule()->getCourses()->first()->getTitle() : 'Module',
-                    'score' => $mc->getScore(),
-                    'total' => 20, // Assumed default
-                    'grade' => $this->calculateGrade($mc->getScore()),
+                    'title' => $module ? ($module->getTitle() ?? 'Module') : 'Module',
+                    'course' => $firstCourse ? ($firstCourse->getTitle() ?? 'Module') : 'Module',
+                    'score' => $mcScore,
+                    'total' => 20.0, // Assumed default
+                    'grade' => $this->calculateGrade((float)$mcScore),
                     'date' => $mc->getUpdatedAt() ?? $mc->getCreatedAt(),
                     'duration' => '30 min',
                     'feedback' => null,
@@ -97,23 +103,28 @@ class UserEvaluationsComponent
         // 3. Process Lesson Completions (Quizzes)
         $lessonCompletions = $this->completionRepository->findWithScoreByUser($user);
         foreach ($lessonCompletions as $lc) {
-            if ($lc->getScore() !== null) {
+            $lcScore = $lc->getScore();
+            if ($lcScore !== null) {
+                $lesson = $lc->getLesson();
+                $module = $lesson ? $lesson->getModule() : null;
+
                 // Filter by cohort if set
                 if ($cohort) {
-                    $lcCourse = $lc->getLesson() && $lc->getLesson()->getModule() && $lc->getLesson()->getModule()->getCourses()->first() ? $lc->getLesson()->getModule()->getCourses()->first() : null;
+                    $courses = $module ? $module->getCourses() : null;
+                    $lcCourse = $courses ? $courses->first() : null;
                     if (!$lcCourse || !$cohort->getCourses()->contains($lcCourse)) {
                         continue;
                     }
                 }
 
                 $evaluations[] = [
-                    'title' => $lc->getLesson() ? $lc->getLesson()->getTitle() : 'Lesson',
-                    'course' => $lc->getLesson() && $lc->getLesson()->getModule() ? $lc->getLesson()->getModule()->getTitle() : 'Lesson',
-                    'score' => $lc->getScore(),
-                    'total' => 20,
-                    'grade' => $this->calculateGrade($lc->getScore()),
+                    'title' => $lesson ? ($lesson->getTitle() ?? 'Lesson') : 'Lesson',
+                    'course' => $module ? ($module->getTitle() ?? 'Lesson') : 'Lesson',
+                    'score' => $lcScore,
+                    'total' => 20.0,
+                    'grade' => $this->calculateGrade((float)$lcScore),
                     'date' => $lc->getUpdatedAt() ?? $lc->getCreatedAt(),
-                    'duration' => $lc->getLesson() && $lc->getLesson()->getDuration() ? $lc->getLesson()->getDuration() . ' min' : '10 min',
+                    'duration' => $lesson && $lesson->getDuration() ? $lesson->getDuration() . ' min' : '10 min',
                     'feedback' => null,
                     'type' => 'lesson'
                 ];
@@ -122,8 +133,8 @@ class UserEvaluationsComponent
 
         // Sort by date desc
         usort($evaluations, function (array $a, array $b): int {
-            $dateA = $a['date'] instanceof \DateTimeInterface ? $a['date'] : (current(array_filter([$a['date']], fn($d) => $d instanceof \DateTimeInterface)) ?: new \DateTimeImmutable('@0'));
-            $dateB = $b['date'] instanceof \DateTimeInterface ? $b['date'] : (current(array_filter([$b['date']], fn($d) => $d instanceof \DateTimeInterface)) ?: new \DateTimeImmutable('@0'));
+            $dateA = (isset($a['date']) && $a['date'] instanceof \DateTimeInterface) ? $a['date'] : new \DateTimeImmutable('@0');
+            $dateB = (isset($b['date']) && $b['date'] instanceof \DateTimeInterface) ? $b['date'] : new \DateTimeImmutable('@0');
             return $dateB <=> $dateA;
         });
 
