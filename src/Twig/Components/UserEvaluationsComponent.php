@@ -9,12 +9,14 @@ use App\Repository\ModuleCompletionRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
-use Symfony\UX\LiveComponent\Attribute\LiveProp;
 
 #[AsLiveComponent]
 class UserEvaluationsComponent
 {
     use DefaultActionTrait;
+
+    private ?array $evaluationsCache = null;
+    private ?array $statsCache = null;
 
     public function __construct(
         private Security $security,
@@ -26,6 +28,10 @@ class UserEvaluationsComponent
 
     public function getEvaluations(): array
     {
+        if ($this->evaluationsCache !== null) {
+            return $this->evaluationsCache;
+        }
+
         /** @var User $user */
         $user = $this->security->getUser();
         if (!$user) {
@@ -33,10 +39,9 @@ class UserEvaluationsComponent
         }
 
         $evaluations = [];
-
-        // 1. Fetch new Evaluation entities (filtered by current cohort if any)
         $cohort = $user->getCurrentCohort();
-        $dbEvaluations = [];
+
+        // 1. Fetch new Evaluation entities
         if ($cohort) {
             $dbEvaluations = $this->evaluationRepository->findBy(['user' => $user, 'cohort' => $cohort], ['createdAt' => 'DESC']);
         } else {
@@ -44,12 +49,18 @@ class UserEvaluationsComponent
         }
 
         foreach ($dbEvaluations as $eval) {
+            $maxScore = $eval->getMaxScore();
+            if ($maxScore === null || $maxScore == 0) {
+                $maxScore = 20.0;
+            }
+            $scaleScore = ((float)$eval->getScore() / (float)$maxScore) * 20.0;
+
             $evaluations[] = [
                 'title' => $eval->getTitle(),
-                'course' => $eval->getCohort() ? $eval->getCohort()->getName() : 'Évaluation',
-                'score' => $eval->getScore(),
-                'total' => $eval->getMaxScore(),
-                'grade' => $this->calculateGrade(($eval->getScore() / ($eval->getMaxScore() ?: 1)) * 20),
+                'course' => $eval->getCohort() ? $eval->getCohort()->getTitle() : 'Évaluation',
+                'score' => (float)$eval->getScore(),
+                'total' => (float)$eval->getMaxScore(),
+                'grade' => $this->calculateGrade($scaleScore),
                 'date' => $eval->getCreatedAt(),
                 'duration' => null,
                 'feedback' => $eval->getFeedback(),
@@ -61,7 +72,14 @@ class UserEvaluationsComponent
         $moduleCompletions = $this->moduleCompletionRepository->findWithScoreByUser($user);
         foreach ($moduleCompletions as $mc) {
             if ($mc->getScore() !== null) {
-                // If the user has a current cohort, you could try to filter, but we include them generally
+                // Filter by cohort if set
+                if ($cohort) {
+                    $mcCourse = $mc->getModule() && $mc->getModule()->getCourses()->first() ? $mc->getModule()->getCourses()->first() : null;
+                    if (!$mcCourse || !$cohort->getCourses()->contains($mcCourse)) {
+                        continue;
+                    }
+                }
+
                 $evaluations[] = [
                     'title' => $mc->getModule() ? $mc->getModule()->getTitle() : 'Module',
                     'course' => $mc->getModule() && $mc->getModule()->getCourses()->first() ? $mc->getModule()->getCourses()->first()->getTitle() : 'Module',
@@ -80,6 +98,14 @@ class UserEvaluationsComponent
         $lessonCompletions = $this->completionRepository->findWithScoreByUser($user);
         foreach ($lessonCompletions as $lc) {
             if ($lc->getScore() !== null) {
+                // Filter by cohort if set
+                if ($cohort) {
+                    $lcCourse = $lc->getLesson() && $lc->getLesson()->getModule() && $lc->getLesson()->getModule()->getCourses()->first() ? $lc->getLesson()->getModule()->getCourses()->first() : null;
+                    if (!$lcCourse || !$cohort->getCourses()->contains($lcCourse)) {
+                        continue;
+                    }
+                }
+
                 $evaluations[] = [
                     'title' => $lc->getLesson() ? $lc->getLesson()->getTitle() : 'Lesson',
                     'course' => $lc->getLesson() && $lc->getLesson()->getModule() ? $lc->getLesson()->getModule()->getTitle() : 'Lesson',
@@ -95,31 +121,42 @@ class UserEvaluationsComponent
         }
 
         // Sort by date desc
-        usort($evaluations, fn($a, $b) => ($b['date'] ?? new \DateTimeImmutable('@0')) <=> ($a['date'] ?? new \DateTimeImmutable('@0')));
+        usort($evaluations, function (array $a, array $b): int {
+            $dateA = $a['date'] instanceof \DateTimeInterface ? $a['date'] : (current(array_filter([$a['date']], fn($d) => $d instanceof \DateTimeInterface)) ?: new \DateTimeImmutable('@0'));
+            $dateB = $b['date'] instanceof \DateTimeInterface ? $b['date'] : (current(array_filter([$b['date']], fn($d) => $d instanceof \DateTimeInterface)) ?: new \DateTimeImmutable('@0'));
+            return $dateB <=> $dateA;
+        });
 
+        $this->evaluationsCache = $evaluations;
         return $evaluations;
     }
 
     public function getStats(): array
     {
+        if ($this->statsCache !== null) {
+            return $this->statsCache;
+        }
+
         $evaluations = $this->getEvaluations();
 
         $scores = [];
         foreach ($evaluations as $eval) {
-            if (isset($eval['total']) && $eval['total'] > 0) {
-                $scores[] = ($eval['score'] / $eval['total']) * 20;
+            if (isset($eval['total']) && (float)$eval['total'] > 0) {
+                $scores[] = ((float)$eval['score'] / (float)$eval['total']) * 20.0;
             }
         }
 
         $count = count($scores);
-        $average = $count > 0 ? array_sum($scores) / $count : 0;
+        $average = $count > 0 ? array_sum($scores) / $count : 0.0;
         $bestScore = $count > 0 ? (float) max($scores) : 0.0;
 
-        return [
+        $this->statsCache = [
             'average' => round($average, 1),
             'completed' => count($evaluations),
             'best_grade' => $this->calculateGrade($bestScore),
         ];
+
+        return $this->statsCache;
     }
 
     public function calculateGrade(float $score): string
