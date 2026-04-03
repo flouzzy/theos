@@ -288,7 +288,24 @@ class LessonController extends AbstractController
 
         $this->gamificationService->addXp($user, 2, 'reply_posted');
 
-        // Notify parent comment author if they are not the same person
+        $this->notifyParentCommentAuthor($parent, $user, $lesson, $course, $module);
+
+        $this->addFlash('success', $this->translator->trans('Réponse ajoutée !'));
+
+        return $this->redirectToRoute('lesson_show', [
+            'courseSlug' => $course->getSlug(),
+            'moduleSlug' => $module->getSlug(),
+            'lessonId' => $lesson->getId()
+        ]);
+    }
+
+    private function notifyParentCommentAuthor(
+        Comment $parent,
+        \App\Entity\User $user,
+        Lesson $lesson,
+        Course $course,
+        Module $module
+    ): void {
         if ($parent->getUser() && $parent->getUser()->getId() !== $user->getId()) {
             $title = "💬 Nouveau message";
             $msg = sprintf("%s a répondu à votre commentaire dans la leçon : %s", $user->getFullname(), $lesson->getTitle());
@@ -309,14 +326,6 @@ class LessonController extends AbstractController
                 ], UrlGeneratorInterface::ABSOLUTE_URL)
             );
         }
-
-        $this->addFlash('success', $this->translator->trans('Réponse ajoutée !'));
-
-        return $this->redirectToRoute('lesson_show', [
-            'courseSlug' => $course->getSlug(),
-            'moduleSlug' => $module->getSlug(),
-            'lessonId' => $lesson->getId()
-        ]);
     }
 
     private function getNextLesson(Module $module, Lesson $lesson): ?Lesson
