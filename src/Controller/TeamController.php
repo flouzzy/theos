@@ -53,6 +53,11 @@ class TeamController extends AbstractController
     {
         $this->denyAccessUnlessGranted('EDIT', $team);
 
+        if (!$this->isCsrfTokenValid('add_member' . $team->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('team_dashboard');
+        }
+
         $email = $request->request->get('email');
         if ($email) {
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
@@ -68,10 +73,15 @@ class TeamController extends AbstractController
         return $this->redirectToRoute('team_dashboard');
     }
 
-    #[Route('/{id}/remove-member/{userId}', name: 'remove_member')]
-    public function removeMember(Team $team, int $userId, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/remove-member/{userId}', name: 'remove_member', methods: ['POST'])]
+    public function removeMember(Team $team, int $userId, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('EDIT', $team);
+
+        if (!$this->isCsrfTokenValid('remove_member' . $team->getId() . '_' . $userId, $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('team_dashboard');
+        }
 
         $user = $entityManager->getRepository(User::class)->find($userId);
         if ($user && $team->getMembers()->contains($user)) {
