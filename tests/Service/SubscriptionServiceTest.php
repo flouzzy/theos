@@ -155,4 +155,38 @@ class SubscriptionServiceTest extends TestCase
         $this->assertSame('cus_new_456', $user->getStripeCustomerId());
         $this->assertSame('https://checkout.stripe.com/c/pay/cs_test_456', $resultUrl);
     }
+
+    public function testHandleWebhookInvalidPayloadThrowsException(): void
+    {
+        $subscriptionServiceMock = $this->getMockBuilder(SubscriptionService::class)
+            ->setConstructorArgs([$this->stripeClient, $this->entityManager, $this->urlGenerator])
+            ->onlyMethods(['constructEvent'])
+            ->getMock();
+
+        $subscriptionServiceMock->expects($this->once())
+            ->method('constructEvent')
+            ->willThrowException(new \UnexpectedValueException('Invalid payload exception'));
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid payload');
+
+        $subscriptionServiceMock->handleWebhook('payload', 'sig_header', 'secret');
+    }
+
+    public function testHandleWebhookInvalidSignatureThrowsException(): void
+    {
+        $subscriptionServiceMock = $this->getMockBuilder(SubscriptionService::class)
+            ->setConstructorArgs([$this->stripeClient, $this->entityManager, $this->urlGenerator])
+            ->onlyMethods(['constructEvent'])
+            ->getMock();
+
+        $subscriptionServiceMock->expects($this->once())
+            ->method('constructEvent')
+            ->willThrowException(\Stripe\Exception\SignatureVerificationException::factory('Invalid signature exception', 'payload', 'sig_header'));
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid signature');
+
+        $subscriptionServiceMock->handleWebhook('payload', 'sig_header', 'secret');
+    }
 }
