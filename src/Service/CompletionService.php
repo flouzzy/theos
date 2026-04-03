@@ -38,32 +38,7 @@ class CompletionService
          * @var \App\Entity\User $user
          */
         $user = $this->security->getUser();
-        $allLessonsCompleted = true;
-        $lessons = $module->getLessons();
-
-        if ($lessons->count() > 0) {
-            $completions = $this->entityManager->getRepository(Completion::class)->findBy([
-                'user' => $user,
-                'lesson' => $lessons->toArray()
-            ]);
-
-            $completionMap = [];
-            foreach ($completions as $completion) {
-                if ($completion->getLesson()) {
-                    $completionMap[$completion->getLesson()->getId()] = $completion;
-                }
-            }
-
-            foreach ($lessons as $moduleLesson) {
-                $lessonId = $moduleLesson->getId();
-                $lessonCompletion = $completionMap[$lessonId] ?? null;
-
-                if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
-                    $allLessonsCompleted = false;
-                    break;
-                }
-            }
-        }
+        $allLessonsCompleted = $this->areAllModuleLessonsCompleted($user, $module);
 
         $moduleCompletion = $this->entityManager->getRepository(ModuleCompletion::class)->findOneBy([
             'user' => $user,
@@ -144,6 +119,38 @@ class CompletionService
         }
 
         return $courseCompletion;
+    }
+
+    private function areAllModuleLessonsCompleted(\App\Entity\User $user, Module $module): bool
+    {
+        $lessons = $module->getLessons();
+
+        if ($lessons->count() === 0) {
+            return true;
+        }
+
+        $completions = $this->entityManager->getRepository(Completion::class)->findBy([
+            'user' => $user,
+            'lesson' => $lessons->toArray()
+        ]);
+
+        $completionMap = [];
+        foreach ($completions as $completion) {
+            if ($completion->getLesson()) {
+                $completionMap[$completion->getLesson()->getId()] = $completion;
+            }
+        }
+
+        foreach ($lessons as $moduleLesson) {
+            $lessonId = $moduleLesson->getId();
+            $lessonCompletion = $completionMap[$lessonId] ?? null;
+
+            if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function areAllCourseLessonsCompleted(\App\Entity\User $user, \App\Entity\Course $course): bool
