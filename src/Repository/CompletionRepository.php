@@ -237,6 +237,42 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
     /**
+     * Fetches up to $limit latest completions for all given users.
+     * Returns an array grouped by user ID, containing an array of createdAt DateTimeImmutable objects.
+     * @param User[] $users
+     * @return array<int, \DateTimeImmutable[]> [userId => [createdAt, ...]]
+     */
+    public function findLatestCompletionsGroupedByUser(array $users, int $limit = 20): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        // Fetch all completions for the given users, ordered by user and createdAt DESC
+        $results = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.user) as userId', 'c.createdAt')
+            ->where('c.user IN (:users)')
+            ->setParameter('users', $users)
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $grouped = [];
+        foreach ($results as $row) {
+            $userId = (int) $row['userId'];
+            if (!isset($grouped[$userId])) {
+                $grouped[$userId] = [];
+            }
+            if (count($grouped[$userId]) < $limit) {
+                // Keep only the first $limit records per user, which are already sorted DESC
+                $grouped[$userId][] = $row['createdAt'];
+            }
+        }
+
+        return $grouped;
+    }
+
+    /**
      * @return array<int, array{completionCount: int, avgScore: float}> [lessonId => stats]
      */
     public function getEfficacyDataForLessons(array $lessonIds): array

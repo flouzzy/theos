@@ -340,6 +340,8 @@ class TriggerServiceTest extends TestCase
             ->method('findAll')
             ->willReturn([$user]);
 
+        $user->method('getId')->willReturn(1);
+
         $completion1 = $this->createMock(Completion::class);
         $completion1->method('getCreatedAt')->willReturn(new \DateTimeImmutable('2023-10-25 20:15:00', new \DateTimeZone('UTC')));
 
@@ -355,9 +357,15 @@ class TriggerServiceTest extends TestCase
         $completion5 = $this->createMock(Completion::class);
         $completion5->method('getCreatedAt')->willReturn(new \DateTimeImmutable('2023-10-29 20:05:00', new \DateTimeZone('UTC')));
 
-        $this->completionRepository->method('findBy')
-            ->willReturnMap([
-                [['user' => $user], ['createdAt' => 'DESC'], 20, null, [$completion1, $completion2, $completion3, $completion4, $completion5]]
+        $this->completionRepository->method('findLatestCompletionsGroupedByUser')
+            ->willReturn([
+                1 => [
+                    $completion1->getCreatedAt(),
+                    $completion2->getCreatedAt(),
+                    $completion3->getCreatedAt(),
+                    $completion4->getCreatedAt(),
+                    $completion5->getCreatedAt(),
+                ]
             ]);
 
         $this->urlGenerator->method('generate')->willReturn('http://example.com/app');

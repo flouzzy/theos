@@ -36,10 +36,13 @@ class TriggerService
     {
         $users = $this->userRepository->findAll();
 
+        // Pre-fetch completions to find habits for all users to prevent N+1 queries
+        $recentCompletionsGrouped = $this->completionRepository->findLatestCompletionsGroupedByUser($users, 20);
+
         foreach ($users as $user) {
             $this->processStreakTrigger($user);
             $this->processDailyDigestTrigger($user);
-            $this->processHabitTrigger($user);
+            $this->processHabitTrigger($user, $recentCompletionsGrouped);
             $this->processInactivityTrigger($user);
             $this->processMilestoneTrigger($user);
             $this->processFomoTrigger($user);
@@ -261,18 +264,24 @@ class TriggerService
     /**
      * Trigger #5: AI nudge: 'You usually study at 8 PM, ready to start?'
      */
-    private function processHabitTrigger(User $user): void
+    private function processHabitTrigger(User $user, ?array $recentCompletionsGrouped = null): void
     {
         // Get last 20 completions to find habits
-        $completions = $this->completionRepository->findBy(['user' => $user], ['createdAt' => 'DESC'], 20);
+        if ($recentCompletionsGrouped !== null) {
+            $completionDates = $recentCompletionsGrouped[$user->getId()] ?? [];
+        } else {
+            // Fallback for isolated calls, fetch directly
+            $completions = $this->completionRepository->findBy(['user' => $user], ['createdAt' => 'DESC'], 20);
+            $completionDates = array_map(fn($c) => $c->getCreatedAt(), $completions);
+        }
         
-        if (count($completions) < 5) {
+        if (count($completionDates) < 5) {
             return;
         }
 
         $hours = [];
-        foreach ($completions as $completion) {
-            $hour = (int)$completion->getCreatedAt()->format('H');
+        foreach ($completionDates as $createdAt) {
+            $hour = (int)$createdAt->format('H');
             $hours[$hour] = ($hours[$hour] ?? 0) + 1;
         }
 
