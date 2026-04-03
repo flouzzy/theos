@@ -58,6 +58,9 @@ services:
       - database_data:/var/lib/mysql:rw
     ports:
       - "${PUB_MYSQL_PORT:-3307}:3306"
+    networks:
+      - default                  # Pour parler au PHP de l'Académie
+      - database-management-net  # Pour parler à Adminer
 
   redis:
     image: redis:7-alpine
@@ -72,3 +75,8 @@ volumes:
 
   ###> doctrine/doctrine-bundle ###
   database_data: ###< doctrine/doctrine-bundle ###
+
+networks:
+  default:
+  database-management-net:
+    external: true
