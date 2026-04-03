@@ -8,6 +8,7 @@ use GeminiAPI\Resources\Content;
 use GeminiAPI\Resources\Parts\TextPart;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Repository\SiteSettingRepository;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class CoachAIAgent
 {
@@ -29,7 +30,7 @@ class CoachAIAgent
      */
     public function getHistory(\App\Entity\User $user): array
     {
-        return $this->cache->get('ai_coach_history_' . $user->getId(), function () {
+        return $this->cache->get('ai_coach_history_' . $user->getId(), function (ItemInterface $item) {
             return [];
         });
     }
