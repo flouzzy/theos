@@ -156,37 +156,37 @@ class SubscriptionServiceTest extends TestCase
         $this->assertSame('https://checkout.stripe.com/c/pay/cs_test_456', $resultUrl);
     }
 
-    public function testHandleWebhookInvalidPayloadThrowsException(): void
+    public function testHandleWebhookInvalidPayload(): void
     {
-        $subscriptionServiceMock = $this->getMockBuilder(SubscriptionService::class)
+        $subscriptionService = $this->getMockBuilder(SubscriptionService::class)
             ->setConstructorArgs([$this->stripeClient, $this->entityManager, $this->urlGenerator])
             ->onlyMethods(['constructEvent'])
             ->getMock();
 
-        $subscriptionServiceMock->expects($this->once())
+        $subscriptionService->expects($this->once())
             ->method('constructEvent')
-            ->willThrowException(new \UnexpectedValueException('Invalid payload exception'));
+            ->willThrowException(new \UnexpectedValueException('Invalid payload'));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid payload');
 
-        $subscriptionServiceMock->handleWebhook('payload', 'sig_header', 'secret');
+        $subscriptionService->handleWebhook('payload', 'sig', 'secret');
     }
 
-    public function testHandleWebhookInvalidSignatureThrowsException(): void
+    public function testHandleWebhookInvalidSignature(): void
     {
-        $subscriptionServiceMock = $this->getMockBuilder(SubscriptionService::class)
+        $subscriptionService = $this->getMockBuilder(SubscriptionService::class)
             ->setConstructorArgs([$this->stripeClient, $this->entityManager, $this->urlGenerator])
             ->onlyMethods(['constructEvent'])
             ->getMock();
 
-        $subscriptionServiceMock->expects($this->once())
+        $subscriptionService->expects($this->once())
             ->method('constructEvent')
-            ->willThrowException(\Stripe\Exception\SignatureVerificationException::factory('Invalid signature exception', 'payload', 'sig_header'));
+            ->willThrowException(new \Stripe\Exception\SignatureVerificationException('Invalid signature', 'sig'));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid signature');
 
-        $subscriptionServiceMock->handleWebhook('payload', 'sig_header', 'secret');
+        $subscriptionService->handleWebhook('payload', 'sig', 'secret');
     }
 }
