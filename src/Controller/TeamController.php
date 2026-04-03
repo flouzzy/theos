@@ -28,13 +28,25 @@ class TeamController extends AbstractController
         // Récupérer les équipes possédées par le manager
         $teams = $teamRepository->findBy(['owner' => $user]);
 
+        $allMembers = [];
+        foreach ($teams as $team) {
+            foreach ($team->getMembers() as $member) {
+                $allMembers[$member->getId()] = $member;
+            }
+        }
+
+        $progresses = [];
+        if (!empty($allMembers)) {
+            $progresses = $completionCalculator->calculateGlobalProgressForUsers(array_values($allMembers));
+        }
+
         $teamsData = [];
         foreach ($teams as $team) {
             $membersData = [];
             foreach ($team->getMembers() as $member) {
                 $membersData[] = [
                     'user' => $member,
-                    'progress' => $completionCalculator->calculateGlobalProgress($member),
+                    'progress' => $progresses[$member->getId()] ?? 0.0,
                 ];
             }
             $teamsData[] = [
