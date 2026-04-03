@@ -22,7 +22,8 @@ class CompletionCalculatorTest extends TestCase
     protected function setUp(): void
     {
         $this->completionRepository = $this->createMock(CompletionRepository::class);
-        $this->completionCalculator = new CompletionCalculator($this->completionRepository);
+        $this->entityManager = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
+        $this->completionCalculator = new CompletionCalculator($this->completionRepository, $this->entityManager);
     }
 
     public function testCalculateCompletionPercentageEmptyCourse(): void
