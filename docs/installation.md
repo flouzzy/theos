@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide will help you set up **Le Rocher Académie** on your local machine or production environment.
+This guide will help you set up **Theos** on your local machine or production environment.
 
 ## Prerequisites
 
@@ -14,8 +14,8 @@ This guide will help you set up **Le Rocher Académie** on your local machine or
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/egliselerocher/academie.git
-cd academie
+git clone git@github.com:flouzzy/theos.git
+cd theos
 ```
 
 ### 2. Configure Environment Variables
