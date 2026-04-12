@@ -1,10 +1,7 @@
-# Le Rocher Académie
+# Theos
 
-**Le Rocher Académie** is a modern Learning Management System (LMS) built with Symfony 8, designed to deliver engaging online courses with a seamless user experience.
-
-## 🎯 What is Le Rocher Académie?
-
-Le Rocher Académie is an online learning platform that enables educators to create, manage, and deliver comprehensive courses to learners. The platform provides a rich set of features for both administrators and students, including course management, progress tracking, interactive lessons, and community engagement.
+**Theos** is a modern Learning Management System (LMS) built with Symfony 8, designed to deliver engaging online courses with a seamless user experience.
+The platform enables educators to create, manage, and deliver comprehensive courses to learners. The platform provides a rich set of features for both administrators and students, including course management, progress tracking, interactive lessons, and community engagement.
 
 ## ✨ Key Features
 
@@ -35,8 +32,8 @@ Le Rocher Académie is an online learning platform that enables educators to cre
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/egliselerocher/academie.git
-   cd academie
+   git clone git@github.com:flouzzy/theos.git
+   cd theos
    ```
 
 2. **Start Docker containers**
