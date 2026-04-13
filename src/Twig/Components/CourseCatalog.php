@@ -28,11 +28,26 @@ class CourseCatalog
     #[LiveProp]
     public array $subscribedCourseIds = [];
 
+    private ?Cohort $selectedCohortEntity = null;
+
     public function __construct(
         private CourseRepository $courseRepository,
         private CohortRepository $cohortRepository,
         private Security $security
     ) {
+    }
+
+    private function getSelectedCohort(): ?Cohort
+    {
+        if (!$this->cohortId) {
+            return null;
+        }
+
+        if (null === $this->selectedCohortEntity || $this->selectedCohortEntity->getId() !== $this->cohortId) {
+            $this->selectedCohortEntity = $this->cohortRepository->find($this->cohortId);
+        }
+
+        return $this->selectedCohortEntity;
     }
 
     public function mount(): void
@@ -55,7 +70,7 @@ class CourseCatalog
         $activeCohorts = [];
 
         if ($this->cohortId) {
-            $selectedCohort = $this->cohortRepository->find($this->cohortId);
+            $selectedCohort = $this->getSelectedCohort();
             if ($selectedCohort) {
                 $activeCohorts = [$selectedCohort];
             }
@@ -74,7 +89,7 @@ class CourseCatalog
     public function getSelectedCohortTitle(): string
     {
         if ($this->cohortId) {
-            $cohort = $this->cohortRepository->find($this->cohortId);
+            $cohort = $this->getSelectedCohort();
             return $cohort ? $cohort->getTitle() : 'Toutes les promos';
         }
         return 'Toutes les promos';
