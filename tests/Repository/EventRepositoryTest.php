@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Repository;
 
+use App\Entity\Calendar;
 use App\Entity\Cohort;
 use App\Entity\Event;
 use App\Repository\EventRepository;
@@ -74,7 +75,7 @@ class EventRepositoryTest extends TestCase
             }))
             ->willReturn($qb);
 
-        $cohort = new Cohort();
+        $cohort = (new Cohort())->setCalendar(new Calendar());
         $repository->findUpdatedEvents($cohort);
     }
 }
