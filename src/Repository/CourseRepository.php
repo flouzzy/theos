@@ -116,8 +116,9 @@ class CourseRepository extends ServiceEntityRepository
         }
 
         if ($search) {
+            $escapedSearch = addcslashes($search, '%_');
             $qb->andWhere('(c.title LIKE :search OR c.description LIKE :search)')
-               ->setParameter('search', '%' . $search . '%');
+               ->setParameter('search', '%' . $escapedSearch . '%');
         }
 
         $qb->addOrderBy('c.itemOrder', 'ASC')
