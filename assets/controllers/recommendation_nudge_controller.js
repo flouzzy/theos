@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import DOMPurify from 'dompurify';
 
 export default class extends Controller {
     static values = {
@@ -27,7 +28,7 @@ export default class extends Controller {
             if (html.trim() === '') return;
 
             const container = document.createElement('div');
-            container.innerHTML = html;
+            container.innerHTML = DOMPurify.sanitize(html);
             document.body.appendChild(container.firstElementChild);
         } catch (error) {
             console.error('Failed to load recommendation nudge:', error);
