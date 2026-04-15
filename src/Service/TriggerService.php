@@ -233,7 +233,9 @@ class TriggerService
     {
         $userCompletedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
 
-        foreach ($user->getCourses() as $course) {
+        $courses = $this->courseRepository->findCoursesWithModulesAndLessonsForUser($user);
+
+        foreach ($courses as $course) {
             $allLessons = [];
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {

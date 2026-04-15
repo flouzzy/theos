@@ -37,10 +37,11 @@ class RecalculateLeaderboardCommand extends Command
         $users = $this->userRepository->findAll();
         $updatedCount = 0;
 
+        $completionCounts = $this->completionRepository->countAllGroupedByUser();
+
         foreach ($users as $user) {
             // Count completions for this user
-            $completions = $this->completionRepository->findBy(['user' => $user]);
-            $completionCount = count($completions);
+            $completionCount = $completionCounts[$user->getId()] ?? 0;
             $expectedXp = $completionCount * self::XP_PER_COMPLETION;
 
             $currentXp = $user->getXp();

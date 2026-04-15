@@ -20,4 +20,18 @@ class CohortRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Cohort::class);
     }
+
+    /**
+     * @return Cohort[]
+     */
+    public function findAllWithUsersAndCourses(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.users', 'u')
+            ->addSelect('u')
+            ->leftJoin('c.courses', 'co')
+            ->addSelect('co')
+            ->getQuery()
+            ->getResult();
+    }
 }
