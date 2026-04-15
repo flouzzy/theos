@@ -31,7 +31,7 @@ class SearchModal
             return ['courses' => [], 'lessons' => []];
         }
 
-        $escapedQuery = addcslashes($this->query, '%_');
+        $escapedQuery = addcslashes($this->query, '%_\\');
 
         $courses = $this->courseRepository->createQueryBuilder('c')
             ->where('c.title LIKE :query')
