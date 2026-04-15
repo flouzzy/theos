@@ -182,7 +182,7 @@ class SubscriptionServiceTest extends TestCase
 
         $subscriptionService->expects($this->once())
             ->method('constructEvent')
-            ->willThrowException(new \Stripe\Exception\SignatureVerificationException('Invalid signature', 'sig'));
+            ->willThrowException(\Stripe\Exception\SignatureVerificationException::factory('Invalid signature', 'payload', 'sig'));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid signature');

@@ -53,7 +53,7 @@ class SubscriptionController extends AbstractController
         try {
             $subscriptionService->handleWebhook($payload, $sigHeader, $webhookSecret);
         } catch (\Exception $e) {
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            return new Response('Webhook error', Response::HTTP_BAD_REQUEST);
         }
 
         return new Response('Webhook handled', Response::HTTP_OK);

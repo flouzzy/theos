@@ -61,6 +61,27 @@ class CohortController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $newCourses = $cohort->getCourses();
+
+            // Determine if any new courses were added
+            $hasNewCourses = false;
+            foreach ($newCourses as $course) {
+                if (!in_array($course, $originalCourses, true)) {
+                    $hasNewCourses = true;
+                    break;
+                }
+            }
+
+            // Eagerly fetch users if needed, avoiding N+1 query when the event is dispatched
+            if ($hasNewCourses) {
+                $entityManager->getRepository(Cohort::class)->createQueryBuilder('c')
+                    ->leftJoin('c.users', 'u')
+                    ->addSelect('u')
+                    ->where('c.id = :id')
+                    ->setParameter('id', $cohort->getId())
+                    ->getQuery()
+                    ->getResult();
+            }
+
             foreach ($newCourses as $course) {
                 if (!in_array($course, $originalCourses, true)) {
                     $dispatcher->dispatch(new CohortContentUnlockedEvent($cohort, $course));

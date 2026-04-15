@@ -18,7 +18,7 @@ class InstructorController extends AbstractController
         CohortRepository $cohortRepository,
         EngagementAnalyzer $engagementAnalyzer
     ): Response {
-        $cohorts = $cohortRepository->findAll();
+        $cohorts = $cohortRepository->findAllWithUsersAndCourses();
         $cohortData = [];
 
         foreach ($cohorts as $cohort) {
