@@ -37,6 +37,7 @@ class TriggerServiceTest extends TestCase
         $this->notificationService = $this->createMock(NotificationService::class);
         $this->aiAgent = $this->createMock(CoachAIAgent::class);
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $this->courseRepository = $this->createMock(\App\Repository\CourseRepository::class);
         $this->clock = new MockClock();
 
         $this->triggerService = new TriggerService(
@@ -45,6 +46,7 @@ class TriggerServiceTest extends TestCase
             $this->notificationService,
             $this->aiAgent,
             $this->urlGenerator,
+            $this->courseRepository,
             $this->clock
         );
     }
@@ -297,6 +299,9 @@ class TriggerServiceTest extends TestCase
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
 
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
+
+        $this->courseRepository->method('findCoursesWithModulesAndLessonsForUser')
+            ->willReturn([$course]);
 
         // 13:00 to avoid DailyDigest
         $this->clock->modify('2023-11-01 13:00:00');

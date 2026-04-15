@@ -88,4 +88,7 @@ return [
     'lodash.isequal' => [
         'version' => '4.5.0',
     ],
+    'dompurify' => [
+        'version' => '3.0.9',
+    ],
 ];

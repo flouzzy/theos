@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 
 use App\Repository\TriviaQuestionRepository;
 use App\Service\GamificationService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,15 +27,18 @@ class TriviaController extends AbstractController
     }
 
     #[Route('/trivia/check', name: 'trivia_check', methods: ['POST'])]
-    public function check(Request $request, TriviaQuestionRepository $repo, GamificationService $gam): JsonResponse
+    public function check(Request $request, TriviaQuestionRepository $repo, GamificationService $gam, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $q = $repo->find($data['id'] ?? 0);
         
         if (!$q) return $this->json(['error' => 'Invalid question'], Response::HTTP_BAD_REQUEST);
 
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
         if ($q->getCorrectAnswer() === ($data['answer'] ?? '')) {
-            $user = $this->getUser();
+
             $user->setQuizCombo($user->getQuizCombo() + 1);
             $multiplier = 1 + (int)($user->getQuizCombo() / 5) * 0.1; // +10% tous les 5
             $gam->addXp($user, (int)(20 * $multiplier), 'trivia_win');

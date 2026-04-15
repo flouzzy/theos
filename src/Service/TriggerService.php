@@ -7,6 +7,7 @@ use App\Entity\Lesson;
 use App\Entity\Module;
 use App\Repository\UserRepository;
 use App\Repository\CompletionRepository;
+use App\Repository\CourseRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Psr\Clock\ClockInterface;
@@ -21,6 +22,7 @@ class TriggerService
         private NotificationService $notificationService,
         private CoachAIAgent $aiAgent,
         private UrlGeneratorInterface $urlGenerator,
+        private CourseRepository $courseRepository,
         private ?ClockInterface $clock = null,
     ) {}
 
@@ -231,7 +233,9 @@ class TriggerService
     {
         $userCompletedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
 
-        foreach ($user->getCourses() as $course) {
+        $courses = $this->courseRepository->findCoursesWithModulesAndLessonsForUser($user);
+
+        foreach ($courses as $course) {
             $allLessons = [];
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
@@ -377,8 +381,9 @@ class TriggerService
         // Fetch all completed lesson IDs for the user in a single query
         $completedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
 
-        // Find the first non-completed lesson in the user's courses
-        foreach ($user->getCourses() as $course) {
+        // Find the first non-completed lesson in the user's courses, eager loading modules and lessons
+        $courses = $this->courseRepository->findCoursesWithModulesAndLessonsForUser($user);
+        foreach ($courses as $course) {
             foreach ($course->getModules() as $module) {
                 $lesson = $this->findNextLessonInModule($module, $completedLessonIds);
                 if ($lesson !== null) {

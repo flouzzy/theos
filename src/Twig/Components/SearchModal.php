@@ -31,10 +31,12 @@ class SearchModal
             return ['courses' => [], 'lessons' => []];
         }
 
+        $escapedQuery = addcslashes($this->query, '%_\\');
+
         $courses = $this->courseRepository->createQueryBuilder('c')
             ->where('c.title LIKE :query')
             ->orWhere('c.description LIKE :query')
-            ->setParameter('query', '%' . $this->query . '%')
+            ->setParameter('query', '%' . $escapedQuery . '%')
             ->setMaxResults(5)
             ->getQuery()
             ->getResult();
@@ -42,7 +44,7 @@ class SearchModal
         $lessons = $this->lessonRepository->createQueryBuilder('l')
             ->where('l.title LIKE :query')
             ->orWhere('l.content LIKE :query')
-            ->setParameter('query', '%' . $this->query . '%')
+            ->setParameter('query', '%' . $escapedQuery . '%')
             ->setMaxResults(5)
             ->getQuery()
             ->getResult();

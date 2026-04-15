@@ -7,7 +7,6 @@ namespace App\Controller\Api;
 use App\Entity\User;
 use App\Entity\Course;
 use App\Entity\Module;
-use App\Entity\Lesson;
 use App\Entity\PushSubscription;
 use App\Repository\CourseRepository;
 use App\Service\JWT;

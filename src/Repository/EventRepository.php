@@ -35,8 +35,9 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('calendar', $calendar);
 
         if ($query !== '') {
+            $escapedQuery = addcslashes($query, '%_');
             $qb->andWhere('e.title LIKE :query')
-               ->setParameter('query', '%' . $query . '%');
+               ->setParameter('query', '%' . $escapedQuery . '%');
         }
 
         if ($typeId !== null) {

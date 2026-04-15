@@ -3,19 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Course;
-use App\Entity\CourseCompletion;
 use App\Entity\User;
 use App\Event\CourseSubscribedEvent;
-use App\Repository\CohortRepository;
 use App\Repository\CompletionRepository;
 use App\Repository\CourseCompletionRepository;
 use App\Repository\CourseRepository;
-use App\Service\CohortSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
