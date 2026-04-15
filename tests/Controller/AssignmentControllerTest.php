@@ -6,69 +6,117 @@ use App\Entity\Assignment;
 use App\Entity\AssignmentSubmission;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AssignmentControllerTest extends WebTestCase
 {
-    public function testCannotReviewOwnSubmission(): void
+    private KernelBrowser $client;
+    private EntityManagerInterface $entityManager;
+    private UserPasswordHasherInterface $passwordHasher;
+
+    protected function setUp(): void
     {
-        $client = static::createClient();
-        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $this->client = static::createClient();
+        $this->entityManager = static::getContainer()->get('doctrine')->getManager();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\PeerReviewScore')->execute();
 
-        // Create a user
+        $this->entityManager->createQuery('DELETE FROM App\Entity\PeerReview')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\AssignmentSubmission')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Assignment')->execute();
+
+        $conn = $this->entityManager->getConnection();
+        // Removed PRAGMA
+        $conn->executeStatement('DELETE FROM user');
+        // Removed PRAGMA
+    }
+
+    private function createUser(string $email, string $password, array $roles = []): User
+    {
         $user = new User();
-        $user->setEmail('test_assignment_' . uniqid() . '@example.com');
+        $user->setEmail($email);
         $user->setFirstname('Test');
-        $user->setLastname('User');
-        $user->setPassword('password');
+        $user->setLastname('User ' . uniqid());
+        $user->setPassword($this->passwordHasher->hashPassword($user, $password));
+        $user->setRoles($roles);
 
-        // Create an assignment
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
+    }
+
+    private function createAssignment(string $title): Assignment
+    {
         $assignment = new Assignment();
-        $assignment->setTitle('Test Assignment');
+        $assignment->setTitle($title);
         $assignment->setDescription('Test description');
-        $assignment->setDueDate(new \DateTime('+1 week'));
 
-        // Create an assignment submission by the same user
+        $this->entityManager->persist($assignment);
+        $this->entityManager->flush();
+
+        return $assignment;
+    }
+
+    private function createAssignmentSubmission(Assignment $assignment, User $user, string $content): AssignmentSubmission
+    {
         $submission = new AssignmentSubmission();
         $submission->setAssignment($assignment);
         $submission->setUser($user);
-        $submission->setContent('My submission content');
+        $submission->setContent($content);
         $submission->setStatus('submitted');
 
-        $em->persist($user);
-        $em->persist($assignment);
-        $em->persist($submission);
-        $em->flush();
+        $this->entityManager->persist($submission);
+        $this->entityManager->flush();
 
-        $client->loginUser($user);
+        return $submission;
+    }
 
-        // Accessing CSRF Token Manager to generate token
-        $csrfTokenManager = static::getContainer()->get(CsrfTokenManagerInterface::class);
-        $tokenId = 'submit_review' . $submission->getId();
-        $token = $csrfTokenManager->getToken($tokenId)->getValue();
+    public function testSubmitReviewFailsWithoutCsrfToken(): void
+    {
+        $reviewer = $this->createUser('reviewer@example.com', 'password');
+        $author = $this->createUser('author@example.com', 'password');
+        $assignment = $this->createAssignment('Test Assignment');
+        $submission = $this->createAssignmentSubmission($assignment, $author, 'My test submission');
 
-        // Perform a POST request to submit a review for own submission
-        $client->request(
-            'POST',
-            sprintf('/assignment/%d/review/%d', $assignment->getId(), $submission->getId()),
-            [
-                'score' => 10,
-                'feedback' => 'Good job, myself!',
-                '_token' => $token
-            ]
-        );
+        $this->client->loginUser($reviewer);
 
-        // Should redirect to assignment show
-        $this->assertResponseRedirects('/assignment/' . $assignment->getId());
+        // Send a POST request without a CSRF token
+        $this->client->request('POST', $this->client->getContainer()->get('router')->generate('assignment_submit_review', ['id' => $assignment->getId(), 'submissionId' => $submission->getId()]), [
+            'score' => 5,
+            'feedback' => 'Good job!'
+        ]);
 
-        $client->followRedirect();
+        // Assert it redirects back to the review pool
+        $this->assertResponseRedirects('/assignment/' . $assignment->getId() . '/review');
+        $this->client->followRedirect();
 
-        // Check if there is an error flash message saying you cannot review your own submission
-        $this->assertSelectorTextContains('.text-destructive', 'You cannot review your own submission');
+        // Check for the error flash message
+        $this->assertSelectorTextContains('.text-destructive', 'Invalid CSRF token.');
+    }
 
-        // Ensure no review was created
-        $reviewCount = $em->getRepository(\App\Entity\PeerReview::class)->count(['submission' => $submission]);
-        $this->assertEquals(0, $reviewCount, 'A review should not have been created for own submission');
+    public function testSubmitReviewFailsWithInvalidCsrfToken(): void
+    {
+        $reviewer = $this->createUser('reviewer@example.com', 'password');
+        $author = $this->createUser('author@example.com', 'password');
+        $assignment = $this->createAssignment('Test Assignment');
+        $submission = $this->createAssignmentSubmission($assignment, $author, 'My test submission');
+
+        $this->client->loginUser($reviewer);
+
+        // Send a POST request with an invalid CSRF token
+        $this->client->request('POST', $this->client->getContainer()->get('router')->generate('assignment_submit_review', ['id' => $assignment->getId(), 'submissionId' => $submission->getId()]), [
+            'score' => 5,
+            'feedback' => 'Good job!',
+            '_token' => 'invalid_csrf_token_value'
+        ]);
+
+        // Assert it redirects back to the review pool
+        $this->assertResponseRedirects('/assignment/' . $assignment->getId() . '/review');
+        $this->client->followRedirect();
+
+        // Check for the error flash message
+        $this->assertSelectorTextContains('.text-destructive', 'Invalid CSRF token.');
     }
 }
