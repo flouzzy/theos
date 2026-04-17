@@ -130,4 +130,103 @@ class CompletionCalculatorTest extends TestCase
 
         $this->assertEquals(0, $result);
     }
+
+    public function testCalculateCohortProgressEmptyCourses(): void
+    {
+        $user = $this->createMock(User::class);
+        $coursesEntities = [];
+
+        $this->completionRepository->method('findCompletedLessonIdsByUser')
+            ->with($user)
+            ->willReturn([]);
+
+        $result = $this->completionCalculator->calculateCohortProgress($user, $coursesEntities);
+
+        $this->assertEquals([
+            'coursesData' => [],
+            'globalProgress' => 0,
+            'totalHours' => 0,
+            'newLessonsCount' => 0,
+        ], $result);
+    }
+
+    public function testCalculateCohortProgressWithCoursesAndCompletions(): void
+    {
+        $user = $this->createMock(User::class);
+
+        $lesson1 = $this->createMock(Lesson::class);
+        $lesson1->method('getId')->willReturn(1);
+        $lesson1->method('getDuration')->willReturn(120);
+
+        $lesson2 = $this->createMock(Lesson::class);
+        $lesson2->method('getId')->willReturn(2);
+        $lesson2->method('getDuration')->willReturn(60);
+
+        $lesson3 = $this->createMock(Lesson::class);
+        $lesson3->method('getId')->willReturn(3);
+        $lesson3->method('getDuration')->willReturn(60);
+
+        $module1 = $this->createMock(Module::class);
+        $module1->method('getLessons')->willReturn(new ArrayCollection([$lesson1, $lesson2]));
+
+        $module2 = $this->createMock(Module::class);
+        $module2->method('getLessons')->willReturn(new ArrayCollection([$lesson3]));
+
+        $course1 = $this->createMock(Course::class);
+        $course1->method('getModules')->willReturn(new ArrayCollection([$module1]));
+
+        $course2 = $this->createMock(Course::class);
+        $course2->method('getModules')->willReturn(new ArrayCollection([$module2]));
+
+        $this->completionRepository->method('findCompletedLessonIdsByUser')
+            ->with($user)
+            ->willReturn([1, 3]);
+
+        $result = $this->completionCalculator->calculateCohortProgress($user, [$course1, $course2]);
+
+        $this->assertCount(2, $result['coursesData']);
+
+        $this->assertSame($course1, $result['coursesData'][0]['course']);
+        $this->assertEquals(50.0, $result['coursesData'][0]['progress']);
+
+        $this->assertSame($course2, $result['coursesData'][1]['course']);
+        $this->assertEquals(100.0, $result['coursesData'][1]['progress']);
+
+        $this->assertEquals(67.0, $result['globalProgress']); // 2 / 3 completed
+        $this->assertEquals(4.0, $result['totalHours']); // (120+60+60)/60
+        $this->assertEquals(1, $result['newLessonsCount']); // 3 - 2
+    }
+
+    public function testCalculateCohortProgressWithNullDuration(): void
+    {
+        $user = $this->createMock(User::class);
+
+        $lesson1 = $this->createMock(Lesson::class);
+        $lesson1->method('getId')->willReturn(1);
+        $lesson1->method('getDuration')->willReturn(null); // testing null duration
+
+        $module1 = $this->createMock(Module::class);
+        $module1->method('getLessons')->willReturn(new ArrayCollection([$lesson1]));
+
+        $course1 = $this->createMock(Course::class);
+        $course1->method('getModules')->willReturn(new ArrayCollection([$module1]));
+
+        $this->completionRepository->method('findCompletedLessonIdsByUser')
+            ->with($user)
+            ->willReturn([1]);
+
+        $result = $this->completionCalculator->calculateCohortProgress($user, [$course1]);
+
+        $this->assertEquals([
+            'coursesData' => [
+                [
+                    'course' => $course1,
+                    'progress' => 100.0
+                ]
+            ],
+            'globalProgress' => 100.0,
+            'totalHours' => 0.0, // null became 0
+            'newLessonsCount' => 0,
+        ], $result);
+    }
 }
