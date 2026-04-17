@@ -153,35 +153,64 @@ class MediaManager
         return false;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function parseAndValidateUrl(string $url): ?array
+    {
+        $parts = parse_url($url);
+        if (!$parts || !isset($parts['host'])) {
+            return null;
+        }
+
+        $parts['scheme'] = $parts['scheme'] ?? 'http';
+        $parts['port'] = $parts['port'] ?? ($parts['scheme'] === 'https' ? 443 : 80);
+
+        if (!in_array($parts['port'], [80, 443, 8080])) {
+            return null;
+        }
+
+        $safeIp = $this->getSafeIp($parts['host']);
+        if (!$safeIp) {
+            return null;
+        }
+
+        $parts['safeIp'] = $safeIp;
+
+        return $parts;
+    }
+
+    /**
+     * @param array<string, mixed> $parts
+     */
+    private function resolveRedirectLocation(string $location, array $parts): ?string
+    {
+        if (str_starts_with($location, '/')) {
+            $portSuffix = isset($parts['port']) && !in_array($parts['port'], [80, 443]) ? ':' . $parts['port'] : '';
+            return $parts['scheme'] . '://' . $parts['host'] . $portSuffix . $location;
+        }
+
+        if (!preg_match('/^https?:\/\//i', $location)) {
+            return null;
+        }
+
+        return $location;
+    }
+
     private function fetchFileContent(string $url): ?string
     {
         $maxRedirects = 3;
 
         for ($i = 0; $i <= $maxRedirects; $i++) {
-            $parts = parse_url($url);
-            if (!$parts || !isset($parts['host'])) {
-                return null;
-            }
-
-            $host = $parts['host'];
-            // Default ports: 80 for http, 443 for https
-            $scheme = $parts['scheme'] ?? 'http';
-            $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
-
-            // Allow only standard ports to reduce attack surface
-            if (!in_array($port, [80, 443, 8080])) {
-                return null;
-            }
-
-            $safeIp = $this->getSafeIp($host);
-            if (!$safeIp) {
+            $parts = $this->parseAndValidateUrl($url);
+            if (!$parts) {
                 return null;
             }
 
             $response = $this->httpClient->request('GET', $url, [
                 'timeout' => 30,
                 'max_redirects' => 0,
-                'resolve' => [$host => $safeIp],
+                'resolve' => [$parts['host'] => $parts['safeIp']],
             ]);
 
             $statusCode = $response->getStatusCode();
@@ -197,15 +226,11 @@ class MediaManager
                     return null;
                 }
 
-                // Handle relative redirects
-                if (str_starts_with($location, '/')) {
-                    $location = $scheme . '://' . $host . ($parts['port'] ?? '' ? ':' . $parts['port'] : '') . $location;
-                } elseif (!preg_match('/^https?:\/\//i', $location)) {
-                    // Reject complex relative paths for safety
+                $url = $this->resolveRedirectLocation($location, $parts);
+                if (!$url) {
                     return null;
                 }
 
-                $url = $location;
                 continue;
             }
 
