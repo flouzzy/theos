@@ -40,11 +40,10 @@ class PayoutServiceTest extends TestCase
         $courseRepo = $this->createMock(CourseRepository::class);
         $courseRepo->method('findAll')->willReturn([$course1, $course2]);
 
-        $completionRepo->method('countCompletionsForCourseBetween')->willReturnCallback(function($course) use ($course1, $course2) {
-            if ($course === $course1) return 60;
-            if ($course === $course2) return 40;
-            return 0;
-        });
+        $completionRepo->method('countCompletionsForCoursesBetween')->willReturn([
+            1 => 60,
+            2 => 40,
+        ]);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->expects($this->atLeastOnce())->method('persist');
