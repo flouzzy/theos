@@ -16,20 +16,12 @@ class CompletionCalculator
     }
 
 
-    public function calculateGlobalProgressForUsers(array $users): array
+
+    /**
+     * Fetch user courses grouped by userId.
+     */
+    private function fetchUserCourses(array $users, array &$userCourses, array &$courseIds): void
     {
-        $progresses = [];
-        foreach ($users as $user) {
-            $progresses[$user->getId()] = 0.0;
-        }
-
-        if (empty($users)) {
-            return $progresses;
-        }
-
-        $userCourses = [];
-        $courseIds = [];
-
         $qb = $this->entityManager->createQueryBuilder()
             ->select('u.id AS userId, c.id AS courseId')
             ->from(\App\Entity\User::class, 'u')
@@ -47,61 +39,103 @@ class CompletionCalculator
             $userCourses[$userId][] = $courseId;
             $courseIds[$courseId] = $courseId;
         }
+    }
+
+    /**
+     * Fetch total lessons per course.
+     */
+    private function fetchCourseTotalLessons(array $courseIds): array
+    {
+        $courseLessons = [];
+        $qb2 = $this->entityManager->createQueryBuilder()
+            ->select('c.id AS courseId, COUNT(DISTINCT l.id) AS totalLessons')
+            ->from(\App\Entity\Course::class, 'c')
+            ->join('c.modules', 'm')
+            ->join('m.lessons', 'l')
+            ->where('c IN (:courses)')
+            ->setParameter('courses', $courseIds)
+            ->groupBy('c.id');
+
+        $result2 = $qb2->getQuery()->getArrayResult();
+        foreach ($result2 as $row) {
+            $courseLessons[$row['courseId']] = (int) $row['totalLessons'];
+        }
+        return $courseLessons;
+    }
+
+    /**
+     * Fetch completed lessons count per user and course.
+     */
+    private function fetchUserCompletedLessons(array $users, array $courseIds): array
+    {
+        $completedLessons = [];
+        $qb3 = $this->entityManager->createQueryBuilder()
+            ->select('IDENTITY(comp.user) AS userId, c.id AS courseId, COUNT(DISTINCT l.id) AS completedCount')
+            ->from(\App\Entity\Completion::class, 'comp')
+            ->join('comp.lesson', 'l')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'c')
+            ->where('comp.user IN (:users)')
+            ->andWhere('comp.completed = true')
+            ->andWhere('c IN (:courses)')
+            ->setParameter('users', $users)
+            ->setParameter('courses', $courseIds)
+            ->groupBy('comp.user', 'c.id');
+
+        $result3 = $qb3->getQuery()->getArrayResult();
+        foreach ($result3 as $row) {
+            if (!isset($completedLessons[$row['userId']])) {
+                $completedLessons[$row['userId']] = [];
+            }
+            $completedLessons[$row['userId']][$row['courseId']] = (int) $row['completedCount'];
+        }
+        return $completedLessons;
+    }
+
+    /**
+     * Compute and calculate progresses.
+     */
+    private function computeProgresses(array $userCourses, array $courseLessons, array $completedLessons, array &$progresses): void
+    {
+        foreach ($userCourses as $userId => $cIds) {
+            $totalProgress = 0;
+            $courseCount = count($cIds);
+            if ($courseCount === 0) continue;
+
+            foreach ($cIds as $courseId) {
+                $totalLessonCount = $courseLessons[$courseId] ?? 0;
+                if ($totalLessonCount > 0) {
+                    $completedCount = $completedLessons[$userId][$courseId] ?? 0;
+                    $courseProgress = round(($completedCount / $totalLessonCount) * 100, 2);
+                    $totalProgress += $courseProgress;
+                }
+            }
+
+            $progresses[$userId] = round($totalProgress / $courseCount, 2);
+        }
+    }
+
+    public function calculateGlobalProgressForUsers(array $users): array
+    {
+        $progresses = [];
+        foreach ($users as $user) {
+            $progresses[$user->getId()] = 0.0;
+        }
+
+        if (empty($users)) {
+            return $progresses;
+        }
+
+        $userCourses = [];
+        $courseIds = [];
+
+        $this->fetchUserCourses($users, $userCourses, $courseIds);
 
         if (!empty($courseIds)) {
-            $courseLessons = [];
-            $qb2 = $this->entityManager->createQueryBuilder()
-                ->select('c.id AS courseId, COUNT(DISTINCT l.id) AS totalLessons')
-                ->from(\App\Entity\Course::class, 'c')
-                ->join('c.modules', 'm')
-                ->join('m.lessons', 'l')
-                ->where('c IN (:courses)')
-                ->setParameter('courses', $courseIds)
-                ->groupBy('c.id');
+            $courseLessons = $this->fetchCourseTotalLessons($courseIds);
+            $completedLessons = $this->fetchUserCompletedLessons($users, $courseIds);
 
-            $result2 = $qb2->getQuery()->getArrayResult();
-            foreach ($result2 as $row) {
-                $courseLessons[$row['courseId']] = (int) $row['totalLessons'];
-            }
-
-            $completedLessons = [];
-            $qb3 = $this->entityManager->createQueryBuilder()
-                ->select('IDENTITY(comp.user) AS userId, c.id AS courseId, COUNT(DISTINCT l.id) AS completedCount')
-                ->from(\App\Entity\Completion::class, 'comp')
-                ->join('comp.lesson', 'l')
-                ->join('l.module', 'm')
-                ->join('m.courses', 'c')
-                ->where('comp.user IN (:users)')
-                ->andWhere('comp.completed = true')
-                ->andWhere('c IN (:courses)')
-                ->setParameter('users', $users)
-                ->setParameter('courses', $courseIds)
-                ->groupBy('comp.user', 'c.id');
-
-            $result3 = $qb3->getQuery()->getArrayResult();
-            foreach ($result3 as $row) {
-                if (!isset($completedLessons[$row['userId']])) {
-                    $completedLessons[$row['userId']] = [];
-                }
-                $completedLessons[$row['userId']][$row['courseId']] = (int) $row['completedCount'];
-            }
-
-            foreach ($userCourses as $userId => $cIds) {
-                $totalProgress = 0;
-                $courseCount = count($cIds);
-                if ($courseCount === 0) continue;
-
-                foreach ($cIds as $courseId) {
-                    $totalLessonCount = $courseLessons[$courseId] ?? 0;
-                    if ($totalLessonCount > 0) {
-                        $completedCount = $completedLessons[$userId][$courseId] ?? 0;
-                        $courseProgress = round(($completedCount / $totalLessonCount) * 100, 2);
-                        $totalProgress += $courseProgress;
-                    }
-                }
-
-                $progresses[$userId] = round($totalProgress / $courseCount, 2);
-            }
+            $this->computeProgresses($userCourses, $courseLessons, $completedLessons, $progresses);
         }
 
         return $progresses;
