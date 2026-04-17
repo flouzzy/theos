@@ -444,6 +444,9 @@ class TriggerServiceTest extends TestCase
 
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
 
+        $this->courseRepository->method('findCoursesWithModulesAndLessonsForUser')
+            ->willReturn([$course]);
+
         // Exactly 08:00 AM server time (or UTC in test)
         $this->clock->modify('2023-11-01 08:00:00');
 
