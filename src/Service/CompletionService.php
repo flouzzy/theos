@@ -123,34 +123,16 @@ class CompletionService
 
     private function areAllModuleLessonsCompleted(\App\Entity\User $user, Module $module): bool
     {
-        $lessons = $module->getLessons();
+        $lessonsCount = $module->getLessons()->count();
 
-        if ($lessons->count() === 0) {
+        if ($lessonsCount === 0) {
             return true;
         }
 
-        $completions = $this->entityManager->getRepository(Completion::class)->findBy([
-            'user' => $user,
-            'lesson' => $lessons->toArray()
-        ]);
+        $completedCount = $this->entityManager->getRepository(Completion::class)
+            ->countCompletedLessonsForModule($user, $module);
 
-        $completionMap = [];
-        foreach ($completions as $completion) {
-            if ($completion->getLesson()) {
-                $completionMap[$completion->getLesson()->getId()] = $completion;
-            }
-        }
-
-        foreach ($lessons as $moduleLesson) {
-            $lessonId = $moduleLesson->getId();
-            $lessonCompletion = $completionMap[$lessonId] ?? null;
-
-            if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
-                return false;
-            }
-        }
-
-        return true;
+        return $completedCount === $lessonsCount;
     }
 
     private function areAllCourseLessonsCompleted(\App\Entity\User $user, \App\Entity\Course $course): bool
