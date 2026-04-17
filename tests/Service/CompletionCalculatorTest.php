@@ -26,6 +26,109 @@ class CompletionCalculatorTest extends TestCase
         $this->completionCalculator = new CompletionCalculator($this->completionRepository, $this->entityManager);
     }
 
+    public function testCalculateGlobalProgressForUsersEmptyArray(): void
+    {
+        $result = $this->completionCalculator->calculateGlobalProgressForUsers([]);
+        $this->assertEquals([], $result);
+    }
+
+    public function testCalculateGlobalProgressForUsersEmptyCourses(): void
+    {
+        $user1 = $this->createMock(User::class);
+        $user1->method('getId')->willReturn(1);
+        $user2 = $this->createMock(User::class);
+        $user2->method('getId')->willReturn(2);
+
+        $query = $this->createMock(\Doctrine\ORM\Query::class);
+        $query->method('getArrayResult')->willReturn([]);
+
+        $qb = $this->createMock(\Doctrine\ORM\QueryBuilder::class);
+        $qb->method('select')->willReturn($qb);
+        $qb->method('from')->willReturn($qb);
+        $qb->method('join')->willReturn($qb);
+        $qb->method('where')->willReturn($qb);
+        $qb->method('setParameter')->willReturn($qb);
+        $qb->method('getQuery')->willReturn($query);
+
+        $this->entityManager->expects($this->once())
+            ->method('createQueryBuilder')
+            ->willReturn($qb);
+
+        $result = $this->completionCalculator->calculateGlobalProgressForUsers([$user1, $user2]);
+
+        $this->assertEquals([1 => 0.0, 2 => 0.0], $result);
+    }
+
+    public function testCalculateGlobalProgressForUsersWithCourses(): void
+    {
+        $user1 = $this->createMock(User::class);
+        $user1->method('getId')->willReturn(1);
+        $user2 = $this->createMock(User::class);
+        $user2->method('getId')->willReturn(2);
+
+        $users = [$user1, $user2];
+
+        // First Query: Get user courses
+        $query1 = $this->createMock(\Doctrine\ORM\Query::class);
+        $query1->method('getArrayResult')->willReturn([
+            ['userId' => 1, 'courseId' => 10],
+            ['userId' => 1, 'courseId' => 20],
+            ['userId' => 2, 'courseId' => 10], // User 2 is only in course 10
+        ]);
+
+        $qb1 = $this->createMock(\Doctrine\ORM\QueryBuilder::class);
+        $qb1->method('select')->willReturn($qb1);
+        $qb1->method('from')->willReturn($qb1);
+        $qb1->method('join')->willReturn($qb1);
+        $qb1->method('where')->willReturn($qb1);
+        $qb1->method('setParameter')->willReturn($qb1);
+        $qb1->method('getQuery')->willReturn($query1);
+
+        // Second Query: Get total lessons per course
+        $query2 = $this->createMock(\Doctrine\ORM\Query::class);
+        $query2->method('getArrayResult')->willReturn([
+            ['courseId' => 10, 'totalLessons' => 5],
+            ['courseId' => 20, 'totalLessons' => 10],
+        ]);
+
+        $qb2 = $this->createMock(\Doctrine\ORM\QueryBuilder::class);
+        $qb2->method('select')->willReturn($qb2);
+        $qb2->method('from')->willReturn($qb2);
+        $qb2->method('join')->willReturn($qb2);
+        $qb2->method('where')->willReturn($qb2);
+        $qb2->method('setParameter')->willReturn($qb2);
+        $qb2->method('groupBy')->willReturn($qb2);
+        $qb2->method('getQuery')->willReturn($query2);
+
+        // Third Query: Get completed lessons per user and course
+        $query3 = $this->createMock(\Doctrine\ORM\Query::class);
+        $query3->method('getArrayResult')->willReturn([
+            ['userId' => 1, 'courseId' => 10, 'completedCount' => 2], // user 1, course 10: 2/5 = 40%
+            ['userId' => 1, 'courseId' => 20, 'completedCount' => 10], // user 1, course 20: 10/10 = 100%
+            ['userId' => 2, 'courseId' => 10, 'completedCount' => 1], // user 2, course 10: 1/5 = 20%
+        ]);
+
+        $qb3 = $this->createMock(\Doctrine\ORM\QueryBuilder::class);
+        $qb3->method('select')->willReturn($qb3);
+        $qb3->method('from')->willReturn($qb3);
+        $qb3->method('join')->willReturn($qb3);
+        $qb3->method('where')->willReturn($qb3);
+        $qb3->method('andWhere')->willReturn($qb3);
+        $qb3->method('setParameter')->willReturn($qb3);
+        $qb3->method('groupBy')->willReturn($qb3);
+        $qb3->method('getQuery')->willReturn($query3);
+
+        $this->entityManager->expects($this->exactly(3))
+            ->method('createQueryBuilder')
+            ->willReturnOnConsecutiveCalls($qb1, $qb2, $qb3);
+
+        $result = $this->completionCalculator->calculateGlobalProgressForUsers($users);
+
+        // User 1: (40% + 100%) / 2 courses = 70%
+        // User 2: (20%) / 1 course = 20%
+        $this->assertEquals([1 => 70.0, 2 => 20.0], $result);
+    }
+
     public function testCalculateCompletionPercentageEmptyCourse(): void
     {
         $user = $this->createMock(User::class);
