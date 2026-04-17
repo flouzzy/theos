@@ -22,6 +22,14 @@ class UserType extends AbstractType
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $this->addProfileFields($builder);
+        $this->addAvatarFrameField($builder, $options);
+        $this->addNotificationFields($builder);
+        $this->addImageUploadField($builder);
+    }
+
+    private function addProfileFields(FormBuilderInterface $builder): void
+    {
         $builder
             ->add('email')
             ->add('firstname')
@@ -34,15 +42,24 @@ class UserType extends AbstractType
             ->add('learningManifesto', TextareaType::class, ['required' => false])
             ->add('websiteUrl', null, ['required' => false])
             ->add('githubUrl', null, ['required' => false])
-            ->add('isProfilePublic', CheckboxType::class, ['required' => false])
-            ->add('activeFrame', EntityType::class, [
-                'class' => AvatarFrame::class,
-                'choice_label' => 'name',
-                'required' => false,
-                'placeholder' => 'No frame',
-                'choices' => $options['data'] ? $options['data']->getUnlockedFrames() : [],
-                'label' => $this->translator->trans('Avatar Frame'),
-            ])
+            ->add('isProfilePublic', CheckboxType::class, ['required' => false]);
+    }
+
+    private function addAvatarFrameField(FormBuilderInterface $builder, array $options): void
+    {
+        $builder->add('activeFrame', EntityType::class, [
+            'class' => AvatarFrame::class,
+            'choice_label' => 'name',
+            'required' => false,
+            'placeholder' => 'No frame',
+            'choices' => $options['data'] ? $options['data']->getUnlockedFrames() : [],
+            'label' => $this->translator->trans('Avatar Frame'),
+        ]);
+    }
+
+    private function addNotificationFields(FormBuilderInterface $builder): void
+    {
+        $builder
             ->add('emailNotifications', CheckboxType::class, [
                 'required' => false,
             ])
@@ -54,8 +71,12 @@ class UserType extends AbstractType
             ])
             ->add('weeklySummary', CheckboxType::class, [
                 'required' => false,
-            ])
-            ->add('imageFile', FileType::class, [
+            ]);
+    }
+
+    private function addImageUploadField(FormBuilderInterface $builder): void
+    {
+        $builder->add('imageFile', FileType::class, [
                 'label' => $this->translator->trans('Choose an image'),
 
                 // unmapped means that this field is not associated to any entity property
