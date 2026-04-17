@@ -87,6 +87,11 @@ class RecommendationService
         $allLessons = $this->lessonRepository->findAll();
         $similarities = [];
 
+        $targetNormSq = 0;
+        foreach ($targetEmbedding as $val) {
+            $targetNormSq += $val * $val;
+        }
+
         foreach ($allLessons as $otherLesson) {
             if ($otherLesson->getId() === $lesson->getId()) {
                 continue;
@@ -97,7 +102,7 @@ class RecommendationService
                 continue;
             }
 
-            $similarity = $this->cosineSimilarity($targetEmbedding, $otherEmbedding);
+            $similarity = $this->cosineSimilarity($targetEmbedding, $otherEmbedding, $targetNormSq);
             $similarities[] = [
                 'lesson' => $otherLesson,
                 'similarity' => $similarity
@@ -112,16 +117,15 @@ class RecommendationService
     /**
      * Calcule la similarité cosinus entre deux vecteurs.
      */
-    private function cosineSimilarity(array $vec1, array $vec2): float
+    private function cosineSimilarity(array $vec1, array $vec2, float $normA): float
     {
         $dotProduct = 0;
-        $normA = 0;
         $normB = 0;
 
         foreach ($vec1 as $i => $val) {
-            $dotProduct += $val * ($vec2[$i] ?? 0);
-            $normA += $val * $val;
-            $normB += ($vec2[$i] ?? 0) * ($vec2[$i] ?? 0);
+            $v2 = $vec2[$i] ?? 0;
+            $dotProduct += $val * $v2;
+            $normB += $v2 * $v2;
         }
 
         if ($normA == 0 || $normB == 0) {
