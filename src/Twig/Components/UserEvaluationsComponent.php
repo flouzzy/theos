@@ -40,16 +40,98 @@ class UserEvaluationsComponent
         $evaluations = [];
         $cohort = $user->getCurrentCohort();
 
-        $cohortCourseIds = [];
-        if ($cohort) {
-            foreach ($cohort->getCourses() as $c) {
-                if ($c) {
-                    $cohortCourseIds[$c->getId()] = true;
+        $evaluations = array_merge(
+            $this->getEvaluationRecords($user, $cohort),
+            $this->getModuleRecords($user, $cohort),
+            $this->getLessonRecords($user, $cohort)
+        );
+
+        // Sort by date desc
+        usort($evaluations, function (array $a, array $b): int {
+            $dateA = isset($a['date']) ? $a['date'] : new \DateTimeImmutable('@0');
+            $dateB = isset($b['date']) ? $b['date'] : new \DateTimeImmutable('@0');
+            return $dateB <=> $dateA;
+        });
+
+        $this->evaluationsCache = $evaluations;
+        return $evaluations;
+    }
+
+    private function getLessonRecords(User $user, ?\App\Entity\Cohort $cohort): array
+    {
+        $evaluations = [];
+        $lessonCompletions = $this->completionRepository->findWithScoreByUser($user);
+
+        foreach ($lessonCompletions as $lc) {
+            $lcScore = $lc->getScore();
+            if ($lcScore !== null) {
+                $lesson = $lc->getLesson();
+                $module = $lesson ? $lesson->getModule() : null;
+                $courses = $module ? $module->getCourses() : null;
+                $lcCourse = $courses ? $courses->first() : null;
+
+                if ($cohort) {
+                    if (!$lcCourse || !$cohort->getCourses()->contains($lcCourse)) {
+                        continue;
+                    }
                 }
+
+                $evaluations[] = [
+                    'title' => $lesson ? ($lesson->getTitle() ?? 'Lesson') : 'Lesson',
+                    'course' => $module ? ($module->getTitle() ?? 'Lesson') : 'Lesson',
+                    'score' => $lcScore,
+                    'total' => 20.0,
+                    'grade' => $this->calculateGrade($lcScore),
+                    'date' => $lc->getUpdatedAt() ?? $lc->getCreatedAt(),
+                    'duration' => $lesson && $lesson->getDuration() ? ((string)$lesson->getDuration() . ' min') : '10 min',
+                    'feedback' => null,
+                    'type' => 'lesson'
+                ];
             }
         }
 
-        // 1. Fetch new Evaluation entities
+        return $evaluations;
+    }
+
+    private function getModuleRecords(User $user, ?\App\Entity\Cohort $cohort): array
+    {
+        $evaluations = [];
+        $moduleCompletions = $this->moduleCompletionRepository->findWithScoreByUser($user);
+
+        foreach ($moduleCompletions as $mc) {
+            $mcScore = $mc->getScore();
+            if ($mcScore !== null) {
+                $module = $mc->getModule();
+                $courses = $module ? $module->getCourses() : null;
+                $firstCourse = $courses ? $courses->first() : null;
+
+                if ($cohort) {
+                    if (!$firstCourse || !isset($cohortCourseIds[$firstCourse->getId()])) {
+                        continue;
+                    }
+                }
+
+                $evaluations[] = [
+                    'title' => $module ? ($module->getTitle() ?? 'Module') : 'Module',
+                    'course' => $firstCourse ? ($firstCourse->getTitle() ?? 'Module') : 'Module',
+                    'score' => $mcScore,
+                    'total' => 20.0,
+                    'grade' => $this->calculateGrade($mcScore),
+                    'date' => $mc->getUpdatedAt() ?? $mc->getCreatedAt(),
+                    'duration' => '30 min',
+                    'feedback' => null,
+                    'type' => 'module'
+                ];
+            }
+        }
+
+        return $evaluations;
+    }
+
+    private function getEvaluationRecords(User $user, ?\App\Entity\Cohort $cohort): array
+    {
+        $evaluations = [];
+
         if ($cohort) {
             $dbEvaluations = $this->evaluationRepository->findBy(['user' => $user, 'cohort' => $cohort], ['createdAt' => 'DESC']);
         } else {
@@ -82,75 +164,6 @@ class UserEvaluationsComponent
             ];
         }
 
-        // 2. Process Module Completions
-        $moduleCompletions = $this->moduleCompletionRepository->findWithScoreByUser($user);
-        foreach ($moduleCompletions as $mc) {
-            $mcScore = $mc->getScore();
-            if ($mcScore !== null) {
-                $module = $mc->getModule();
-                $courses = $module ? $module->getCourses() : null;
-                $firstCourse = $courses ? $courses->first() : null;
-
-                // Filter by cohort if set
-                if ($cohort) {
-                    if (!$firstCourse || !isset($cohortCourseIds[$firstCourse->getId()])) {
-                        continue;
-                    }
-                }
-
-                $evaluations[] = [
-                    'title' => $module ? ($module->getTitle() ?? 'Module') : 'Module',
-                    'course' => $firstCourse ? ($firstCourse->getTitle() ?? 'Module') : 'Module',
-                    'score' => $mcScore,
-                    'total' => 20.0, // Assumed default
-                    'grade' => $this->calculateGrade($mcScore),
-                    'date' => $mc->getUpdatedAt() ?? $mc->getCreatedAt(),
-                    'duration' => '30 min',
-                    'feedback' => null,
-                    'type' => 'module'
-                ];
-            }
-        }
-
-        // 3. Process Lesson Completions (Quizzes)
-        $lessonCompletions = $this->completionRepository->findWithScoreByUser($user);
-        foreach ($lessonCompletions as $lc) {
-            $lcScore = $lc->getScore();
-            if ($lcScore !== null) {
-                $lesson = $lc->getLesson();
-                $module = $lesson ? $lesson->getModule() : null;
-                $courses = $module ? $module->getCourses() : null;
-                $lcCourse = $courses ? $courses->first() : null;
-
-                // Filter by cohort if set
-                if ($cohort) {
-                    if (!$lcCourse || !isset($cohortCourseIds[$lcCourse->getId()])) {
-                        continue;
-                    }
-                }
-
-                $evaluations[] = [
-                    'title' => $lesson ? ($lesson->getTitle() ?? 'Lesson') : 'Lesson',
-                    'course' => $module ? ($module->getTitle() ?? 'Lesson') : 'Lesson',
-                    'score' => $lcScore,
-                    'total' => 20.0,
-                    'grade' => $this->calculateGrade($lcScore),
-                    'date' => $lc->getUpdatedAt() ?? $lc->getCreatedAt(),
-                    'duration' => $lesson && $lesson->getDuration() ? ((string)$lesson->getDuration() . ' min') : '10 min',
-                    'feedback' => null,
-                    'type' => 'lesson'
-                ];
-            }
-        }
-
-        // Sort by date desc
-        usort($evaluations, function (array $a, array $b): int {
-            $dateA = isset($a['date']) ? $a['date'] : new \DateTimeImmutable('@0');
-            $dateB = isset($b['date']) ? $b['date'] : new \DateTimeImmutable('@0');
-            return $dateB <=> $dateA;
-        });
-
-        $this->evaluationsCache = $evaluations;
         return $evaluations;
     }
 
