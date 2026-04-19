@@ -38,6 +38,39 @@ class CompletionRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param Course[] $courses
+     * @return array<int, int> [courseId => count]
+     */
+    public function countCompletionsForCoursesBetween(array $courses, \DateTimeImmutable $start, \DateTimeImmutable $end): array
+    {
+        if (empty($courses)) {
+            return [];
+        }
+
+        $results = $this->createQueryBuilder('c')
+            ->select('co.id as courseId', 'COUNT(c.id) as completionsCount')
+            ->join('c.lesson', 'l')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'co')
+            ->where('co IN (:courses)')
+            ->andWhere('c.completed = true')
+            ->andWhere('c.updatedAt BETWEEN :start AND :end')
+            ->setParameter('courses', $courses)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->groupBy('co.id')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($results as $row) {
+            $counts[(int) $row['courseId']] = (int) $row['completionsCount'];
+        }
+
+        return $counts;
+    }
+
+    /**
      * @param User[] $users
      * @return array<int, int>
      */

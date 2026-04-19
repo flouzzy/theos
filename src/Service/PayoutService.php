@@ -53,8 +53,10 @@ class PayoutService
         $totalCompletions = 0;
         $courseCompletions = [];
 
+        $counts = $this->completionRepository->countCompletionsForCoursesBetween($courses, $start, $end);
+
         foreach ($courses as $course) {
-            $count = $this->completionRepository->countCompletionsForCourseBetween($course, $start, $end);
+            $count = $counts[$course->getId()] ?? 0;
             if ($count > 0) {
                 $courseCompletions[$course->getId()] = [
                     'course' => $course,
