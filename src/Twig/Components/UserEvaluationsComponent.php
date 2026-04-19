@@ -40,6 +40,15 @@ class UserEvaluationsComponent
         $evaluations = [];
         $cohort = $user->getCurrentCohort();
 
+        $cohortCourseIds = [];
+        if ($cohort) {
+            foreach ($cohort->getCourses() as $c) {
+                if ($c) {
+                    $cohortCourseIds[$c->getId()] = true;
+                }
+            }
+        }
+
         // 1. Fetch new Evaluation entities
         if ($cohort) {
             $dbEvaluations = $this->evaluationRepository->findBy(['user' => $user, 'cohort' => $cohort], ['createdAt' => 'DESC']);
@@ -84,7 +93,7 @@ class UserEvaluationsComponent
 
                 // Filter by cohort if set
                 if ($cohort) {
-                    if (!$firstCourse || !$cohort->getCourses()->contains($firstCourse)) {
+                    if (!$firstCourse || !isset($cohortCourseIds[$firstCourse->getId()])) {
                         continue;
                     }
                 }
@@ -115,7 +124,7 @@ class UserEvaluationsComponent
 
                 // Filter by cohort if set
                 if ($cohort) {
-                    if (!$lcCourse || !$cohort->getCourses()->contains($lcCourse)) {
+                    if (!$lcCourse || !isset($cohortCourseIds[$lcCourse->getId()])) {
                         continue;
                     }
                 }
