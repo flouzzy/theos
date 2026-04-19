@@ -118,11 +118,7 @@ class LessonController extends AbstractController
         $completed = boolval($completed);
 
         // Save lesson completion status for current user
-        $wasCompleted = $this->updateCompletionStatus($user, $lesson, $course, $module, $completed);
-
-        // Dispatch lesson event to notify subscribers
-        $lessonCompleteEvent = new LessonCompleteEvent($lesson, $user, $completed, $wasCompleted);
-        $this->dispatcher->dispatch($lessonCompleteEvent);
+        $this->completionService->completeLesson($user, $lesson, $course, $module, $completed);
 
         if ($completed == false) {
             // Afficher la leçon actuelle
@@ -161,30 +157,6 @@ class LessonController extends AbstractController
             // Si on est pas inscrit au cours, on le devient automatiquement
             $user->subscribeToCourse($course);
         }
-    }
-
-    private function updateCompletionStatus(\App\Entity\User $user, Lesson $lesson, Course $course, Module $module, bool $completed): bool
-    {
-        $completion = $this->completionRepository->findOneBy(['user' => $user, 'lesson' => $lesson]);
-        $wasCompleted = $completion && $completion->isCompleted();
-
-        if (!$completion) {
-            $completion = new Completion();
-        }
-        $completion->setUser($user);
-        $completion->setLesson($lesson);
-        $completion->setCompleted($completed);
-
-        // Maj du statut de completion d'un module
-        $this->completionService->setModuleCompletion($module);
-
-        // Maj du statut de completion d'un parcours
-        $this->completionService->setCourseCompletion($course);
-
-        $this->entityManager->persist($completion);
-        $this->entityManager->flush();
-
-        return $wasCompleted;
     }
 
     #[Route('/{lessonId}/comment', name: 'add_comment', methods: ['POST'])]

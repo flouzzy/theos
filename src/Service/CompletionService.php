@@ -5,7 +5,10 @@ namespace App\Service;
 use App\Entity\Completion;
 use App\Entity\CourseCompletion;
 use App\Entity\Module;
+use App\Entity\Course;
+use App\Entity\Lesson;
 use App\Entity\ModuleCompletion;
+use App\Event\LessonCompleteEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -31,6 +34,39 @@ class CompletionService
         private UrlGeneratorInterface $urlGenerator,
         private LootBoxService $lootBoxService,
     ) {}
+
+    public function completeLesson(\App\Entity\User $user, Lesson $lesson, Course $course, Module $module, bool $completed): bool
+    {
+        $completion = $this->entityManager->getRepository(Completion::class)->findOneBy([
+            'user' => $user,
+            'lesson' => $lesson
+        ]);
+
+        $wasCompleted = $completion && $completion->isCompleted();
+
+        if (!$completion) {
+            $completion = new Completion();
+        }
+
+        $completion->setUser($user);
+        $completion->setLesson($lesson);
+        $completion->setCompleted($completed);
+
+        // Maj du statut de completion d'un module
+        $this->setModuleCompletion($module);
+
+        // Maj du statut de completion d'un parcours
+        $this->setCourseCompletion($course);
+
+        $this->entityManager->persist($completion);
+        $this->entityManager->flush();
+
+        // Dispatch lesson event to notify subscribers
+        $lessonCompleteEvent = new LessonCompleteEvent($lesson, $user, $completed, $wasCompleted);
+        $this->eventDispatcher->dispatch($lessonCompleteEvent);
+
+        return $wasCompleted;
+    }
 
     public function setModuleCompletion(Module $module): void
     {
