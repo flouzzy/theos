@@ -34,4 +34,33 @@ class XpTransactionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * @param User[] $users
+     * @return array<int, int> [userId => totalXp]
+     */
+    public function findXpGainedByUsersBetween(array $users, \DateTimeImmutable $start, \DateTimeImmutable $end): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $results = $this->createQueryBuilder('x')
+            ->select('IDENTITY(x.user) as userId', 'SUM(x.amount) as totalXp')
+            ->where('x.user IN (:users)')
+            ->andWhere('x.createdAt BETWEEN :start AND :end')
+            ->setParameter('users', $users)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->groupBy('x.user')
+            ->getQuery()
+            ->getArrayResult();
+
+        $xpGains = [];
+        foreach ($results as $row) {
+            $xpGains[(int) $row['userId']] = (int) $row['totalXp'];
+        }
+
+        return $xpGains;
+    }
 }

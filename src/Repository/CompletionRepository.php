@@ -39,6 +39,36 @@ class CompletionRepository extends ServiceEntityRepository
 
     /**
      * @param User[] $users
+     * @return array<int, int> [userId => completionCount]
+     */
+    public function countByUsersBetween(array $users, \DateTimeImmutable $start, \DateTimeImmutable $end): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $results = $this->createQueryBuilder('c')
+            ->select('IDENTITY(c.user) as userId', 'COUNT(c.id) as completionCount')
+            ->where('c.user IN (:users)')
+            ->andWhere('c.completed = true')
+            ->andWhere('c.updatedAt BETWEEN :start AND :end')
+            ->setParameter('users', $users)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->groupBy('c.user')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($results as $row) {
+            $counts[(int) $row['userId']] = (int) $row['completionCount'];
+        }
+
+        return $counts;
+    }
+
+    /**
+     * @param User[] $users
      * @return array<int, int>
      */
     public function countByUsersAndCohort(array $users, \App\Entity\Cohort $cohort): array

@@ -29,8 +29,15 @@ class WeeklyRecapService
         $end = new \DateTimeImmutable('now');
         $start = $end->modify('-7 days')->setTime(0, 0, 0);
 
+        $xpGains = $this->xpTransactionRepository->findXpGainedByUsersBetween($users, $start, $end);
+        $completionCounts = $this->completionRepository->countByUsersBetween($users, $start, $end);
+
         foreach ($users as $user) {
-            if ($this->sendRecapForUser($user, $start, $end)) {
+            $userId = (int) $user->getId();
+            $xpGained = $xpGains[$userId] ?? 0;
+            $completions = $completionCounts[$userId] ?? 0;
+
+            if ($this->sendRecapForUser($user, $start, $end, $xpGained, $completions)) {
                 $count++;
             }
         }
@@ -38,17 +45,22 @@ class WeeklyRecapService
         return $count;
     }
 
-    public function sendRecapForUser(User $user, \DateTimeImmutable $start, \DateTimeImmutable $end): bool
-    {
-        $xpGained = $this->xpTransactionRepository->findXpGainedByUserBetween($user, $start, $end);
-        
+    public function sendRecapForUser(
+        User $user,
+        \DateTimeImmutable $start,
+        \DateTimeImmutable $end,
+        ?int $xpGained = null,
+        ?int $completions = null
+    ): bool {
+        $xpGained ??= $this->xpTransactionRepository->findXpGainedByUserBetween($user, $start, $end);
+
         // Skip if no activity
         if ($xpGained <= 0) {
             return false;
         }
 
-        $completions = $this->completionRepository->countByUserBetween($user, $start, $end);
-        
+        $completions ??= $this->completionRepository->countByUserBetween($user, $start, $end);
+
         $this->sendMail->send(
             new Address($this->defaultFromEmail, $this->defaultFromName),
             (string) $user->getEmail(),
