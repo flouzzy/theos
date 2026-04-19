@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Setting;
 use App\Form\SettingType;
 use App\Repository\SettingRepository;
 use Doctrine\ORM\EntityManagerInterface;
