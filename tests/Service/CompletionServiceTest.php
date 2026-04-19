@@ -88,7 +88,7 @@ class CompletionServiceTest extends TestCase
         $lesson = $this->createMock(Lesson::class);
         $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
 
-        $completionRepo = $this->createMock(EntityRepository::class);
+        $completionRepo = $this->createMock(\App\Repository\CompletionRepository::class);
         $moduleCompletionRepo = $this->createMock(EntityRepository::class);
 
         $this->entityManager->method('getRepository')
@@ -99,9 +99,9 @@ class CompletionServiceTest extends TestCase
 
         // Completion not found or not completed
         $completionRepo->expects($this->once())
-            ->method('findBy')
-            ->with(['user' => $user, 'lesson' => [$lesson]])
-            ->willReturn([]);
+            ->method('countCompletedLessonsForModule')
+            ->with($user, $module)
+            ->willReturn(0);
 
         // ModuleCompletion setup
         $moduleCompletion = new ModuleCompletion();
@@ -133,14 +133,10 @@ class CompletionServiceTest extends TestCase
         $lesson->method('getId')->willReturn(1);
         $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
 
-        $completion = $this->createMock(Completion::class);
-        $completion->method('isCompleted')->willReturn(true);
-        $completion->method('getLesson')->willReturn($lesson);
-
-        $completionRepo = $this->createMock(EntityRepository::class);
-        $completionRepo->method('findBy')
-            ->with(['user' => $user, 'lesson' => [$lesson]])
-            ->willReturn([$completion]);
+        $completionRepo = $this->createMock(\App\Repository\CompletionRepository::class);
+        $completionRepo->method('countCompletedLessonsForModule')
+            ->with($user, $module)
+            ->willReturn(1);
 
         $moduleCompletionRepo = $this->createMock(EntityRepository::class);
         $moduleCompletion = new ModuleCompletion();

@@ -65,31 +65,7 @@ final class LessonItem
 
         $newStatus = !$this->isCompleted;
 
-        // Find or create completion record
-        $completion = $this->completionRepository->findOneBy([
-            'user' => $user,
-            'lesson' => $this->lesson,
-        ]);
-
-        $wasCompleted = $completion && $completion->isCompleted();
-
-        if (!$completion) {
-            $completion = new \App\Entity\Completion();
-        }
-
-        $completion->setUser($user);
-        $completion->setLesson($this->lesson);
-        $completion->setCompleted($newStatus);
-
-        $this->completionService->setModuleCompletion($this->module);
-        $this->completionService->setCourseCompletion($this->course);
-
-        $this->entityManager->persist($completion);
-        $this->entityManager->flush();
-
-        // Dispatch event
-        $event = new LessonCompleteEvent($this->lesson, $user, $newStatus, $wasCompleted);
-        $this->dispatcher->dispatch($event);
+        $wasCompleted = $this->completionService->completeLesson($user, $this->lesson, $this->course, $this->module, $newStatus);
 
         if ($newStatus && !$wasCompleted) {
             $this->dispatchBrowserEvent('confetti:fire');

@@ -5,7 +5,10 @@ namespace App\Service;
 use App\Entity\Completion;
 use App\Entity\CourseCompletion;
 use App\Entity\Module;
+use App\Entity\Course;
+use App\Entity\Lesson;
 use App\Entity\ModuleCompletion;
+use App\Event\LessonCompleteEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -31,6 +34,39 @@ class CompletionService
         private UrlGeneratorInterface $urlGenerator,
         private LootBoxService $lootBoxService,
     ) {}
+
+    public function completeLesson(\App\Entity\User $user, Lesson $lesson, Course $course, Module $module, bool $completed): bool
+    {
+        $completion = $this->entityManager->getRepository(Completion::class)->findOneBy([
+            'user' => $user,
+            'lesson' => $lesson
+        ]);
+
+        $wasCompleted = $completion && $completion->isCompleted();
+
+        if (!$completion) {
+            $completion = new Completion();
+        }
+
+        $completion->setUser($user);
+        $completion->setLesson($lesson);
+        $completion->setCompleted($completed);
+
+        // Maj du statut de completion d'un module
+        $this->setModuleCompletion($module);
+
+        // Maj du statut de completion d'un parcours
+        $this->setCourseCompletion($course);
+
+        $this->entityManager->persist($completion);
+        $this->entityManager->flush();
+
+        // Dispatch lesson event to notify subscribers
+        $lessonCompleteEvent = new LessonCompleteEvent($lesson, $user, $completed, $wasCompleted);
+        $this->eventDispatcher->dispatch($lessonCompleteEvent);
+
+        return $wasCompleted;
+    }
 
     public function setModuleCompletion(Module $module): void
     {
@@ -123,34 +159,16 @@ class CompletionService
 
     private function areAllModuleLessonsCompleted(\App\Entity\User $user, Module $module): bool
     {
-        $lessons = $module->getLessons();
+        $lessonsCount = $module->getLessons()->count();
 
-        if ($lessons->count() === 0) {
+        if ($lessonsCount === 0) {
             return true;
         }
 
-        $completions = $this->entityManager->getRepository(Completion::class)->findBy([
-            'user' => $user,
-            'lesson' => $lessons->toArray()
-        ]);
+        $completedCount = $this->entityManager->getRepository(Completion::class)
+            ->countCompletedLessonsForModule($user, $module);
 
-        $completionMap = [];
-        foreach ($completions as $completion) {
-            if ($completion->getLesson()) {
-                $completionMap[$completion->getLesson()->getId()] = $completion;
-            }
-        }
-
-        foreach ($lessons as $moduleLesson) {
-            $lessonId = $moduleLesson->getId();
-            $lessonCompletion = $completionMap[$lessonId] ?? null;
-
-            if (!$lessonCompletion || !$lessonCompletion->isCompleted()) {
-                return false;
-            }
-        }
-
-        return true;
+        return $completedCount === $lessonsCount;
     }
 
     private function areAllCourseLessonsCompleted(\App\Entity\User $user, \App\Entity\Course $course): bool

@@ -106,7 +106,7 @@ class UserEvaluationsComponent
                 $firstCourse = $courses ? $courses->first() : null;
 
                 if ($cohort) {
-                    if (!$firstCourse || !$cohort->getCourses()->contains($firstCourse)) {
+                    if (!$firstCourse || !isset($cohortCourseIds[$firstCourse->getId()])) {
                         continue;
                     }
                 }

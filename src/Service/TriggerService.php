@@ -177,17 +177,24 @@ class TriggerService
 
     private function processCohortFomoTrigger(User $user, $cohort, array $userCompletedLessonIds, array $completionsCountMap, int $totalUsers): bool
     {
+        $completedMap = array_flip($userCompletedLessonIds);
+        $threshold = $totalUsers * 0.8;
+
+        $candidateLessonIds = [];
+        foreach ($completionsCountMap as $lessonId => $othersCompletions) {
+            if ($othersCompletions >= $threshold && !isset($completedMap[$lessonId])) {
+                $candidateLessonIds[$lessonId] = true;
+            }
+        }
+
+        if (empty($candidateLessonIds)) {
+            return false;
+        }
+
         foreach ($cohort->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
-                    if (in_array($lesson->getId(), $userCompletedLessonIds, true)) {
-                        continue;
-                    }
-
-                    $othersCompletions = $completionsCountMap[$lesson->getId()] ?? 0;
-                    $percentage = ($othersCompletions / $totalUsers) * 100;
-
-                    if ($percentage >= 80) {
+                    if (isset($candidateLessonIds[$lesson->getId()])) {
                         $this->notificationService->addNotification(
                             $user,
                             "🚀 Ne reste pas à la traîne !",
