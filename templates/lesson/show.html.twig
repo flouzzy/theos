@@ -27,7 +27,7 @@
             </button>
         </div>
         <div class="p-6">
-            <h3 class="font-serif font-bold text-lg mb-1">{{ course.title }}</h3>
+            <h3 class="font-serif font-bold text-lg mb-1">{{ course.title | trans }}</h3>
             <div class="w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
                 <div class="bg-primary h-full rounded-full" style="width: 45%"></div> {# Mock progress #}
             </div>
@@ -101,7 +101,7 @@
             <nav class="flex items-center text-sm text-muted-foreground">
                 <a href="{{ path('course_index') }}" class="hover:text-primary transition-colors">{{ 'Cours' | trans }}</a>
                 <svg class="w-4 h-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                <span class="truncate max-w-[150px]">{{ course.title }}</span>
+                <span class="truncate max-w-[150px]">{{ course.title | trans }}</span>
                 <svg class="w-4 h-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 <span class="text-foreground font-medium truncate">{{ currentLesson.title }}</span>
             </nav>
@@ -275,8 +275,8 @@
                                 </svg>
                             </div>
                             <div class="flex-1 text-center md:text-left">
-                                <h4 class="font-bold text-indigo-900 dark:text-indigo-100">Version Audio (IA)</h4>
-                                <p class="text-sm text-indigo-700 dark:text-indigo-300/80 mb-4">Écoutez cette leçon lue par notre assistant pédagogique.</p>
+                                <h4 class="font-bold text-indigo-900 dark:text-indigo-100">{{ 'Version Audio (IA)' | trans }}</h4>
+                                <p class="text-sm text-indigo-700 dark:text-indigo-300/80 mb-4">{{ 'Écoutez cette leçon lue par notre assistant pédagogique.' | trans }}</p>
                                 <audio controls class="w-full h-10 rounded-lg" data-audio-mode-target="audioPlayer">
                                     <source src="{{ asset(currentLesson.audioPath) }}" type="audio/mpeg">
                                     Your browser does not support the audio element.
@@ -284,7 +284,7 @@
                             </div>
                             {% if currentLesson.audioDuration %}
                                 <div class="hidden md:block text-right">
-                                    <span class="text-xs font-mono font-bold text-indigo-400 dark:text-indigo-500 uppercase tracking-widest">Durée</span>
+                                    <span class="text-xs font-mono font-bold text-indigo-400 dark:text-indigo-500 uppercase tracking-widest">{{ 'Durée' | trans }}</span>
                                     <div class="text-lg font-serif font-bold text-indigo-900 dark:text-indigo-100">{{ (currentLesson.audioDuration // 60) }}:{{ "%02d"|format(currentLesson.audioDuration % 60) }}</div>
                                 </div>
                             {% endif %}
