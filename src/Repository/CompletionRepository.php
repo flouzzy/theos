@@ -365,4 +365,20 @@ class CompletionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function countCompletedLessonsForCourse(User $user, \App\Entity\Course $course): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->join('c.lesson', 'l')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'co')
+            ->where('c.user = :user')
+            ->andWhere('co = :course')
+            ->andWhere('c.completed = true')
+            ->setParameter('user', $user)
+            ->setParameter('course', $course)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

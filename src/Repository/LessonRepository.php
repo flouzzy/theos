@@ -55,4 +55,16 @@ class LessonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function countForCourse(\App\Entity\Course $course): int
+    {
+        return (int) $this->createQueryBuilder('l')
+            ->select('COUNT(l.id)')
+            ->join('l.module', 'm')
+            ->join('m.courses', 'c')
+            ->where('c = :course')
+            ->setParameter('course', $course)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

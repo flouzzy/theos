@@ -195,14 +195,21 @@ class CompletionServiceTest extends TestCase
         $course->method('getModules')->willReturn(new ArrayCollection([$module]));
         $module->method('getLessons')->willReturn(new ArrayCollection([$lesson]));
 
-        $completionRepo = $this->createMock(EntityRepository::class);
+        $completionRepo = $this->createMock(\App\Repository\CompletionRepository::class);
         $courseCompletionRepo = $this->createMock(EntityRepository::class);
+        $lessonRepo = $this->createMock(\App\Repository\LessonRepository::class);
+
+        // Total lessons count
+        $lessonRepo->expects($this->once())
+            ->method('countForCourse')
+            ->with($course)
+            ->willReturn(1);
 
         // Completion incomplete
         $completionRepo->expects($this->once())
-            ->method('findBy')
-            ->with(['user' => $user, 'lesson' => [$lesson]])
-            ->willReturn([]);
+            ->method('countCompletedLessonsForCourse')
+            ->with($user, $course)
+            ->willReturn(0);
 
         $courseCompletion = new CourseCompletion();
         $courseCompletionRepo->expects($this->once())
@@ -214,6 +221,7 @@ class CompletionServiceTest extends TestCase
             ->will($this->returnValueMap([
                 [CourseCompletion::class, $courseCompletionRepo],
                 [Completion::class, $completionRepo],
+                [Lesson::class, $lessonRepo],
             ]));
 
         $this->entityManager->expects($this->once())->method('persist')->with($courseCompletion);
@@ -248,10 +256,15 @@ class CompletionServiceTest extends TestCase
 
         $user->method('getBadges')->willReturn(new ArrayCollection());
 
-        $completionRepo = $this->createMock(EntityRepository::class);
-        $completionRepo->method('findBy')
-            ->with(['user' => $user, 'lesson' => [$lesson]])
-            ->willReturn([$completion]);
+        $lessonRepo = $this->createMock(\App\Repository\LessonRepository::class);
+        $lessonRepo->method('countForCourse')
+            ->with($course)
+            ->willReturn(1);
+
+        $completionRepo = $this->createMock(\App\Repository\CompletionRepository::class);
+        $completionRepo->method('countCompletedLessonsForCourse')
+            ->with($user, $course)
+            ->willReturn(1);
 
         $courseCompletionRepo = $this->createMock(EntityRepository::class);
         $courseCompletion = new CourseCompletion();
@@ -263,6 +276,7 @@ class CompletionServiceTest extends TestCase
             ->will($this->returnValueMap([
                 [CourseCompletion::class, $courseCompletionRepo],
                 [Completion::class, $completionRepo],
+                [Lesson::class, $lessonRepo],
             ]));
 
         $this->entityManager->expects($this->once())->method('persist')->with($courseCompletion);
