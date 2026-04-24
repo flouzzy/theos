@@ -387,12 +387,13 @@ class TriggerService
     {
         // Fetch all completed lesson IDs for the user in a single query
         $completedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
+        $completedLessonLookup = array_flip($completedLessonIds);
 
         // Find the first non-completed lesson in the user's courses, eager loading modules and lessons
         $courses = $this->courseRepository->findCoursesWithModulesAndLessonsForUser($user);
         foreach ($courses as $course) {
             foreach ($course->getModules() as $module) {
-                $lesson = $this->findNextLessonInModule($module, $completedLessonIds);
+                $lesson = $this->findNextLessonInModule($module, $completedLessonLookup);
                 if ($lesson !== null) {
                     return $lesson;
                 }
@@ -401,10 +402,10 @@ class TriggerService
         return null;
     }
 
-    private function findNextLessonInModule(Module $module, array $completedLessonIds): ?Lesson
+    private function findNextLessonInModule(Module $module, array $completedLessonLookup): ?Lesson
     {
         foreach ($module->getLessons() as $lesson) {
-            if (!in_array($lesson->getId(), $completedLessonIds, true)) {
+            if (!isset($completedLessonLookup[$lesson->getId()])) {
                 return $lesson;
             }
         }
