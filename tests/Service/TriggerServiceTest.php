@@ -146,6 +146,8 @@ class TriggerServiceTest extends TestCase
 
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
 
+        $this->courseRepository->method('findCoursesWithModulesAndLessonsForUser')->willReturn([$course]);
+
         $this->clock->modify('2023-11-01 07:00:00');
 
         $this->userRepository->expects($this->once())
@@ -207,6 +209,8 @@ class TriggerServiceTest extends TestCase
 
         $user->method('getCohorts')->willReturn(new ArrayCollection([$cohort]));
         $user->method('getCourses')->willReturn(new ArrayCollection([$course]));
+
+        $this->courseRepository->method('findCoursesWithModulesAndLessonsByCohort')->willReturn([$course]);
 
         $this->clock->modify('2023-11-01 13:00:00');
 
