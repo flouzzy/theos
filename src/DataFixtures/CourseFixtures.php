@@ -40,7 +40,7 @@ class CourseFixtures extends Fixture
 
     private function create(int $index, $author)
     {
-        $title = 'Cours n°' . $index;
+        $title = 'Course n°' . $index;
         $course = new Course;
         $course->setTitle($title);
         $course->setDescription(AppFixtures::LOREM_IPSUM);

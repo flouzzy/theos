@@ -87,24 +87,6 @@ class CourseRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Course[] Returns an array of Course objects with modules and lessons eager loaded for a specific cohort
-     */
-    public function findCoursesWithModulesAndLessonsByCohort(\App\Entity\Cohort $cohort): array
-    {
-        return $this->createQueryBuilder('c')
-            ->join('c.cohorts', 'co')
-            ->leftJoin('c.modules', 'm')
-            ->leftJoin('m.lessons', 'l')
-            ->addSelect('m', 'l')
-            ->where('co = :cohort')
-            ->setParameter('cohort', $cohort)
-            ->addOrderBy('c.itemOrder', 'ASC')
-            ->addOrderBy('c.id', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * @return Course[] Returns courses for the catalog filtering by cohorts and text search
      */
     public function findCatalogCourses(array $cohorts = [], bool $isAdmin = false, ?string $search = null): array
