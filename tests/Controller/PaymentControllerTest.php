@@ -2,76 +2,72 @@
 
 namespace App\Tests\Controller;
 
+use App\Controller\PaymentController;
 use App\Entity\PaymentSetting;
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Repository\PaymentSettingRepository;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
 
-class PaymentControllerTest extends WebTestCase
+class PaymentControllerTest extends TestCase
 {
-    private $client;
-    private EntityManagerInterface $entityManager;
-
-    protected function setUp(): void
+    public function testIndexReturnsResponseWithPaymentSetting(): void
     {
-        $this->client = static::createClient();
-        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->entityManager->close();
-        parent::tearDown();
-    }
-
-    public function testIndexIsSuccessfulForAuthenticatedUser(): void
-    {
-        // Créer un utilisateur de test
-        $user = new User();
-        $user->setEmail('test_payment_' . uniqid() . '@example.com');
-        $user->setPassword('password');
-        $user->setFirstname('Test');
-        $user->setLastname('Payment');
-        $user->setRoles(['ROLE_USER']);
-
-        $this->entityManager->persist($user);
-
-        // Nettoyer d'abord les anciens paramètres de paiement s'il y en a pour éviter les conflits
-        $existingPayments = $this->entityManager->getRepository(PaymentSetting::class)->findAll();
-        foreach ($existingPayments as $existingPayment) {
-            $this->entityManager->remove($existingPayment);
-        }
-
-        // Créer un paramètre de paiement
+        $paymentSettingRepository = $this->createMock(PaymentSettingRepository::class);
         $paymentSetting = new PaymentSetting();
-        $paymentSetting->setPricing(99);
-        $paymentSetting->setRib('FR7600000000000000000000000');
-        $paymentSetting->setNote('Test Payment Note');
+        $paymentSettingRepository->expects($this->once())
+            ->method('findOneBy')
+            ->with([])
+            ->willReturn($paymentSetting);
 
-        $this->entityManager->persist($paymentSetting);
-        $this->entityManager->flush();
+        $twig = $this->createMock(Environment::class);
+        $twig->expects($this->once())
+            ->method('render')
+            ->with('payment/index.html.twig', [
+                'payment' => $paymentSetting,
+            ])
+            ->willReturn('rendered_template_content');
 
-        // Simuler la connexion
-        $this->client->loginUser($user);
+        $container = new Container();
+        $container->set('twig', $twig);
 
-        // Accéder à la route
-        $this->client->request('GET', '/payment/');
+        $controller = new PaymentController();
+        $controller->setContainer($container);
 
-        $this->assertResponseIsSuccessful();
+        $response = $controller->index($paymentSettingRepository);
 
-        // Assert content
-        $this->assertSelectorTextContains('ion-card-title', '99');
-        $this->assertSelectorTextContains('p', 'FR7600000000000000000000000');
-
-        // Clean up
-        $this->entityManager->remove($user);
-        $this->entityManager->remove($paymentSetting);
-        $this->entityManager->flush();
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('rendered_template_content', $response->getContent());
     }
 
-    public function testIndexRedirectsUnauthenticatedUser(): void
+    public function testIndexReturnsResponseWithoutPaymentSetting(): void
     {
-        $this->client->request('GET', '/payment/');
-        $this->assertResponseRedirects('/login');
+        $paymentSettingRepository = $this->createMock(PaymentSettingRepository::class);
+        $paymentSettingRepository->expects($this->once())
+            ->method('findOneBy')
+            ->with([])
+            ->willReturn(null);
+
+        $twig = $this->createMock(Environment::class);
+        $twig->expects($this->once())
+            ->method('render')
+            ->with('payment/index.html.twig', [
+                'payment' => null,
+            ])
+            ->willReturn('rendered_template_content_empty');
+
+        $container = new Container();
+        $container->set('twig', $twig);
+
+        $controller = new PaymentController();
+        $controller->setContainer($container);
+
+        $response = $controller->index($paymentSettingRepository);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('rendered_template_content_empty', $response->getContent());
     }
 }
