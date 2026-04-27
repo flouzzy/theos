@@ -22,7 +22,7 @@
 
                 <div class="flex-1 text-center sm:text-left mb-2 pt-2">
                     <h2 class="text-2xl font-bold">{{ user.fullname }}</h2>
-                    <p class="text-muted-foreground">{{ 'Promo' | trans }} {{ user.cohorts.first.title|default('2024') }}</p>
+                    <p class="text-muted-foreground">Promo {{ user.cohorts.first.title|default('2024') }}</p>
                 </div>
 
                 {% if app.user and app.user.id == user.id %}

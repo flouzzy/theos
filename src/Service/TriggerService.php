@@ -119,8 +119,7 @@ class TriggerService
         }
 
         // Find an uncompleted lesson with audio
-        $courses = $this->courseRepository->findCoursesWithModulesAndLessonsForUser($user);
-        foreach ($courses as $course) {
+        foreach ($user->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
                     if (!$lesson->getAudioPath()) continue;
@@ -156,8 +155,7 @@ class TriggerService
             if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
 
             $cohortLessonIds = [];
-            $courses = $this->courseRepository->findCoursesWithModulesAndLessonsByCohort($cohort);
-            foreach ($courses as $course) {
+            foreach ($cohort->getCourses() as $course) {
                 foreach ($course->getModules() as $module) {
                     foreach ($module->getLessons() as $lesson) {
                         $cohortLessonIds[] = $lesson->getId();
@@ -171,13 +169,13 @@ class TriggerService
 
             $completionsCountMap = $this->completionRepository->countCompletionsForLessons($cohortLessonIds);
 
-            if ($this->processCohortFomoTrigger($user, $cohort, $courses, $userCompletedLessonIds, $completionsCountMap, $totalUsers)) {
+            if ($this->processCohortFomoTrigger($user, $cohort, $userCompletedLessonIds, $completionsCountMap, $totalUsers)) {
                 return; // One FOMO at a time
             }
         }
     }
 
-    private function processCohortFomoTrigger(User $user, $cohort, array $courses, array $userCompletedLessonIds, array $completionsCountMap, int $totalUsers): bool
+    private function processCohortFomoTrigger(User $user, $cohort, array $userCompletedLessonIds, array $completionsCountMap, int $totalUsers): bool
     {
         $completedMap = array_flip($userCompletedLessonIds);
         $threshold = $totalUsers * 0.8;
@@ -193,7 +191,7 @@ class TriggerService
             return false;
         }
 
-        foreach ($courses as $course) {
+        foreach ($cohort->getCourses() as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
                     if (isset($candidateLessonIds[$lesson->getId()])) {
@@ -389,13 +387,12 @@ class TriggerService
     {
         // Fetch all completed lesson IDs for the user in a single query
         $completedLessonIds = $this->completionRepository->findCompletedLessonIdsByUser($user);
-        $completedLessonLookup = array_flip($completedLessonIds);
 
         // Find the first non-completed lesson in the user's courses, eager loading modules and lessons
         $courses = $this->courseRepository->findCoursesWithModulesAndLessonsForUser($user);
         foreach ($courses as $course) {
             foreach ($course->getModules() as $module) {
-                $lesson = $this->findNextLessonInModule($module, $completedLessonLookup);
+                $lesson = $this->findNextLessonInModule($module, $completedLessonIds);
                 if ($lesson !== null) {
                     return $lesson;
                 }
@@ -404,10 +401,10 @@ class TriggerService
         return null;
     }
 
-    private function findNextLessonInModule(Module $module, array $completedLessonLookup): ?Lesson
+    private function findNextLessonInModule(Module $module, array $completedLessonIds): ?Lesson
     {
         foreach ($module->getLessons() as $lesson) {
-            if (!isset($completedLessonLookup[$lesson->getId()])) {
+            if (!in_array($lesson->getId(), $completedLessonIds, true)) {
                 return $lesson;
             }
         }

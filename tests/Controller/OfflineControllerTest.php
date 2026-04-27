@@ -6,10 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class OfflineControllerTest extends WebTestCase
 {
-    public function testIndexIsSuccessful(): void
+    public function testIndex(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/offline');
+        $crawler = $client->request('GET', '/offline');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Contenus Téléchargés');

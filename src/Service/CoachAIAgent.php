@@ -96,9 +96,8 @@ class CoachAIAgent
 
             return $reply;
         } catch (\Exception $e) {
-            $this->logger->error('Erreur CoachAIAgent : ' . $e->getMessage());
             // Return a fallback message in case the API call fails or the API key isn't provided
-            return "Désolé, une erreur est survenue lors de ma réflexion.";
+            return "Désolé, une erreur est survenue lors de ma réflexion. (Erreur Technique: " . $e->getMessage() . ")";
         }
     }
 
