@@ -29,7 +29,7 @@
 
         <h3 class="font-bold text-xl mb-3 line-clamp-1 group-hover:text-primary transition-colors">
             <a href="{{ path('course_show', {slug: this.course.slug}) }}">
-                {{ this.course.title }}
+                {{ this.course.title|trans }}
             </a>
         </h3>
 

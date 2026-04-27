@@ -65,7 +65,7 @@
             {% elseif myCourses|length > 0 %}
                 {% set firstCourse = myCourses|first %}
                 <a href="{{ path('course_show', {slug: firstCourse.course.slug}) }}" class="group relative inline-flex items-center gap-3 overflow-hidden rounded-xl bg-primary px-8 py-4 font-bold text-primary-foreground transition-transform hover:scale-105 active:scale-95">
-                    <span>{{ 'Commencer :' | trans }} {{ firstCourse.course.title }}</span>
+                    <span>{{ 'Commencer :' | trans }} {{ firstCourse.course.title|trans }}</span>
                     <svg class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
@@ -124,7 +124,7 @@
                         {{ 'S\'abonner (Mensuel)' | trans }}
                     </a>
                 {% else %}
-                    <span class="text-xs font-semibold px-2 py-1 bg-green-100 text-green-700 rounded-full">Pro User</span>
+                    <span class="text-xs font-semibold px-2 py-1 bg-green-100 text-green-700 rounded-full">{{ 'Utilisateur Pro' | trans }}</span>
                 {% endif %}
             </div>
         </div>
@@ -166,7 +166,7 @@
                         {# Content #}
                         <div class="p-5 flex-1 flex flex-col">
                             <h3 class="font-serif text-lg font-bold leading-tight mb-2 group-hover:text-primary transition-colors">
-                                {{ course.title }}
+                                {{ course.title|trans }}
                             </h3>
                             <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
                                 {{ course.description|striptags|u.truncate(100, '...') ?: 'Apprenez avec les experts du Rocher.' }}
