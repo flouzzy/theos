@@ -173,42 +173,17 @@ class CompletionService
 
     private function areAllCourseLessonsCompleted(\App\Entity\User $user, \App\Entity\Course $course): bool
     {
-        $modules = $course->getModules();
-        $allLessons = [];
-        foreach ($modules as $courseModule) {
-            foreach ($courseModule->getLessons() as $lesson) {
-                $allLessons[] = $lesson;
-            }
-        }
+        $lessonsCount = $this->entityManager->getRepository(Lesson::class)
+            ->countForCourse($course);
 
-        if (count($allLessons) === 0) {
+        if ($lessonsCount === 0) {
             return true;
         }
 
-        $completions = $this->entityManager->getRepository(Completion::class)->findBy([
-            'user' => $user,
-            'lesson' => $allLessons
-        ]);
+        $completedCount = $this->entityManager->getRepository(Completion::class)
+            ->countCompletedLessonsForCourse($user, $course);
 
-        $completionMap = [];
-        foreach ($completions as $completion) {
-            if ($completion->getLesson()) {
-                $completionMap[$completion->getLesson()->getId()] = $completion;
-            }
-        }
-
-        foreach ($course->getModules() as $courseModule) {
-            $moduleLessons = $courseModule->getLessons();
-            foreach ($moduleLessons as $lesson) {
-                $completion = $completionMap[$lesson->getId()] ?? null;
-
-                if (!$completion || !$completion->isCompleted()) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return $completedCount === $lessonsCount;
     }
 
     private function handleCourseCompletionRewards(\App\Entity\User $user, \App\Entity\Course $course, CourseCompletion $courseCompletion): void
