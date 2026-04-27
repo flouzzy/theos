@@ -119,7 +119,8 @@ class TriggerService
         }
 
         // Find an uncompleted lesson with audio
-        foreach ($user->getCourses() as $course) {
+        $courses = $this->courseRepository->findCoursesWithModulesAndLessonsForUser($user);
+        foreach ($courses as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
                     if (!$lesson->getAudioPath()) continue;
@@ -155,7 +156,8 @@ class TriggerService
             if ($totalUsers < 5) continue; // Not enough users for meaningful FOMO
 
             $cohortLessonIds = [];
-            foreach ($cohort->getCourses() as $course) {
+            $courses = $this->courseRepository->findCoursesWithModulesAndLessonsByCohort($cohort);
+            foreach ($courses as $course) {
                 foreach ($course->getModules() as $module) {
                     foreach ($module->getLessons() as $lesson) {
                         $cohortLessonIds[] = $lesson->getId();
@@ -169,13 +171,13 @@ class TriggerService
 
             $completionsCountMap = $this->completionRepository->countCompletionsForLessons($cohortLessonIds);
 
-            if ($this->processCohortFomoTrigger($user, $cohort, $userCompletedLessonIds, $completionsCountMap, $totalUsers)) {
+            if ($this->processCohortFomoTrigger($user, $cohort, $courses, $userCompletedLessonIds, $completionsCountMap, $totalUsers)) {
                 return; // One FOMO at a time
             }
         }
     }
 
-    private function processCohortFomoTrigger(User $user, $cohort, array $userCompletedLessonIds, array $completionsCountMap, int $totalUsers): bool
+    private function processCohortFomoTrigger(User $user, $cohort, array $courses, array $userCompletedLessonIds, array $completionsCountMap, int $totalUsers): bool
     {
         $completedMap = array_flip($userCompletedLessonIds);
         $threshold = $totalUsers * 0.8;
@@ -191,7 +193,7 @@ class TriggerService
             return false;
         }
 
-        foreach ($cohort->getCourses() as $course) {
+        foreach ($courses as $course) {
             foreach ($course->getModules() as $module) {
                 foreach ($module->getLessons() as $lesson) {
                     if (isset($candidateLessonIds[$lesson->getId()])) {
