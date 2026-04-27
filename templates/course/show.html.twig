@@ -1,6 +1,6 @@
 {% extends 'app.html.twig' %}
 
-{% block title %}{{ course.title }}{% endblock %}
+{% block title %}{{ course.title|trans }}{% endblock %}
 
 {% block page_title %}{{ 'Détails du cours' | trans }}{% endblock %}
 
@@ -30,7 +30,7 @@
         </div>
 
         <div class="p-6 md:p-8">
-            <h1 class="text-3xl font-bold mb-2">{{ course.title }}</h1>
+            <h1 class="text-3xl font-bold mb-2">{{ course.title|trans }}</h1>
             <p class="text-muted-foreground mb-6 max-w-2xl">{{ course.description }}</p>
 
             {# Stats & Progress #}
