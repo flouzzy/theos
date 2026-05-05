@@ -1,11 +1,11 @@
 {% extends 'app.html.twig' %}
 
 {% block title %}
-    {{ 'Calendrier' | trans }} - {{ cohort ? cohort.title : 'Mon planning' }}
+    {{ 'Calendar' | trans }} - {{ cohort ? cohort.title : 'Mon planning' }}
 {% endblock %}
 
 {% block page_title %}
-    {{ 'Calendrier de la promotion' | trans }}
+    {{ 'Cohort calendar' | trans }}
 {% endblock %}
 
 {% block content %}
@@ -19,7 +19,7 @@
                     </div>
                     <div>
                         <h2 class="text-2xl font-black tracking-tight">{{ cohort.title }}</h2>
-                        <p class="text-muted-foreground">{{ 'Votre planning et événements à venir' | trans }}</p>
+                        <p class="text-muted-foreground">{{ 'Your schedule and upcoming events' | trans }}</p>
                     </div>
                 </div>
 
@@ -33,7 +33,7 @@
                     <div class="flex flex-wrap gap-3 mt-4">
                         <a href="{{ calendar.url }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-bold rounded-xl hover:opacity-90 transition-all shadow-md shadow-primary/20">
                             <twig:ux:icon name="lucide:external-link" class="w-4 h-4" />
-                            {{ 'Consulter le calendrier externe' | trans }}
+                            {{ 'View external calendar' | trans }}
                         </a>
                         <a href="{{ path('calendar_export', {id: calendar.id}) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-all">
                             <twig:ux:icon name="lucide:download" class="w-4 h-4" />
@@ -43,7 +43,7 @@
                 {% elseif calendar %}
                     <a href="{{ path('calendar_export', {id: calendar.id}) }}" class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-all">
                         <twig:ux:icon name="lucide:download" class="w-4 h-4" />
-                        {{ 'Exporter le calendrier (.ics)' | trans }}
+                        {{ 'Export calendar (.ics)' | trans }}
                     </a>
                 {% endif %}
             </div>
@@ -61,14 +61,14 @@
         <div class="space-y-4">
             <h3 class="text-xl font-bold px-2 flex items-center gap-2">
                 <twig:ux:icon name="lucide:list-todo" class="w-5 h-5 text-primary" />
-                {{ 'Prochains événements' | trans }}
+                {{ 'Upcoming events' | trans }}
             </h3>
 
             {% if calendar %}
                 {{ component('EventList', { calendar: calendar, lazy: true }) }}
             {% else %}
                 <div class="p-8 text-center bg-card/50 border border-dashed border-border rounded-3xl text-muted-foreground">
-                    {{ 'Aucun calendrier associé.' | trans }}
+                    {{ 'No calendar associated.' | trans }}
                 </div>
             {% endif %}
         </div>
@@ -78,10 +78,10 @@
             <div class="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6 text-muted-foreground">
                 <twig:ux:icon name="lucide:users" class="w-10 h-10" />
             </div>
-            <h3 class="text-2xl font-bold mb-2">{{ 'Pas de promotion active' | trans }}</h3>
-            <p class="text-muted-foreground max-w-sm">{{ 'Vous devez être inscrit à une promotion pour accéder au calendrier.' | trans }}</p>
+            <h3 class="text-2xl font-bold mb-2">{{ 'No active cohort' | trans }}</h3>
+            <p class="text-muted-foreground max-w-sm">{{ 'You must be enrolled in a cohort to access the calendar.' | trans }}</p>
             <a href="{{ path('cohort_index') }}" class="mt-6 px-6 py-3 bg-primary text-primary-foreground font-bold rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
-                {{ 'Voir les promotions' | trans }}
+                {{ 'View cohorts' | trans }}
             </a>
         </div>
     {% endif %}

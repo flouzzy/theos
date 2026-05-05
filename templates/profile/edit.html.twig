@@ -1,6 +1,6 @@
 {% extends 'app.html.twig' %}
 
-{% block title %}{{ 'Modifier mon profil' | trans }}{% endblock %}
+{% block title %}{{ 'Edit my profile' | trans }}{% endblock %}
 
 {% block content %}
 <div class="space-y-8 max-w-3xl mx-auto">
@@ -11,7 +11,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
         </a>
-        <h1 class="text-2xl font-bold">{{ 'Paramètres du compte' | trans }}</h1>
+        <h1 class="text-2xl font-bold">{{ 'Account settings' | trans }}</h1>
     </div>
 
     {{ form_start(profileForm, {'attr': {'class': 'space-y-8'}}) }}
@@ -22,7 +22,7 @@
                 <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                {{ 'Informations générales' | trans }}
+                {{ 'General information' | trans }}
             </h3>
             
             <div class="space-y-6">
@@ -74,14 +74,14 @@
                     {{ form_widget(profileForm.activeFrame, {'attr': {'class': 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary'}}) }}
                     <div class="text-sm text-destructive mt-1">{{ form_errors(profileForm.activeFrame) }}</div>
                     {% if app.user.unlockedFrames|length == 0 %}
-                        <p class="text-xs text-muted-foreground mt-1">{{ 'Continuez vos efforts pour débloquer des cadres exclusifs !' | trans }}</p>
+                        <p class="text-xs text-muted-foreground mt-1">{{ 'Keep up your effort to unlock exclusive frames!' | trans }}</p>
                     {% endif %}
                 </div>
             </div>
             
             <div class="mt-6 flex justify-end">
                 <button type="submit" class="btn btn-primary">
-                    {{ 'Enregistrer les modifications' | trans }}
+                    {{ 'Save changes' | trans }}
                 </button>
             </div>
         </div>
@@ -93,13 +93,13 @@
             <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            {{ 'Sécurité' | trans }}
+            {{ 'Security' | trans }}
         </h3>
-        <p class="text-sm text-muted-foreground mb-4">{{ 'Gérez votre mot de passe et options de sécurité' | trans }}</p>
+        <p class="text-sm text-muted-foreground mb-4">{{ 'Manage your password and security options' | trans }}</p>
         
         <div class="space-y-6">
             <div>
-                <label class="block text-sm font-medium mb-2">{{ 'Mot de passe actuel' | trans }}</label>
+                <label class="block text-sm font-medium mb-2">{{ 'Current password' | trans }}</label>
                 <div class="relative">
                     <input type="password" value="********" readonly class="w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm text-muted-foreground" disabled>
                      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-muted-foreground">
@@ -113,31 +113,31 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                     <label class="block text-sm font-medium mb-2">{{ 'Nouveau mot de passe' | trans }}</label>
+                     <label class="block text-sm font-medium mb-2">{{ 'New password' | trans }}</label>
                      <input type="password" placeholder="........" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary">
                 </div>
                 <div>
-                     <label class="block text-sm font-medium mb-2">{{ 'Confirmer le mot de passe' | trans }}</label>
+                     <label class="block text-sm font-medium mb-2">{{ 'Confirm password' | trans }}</label>
                      <input type="password" placeholder="........" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary">
                 </div>
             </div>
 
             <div class="flex items-center justify-between pt-4 border-t border-border">
                 <div class="flex flex-col">
-                    <span class="text-sm font-medium">{{ 'Authentification à deux facteurs' | trans }}</span>
-                    <span class="text-xs text-muted-foreground">{{ 'Ajoutez une couche de sécurité supplémentaire' | trans }}</span>
+                    <span class="text-sm font-medium">{{ 'Two-factor authentication' | trans }}</span>
+                    <span class="text-xs text-muted-foreground">{{ 'Add an extra layer of security' | trans }}</span>
                 </div>
                 
                 {% if app.user.isTotpAuthenticationEnabled %}
-                    <form action="{{ path('profile_2fa_disable') }}" method="post" onsubmit="return confirm('{{ 'Désactiver la double authentification ?' | trans }}')">
+                    <form action="{{ path('profile_2fa_disable') }}" method="post" onsubmit="return confirm('{{ 'Disable two-factor authentication?' | trans }}')">
                         <input type="hidden" name="_token" value="{{ csrf_token('disable_2fa') }}">
                         <button type="submit" class="btn btn-sm btn-outline text-destructive border-destructive/20 hover:bg-destructive/10">
-                            {{ 'Désactiver' | trans }}
+                            {{ 'Disable' | trans }}
                         </button>
                     </form>
                 {% else %}
                     <a href="{{ path('profile_2fa_enable') }}" class="btn btn-sm btn-primary">
-                        {{ 'Activer' | trans }}
+                        {{ 'Enable' | trans }}
                     </a>
                 {% endif %}
             </div>
@@ -152,13 +152,13 @@
             </svg>
             {{ 'Notifications' | trans }}
         </h3>
-        <p class="text-sm text-muted-foreground mb-4">{{ 'Choisissez comment vous souhaitez être notifié' | trans }}</p>
+        <p class="text-sm text-muted-foreground mb-4">{{ 'Choose how you want to be notified' | trans }}</p>
 
         <div class="divide-y divide-border" data-controller="form-submit">
              <div class="flex items-center justify-between py-4">
                  <div class="flex flex-col">
-                    <span class="text-sm font-medium">{{ 'Notifications par email' | trans }}</span>
-                    <span class="text-xs text-muted-foreground">{{ 'Description pour notifications par email' | trans }}</span>
+                    <span class="text-sm font-medium">{{ 'Email notifications' | trans }}</span>
+                    <span class="text-xs text-muted-foreground">{{ 'Description for email notifications' | trans }}</span>
                 </div>
                 {{ form_widget(profileForm.emailNotifications, {'attr': {'class': 'sr-only peer', 'data-action': 'change->form-submit#submit'}}) }}
                  <label for="{{ profileForm.emailNotifications.vars.id }}" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-muted transition-colors duration-200 ease-in-out focus:outline-none peer-checked:bg-primary">
@@ -167,8 +167,8 @@
             </div>
             <div class="flex items-center justify-between py-4">
                  <div class="flex flex-col">
-                    <span class="text-sm font-medium">{{ 'Notifications push' | trans }}</span>
-                    <span class="text-xs text-muted-foreground">{{ 'Description pour notifications push' | trans }}</span>
+                    <span class="text-sm font-medium">{{ 'Push notifications' | trans }}</span>
+                    <span class="text-xs text-muted-foreground">{{ 'Description for push notifications' | trans }}</span>
                 </div>
                 {{ form_widget(profileForm.pushNotifications, {'attr': {'class': 'sr-only peer', 'data-action': 'change->form-submit#submit'}}) }}
                  <label for="{{ profileForm.pushNotifications.vars.id }}" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-muted transition-colors duration-200 ease-in-out focus:outline-none peer-checked:bg-primary">
@@ -177,8 +177,8 @@
             </div>
             <div class="flex items-center justify-between py-4">
                  <div class="flex flex-col">
-                    <span class="text-sm font-medium">{{ 'Rappels de leçons' | trans }}</span>
-                    <span class="text-xs text-muted-foreground">{{ 'Description pour rappels de leçons' | trans }}</span>
+                    <span class="text-sm font-medium">{{ 'Lesson reminders' | trans }}</span>
+                    <span class="text-xs text-muted-foreground">{{ 'Description for lesson reminders' | trans }}</span>
                 </div>
                 {{ form_widget(profileForm.lessonReminders, {'attr': {'class': 'sr-only peer', 'data-action': 'change->form-submit#submit'}}) }}
                  <label for="{{ profileForm.lessonReminders.vars.id }}" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-muted transition-colors duration-200 ease-in-out focus:outline-none peer-checked:bg-primary">
@@ -187,8 +187,8 @@
             </div>
             <div class="flex items-center justify-between py-4">
                  <div class="flex flex-col">
-                    <span class="text-sm font-medium">{{ 'Résumé hebdomadaire' | trans }}</span>
-                    <span class="text-xs text-muted-foreground">{{ 'Description pour résumé hebdomadaire' | trans }}</span>
+                    <span class="text-sm font-medium">{{ 'Weekly recap' | trans }}</span>
+                    <span class="text-xs text-muted-foreground">{{ 'Description for weekly recap' | trans }}</span>
                 </div>
                 {{ form_widget(profileForm.weeklySummary, {'attr': {'class': 'sr-only peer', 'data-action': 'change->form-submit#submit'}}) }}
                  <label for="{{ profileForm.weeklySummary.vars.id }}" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-muted transition-colors duration-200 ease-in-out focus:outline-none peer-checked:bg-primary">
@@ -204,16 +204,16 @@
             <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            {{ 'Préférences' | trans }}
+            {{ 'Preferences' | trans }}
         </h3>
-        <p class="text-sm text-muted-foreground mb-4">{{ 'Personnalisez votre expérience d\'apprentissage' | trans }}</p>
+        <p class="text-sm text-muted-foreground mb-4">{{ 'Customize your learning experience' | trans }}</p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
              <div>
                   <label class="block text-sm font-medium mb-2">{{ 'Langue' | trans }}</label>
                   <select class="block w-full rounded-md border-input bg-background border px-3 py-2 text-sm focus:ring-2 focus:ring-primary">
-                      <option value="fr" selected>Français</option>
-                      <option value="en">English</option>
+                      <option value="en" selected>English</option>
+                      <option value="fr">Français</option>
                   </select>
              </div>
              <div>
@@ -230,13 +230,13 @@
 
     {# Zone de Danger #}
     <div class="bg-destructive/5 border border-destructive/20 rounded-xl p-6 shadow-sm mt-12">
-        <h3 class="font-bold text-lg text-destructive mb-2">{{ 'Zone de danger' | trans }}</h3>
-        <p class="text-sm text-muted-foreground mb-4">{{ 'La suppression de votre compte effacera toutes vos données personnelles. Cette action est irréversible.' | trans }}</p>
+        <h3 class="font-bold text-lg text-destructive mb-2">{{ 'Danger zone' | trans }}</h3>
+        <p class="text-sm text-muted-foreground mb-4">{{ 'Deleting your account will erase all your personal data. This action is irreversible.' | trans }}</p>
         
-        <form action="{{ path('profile_delete', {'id': app.user.id}) }}" method="post" onsubmit="return confirm('{{ 'Êtes-vous sûr de vouloir supprimer votre compte ?' | trans }}');">
+        <form action="{{ path('profile_delete', {'id': app.user.id}) }}" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete your account?' | trans }}');">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ app.user.id) }}">
             <button type="submit" class="btn btn-outline border-destructive/50 text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                {{ 'Supprimer mon compte' | trans }}
+                {{ 'Delete my account' | trans }}
             </button>
         </form>
     </div>

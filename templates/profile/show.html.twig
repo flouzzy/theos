@@ -1,12 +1,12 @@
 {% extends 'app.html.twig' %}
 
-{% block title %}{{ 'Mon profil' | trans }}{% endblock %}
+{% block title %}{{ 'My profile' | trans }}{% endblock %}
 
 {% block content %}
 <div class="space-y-8 max-w-5xl mx-auto">
     
     {# Title #}
-    <h1 class="text-2xl font-bold">{{ 'Mon profil' | trans }}</h1>
+    <h1 class="text-2xl font-bold">{{ 'My profile' | trans }}</h1>
 
     {# Profile Header #}
     <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
@@ -31,7 +31,7 @@
                         <svg class="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
-                        {{ 'Modifier' | trans }}
+                        {{ 'Edit' | trans }}
                     </a>
                 </div>
                 {% endif %}
@@ -44,7 +44,7 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        {{ 'Nom complet' | trans }}
+                        {{ 'Fullname' | trans }}
                      </label>
                      <p class="font-medium text-foreground">{{ user.fullname }}</p>
                 </div>
@@ -69,12 +69,12 @@
 
     {# Stats Grid #}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <twig:StatCard value="{{ stats.enrolled }}" label="{{ 'Cours suivis' | trans }}" />
-        <twig:StatCard value="{{ stats.completed }}" label="{{ 'Cours terminés' | trans }}" />
-        <twig:StatCard value="{{ stats.hours }}h" label="{{ 'Heures d\'apprentissage' | trans }}" />
+        <twig:StatCard value="{{ stats.enrolled }}" label="{{ 'Courses taken' | trans }}" />
+        <twig:StatCard value="{{ stats.completed }}" label="{{ 'Courses finished' | trans }}" />
+        <twig:StatCard value="{{ stats.hours }}h" label="{{ 'Hours of learning' | trans }}" />
         <twig:StatCard value="{{ stats.notes }}" label="{{ 'Notes prises' | trans }}" />
         <twig:StatCard value="{{ stats.xp }}" label="XP" />
-        <twig:StatCard value="{{ stats.streak }}" label="{{ 'Série' | trans }}">
+        <twig:StatCard value="{{ stats.streak }}" label="{{ 'Streak' | trans }}">
             <twig:block name="icon">
                 <twig:StreakBadge streak="{{ stats.streak }}" size="xs" />
             </twig:block>
@@ -87,7 +87,7 @@
             <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
-            {{ 'Réalisations' | trans }}
+            {{ 'Achievements' | trans }}
         </h3>
         <div class="bg-card border border-border rounded-xl p-6 min-h-[160px]">
             <twig:AchievementsComponent lazy="true">
@@ -110,7 +110,7 @@
             <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            {{ 'Compétences' | trans }}
+            {{ 'Skills' | trans }}
         </h3>
         <div class="bg-card border border-border rounded-xl p-6">
             <twig:UserSkillsComponent :user="user" />
@@ -136,13 +136,13 @@
                             <h4 class="font-bold mb-1">{{ project.title }}</h4>
                             <p class="text-xs text-muted-foreground mb-3">{{ project.description }}</p>
                             {% if project.url %}
-                                <a href="{{ project.url }}" target="_blank" class="text-sm text-primary hover:underline">{{ 'Voir le projet' | trans }}</a>
+                                <a href="{{ project.url }}" target="_blank" class="text-sm text-primary hover:underline">{{ 'View project' | trans }}</a>
                             {% endif %}
                         </div>
                     </div>
                  {% else %}
                      <div class="col-span-2 text-center py-8 text-muted-foreground">
-                         {{ 'Aucun projet dans le portfolio.' | trans }}
+                         {{ 'No project in the portfolio.' | trans }}
                      </div>
                  {% endfor %}
             </div>

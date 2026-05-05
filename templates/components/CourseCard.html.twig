@@ -49,9 +49,9 @@
         <div class="mt-5">
             <a href="{{ path('course_show', {slug: this.course.slug}) }}" class="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-primary/90 hover:shadow-md transition-all active:scale-95">
                 {% if this.isSubscribed %}
-                    {{ 'Continuer' | trans }}
+                    {{ 'Continue' | trans }}
                 {% else %}
-                    {{ 'Voir le cours' | trans }}
+                    {{ 'View course' | trans }}
                 {% endif %}
             </a>
         </div>

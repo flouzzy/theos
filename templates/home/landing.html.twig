@@ -26,19 +26,19 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <twig:Card>
                 <twig:Card:Content class="p-0">
-                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-1.png') }}" alt="Image d'une étudiante sur son ordinateur" width="640" height="480" fetchpriority="high">
+                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-1.png') }}" alt="{{ 'Image of a female student on her computer' | trans }}" width="640" height="480" fetchpriority="high">
                 </twig:Card:Content>
             </twig:Card>
 
             <twig:Card class="md:mt-12">
                 <twig:Card:Content class="p-0">
-                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-2.png') }}" alt="Image d'un étudiant lisant la Bible" width="640" height="480" loading="lazy">
+                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-2.png') }}" alt="{{ 'Image of a student reading the Bible' | trans }}" width="640" height="480" loading="lazy">
                 </twig:Card:Content>
             </twig:Card>
 
             <twig:Card>
                 <twig:Card:Content class="p-0">
-                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-3.png') }}" alt="Image d'un étudiant diplomée" width="640" height="480" loading="lazy">
+                    <img class="w-full h-auto rounded-t-lg" src="{{ asset('images/landing-3.png') }}" alt="{{ 'Image of a graduate student' | trans }}" width="640" height="480" loading="lazy">
                 </twig:Card:Content>
             </twig:Card>
         </div>

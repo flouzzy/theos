@@ -1,14 +1,14 @@
 {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
     <div>
         {{ form_label(form.content, null, {'label_attr': {'class': 'sr-only'}}) }}
-        {{ form_widget(form.content, {'attr': {'class': 'flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50', 'placeholder': 'Écrivez ce que vous avez retenu de cette leçon...'|trans}}) }}
+        {{ form_widget(form.content, {'attr': {'class': 'flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50', 'placeholder': 'Write what you remember from this lesson...'|trans}}) }}
         {{ form_errors(form.content, {'attr': {'class': 'text-destructive text-sm mt-1'}}) }}
         <p class="text-xs text-muted-foreground mt-1 text-right">
-            {{ 'Ces notes restent privées' | trans }}
+            {{ 'These notes remain private' | trans }}
         </p>
     </div>
 
     <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all">
-        {{ 'Enregistrer la note' | trans }}
+        {{ 'Save the note' | trans }}
     </button>
 {{ form_end(form) }}

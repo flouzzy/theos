@@ -16,7 +16,7 @@
     {# My Submission Section #}
     <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
         <div class="px-6 py-4 border-b border-border bg-muted/30 flex justify-between items-center">
-            <h2 class="text-lg font-semibold">{{ 'Ma Soumission' | trans }}</h2>
+            <h2 class="text-lg font-semibold">{{ 'My Submission' | trans }}</h2>
             {% if submission %}
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
                     {{ submission.status|capitalize }}
@@ -32,7 +32,7 @@
                     <div class="flex items-center gap-2 mb-4 p-3 bg-primary/5 rounded-lg border border-primary/10">
                         <twig:ux:icon name="lucide:file-text" class="w-5 h-5 text-primary" />
                         <span class="text-sm font-medium flex-1 truncate">{{ submission.filePath|split('/')|last }}</span>
-                        <a href="{{ asset(submission.filePath) }}" target="_blank" class="text-xs font-bold text-primary hover:underline">{{ 'Télécharger' | trans }}</a>
+                        <a href="{{ asset(submission.filePath) }}" target="_blank" class="text-xs font-bold text-primary hover:underline">{{ 'Download' | trans }}</a>
                     </div>
                 {% endif %}
 
@@ -52,12 +52,12 @@
                 >
                     <input type="hidden" name="_token" value="{{ csrf_token('submit_assignment' ~ assignment.id) }}">
                     <div class="mb-4">
-                        <label for="content" class="block text-sm font-medium mb-2">{{ 'Votre réponse' | trans }}</label>
-                        <textarea name="content" id="content" class="w-full h-48 p-3 rounded-md border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary resize-y" placeholder="{{ 'Rédigez votre réponse ici...' | trans }}"></textarea>
+                        <label for="content" class="block text-sm font-medium mb-2">{{ 'Your answer' | trans }}</label>
+                        <textarea name="content" id="content" class="w-full h-48 p-3 rounded-md border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary resize-y" placeholder="{{ 'Write your answer here...' | trans }}"></textarea>
                     </div>
 
                     <div class="mb-6" data-controller="drag-drop-upload" data-drag-drop-upload-target="container">
-                        <label class="block text-sm font-medium mb-2">{{ 'Pièce jointe (Optionnel)' | trans }}</label>
+                        <label class="block text-sm font-medium mb-2">{{ 'Attachment (Optional)' | trans }}</label>
                         <div class="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer group"
                              @click="$anchor.click()"
                              data-action="click->drag-drop-upload#selectFile"
@@ -70,7 +70,7 @@
                             <div data-drag-drop-upload-target="preview">
                                 <twig:ux:icon name="lucide:upload-cloud" class="mx-auto h-10 w-10 text-muted-foreground group-hover:text-primary transition-colors mb-2" />
                                 <p class="text-sm text-muted-foreground">
-                                    <span class="font-bold text-primary">{{ 'Cliquez pour uploader' | trans }}</span> {{ 'ou glissez-déposez' | trans }}
+                                    <span class="font-bold text-primary">{{ 'Click to upload' | trans }}</span> {{ 'or drag and drop' | trans }}
                                 </p>
                                 <p class="text-xs text-muted-foreground mt-1">PDF, DOCX, ZIP (Max 10MB)</p>
                             </div>
@@ -78,7 +78,7 @@
                     </div>
 
                     <button type="submit" class="inline-flex items-center justify-center w-full sm:w-auto rounded-lg bg-primary px-8 py-3 text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity">
-                        {{ 'Envoyer le devoir' | trans }}
+                        {{ 'Submit the assignment' | trans }}
                     </button>
                 </form>
             {% endif %}
@@ -88,16 +88,16 @@
     {# Peer Review Section #}
     <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
         <div class="px-6 py-4 border-b border-border bg-muted/30">
-            <h2 class="text-lg font-semibold">{{ 'Revue par les pairs' | trans }}</h2>
+            <h2 class="text-lg font-semibold">{{ 'Peer review' | trans }}</h2>
         </div>
         <div class="p-6">
-            <p class="text-muted-foreground mb-4">{{ 'Évaluez le travail de vos pairs pour gagner des XP et les aider à progresser.' | trans }}</p>
+            <p class="text-muted-foreground mb-4">{{ 'Evaluate your peers’ work to earn XP and help them progress.' | trans }}</p>
             <a href="{{ path('assignment_review_pool', {id: assignment.id}) }}" class="inline-flex items-center justify-center rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-muted transition-colors gap-2">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                {{ 'Trouver un devoir à corriger' | trans }}
+                {{ 'Find an assignment to grade' | trans }}
             </a>
         </div>
     </div>

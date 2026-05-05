@@ -1,6 +1,6 @@
 {% extends 'app.html.twig' %}
 
-{% block title %}{{ 'Classement global' | trans }}{% endblock %}
+{% block title %}{{ 'Global leaderboard' | trans }}{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto p-6">
@@ -58,10 +58,10 @@
             <thead>
                 <tr class="border-b border-border bg-muted/50">
                     <th class="p-4 font-semibold text-foreground">#</th>
-                    <th class="p-4 font-semibold text-foreground">{{ 'Utilisateur' | trans }}</th>
+                    <th class="p-4 font-semibold text-foreground">{{ 'User' | trans }}</th>
                     <th class="p-4 font-semibold text-foreground text-center">{{ 'Ligue' | trans }}</th>
                     <th class="p-4 font-semibold text-foreground text-center">XP</th>
-                    <th class="p-4 font-semibold text-foreground text-center">{{ 'Série' | trans }}</th>
+                    <th class="p-4 font-semibold text-foreground text-center">{{ 'Streak' | trans }}</th>
                     <th class="p-4 font-semibold text-foreground text-center">{{ 'Badges' | trans }}</th>
                 </tr>
             </thead>
@@ -106,7 +106,7 @@
                 {% else %}
                     <tr>
                         <td colspan="5" class="p-8 text-center text-muted-foreground">
-                            {{ 'Aucun utilisateur trouvé.' | trans }}
+                            {{ 'No user found.' | trans }}
                         </td>
                     </tr>
                 {% endfor %}

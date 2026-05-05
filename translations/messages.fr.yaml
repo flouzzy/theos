@@ -271,3 +271,300 @@ webinar: 'Webinaire'
 workshop: 'Atelier'
 conference: 'Conférence'
 other: 'Autre'
+
+# PWA install
+Install the app: Installer l'application
+Quick access from your home screen: Accès rapide depuis l'écran d'accueil
+Later: Plus tard
+Install: Installer
+Install Le Rocher Académie: Installer Le Rocher Académie
+Add the app to your home screen for quick access, even offline.: Ajoutez l'application à votre écran d'accueil pour un accès rapide, même hors ligne.
+Tap the: Appuyez sur l'icône
+Share: Partager
+icon in Safari: dans Safari
+Scroll down and select: Faites défiler et sélectionnez
+'« Add to Home Screen »': '« Sur l''écran d''accueil »'
+Confirm by tapping: Confirmez en appuyant sur
+'« Add »': '« Ajouter »'
+Got it!: Compris !
+The share icon is in the Safari toolbar at the bottom (or top) of the screen.: L'icône de partage se trouve dans la barre d'outils de Safari en bas (ou en haut) de l'écran.
+
+# Lesson
+Duration: Durée
+
+# Chat
+Live: En direct
+
+# Team
+Are you sure you want to remove this member?: Êtes-vous sûr de vouloir retirer ce membre ?
+
+# Landing alts
+Image of a female student on her computer: Image d'une étudiante sur son ordinateur
+Image of a student reading the Bible: Image d'un étudiant lisant la Bible
+Image of a graduate student: Image d'un étudiant diplomée
+
+# === Added by EN-default refactor ===
+A temporary link will be sent to your email.: Un lien temporaire te sera envoyé par email.
+Access your learning space: Accédez à votre espace d'apprentissage
+Access your lessons and videos even without an internet connection.: Consultez vos leçons et vidéos même sans connexion internet.
+Account settings: Paramètres du compte
+Achievements: Réalisations
+Add an extra layer of security: Ajoutez une couche de sécurité supplémentaire
+All cohorts: Toutes les promos
+All types: Tous les types
+Alumni directory: Annuaire des Alumni
+Always check the URL and the small security icon, use admin@example.fr to sign in or create your account.: Vérifiez toujours l'adresse et qu'il y a un petit symbole de sécurité pour fermer, utiliser admin@example.fr pour accéder ou créer votre compte.
+An error occurred: Une erreur est survenue
+Are you sure you want to cancel?: Voulez-vous vraiment annuler ?
+Are you sure you want to delete your account?: Êtes-vous sûr de vouloir supprimer votre compte ?
+Ask your question...: Posez votre question...
+Assignment review: Revue du devoir
+Attached resources: Ressources attachées
+Attachment (Optional): Pièce jointe (Optionnel)
+Available videos: Vidéos disponibles
+Back to courses: Retour aux cours
+Back to dashboard: Retour au tableau de bord
+Back to profile: Retour profil
+Back to sign in: Retour à la connexion
+Be the first to say hello!: Soyez le premier à dire bonjour !
+Be the first to send a message!: Soyez le premier à envoyer un message !
+Browse all available courses: Explorez tous les cours disponibles
+Cancel: Annuler
+Cancel activation: Annuler l'activation
+Cancel and sign out: Annuler et se déconnecter
+Change password: Changer le mot de passe
+Check your inbox: Vérifiez votre boîte de réception
+Choose a new password: Choisissez un nouveau mot de passe
+Choose how you want to be notified: Choisissez comment vous souhaitez être notifié
+Click here to resend a verification email: Cliquez ici pour renvoyer un mail de vérification
+Click to upload: Cliquez pour uploader
+Cohort calendar: Calendrier de la promotion
+Come back later for new content.: Revenez plus tard pour de nouveaux contenus.
+Confirm password: Confirmer le mot de passe
+Contents: Sommaire
+Continue: Continuer
+Courses completed: Cours complétés
+Courses finished: Cours terminés
+Courses taken: Cours suivis
+Create my account: Créer mon compte
+Create your account and start learning: Créez votre compte et commencez à apprendre
+Current password: Mot de passe actuel
+Current streak: Série en cours
+Customize your learning experience: Personnalisez votre expérience d'apprentissage
+Danger zone: Zone de danger
+Date (descending): Date (décroissant)
+Deleting your account will erase all your personal data. This action is irreversible.: La suppression de votre compte effacera toutes vos données personnelles. Cette action est irréversible.
+Description for email notifications: Description pour notifications par email
+Description for lesson reminders: Description pour rappels de leçons
+Description for push notifications: Description pour notifications push
+Description for weekly recap: Description pour résumé hebdomadaire
+Details: Détails
+Dictate my note: Dicter ma note
+Disable: Désactiver
+Disable two-factor authentication?: Désactiver la double authentification ?
+Download: Télécharger
+Download an app like Google Authenticator or Microsoft Authenticator.: Téléchargez une application comme Google Authenticator ou Microsoft Authenticator.
+Download certificate: Télécharger le certificat
+Downloaded Content: Contenus Téléchargés
+Downloading...: Téléchargement...
+E.g. Biblical exegesis, Hermeneutics, Systematic theology...: 'Ex: Exégèse biblique, Herméneutique, Théologie systématique...'
+Edit: Modifier
+Edit my profile: Modifier mon profil
+Email notifications: Notifications par email
+Email sent: Email envoyé
+Enable: Activer
+Enable two-factor authentication: Activer la double authentification
+Enter the code generated by your app: Entrez le code généré par votre application
+Enter your email address: Entrez votre adresse email
+Enter your email address and we'll send you a link to reset your password.: Saisissez votre adresse électronique et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+Eval.: Éval.
+Evaluate your peers’ work to earn XP and help them progress.: Évaluez le travail de vos pairs pour gagner des XP et les aider à progresser.
+Evaluations: Évaluations
+Evaluations completed: Évaluations terminées
+Explore the catalog: Explorer le catalogue
+Export calendar (.ics): Exporter le calendrier (.ics)
+Find an assignment to grade: Trouver un devoir à corriger
+Forgot password?: Mot de passe oublié ?
+General: Général
+General information: Informations générales
+Give advice to improve this work...: Donnez des conseils pour améliorer ce travail...
+Global leaderboard: Classement global
+Go deeper (Suggested by AI): Pour approfondir (Suggéré par l'IA)
+Hello! I'm your theology coach. How can I help you today?: Bonjour ! Je suis votre coach théologique. Comment puis-je vous aider aujourd'hui ?
+Hello,: Bonjour,
+Here is your weekly recap from: Voici ton récapitulatif hebdomadaire du
+Hi: Salut
+Hi! 👋 I'm your AI coach. Ask me a question about your courses, or ask me to explain something!: Salut ! 👋 Je suis ton coach IA. Pose-moi une question sur tes cours, ou demande-moi des explications !
+Hours of learning: Heures d'apprentissage
+How does it work?: Comment faire ?
+I've configured my app: J'ai configuré mon application
+'If an account matching your email exists, an email has just been sent containing a link you can use to reset your password. This link will expire in': "Si un compte correspondant à votre adresse e-mail existe, un e-mail vient d'être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe. Ce lien expirera dans"
+If you don't receive an email, please check your spam folder or: Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier de courriers indésirables ou
+Immersion mode: Mode immersion
+Join the group discussion: Accéder à la discussion de groupe
+Keep going! Stay on your streak to unlock new badges.: Ne lâche rien ! Continue sur ta lancée pour débloquer de nouveaux badges.
+Keep learning: Continuer à apprendre
+Keep up your effort to unlock exclusive frames!: Continuez vos efforts pour débloquer des cadres exclusifs !
+Leaderboard: Classement
+Learning manifesto: Manifeste d'apprentissage
+Lesson reminders: Rappels de leçons
+Lesson saved for offline viewing.: Leçon enregistrée pour consultation hors-ligne.
+Lesson transcript: Transcription de la leçon
+Lessons completed: Leçons terminées
+Level up to unlock all features.: Passez au niveau supérieur pour débloquer toutes les fonctionnalités.
+Main Menu: Menu Principal
+Manage your password and security options: Gérez votre mot de passe et options de sécurité
+Manage your personal information: Gérez vos informations personnelles
+Member: Membre
+More: Plus
+My Coach: Mon Coach
+My Courses: Mes Cours
+My Evaluations: Mes Évaluations
+My Notes: Mes Notes
+My Submission: Ma Soumission
+My Subscription: Mon Abonnement
+My Team: Mon Équipe
+My annotations: Mes annotations
+My blog: Mon blog
+My profile: Mon profil
+No account yet?: Pas encore de compte ?
+No achievement yet. Keep learning!: Aucune réalisation pour le moment. Continuez d'apprendre !
+No active cohort: Pas de promotion active
+No alumni yet.: Aucun alumni pour le moment.
+No calendar associated.: Aucun calendrier associé.
+No comments yet. Be the first!: Aucun commentaire pour le moment. Soyez le premier !
+No course found: Aucun cours trouvé
+No downloaded content yet.: Aucun contenu téléchargé pour le moment.
+No evaluation found.: Aucune évaluation trouvée.
+No event found.: Aucun événement trouvé.
+No file attached to this lesson.: Aucun fichier joint à cette leçon.
+No members in this team yet.: Aucun membre dans cette équipe pour le moment.
+No messages yet.: Aucun message pour le moment.
+No notes yet: Aucune note pour le moment
+No notification: Aucune notification
+No project in the portfolio.: Aucun projet dans le portfolio.
+No recent articles.: Aucun article récent.
+No results for: Aucun résultat pour
+No skill listed.: Aucune compétence listée.
+No team found: Aucune équipe trouvée
+No transcript available yet.: Aucune transcription disponible pour le moment.
+No user found.: Aucun utilisateur trouvé.
+No video for this lesson: Aucune vidéo pour cette leçon
+Offline Mode: Mode Hors-ligne
+'Offline Mode: You are viewing a saved version of this lesson.': 'Mode Hors-ligne : Vous consultez une version enregistrée de cette leçon.'
+Offline mode enabled: Mode Hors-ligne activé
+Offline video: Vidéo hors-ligne
+Once the account is added, your app will generate a 6-digit code.: Une fois le compte ajouté, votre application générera un code à 6 chiffres.
+Online: En ligne
+Online — Ready to help: En ligne — Prêt à t'aider
+Oops!: Oops !
+Overall average: Moyenne générale
+Overview: Vue d'ensemble
+Page %current% of %total%: Page %current% sur %total%
+Peer review: Revue par les pairs
+Please check your inbox (including Spam).: Merci de vérifier votre boîte mail (Spam inclus).
+Preferences: Préférences
+Press: Appuyez sur
+Previous: Précédent
+Privacy and support: Confidentialité et support
+Profile information: Informations du profil
+Push notifications: Notifications push
+Quick search...: Recherche rapide...
+Read more: Lire la suite
+Ready to continue learning?: Prêt à continuer votre apprentissage ?
+Remember me: Se souvenir de moi
+Remove from offline viewing?: Supprimer de la consultation hors-ligne ?
+Reply: Répondre
+Report an error: Signaler une erreur
+Return to home: Retourner à l'accueil
+Review: Réviser
+Review needed: Révision nécessaire
+Save changes: Enregistrer les modifications
+Save offline: Sauvegarder hors-ligne
+Save the note: Enregistrer la note
+Saved: Enregistré
+Saved lessons: Leçons enregistrées
+Scan the QR code above with the app.: Scannez le QR code ci-dessus avec l'application.
+Search a course...: Rechercher un cours...
+Search an event...: Rechercher un événement...
+Search...: Rechercher...
+Secure your account: Sécurisez votre compte
+Security: Sécurité
+Security & Password: Sécurité & Mot de passe
+See you on the platform soon,: À bientôt sur la plateforme,
+Settings: Paramètres
+Sign in now: Se connecter maintenant
+Sign in to join the discussion.: Connectez-vous pour participer à la discussion.
+Sign in without password (Magic Link): Se connecter sans mot de passe (Lien Magique)
+Sign up with Google: S'inscrire avec Google
+Skills: Compétences
+Sorry, the page you're looking for seems to have wandered off into the depths of digital knowledge.: Désolé, mais la page que vous recherchez semble s'être égarée dans les méandres du savoir numérique.
+'Start:': 'Commencer :'
+Streak: Série
+Student of the week: Étudiant de la semaine
+Student's answer: Réponse de l'étudiant
+Submit the assignment: Envoyer le devoir
+Submit the evaluation: Soumettre l'évaluation
+Suggested for you: Suggéré pour toi
+Take a note: Prendre une note
+Team Management: Gestion d'Équipe
+That's it! Next time you log in, this code will be required.: C'est tout ! Lors de votre prochaine connexion, ce code vous sera demandé.
+The Le Rocher Académie team: L'équipe du Rocher Académie
+These notes remain private: Ces notes restent privées
+This link is valid for 15 minutes. If you didn't make this request, you can ignore this email.: Ce lien est valable pendant 15 minutes. Si tu n'es pas à l'origine de cette demande, tu peux ignorer cet email.
+Transcript automatically generated by AI: Transcription générée automatiquement par IA
+Trust this device: Faire confiance à cet appareil
+Two-factor authentication: Double authentification
+'Two-factor authentication adds an extra layer of security to your account by requiring a unique code generated by a mobile app.': La double authentification ajoute une couche de sécurité supplémentaire à votre compte en exigeant un code unique généré par une application mobile.
+Type at least 2 characters to search: Tapez au moins 2 caractères pour rechercher
+Type your message...: Tape ton message...
+Unexpected turbulence disrupted your navigation. Our technical team has been alerted.: Une turbulence inattendue a perturbé votre navigation. Notre équipe technique a été alertée.
+Upcoming events: Prochains événements
+Verification: Vérification
+Verification code: Code de vérification
+Verify: Vérifier
+View all my notes: Voir toutes mes notes
+View cohorts: Voir les promotions
+View course: Voir le cours
+View external calendar: Consulter le calendrier externe
+View profile: Voir profil
+View project: Voir le projet
+Weekly recap: Résumé hebdomadaire
+Write your answer here...: Rédigez votre réponse ici...
+Write your message...: Écrivez votre message...
+Write your note here...: Écrivez votre note ici...
+XP earned: XP Gagnés
+You are currently viewing the local version of the app.: Vous consultez actuellement la version locale de l'application.
+You completed: Tu as complété
+You haven't created a team yet. Contact the administrator to activate your Manager role.: Vous n'avez pas encore créé d'équipe. Contactez l'administrateur pour activer votre rôle de Manager.
+You haven't started any course yet.: Vous n'avez pas encore commencé de cours.
+You must be enrolled in a cohort to access the calendar.: Vous devez être inscrit à une promotion pour accéder au calendrier.
+You requested a magic link to sign in to your account.: Tu as demandé un lien de connexion magique pour accéder à ton compte.
+You're all caught up! Come back later for new updates.: Vous êtes à jour ! Revenez plus tard pour de nouvelles actualités.
+Your 2026 year: Ton année 2026
+Your answer: Votre réponse
+Your current streak: Ta série actuelle
+Your evaluation: Votre évaluation
+Your schedule and upcoming events: Votre planning et événements à venir
+completed: complété
+courses this year!: cours cette année !
+lessons completed: leçons complétées
+or continue with: ou continuer avec
+or drag and drop: ou glissez-déposez
+retry: réessayer
+this week: cette semaine
+to close: pour fermer
+your account has not been verified yet: votre compte n'a pas encore été vérifié
+
+# === Round 5 ===
+Day: Jour
+Days: Jours
+Delete all: Tout supprimer
+Next: Suivant
+Notepad: Bloc-notes
+Offline reading: Lecture hors-ligne
+'Resume:': 'Reprendre :'
+Tools: Outils
+View: Consulter
+Write what you remember from this lesson...: Écrivez ce que vous avez retenu de cette leçon...
+days: jours

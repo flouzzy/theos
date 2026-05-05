@@ -51,7 +51,7 @@
                     data-live-action-param="toggleNeedsReview"
                     class="p-1.5 rounded-lg transition-colors {{ this.needsReview ? 'text-yellow-500 bg-yellow-500/10' : 'text-muted-foreground/40 hover:bg-muted' }}"
                     onclick="event.preventDefault(); event.stopPropagation();"
-                    title="{{ 'Révision nécessaire' | trans }}"
+                    title="{{ 'Review needed' | trans }}"
                 >
                     <twig:ux:icon name="lucide:bookmark" class="w-4 h-4 {{ this.needsReview ? 'fill-current' : '' }}" />
                 </button>

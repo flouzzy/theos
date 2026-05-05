@@ -1,6 +1,6 @@
 {% extends 'app.html.twig' %}
 
-{% block title %}{{ 'Revue par les pairs' | trans }} - {{ assignment.title }}{% endblock %}
+{% block title %}{{ 'Peer review' | trans }} - {{ assignment.title }}{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto p-6 space-y-8">
@@ -11,13 +11,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
         </a>
-        <h1 class="text-3xl font-bold">{{ 'Revue du devoir' | trans }}</h1>
+        <h1 class="text-3xl font-bold">{{ 'Assignment review' | trans }}</h1>
     </div>
 
     {# Submission Content #}
     <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
         <div class="px-6 py-4 border-b border-border bg-muted/30">
-            <h2 class="text-lg font-semibold">{{ 'Réponse de l\'étudiant' | trans }}</h2>
+            <h2 class="text-lg font-semibold">{{ "Student's answer" | trans }}</h2>
             <span class="text-xs text-muted-foreground">{{ 'Soumis le' | trans }} {{ submission.createdAt|date('d M Y') }}</span>
         </div>
         <div class="p-6">
@@ -30,7 +30,7 @@
     {# Review Form #}
     <div class="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
         <div class="px-6 py-4 border-b border-border bg-muted/30">
-            <h2 class="text-lg font-semibold">{{ 'Votre évaluation' | trans }}</h2>
+            <h2 class="text-lg font-semibold">{{ 'Your evaluation' | trans }}</h2>
         </div>
         <div class="p-6">
             <form action="{{ path('assignment_submit_review', {id: assignment.id, submissionId: submission.id}) }}" method="POST" class="space-y-6">
@@ -59,15 +59,15 @@
 
                 <div>
                     <label for="feedback" class="block text-sm font-medium mb-2">{{ 'Commentaires constructifs' | trans }}</label>
-                    <textarea name="feedback" id="feedback" required class="w-full h-48 p-3 rounded-md border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary resize-y" placeholder="{{ 'Donnez des conseils pour améliorer ce travail...' | trans }}"></textarea>
+                    <textarea name="feedback" id="feedback" required class="w-full h-48 p-3 rounded-md border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary resize-y" placeholder="{{ 'Give advice to improve this work...' | trans }}"></textarea>
                 </div>
 
                 <div class="flex items-center justify-end gap-4">
                     <a href="{{ path('assignment_show', {id: assignment.id}) }}" class="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                        {{ 'Annuler' | trans }}
+                        {{ 'Cancel' | trans }}
                     </a>
                     <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
-                        {{ 'Soumettre l\'évaluation' | trans }}
+                        {{ 'Submit the evaluation' | trans }}
                     </button>
                 </div>
             </form>

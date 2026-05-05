@@ -20,7 +20,7 @@
         <div class="p-4 border-b border-border flex items-center justify-between lg:hidden bg-muted/20">
             <h2 class="font-bold text-lg flex items-center gap-2">
                 <twig:ux:icon name="lucide:list" class="w-5 h-5 text-primary" />
-                {{ 'Sommaire' | trans }}
+                {{ 'Contents' | trans }}
             </h2>
             <button @click="showSyllabus = false" class="p-2 hover:bg-muted rounded-full transition-colors">
                 <twig:ux:icon name="lucide:x" class="w-5 h-5" />
@@ -92,14 +92,14 @@
     >
         {# Offline Indicator #}
         <div data-offline-lesson-target="offlineStatus" class="hidden sticky top-0 z-50 bg-amber-500 text-white py-2 px-4 text-center text-sm font-bold shadow-md">
-            {{ 'Mode Hors-ligne : Vous consultez une version enregistrée de cette leçon.' | trans }}
+            {{ 'Offline Mode: You are viewing a saved version of this lesson.' | trans }}
         </div>
 
         <div class="max-w-4xl mx-auto p-6 md:p-10 space-y-8">
             
             {# Breadcrumbs #}
             <nav class="flex items-center text-sm text-muted-foreground">
-                <a href="{{ path('course_index') }}" class="hover:text-primary transition-colors">{{ 'Cours' | trans }}</a>
+                <a href="{{ path('course_index') }}" class="hover:text-primary transition-colors">{{ 'Courses' | trans }}</a>
                 <svg class="w-4 h-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 <span class="truncate max-w-[150px]">{{ course.title }}</span>
                 <svg class="w-4 h-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
@@ -123,7 +123,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <p>{{ 'Aucune vidéo pour cette leçon' | trans }}</p>
+                                <p>{{ 'No video for this lesson' | trans }}</p>
                             </div>
                         </div>
                     {% endif %}
@@ -164,9 +164,9 @@
 
             <script>
                 window.translations = window.translations || {};
-                window.translations.saved_offline = "{{ 'Enregistré' | trans }}";
-                window.translations.remove_offline_confirm = "{{ 'Supprimer de la consultation hors-ligne ?' | trans }}";
-                window.translations.lesson_saved_success = "{{ 'Leçon enregistrée pour consultation hors-ligne.' | trans }}";
+                window.translations.saved_offline = "{{ 'Saved' | trans }}";
+                window.translations.remove_offline_confirm = "{{ 'Remove from offline viewing?' | trans }}";
+                window.translations.lesson_saved_success = "{{ 'Lesson saved for offline viewing.' | trans }}";
             </script>
 
             {# Lesson Title & Navigation #}
@@ -184,7 +184,7 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
-                        {{ 'Sauvegarder hors-ligne' | trans }}
+                        {{ 'Save offline' | trans }}
                     </button>
 
                     {% if currentLesson.videoUrl %}
@@ -198,12 +198,12 @@
                                 data-action="click->offline-video#download"
                                 class="inline-flex items-center justify-center rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted transition-colors gap-2">
                             <twig:ux:icon name="lucide:video" class="w-4 h-4" />
-                            {{ 'Vidéo hors-ligne' | trans }}
+                            {{ 'Offline video' | trans }}
                         </button>
 
                         <div data-offline-video-target="progressBar" class="hidden h-9 w-32 bg-slate-100 rounded-lg overflow-hidden relative border border-slate-200">
                             <div class="h-full bg-primary animate-pulse w-full"></div>
-                            <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-primary-foreground uppercase tracking-tighter">{{ 'Téléchargement...' | trans }}</span>
+                            <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-primary-foreground uppercase tracking-tighter">{{ 'Downloading...' | trans }}</span>
                         </div>
 
                         <button type="button" 
@@ -211,12 +211,12 @@
                                 data-action="click->offline-video#play"
                                 class="hidden inline-flex items-center justify-center rounded-lg border border-green-200 bg-green-50 text-green-700 px-4 py-2 text-sm font-medium hover:bg-green-100 transition-colors gap-2">
                             <twig:ux:icon name="lucide:play-circle" class="w-4 h-4" />
-                            {{ 'Lecture hors-ligne' | trans }}
+                            {{ 'Offline reading' | trans }}
                         </button>
                     </div>
                     {% endif %}
 
-                    <button data-controller="distraction-free" data-action="click->distraction-free#toggle" class="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground hidden lg:flex" title="{{ 'Mode immersion' | trans }}">
+                    <button data-controller="distraction-free" data-action="click->distraction-free#toggle" class="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground hidden lg:flex" title="{{ 'Immersion mode' | trans }}">
                         <twig:ux:icon name="lucide:maximize-2" class="w-5 h-5" />
                     </button>
 
@@ -224,12 +224,12 @@
                     {% if prevLesson %}
                         <a href="{{ path('lesson_show', {courseSlug: course.slug, moduleSlug: prevLesson.module.slug, lessonId: prevLesson.id}) }}" class="btn btn-ghost">
                             <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                            {{ 'Précédent' | trans }}
+                            {{ 'Previous' | trans }}
                         </a>
                     {% else %}
                         <button class="btn btn-ghost" disabled>
                             <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                            {{ 'Précédent' | trans }}
+                            {{ 'Previous' | trans }}
                         </button>
                     {% endif %}
                     
@@ -252,7 +252,7 @@
                 {# Tab Headers #}
                 <div class="flex border-b border-border">
                     <button @click="tab = 'overview'" :class="tab === 'overview' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'" class="px-4 py-3 text-sm font-semibold border-b-2 transition-colors">
-                        {{ 'Vue d\'ensemble' | trans }}
+                        {{ 'Overview' | trans }}
                     </button>
                     <button @click="tab = 'resources'" :class="tab === 'resources' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'" class="px-4 py-3 text-sm font-semibold border-b-2 transition-colors">
                         {{ 'Ressources' | trans }}
@@ -284,7 +284,7 @@
                             </div>
                             {% if currentLesson.audioDuration %}
                                 <div class="hidden md:block text-right">
-                                    <span class="text-xs font-mono font-bold text-indigo-400 dark:text-indigo-500 uppercase tracking-widest">Durée</span>
+                                    <span class="text-xs font-mono font-bold text-indigo-400 dark:text-indigo-500 uppercase tracking-widest">{{ 'Duration' | trans }}</span>
                                     <div class="text-lg font-serif font-bold text-indigo-900 dark:text-indigo-100">{{ (currentLesson.audioDuration // 60) }}:{{ "%02d"|format(currentLesson.audioDuration % 60) }}</div>
                                 </div>
                             {% endif %}
@@ -311,8 +311,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold">{{ 'Ressources attachées' | trans }}</h3>
-                        <p class="text-muted-foreground text-sm">{{ 'Aucun fichier joint à cette leçon.' | trans }}</p>
+                        <h3 class="text-lg font-bold">{{ 'Attached resources' | trans }}</h3>
+                        <p class="text-muted-foreground text-sm">{{ 'No file attached to this lesson.' | trans }}</p>
                     </div>
                 </div>
 
@@ -358,7 +358,7 @@
 
 {# Floating Actions #}
 <div class="fixed bottom-6 right-24 z-50">
-    <button @click="showNotes = !showNotes" class="h-14 w-14 rounded-full bg-yellow-500 text-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-4 focus:ring-yellow-500/30" title="{{ 'Mes Notes' | trans }}">
+    <button @click="showNotes = !showNotes" class="h-14 w-14 rounded-full bg-yellow-500 text-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-4 focus:ring-yellow-500/30" title="{{ 'My Notes' | trans }}">
         <twig:ux:icon name="lucide:pencil-line" class="w-7 h-7" />
     </button>
 </div>
