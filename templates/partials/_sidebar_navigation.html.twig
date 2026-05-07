@@ -14,9 +14,9 @@
             </svg>
        </div>
         {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Accueil' | trans }}</span>
+            <span class="whitespace-nowrap">{{ 'Home' | trans }}</span>
         {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Accueil' | trans }}</span>
+            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Home' | trans }}</span>
         {% endif %}
     </a>
 
@@ -31,9 +31,9 @@
             </svg>
         </div>
         {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Cours' | trans }}</span>
+            <span class="whitespace-nowrap">{{ 'Courses' | trans }}</span>
         {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Cours' | trans }}</span>
+            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Courses' | trans }}</span>
         {% endif %}
     </a>
 
@@ -48,9 +48,9 @@
             </svg>
        </div>
         {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Bloc-notes' | trans }}</span>
+            <span class="whitespace-nowrap">{{ 'Notepad' | trans }}</span>
         {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Bloc-notes' | trans }}</span>
+            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Notepad' | trans }}</span>
         {% endif %}
     </a>
 
@@ -65,20 +65,20 @@
             </svg>
        </div>
         {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Classement' | trans }}</span>
+            <span class="whitespace-nowrap">{{ 'Leaderboard' | trans }}</span>
         {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Classement' | trans }}</span>
+            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Leaderboard' | trans }}</span>
         {% endif %}
     </a>
 
     {# ── Secondary Section ── #}
     {% if forceExpanded %}
         <div class="mt-4 mb-2 px-3">
-            <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{ 'Outils' | trans }}</span>
+            <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{ 'Tools' | trans }}</span>
         </div>
     {% else %}
         <div x-show="desktopSidebarOpen" x-transition.opacity class="mt-4 mb-2 px-3">
-            <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{ 'Outils' | trans }}</span>
+            <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{ 'Tools' | trans }}</span>
         </div>
     {% endif %}
 
@@ -91,9 +91,9 @@
             <twig:ux:icon name="lucide:calendar" class="w-5 h-5" />
        </div>
         {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Calendrier' | trans }}</span>
+            <span class="whitespace-nowrap">{{ 'Calendar' | trans }}</span>
         {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Calendrier' | trans }}</span>
+            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Calendar' | trans }}</span>
         {% endif %}
     </a>
 
@@ -108,9 +108,9 @@
             </svg>
        </div>
         {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Évaluations' | trans }}</span>
+            <span class="whitespace-nowrap">{{ 'Evaluations' | trans }}</span>
         {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Évaluations' | trans }}</span>
+            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Evaluations' | trans }}</span>
         {% endif %}
     </a>
 
@@ -170,9 +170,9 @@
             </svg>
         </div>
         {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Mon Équipe' | trans }}</span>
+            <span class="whitespace-nowrap">{{ 'My Team' | trans }}</span>
         {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Mon Équipe' | trans }}</span>
+            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'My Team' | trans }}</span>
         {% endif %}
     </a>
     {% endif %}

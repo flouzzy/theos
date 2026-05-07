@@ -7,13 +7,13 @@
             {% if currentPage > 1 %}
                 <twig:Button as="a" href="{{ path(routeName, routeParams|merge({page: currentPage - 1})) }}" variant="outline" size="sm">
                     <twig:ux:icon name="lucide:chevron-left" class="w-4 h-4 mr-1" />
-                    {{ 'Précédent' | trans }}
+                    {{ 'Previous' | trans }}
                 </twig:Button>
             {% endif %}
 
             {% if currentPage < totalPages %}
                 <twig:Button as="a" href="{{ path(routeName, routeParams|merge({page: currentPage + 1})) }}" variant="outline" size="sm">
-                    {{ 'Suivant' | trans }}
+                    {{ 'Next' | trans }}
                     <twig:ux:icon name="lucide:chevron-right" class="w-4 h-4 ml-1" />
                 </twig:Button>
             {% endif %}

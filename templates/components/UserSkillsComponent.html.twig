@@ -18,7 +18,7 @@
                 {% endif %}
             </span>
         {% else %}
-            <p class="text-sm text-muted-foreground">{{ 'Aucune compétence listée.' | trans }}</p>
+            <p class="text-sm text-muted-foreground">{{ 'No skill listed.' | trans }}</p>
         {% endfor %}
     </div>
 
@@ -28,7 +28,7 @@
             <input 
                 type="text" 
                 data-model="newSkillName"
-                placeholder="{{ 'Ex: Exégèse biblique, Herméneutique, Théologie systématique...' | trans }}" 
+                placeholder="{{ 'E.g. Biblical exegesis, Hermeneutics, Systematic theology...' | trans }}" 
                 class="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                 required
             >

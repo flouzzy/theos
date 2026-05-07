@@ -14,7 +14,7 @@
                 <input type="text" 
                        data-model="debounce(300)|query"
                        class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm outline-none" 
-                       placeholder="{{ 'Rechercher...' | trans }} (cmd+k)"
+                       placeholder="{{ 'Search...' | trans }} (cmd+k)"
                        x-ref="searchInput"
                        @show-search.window="setTimeout(() => $refs.searchInput.focus(), 100)"
                 >
@@ -25,12 +25,12 @@
                 {% if results.courses is empty and results.lessons is empty %}
                     <div class="px-6 py-14 text-center sm:px-14">
                         <twig:ux:icon name="lucide:frown" class="mx-auto h-6 w-6 text-slate-400" />
-                        <p class="mt-4 text-sm text-slate-900">{{ 'Aucun résultat pour' | trans }} "{{ this.query }}"</p>
+                        <p class="mt-4 text-sm text-slate-900">{{ 'No results for' | trans }} "{{ this.query }}"</p>
                     </div>
                 {% else %}
                     <ul class="max-h-96 scroll-py-3 overflow-y-auto p-3" id="options" role="listbox">
                         {% if results.courses|length > 0 %}
-                            <li class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'Cours' | trans }}</li>
+                            <li class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'Courses' | trans }}</li>
                             {% for course in results.courses %}
                                 <li>
                                     <a href="{{ path('course_show', {slug: course.slug}) }}" class="group flex cursor-default select-none items-center rounded-xl px-3 py-2 hover:bg-primary hover:text-white transition-colors">
@@ -42,7 +42,7 @@
                         {% endif %}
 
                         {% if results.lessons|length > 0 %}
-                            <li class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-2">{{ 'Leçons' | trans }}</li>
+                            <li class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-2">{{ 'Lessons' | trans }}</li>
                             {% for lesson in results.lessons %}
                                 <li>
                                     <a href="{{ path('lesson_show', {courseSlug: lesson.module.courses.first.slug, moduleSlug: lesson.module.slug, lessonId: lesson.id}) }}" class="group flex cursor-default select-none items-center rounded-xl px-3 py-2 hover:bg-primary hover:text-white transition-colors">
@@ -60,12 +60,12 @@
             {% else %}
                 <div class="px-6 py-14 text-center sm:px-14">
                     <twig:ux:icon name="lucide:command" class="mx-auto h-6 w-6 text-slate-400" />
-                    <p class="mt-4 text-sm text-slate-900">{{ 'Tapez au moins 2 caractères pour rechercher' | trans }}</p>
+                    <p class="mt-4 text-sm text-slate-900">{{ 'Type at least 2 characters to search' | trans }}</p>
                 </div>
             {% endif %}
 
             <div class="flex flex-wrap items-center bg-slate-50 px-4 py-2.5 text-xs text-slate-700">
-                {{ 'Appuyez sur' | trans }} <kbd class="mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white font-semibold text-slate-900 sm:mx-2">ESC</kbd> {{ 'pour fermer' | trans }}.
+                {{ 'Press' | trans }} <kbd class="mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white font-semibold text-slate-900 sm:mx-2">ESC</kbd> {{ 'to close' | trans }}.
             </div>
         </div>
     </div>

@@ -14,7 +14,7 @@
                             {{ this.stats.average }}
                             <span class="text-sm font-normal text-muted-foreground">/ 20</span>
                         </h2>
-                        <p class="text-muted-foreground text-sm font-medium">{{ 'Moyenne générale' | trans }}</p>
+                        <p class="text-muted-foreground text-sm font-medium">{{ 'Overall average' | trans }}</p>
                     </div>
                  </div>
             </div>
@@ -28,7 +28,7 @@
                     </div>
                      <div>
                         <h3 class="text-2xl font-bold">{{ this.stats.completed }}</h3>
-                        <p class="text-muted-foreground text-sm">{{ 'Évaluations terminées' | trans }}</p>
+                        <p class="text-muted-foreground text-sm">{{ 'Evaluations completed' | trans }}</p>
                      </div>
                  </div>
             </div>
@@ -102,7 +102,7 @@
                         </div>
                     </div>
                 {% else %}
-                    <p class="text-muted-foreground">{{ 'Aucune évaluation trouvée.' | trans }}</p>
+                    <p class="text-muted-foreground">{{ 'No evaluation found.' | trans }}</p>
                 {% endfor %}
             </div>
         </div>

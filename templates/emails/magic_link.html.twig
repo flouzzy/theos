@@ -2,22 +2,22 @@
 
 {% block content %}
     <spacer size="16"></spacer>
-    <h1>{{ 'Bonjour' | trans }} {{ user.firstname }} ! 👋</h1>
-    <p class="lead">{{ 'Tu as demandé un lien de connexion magique pour accéder à ton compte.' | trans }}</p>
+    <h1>{{ 'Hello' | trans }} {{ user.firstname }} ! 👋</h1>
+    <p class="lead">{{ 'You requested a magic link to sign in to your account.' | trans }}</p>
     
     <spacer size="16"></spacer>
 
     <center>
-        <button href="{{ url }}" class="primary">{{ 'Se connecter maintenant' | trans }}</button>
+        <button href="{{ url }}" class="primary">{{ 'Sign in now' | trans }}</button>
     </center>
 
     <spacer size="24"></spacer>
 
     <p style="font-size: 12px; color: #64748b;">
-        {{ 'Ce lien est valable pendant 15 minutes. Si tu n\'es pas à l\'origine de cette demande, tu peux ignorer cet email.' | trans }}
+        {{ "This link is valid for 15 minutes. If you didn't make this request, you can ignore this email." | trans }}
     </p>
 
     <spacer size="16"></spacer>
     
-    <p>{{ 'À bientôt sur la plateforme,' | trans }}<br><strong>{{ 'L\'équipe du Rocher Académie' | trans }}</strong></p>
+    <p>{{ 'See you on the platform soon,' | trans }}<br><strong>{{ 'The Le Rocher Académie team' | trans }}</strong></p>
 {% endblock %}

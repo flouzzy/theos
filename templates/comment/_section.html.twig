@@ -9,10 +9,10 @@
         <div class="bg-muted/30 rounded-2xl p-4 mb-8" data-controller="markdown-editor">
             <div class="flex border-b border-border mb-4">
                 <button type="button" @click="$dispatch('toggle-editor')" data-action="click->markdown-editor#showEditor" data-mode="edit" class="px-4 py-2 text-xs font-bold border-b-2 border-primary text-primary transition-colors">
-                    {{ 'Édition' | trans }}
+                    {{ 'Edit' | trans }}
                 </button>
                 <button type="button" @click="$dispatch('toggle-preview')" data-action="click->markdown-editor#showPreview" data-mode="preview" class="px-4 py-2 text-xs font-bold border-b-2 border-transparent text-muted-foreground hover:text-foreground transition-colors">
-                    {{ 'Aperçu' | trans }}
+                    {{ 'Overview' | trans }}
                 </button>
             </div>
 
@@ -49,7 +49,7 @@
         </div>
     {% else %}
         <div class="bg-muted/50 rounded-xl p-4 text-center mb-8">
-            <p class="text-muted-foreground">{{ 'Connectez-vous pour participer à la discussion.' | trans }}</p>
+            <p class="text-muted-foreground">{{ 'Sign in to join the discussion.' | trans }}</p>
         </div>
     {% endif %}
 
@@ -90,13 +90,13 @@
                         </form>
 
                         <button class="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors">
-                            {{ 'Répondre' | trans }}
+                            {{ 'Reply' | trans }}
                         </button>
                     </div>
                 </div>
             </div>
         {% else %}
-            <p class="text-center text-muted-foreground py-8">{{ 'Aucun commentaire pour le moment. Soyez le premier !' | trans }}</p>
+            <p class="text-center text-muted-foreground py-8">{{ 'No comments yet. Be the first!' | trans }}</p>
         {% endfor %}
     </div>
 </div>

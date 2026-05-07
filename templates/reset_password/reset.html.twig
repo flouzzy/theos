@@ -1,7 +1,7 @@
 {% extends 'landing.html.twig' %}
 
 {% block title %}
-	{{ 'Réinitialiser votre mot de passe' | trans }}
+	{{ 'Reset your password' | trans }}
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
                     🔒
                 </div>
                 <h1 class="text-3xl font-bold mb-2">{{ block('title') }}</h1>
-                <p class="text-muted-foreground">{{ 'Choisissez un nouveau mot de passe' | trans }}</p>
+                <p class="text-muted-foreground">{{ 'Choose a new password' | trans }}</p>
             </div>
 
             {# Main Form Card #}
@@ -42,7 +42,7 @@
 
                     {# Submit Button #}
                     <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 rounded-lg transition-colors">
-                        {{ 'Changer le mot de passe' | trans }}
+                        {{ 'Change password' | trans }}
                     </button>
                 {{ form_end(resetForm) }}
             </div>

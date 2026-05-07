@@ -1,7 +1,7 @@
 {% extends 'landing.html.twig' %}
 
 {% block title %}
-    {{ 'Réinitialiser votre mot de passe' | trans }}
+    {{ 'Reset your password' | trans }}
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
                     🔑
                 </div>
                 <h1 class="text-3xl font-bold mb-2">{{ block('title') }}</h1>
-                <p class="text-muted-foreground">{{ 'Entrez votre adresse email' | trans }}</p>
+                <p class="text-muted-foreground">{{ 'Enter your email address' | trans }}</p>
             </div>
 
             {# Main Form Card #}
@@ -45,7 +45,7 @@
                             {{ form_errors(requestForm.email) }}
                         </div>
                         <p class="mt-2 text-sm text-muted-foreground">
-                            {{ 'Saisissez votre adresse électronique et nous vous enverrons un lien pour réinitialiser votre mot de passe.' | trans }}
+                            {{ "Enter your email address and we'll send you a link to reset your password." | trans }}
                         </p>
                     </div>
 
@@ -62,7 +62,7 @@
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    {{ 'Retour à la connexion' | trans }}
+                    {{ 'Back to sign in' | trans }}
                 </a>
             </div>
         </div>

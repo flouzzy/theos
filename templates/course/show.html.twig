@@ -2,7 +2,7 @@
 
 {% block title %}{{ course.title }}{% endblock %}
 
-{% block page_title %}{{ 'Détails du cours' | trans }}{% endblock %}
+{% block page_title %}{{ 'Course details' | trans }}{% endblock %}
 
 {% block content %}
 <div class="space-y-8 max-w-5xl mx-auto">
@@ -12,7 +12,7 @@
         <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
-        {{ 'Retour aux cours' | trans }}
+        {{ 'Back to courses' | trans }}
     </a>
 
     {# Course Header Card #}
@@ -41,7 +41,7 @@
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span>{{ completedLessonIds|length }} / {{ course.lessons|length }} {{ 'leçons complétées' | trans }}</span>
+                    <span>{{ completedLessonIds|length }} / {{ course.lessons|length }} {{ 'lessons completed' | trans }}</span>
                 </div>
 
                 {# Duration (Placeholder for now, could be dynamic) #}
@@ -58,7 +58,7 @@
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>{{ 'Télécharger le certificat' | trans }}</span>
+                        <span>{{ 'Download certificate' | trans }}</span>
                     </a>
                 {% endif %}
             </div>

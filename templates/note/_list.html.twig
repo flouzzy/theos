@@ -3,7 +3,7 @@
         {% for note in notes %}
             {{ include('note/_item_details.html.twig') }}
         {% else %}
-             <p class="text-sm text-muted-foreground text-center italic py-2">{{ 'Aucune note pour le moment' | trans }}</p>
+             <p class="text-sm text-muted-foreground text-center italic py-2">{{ 'No notes yet' | trans }}</p>
         {% endfor %}
     </div>
 </turbo-frame>

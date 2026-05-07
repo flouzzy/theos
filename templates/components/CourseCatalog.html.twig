@@ -25,7 +25,7 @@
             <input type="text" 
                    data-model="debounce(300)|query"
                    class="block w-full pl-12 pr-4 py-4 text-lg bg-background border border-input rounded-xl focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-gray-500 shadow-sm transition-all hover:border-primary/50" 
-                   placeholder="{{ 'Rechercher un cours...' | trans }}">
+                   placeholder="{{ 'Search a course...' | trans }}">
         </div>
         
         {# Dynamic Cohort Filter #}
@@ -53,7 +53,7 @@
                  style="display: none;">
                 
                 <button type="button" @click="open = false;" data-action="live#update" data-model="cohortId" value="" class="w-full text-left block px-6 py-3 text-sm text-popover-foreground hover:bg-muted transition-colors font-medium">
-                    {{ 'Toutes les promos' | trans }}
+                    {{ 'All cohorts' | trans }}
                 </button>
                 
                 {% for cohort in this.cohorts %}
@@ -62,7 +62,7 @@
                     </button>
                 {% else %}
                     <span class="block px-6 py-3 text-sm text-muted-foreground italic">
-                        {{ 'Aucune promo disponible' | trans }}
+                        {{ 'No cohort available' | trans }}
                     </span>
                 {% endfor %}
             </div>
@@ -90,8 +90,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                 </div>
-                <h3 class="text-2xl font-bold mb-3">{{ 'Aucun cours trouvé' | trans }}</h3>
-                <p class="text-muted-foreground text-lg">{{ 'Revenez plus tard pour de nouveaux contenus.' | trans }}</p>
+                <h3 class="text-2xl font-bold mb-3">{{ 'No course found' | trans }}</h3>
+                <p class="text-muted-foreground text-lg">{{ 'Come back later for new content.' | trans }}</p>
             </div>
         {% endfor %}
     </div>

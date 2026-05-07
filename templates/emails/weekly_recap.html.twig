@@ -2,8 +2,8 @@
 
 {% block content %}
     <spacer size="16"></spacer>
-    <h1>{{ 'Salut' | trans }} {{ user.firstname }} ! 👋</h1>
-    <p class="lead">{{ 'Voici ton récapitulatif hebdomadaire du' | trans }} {{ periodStart|date('d/m') }} {{ 'au' | trans }} {{ periodEnd|date('d/m') }}.</p>
+    <h1>{{ 'Hi' | trans }} {{ user.firstname }} ! 👋</h1>
+    <p class="lead">{{ 'Here is your weekly recap from' | trans }} {{ periodStart|date('d/m') }} {{ 'au' | trans }} {{ periodEnd|date('d/m') }}.</p>
     
     <spacer size="16"></spacer>
 
@@ -12,13 +12,13 @@
             <columns>
                 <div class="stat-card" style="background: #f0f7ff; padding: 20px; border-radius: 16px; text-align: center;">
                     <h2 style="margin: 0; color: #2563eb;">+{{ xpGained }}</h2>
-                    <p style="margin: 0; font-weight: bold; text-transform: uppercase; font-size: 12px; color: #64748b;">{{ 'XP Gagnés' | trans }}</p>
+                    <p style="margin: 0; font-weight: bold; text-transform: uppercase; font-size: 12px; color: #64748b;">{{ 'XP earned' | trans }}</p>
                 </div>
             </columns>
             <columns>
                 <div class="stat-card" style="background: #ecfdf5; padding: 20px; border-radius: 16px; text-align: center;">
                     <h2 style="margin: 0; color: #059669;">{{ completions }}</h2>
-                    <p style="margin: 0; font-weight: bold; text-transform: uppercase; font-size: 12px; color: #64748b;">{{ 'Leçons terminées' | trans }}</p>
+                    <p style="margin: 0; font-weight: bold; text-transform: uppercase; font-size: 12px; color: #64748b;">{{ 'Lessons completed' | trans }}</p>
                 </div>
             </columns>
         </row>
@@ -27,17 +27,17 @@
     <spacer size="24"></spacer>
 
     <div style="background: #fffbeb; border: 1px solid #fef3c7; padding: 20px; border-radius: 16px;">
-        <h3 style="margin-top: 0;">🔥 {{ 'Ta série actuelle' | trans }} : {{ user.streak }} {{ 'jours' | trans }}</h3>
-        <p style="margin-bottom: 0;">{{ 'Ne lâche rien ! Continue sur ta lancée pour débloquer de nouveaux badges.' | trans }}</p>
+        <h3 style="margin-top: 0;">🔥 {{ 'Your current streak' | trans }} : {{ user.streak }} {{ 'days' | trans }}</h3>
+        <p style="margin-bottom: 0;">{{ 'Keep going! Stay on your streak to unlock new badges.' | trans }}</p>
     </div>
 
     <spacer size="24"></spacer>
 
     <center>
-        <button href="{{ absolute_url(path('home')) }}" class="primary">{{ 'Continuer à apprendre' | trans }}</button>
+        <button href="{{ absolute_url(path('home')) }}" class="primary">{{ 'Keep learning' | trans }}</button>
     </center>
 
     <spacer size="16"></spacer>
     
-    <p>{{ 'À bientôt sur la plateforme,' | trans }}<br><strong>{{ 'L\'équipe du Rocher Académie' | trans }}</strong></p>
+    <p>{{ 'See you on the platform soon,' | trans }}<br><strong>{{ 'The Le Rocher Académie team' | trans }}</strong></p>
 {% endblock %}

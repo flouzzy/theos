@@ -1,6 +1,6 @@
 {% extends 'appWithBottomTabs.html.twig' %}
 
-{% block title %}{{ 'Mon Coach' | trans }}{% endblock %}
+{% block title %}{{ 'My Coach' | trans }}{% endblock %}
 {% block page_title %}{{ 'Coach IA' | trans }}{% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
     {# Compact Stats Banner #}
     <div class="flex flex-wrap items-center gap-3">
         <div class="flex items-center gap-2 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-bold border border-orange-100">
-            <twig:StreakBadge streak="{{ streak }}" size="sm" showValue="true" /> {{ 'jours' | trans }}
+            <twig:StreakBadge streak="{{ streak }}" size="sm" showValue="true" /> {{ 'days' | trans }}
         </div>
         <div class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold border border-indigo-100">
             ⚡ {{ xp }} XP
@@ -18,7 +18,7 @@
             🏆 {{ badgesCount }} {{ 'badges' | trans }}
         </div>
         <div class="ml-auto text-sm text-muted-foreground font-medium">
-            {{ weeklyXpTotal }} XP {{ 'cette semaine' | trans }}
+            {{ weeklyXpTotal }} XP {{ 'this week' | trans }}
         </div>
     </div>
 
@@ -45,7 +45,7 @@
             <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-lg flex-shrink-0">🔄</div>
             <div class="flex-1 min-w-0">
                 <p class="font-bold text-sm truncate">{{ reviewLesson.title }}</p>
-                <p class="text-xs text-muted-foreground">{{ 'Réviser' | trans }}</p>
+                <p class="text-xs text-muted-foreground">{{ 'Review' | trans }}</p>
             </div>
             <svg class="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -66,7 +66,7 @@
                 <h2 class="font-bold text-base">{{ 'Coach IA' | trans }}</h2>
                 <p class="text-xs text-muted-foreground flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
-                    {{ 'En ligne — Prêt à t\'aider' | trans }}
+                    {{ 'Online — Ready to help' | trans }}
                 </p>
             </div>
         </div>
@@ -76,7 +76,7 @@
             <div class="flex gap-3">
                 <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm shrink-0">🦉</div>
                 <div class="bg-muted rounded-2xl rounded-tl-none p-3 text-sm max-w-[85%]">
-                    <p>{{ 'Salut ! 👋 Je suis ton coach IA. Pose-moi une question sur tes cours, ou demande-moi des explications !' | trans }}</p>
+                    <p>{{ "Hi! 👋 I'm your AI coach. Ask me a question about your courses, or ask me to explain something!" | trans }}</p>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
         {# Input Area #}
         <div class="px-6 py-4 border-t border-border">
             <div class="relative">
-                <input type="text" id="chat-input" placeholder="{{ 'Tape ton message...' | trans }}" 
+                <input type="text" id="chat-input" placeholder="{{ 'Type your message...' | trans }}" 
                     class="w-full bg-muted/30 border border-border focus:border-primary rounded-xl pl-4 pr-12 py-3 text-sm transition-all outline-none focus:ring-2 focus:ring-primary/20">
                 <button id="chat-submit" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

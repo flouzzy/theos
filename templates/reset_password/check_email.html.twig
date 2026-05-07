@@ -1,7 +1,7 @@
 {% extends 'landing.html.twig' %}
 
 {% block title %}
-	{{ 'Email envoyé' | trans }}
+	{{ 'Email sent' | trans }}
 {% endblock %}
 
 {% block content %}
@@ -13,18 +13,18 @@
                     ✉️
                 </div>
                 <h1 class="text-3xl font-bold mb-2">{{ block('title') }}</h1>
-                <p class="text-muted-foreground">{{ 'Vérifiez votre boîte de réception' | trans }}</p>
+                <p class="text-muted-foreground">{{ 'Check your inbox' | trans }}</p>
             </div>
 
             {# Main Card #}
             <div class="bg-white rounded-xl shadow-sm border border-border p-8 text-center text-muted-foreground">
                 <p class="mb-4">
-                    {{ 'Si un compte correspondant à votre adresse e-mail existe, un e-mail vient d\'être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe. Ce lien expirera dans' | trans }}
+                    {{ 'If an account matching your email exists, an email has just been sent containing a link you can use to reset your password. This link will expire in' | trans }}
                     <span class="font-semibold text-foreground">{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}</span>.
                 </p>
                 <p>
-                    {{ 'Si vous ne recevez pas d\'e-mail, veuillez vérifier votre dossier de courriers indésirables ou' | trans }}
-                    <a href="{{ path('forgot_password_request') }}" class="text-primary hover:underline font-semibold">{{ 'réessayer' | trans }}</a>.
+                    {{ "If you don't receive an email, please check your spam folder or" | trans }}
+                    <a href="{{ path('forgot_password_request') }}" class="text-primary hover:underline font-semibold">{{ 'retry' | trans }}</a>.
                 </p>
             </div>
 
@@ -34,7 +34,7 @@
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    {{ 'Retour à la connexion' | trans }}
+                    {{ 'Back to sign in' | trans }}
                 </a>
             </div>
         </div>
