@@ -63,7 +63,7 @@ For detailed installation instructions, see [docs/installation.md](docs/installa
 - [Database Schema](docs/database.md) - Database structure and migrations
 - [Testing Guide](docs/testing.md) - Running and writing tests
 - [Deployment Guide](docs/deployment.md) - Production deployment
-- [Contributing Guidelines](docs/contributing.md) - How to contribute
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute
 - [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
 - [API Documentation](docs/api.md) - API endpoints (if applicable)
 
