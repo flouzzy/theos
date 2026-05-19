@@ -3,7 +3,7 @@
 **Theos** is a modern Learning Management System (LMS) built with Symfony 8, designed to deliver engaging online courses with a seamless user experience.
 The platform enables educators to create, manage, and deliver comprehensive courses to learners. The platform provides a rich set of features for both administrators and students, including course management, progress tracking, interactive lessons, and community engagement.
 
-## ✨ Key Features
+## ✨ Key features
 
 - **📚 Course Management** - Create and organize courses with modules and lessons
 - **📝 Interactive Lessons** - Rich content support with multimedia integration
@@ -17,7 +17,7 @@ The platform enables educators to create, manage, and deliver comprehensive cour
 - **📱 Fully Responsive** - Optimized for mobile, tablet, and desktop
 - **🌐 Multi-language Support** - Internationalization ready
 
-## 🛠️ Tech Stack
+## 🛠️ Tech stack
 
 - **Backend:** Symfony 8 (PHP 8.4)
 - **Frontend:** Tailwind CSS + Shadcn UI Components
@@ -28,27 +28,24 @@ The platform enables educators to create, manage, and deliver comprehensive cour
 - **Testing:** PHPUnit + Symfony Browser Kit
 - **Real-time:** Turbo Frames for dynamic updates
 
-## 🚀 Quick Start
+## 🚀 Quick start
 
-1. **Clone the repository**
+1. **Install the application**
    ```bash
+   # 1. Clone the repository
    git clone git@github.com:flouzzy/theos.git
    cd theos
-   ```
 
-2. **Start Docker containers**
-   ```bash
+   # 2. Start Docker containers
    docker compose up -d
-   ```
 
-3. **Install dependencies & setup database**
-   ```bash
+   # 3. Install dependencies & setup database
    docker compose exec php composer install
-   docker compose exec php bin/console doctrine:migrations:migrate
-   docker compose exec php bin/console doctrine:fixtures:load
+   docker compose exec php bin/console doctrine:migrations:migrate --no-interaction
+   docker compose exec php bin/console doctrine:fixtures:load --no-interaction
    ```
 
-4. **Access the application**
+2. **Access the application**
    - **HTTPS:** `https://localhost:8096`
    - **HTTP:** `http://localhost:8095`
 
@@ -94,7 +91,7 @@ Developed by **Le Rocher** team.
 ## Contributeurs
 
 <a href="https://github.com/flouzzy/theos/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=flouzzy/theos" />
+  <img src="https://contrib.rocks/image?repo=flouzzy/theos" alt="Theos contributors" />
 </a>
 
 ---
