@@ -26,6 +26,15 @@ class Notification
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $messageKey = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $titleKey = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $translationParams = null;
+
     #[ORM\ManyToOne(inversedBy: 'notifications')]
     private ?User $user = null;
 
@@ -86,6 +95,42 @@ class Notification
     public function setTitle(?string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getMessageKey(): ?string
+    {
+        return $this->messageKey;
+    }
+
+    public function setMessageKey(?string $messageKey): static
+    {
+        $this->messageKey = $messageKey;
+
+        return $this;
+    }
+
+    public function getTitleKey(): ?string
+    {
+        return $this->titleKey;
+    }
+
+    public function setTitleKey(?string $titleKey): static
+    {
+        $this->titleKey = $titleKey;
+
+        return $this;
+    }
+
+    public function getTranslationParams(): ?array
+    {
+        return $this->translationParams;
+    }
+
+    public function setTranslationParams(?array $translationParams): static
+    {
+        $this->translationParams = $translationParams;
 
         return $this;
     }

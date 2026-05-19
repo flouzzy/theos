@@ -1,12 +1,20 @@
 {% extends 'app.html.twig' %}
 
 {% block title %}
-	{{notification.title ? notification.title : 'Notification' | trans}}
+	{% if notification.titleKey %}
+		{{ notification.titleKey|trans(notification.translationParams ?? []) }}
+	{% else %}
+		{{ notification.title ? notification.title : 'Notification' | trans }}
+	{% endif %}
 {% endblock %}
 
 {% block content %}
 	<div class="ion-padding">
-		{{ notification.message|default('')|sanitize_html('notification') }}
+		{% if notification.messageKey %}
+			{{ notification.messageKey|trans(notification.translationParams ?? [])|sanitize_html('notification') }}
+		{% else %}
+			{{ notification.message|default('')|sanitize_html('notification') }}
+		{% endif %}
 	</div>
 
 
