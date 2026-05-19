@@ -19,6 +19,25 @@
             {# Main Form Card #}
             {% include "partials/_flash.html.twig" %}
 
+            {% if app.request.server.get('APP_DEMO_MODE') == 'true' %}
+            <div class="mb-6 p-4 rounded-xl bg-amber-50 border-2 border-amber-200 shadow-sm">
+                <h3 class="text-sm font-bold text-amber-800 mb-2 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:sparkles" class="w-4 h-4" />
+                    Accès Démo
+                </h3>
+                <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div class="bg-white/50 p-2 rounded border border-amber-100">
+                        <span class="block font-semibold text-amber-900 uppercase">Apprenant</span>
+                        <code>demo / demo</code>
+                    </div>
+                    <div class="bg-white/50 p-2 rounded border border-amber-100">
+                        <span class="block font-semibold text-amber-900 uppercase">Admin</span>
+                        <code>admin / admin</code>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="bg-white rounded-xl shadow-sm border border-border p-8">
                 {% if error %}
                     <div class="mb-6 p-4 rounded-lg bg-destructive/10 text-destructive border border-destructive/20">
