@@ -48,7 +48,11 @@ class CoachAIAgentTest extends TestCase
         $user->method('getId')->willReturn(1);
 
         $expectedHistory = [['role' => 'user', 'content' => 'Hello']];
-        $this->cache->method('get')->willReturn($expectedHistory);
+
+        $cacheItem = $this->createMock(CacheItemInterface::class);
+        $cacheItem->method('isHit')->willReturn(true);
+        $cacheItem->method('get')->willReturn($expectedHistory);
+        $this->cache->method('getItem')->willReturn($cacheItem);
 
         $history = $this->agent->getHistory($user);
         $this->assertEquals($expectedHistory, $history);
@@ -74,14 +78,13 @@ class CoachAIAgentTest extends TestCase
         $user = $this->createMock(User::class);
         $user->method('getId')->willReturn(1);
 
-        // Mock getting history
-        $this->cache->method('get')->willReturn([
+        // Mock saving history
+        $cacheItem = $this->createMock(CacheItemInterface::class);
+        $cacheItem->method('isHit')->willReturn(true);
+        $cacheItem->method('get')->willReturn([
             ['role' => 'user', 'content' => 'Hi'],
             ['role' => 'model', 'content' => 'Hello there!']
         ]);
-
-        // Mock saving history
-        $cacheItem = $this->createMock(CacheItemInterface::class);
         $cacheItem->expects($this->once())->method('set'); // Will be updated history
         $cacheItem->expects($this->once())->method('expiresAfter');
         $this->cache->method('getItem')->willReturn($cacheItem);
@@ -154,7 +157,9 @@ class CoachAIAgentTest extends TestCase
         $user = $this->createMock(User::class);
         $user->method('getId')->willReturn(1);
 
-        $this->cache->method('get')->willReturn([]);
+        $cacheItem = $this->createMock(CacheItemInterface::class);
+        $cacheItem->method('isHit')->willReturn(false);
+        $this->cache->method('getItem')->willReturn($cacheItem);
 
         $this->siteSettingRepo->method('findOneBy')->willReturn(null);
 

@@ -12,7 +12,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BrevoApiTest extends TestCase
 {
-    private $parameterBag;
     private $logger;
     private $settingRepository;
     private $brevoApi;

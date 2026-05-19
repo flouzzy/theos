@@ -24,7 +24,7 @@ class PortfolioProject
 
     #[ORM\ManyToOne(inversedBy: 'portfolioProjects')]
     #[ORM\JoinColumn(nullable: false)]
-    private User $user;
+    private ?User $user = null;
 
     public function getId(): ?int { return $this->id; }
     public function getTitle(): string { return $this->title; }
@@ -33,6 +33,6 @@ class PortfolioProject
     public function setDescription(?string $description): static { $this->description = $description; return $this; }
     public function getUrl(): ?string { return $this->url; }
     public function setUrl(?string $url): static { $this->url = $url; return $this; }
-    public function getUser(): User { return $this->user; }
-    public function setUser(User $user): static { $this->user = $user; return $this; }
+    public function getUser(): ?User { return $this->user; }
+    public function setUser(?User $user): static { $this->user = $user; return $this; }
 }

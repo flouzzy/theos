@@ -21,13 +21,13 @@ class ExternalAccount
 
     #[ORM\ManyToOne(inversedBy: 'externalAccounts')]
     #[ORM\JoinColumn(nullable: false)]
-    private User $user;
+    private ?User $user = null;
 
     public function getId(): ?int { return $this->id; }
     public function getPlatform(): string { return $this->platform; }
     public function setPlatform(string $platform): static { $this->platform = $platform; return $this; }
     public function getAccountId(): string { return $this->accountId; }
     public function setAccountId(string $accountId): static { $this->accountId = $accountId; return $this; }
-    public function getUser(): User { return $this->user; }
-    public function setUser(User $user): static { $this->user = $user; return $this; }
+    public function getUser(): ?User { return $this->user; }
+    public function setUser(?User $user): static { $this->user = $user; return $this; }
 }

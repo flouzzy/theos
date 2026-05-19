@@ -307,8 +307,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: SkillEndorsement::class, orphanRemoval: true)]
     private Collection $receivedEndorsements;
 
+    public function getReceivedEndorsements(): Collection { return $this->receivedEndorsements; }
+
     #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'members')]
     private Collection $teams;
+
+    public function getTeams(): Collection { return $this->teams; }
 
     /**
      * @var Collection<int, Bonus>
@@ -1473,6 +1477,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     #[ORM\Column(options: ['default' => 0])]
     private int $weeklyGoalHours = 0;
+
+    public function getWeeklyGoalHours(): int { return $this->weeklyGoalHours; }
+    public function setWeeklyGoalHours(int $weeklyGoalHours): static { $this->weeklyGoalHours = $weeklyGoalHours; return $this; }
 
     #[ORM\Column(options: ['default' => false])]
     private bool $isBootcampMode = false;
