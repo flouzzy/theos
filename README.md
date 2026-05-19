@@ -64,6 +64,10 @@ For detailed installation instructions, see [docs/installation.md](docs/installa
 - [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
 - [API Documentation](docs/api.md) - API endpoints (if applicable)
 
+### 🗺️ Guides
+- [User Guide](docs/guides/USER_GUIDE.md) - Getting started for students
+- [Admin Guide](docs/guides/ADMIN_GUIDE.md) - Administration and configuration
+
 ## 🧪 Testing
 
 Run the full test suite:
