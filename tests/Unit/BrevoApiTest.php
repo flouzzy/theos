@@ -9,12 +9,13 @@ use App\Service\BrevoApi;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class BrevoApiTest extends TestCase
 {
-    private $logger;
-    private $settingRepository;
-    private $brevoApi;
+    private LoggerInterface&MockObject $logger;
+    private SettingRepository&MockObject $settingRepository;
+    private BrevoApi $brevoApi;
 
     protected function setUp(): void
     {

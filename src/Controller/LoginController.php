@@ -50,7 +50,7 @@ class LoginController extends AbstractController
         UserAuthenticatorInterface $authenticator,
         FormLoginAuthenticator $formAuthenticator,
         Request $request
-    ): Response {
+    ): ?Response {
         $user = $entityManager->getRepository(User::class)->findOneBy(['loginToken' => $token]);
 
         if (!$user || !$user->isLoginTokenValid()) {
