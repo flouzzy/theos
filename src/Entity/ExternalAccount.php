@@ -14,10 +14,10 @@ class ExternalAccount
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private string $platform; // github, stackoverflow
+    private string $platform = ''; // github, stackoverflow
 
     #[ORM\Column(length: 255)]
-    private string $accountId;
+    private string $accountId = '';
 
     #[ORM\ManyToOne(inversedBy: 'externalAccounts')]
     #[ORM\JoinColumn(nullable: false)]

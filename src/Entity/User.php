@@ -370,7 +370,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\PreUpdate]
     public function updateUserDetails(): void
     {
-        if ($this->firstname || $this->lastname) {
+        if ($this->firstname !== null || $this->lastname !== null) {
             $this->fullname = $this->lastname . ' ' . $this->firstname;
         }
     }
@@ -391,7 +391,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\PrePersist]
     public function setUserDetails(): void
     {
-        if ($this->fullname) {
+        if ($this->fullname !== null) {
             $details = preg_split('/\s+/', trim($this->fullname));
             if (false !== $details) {
                 $this->lastname = $this->lastname ?? $details[0];

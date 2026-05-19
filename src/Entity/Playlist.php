@@ -16,7 +16,7 @@ class Playlist
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private string $title;
+    private string $title = '';
 
     #[ORM\ManyToOne(inversedBy: 'playlists')]
     #[ORM\JoinColumn(nullable: false)]
