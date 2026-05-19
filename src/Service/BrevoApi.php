@@ -25,7 +25,8 @@ class BrevoApi
         private string $brevoListId,
         private string $kernelEnvironment,
         private LoggerInterface $logger,
-        private SettingRepository $settingRepository
+        private SettingRepository $settingRepository,
+        private string $appName
     ) {
         $config = BrevoClient\Configuration::getDefaultConfiguration()->setApiKey('api-key', $this->brevoApiKey);
 
@@ -141,7 +142,7 @@ class BrevoApi
         }
 
         $subject = $params['subject'] ?? $this->brevoSubject;
-        $htmlContent = $params['html_content'] ?? '<html><body><h1>Email from Le Rocher Académie</h1></body></html>';
+        $htmlContent = $params['html_content'] ?? sprintf('<html><body><h1>Email from %s</h1></body></html>', $this->appName);
 
         $sendSmtpEmail = new BrevoClient\Model\SendSmtpEmail([
             "sender" => [

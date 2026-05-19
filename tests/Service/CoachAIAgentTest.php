@@ -37,7 +37,8 @@ class CoachAIAgentTest extends TestCase
             'fake_api_key',
             'gemini-1.5-flash',
             $this->siteSettingRepo,
-            $this->cache
+            $this->cache,
+            'App Name'
         );
     }
 

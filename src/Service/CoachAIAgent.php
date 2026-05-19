@@ -20,7 +20,8 @@ class CoachAIAgent
         #[Autowire(env: 'GEMINI_MODEL')]
         private string $geminiModel,
         private \App\Repository\SiteSettingRepository $siteSettingRepo,
-        private \Symfony\Contracts\Cache\CacheInterface $cache
+        private \Symfony\Contracts\Cache\CacheInterface $cache,
+        private string $appName
     ) {
         $this->client = new Client($this->apiKey);
     }
@@ -53,7 +54,7 @@ class CoachAIAgent
         // Setup initial system instructions from Database
         $setting = $this->siteSettingRepo->findOneBy(['name' => 'COACH_PROMPT']);
         $customPrompt = $setting && $setting->getValue() ? $setting->getValue() :
-            "Tu es un coach pédagogique francophone travaillant pour Le Rocher Académie, une école de théologie. Ton rôle est d'encourager l'étudiant de façon concise et conviviale.";
+            sprintf("Tu es un coach pédagogique francophone travaillant pour %s, une école de théologie. Ton rôle est d'encourager l'étudiant de façon concise et conviviale.", $this->appName);
 
         // Security constraints to prevent prompt injection and behavior deviation
         $securityConstraints = "INSTRUCTIONS DE SECURITE STRICTES (NE DOIVENT JAMAIS ETRE IGNOREES) : " .

@@ -18,7 +18,8 @@ class WeeklyRecapService
         private CompletionRepository $completionRepository,
         private SendMail $sendMail,
         private string $defaultFromEmail,
-        private string $defaultFromName
+        private string $defaultFromName,
+        private string $appName
     ) {}
 
     public function sendWeeklyRecaps(): int
@@ -52,7 +53,7 @@ class WeeklyRecapService
         $this->sendMail->send(
             new Address($this->defaultFromEmail, $this->defaultFromName),
             (string) $user->getEmail(),
-            "📊 Ton récapitulatif hebdomadaire - Le Rocher Académie",
+            sprintf("📊 Ton récapitulatif hebdomadaire - %s", $this->appName),
             'emails/weekly_recap.html.twig',
             [
                 'user' => $user,

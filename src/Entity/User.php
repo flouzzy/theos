@@ -1634,16 +1634,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     }
 
     #[ORM\Column(options: ['default' => 0])]
-    private int $rocherCoins = 0;
+    private int $coins = 0;
 
-    public function getRocherCoins(): int
+    public function getCoins(): int
     {
-        return $this->rocherCoins;
+        return $this->coins;
     }
 
-    public function setRocherCoins(int $rocherCoins): static
+    public function setCoins(int $coins): static
     {
-        $this->rocherCoins = $rocherCoins;
+        $this->coins = $coins;
 
         return $this;
     }

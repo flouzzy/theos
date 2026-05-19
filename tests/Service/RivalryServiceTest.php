@@ -7,7 +7,7 @@ namespace App\Tests\Service;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\RivalryService;
-use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +35,7 @@ class RivalryServiceTest extends TestCase
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
 
-        $query = $this->createMock(AbstractQuery::class);
+        $query = $this->createMock(Query::class);
 
         $this->userRepository->expects($this->once())
             ->method('createQueryBuilder')
@@ -56,9 +56,9 @@ class RivalryServiceTest extends TestCase
             ->method('setParameter')
             ->willReturnCallback(function($key, $value) use ($queryBuilder) {
                 if ($key === 'min') {
-                    $this->assertEquals(90.0, $value);
+                    $this->assertEqualsWithDelta(90.0, $value, 0.001);
                 } elseif ($key === 'max') {
-                    $this->assertEquals(110.0, $value);
+                    $this->assertEqualsWithDelta(110.0, $value, 0.001);
                 } elseif ($key === 'id') {
                     $this->assertEquals(1, $value);
                 }

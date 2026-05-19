@@ -25,7 +25,7 @@ class StreakServiceTest extends TestCase
     public function testRepairStreakFailsWhenNotEnoughCoins(): void
     {
         $user = new User();
-        $user->setRocherCoins(20);
+        $user->setCoins(20);
         $user->setStreak(5);
 
         // EntityManager shouldn't be flushed since the repair fails
@@ -35,14 +35,14 @@ class StreakServiceTest extends TestCase
         $result = $this->streakService->repairStreak($user, 50);
 
         $this->assertFalse($result);
-        $this->assertSame(20, $user->getRocherCoins());
+        $this->assertSame(20, $user->getCoins());
         $this->assertSame(5, $user->getStreak());
     }
 
     public function testRepairStreakSucceeds(): void
     {
         $user = new User();
-        $user->setRocherCoins(100);
+        $user->setCoins(100);
         $user->setStreak(5);
 
         // EntityManager should be flushed exactly once since repair succeeds
@@ -52,7 +52,7 @@ class StreakServiceTest extends TestCase
         $result = $this->streakService->repairStreak($user, 50);
 
         $this->assertTrue($result);
-        $this->assertSame(50, $user->getRocherCoins()); // 100 - 50 = 50
+        $this->assertSame(50, $user->getCoins()); // 100 - 50 = 50
         $this->assertSame(6, $user->getStreak()); // 5 + 1 = 6
     }
 }

@@ -5,7 +5,7 @@
 		<header class="p-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<div class="container flex h-16 items-center justify-between px-4">
 				<a href="{{path('home')}}" class="flex items-center gap-2">
-					<img src="{{asset('images/logo.png')}}" alt="Logo le rocher Academie" class="h-16 w-auto">
+					<img src="{{asset('images/logo.png')}}" alt="Logo {{ app_name }}" class="h-16 w-auto">
 				</a>
 				<div class="flex items-center gap-4">
 					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -39,7 +39,7 @@
 		<footer class="border-t py-6 md:px-8 md:py-0">
 			<div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
 				<p class="text-center text-sm leading-loose text-muted-foreground md:text-left">
-					{{'now' | date('Y')}} &copy; Le Rocher Academie. {{'All rights reserved' | trans}}
+					{{'now' | date('Y')}} &copy; {{ app_name }}. {{'All rights reserved' | trans}}
 				</p>
 			</div>
 		</footer>

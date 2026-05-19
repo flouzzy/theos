@@ -15,11 +15,11 @@ class StreakService
 
     public function repairStreak(User $user, int $cost = 50): bool
     {
-        if ($user->getRocherCoins() < $cost) {
+        if ($user->getCoins() < $cost) {
             return false;
         }
 
-        $user->setRocherCoins($user->getRocherCoins() - $cost);
+        $user->setCoins($user->getCoins() - $cost);
         $user->setStreak($user->getStreak() + 1); // Simplifié
         
         $this->entityManager->flush();

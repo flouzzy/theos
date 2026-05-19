@@ -40,7 +40,7 @@ class WeeklyRecapServiceTest extends TestCase
         $sendMail = $this->createMock(SendMail::class);
         $sendMail->expects($this->once())->method('send');
 
-        $service = new WeeklyRecapService($userRepo, $xpRepo, $completionRepo, $sendMail, 'from@example.com', 'From');
+        $service = new WeeklyRecapService($userRepo, $xpRepo, $completionRepo, $sendMail, 'from@example.com', 'From', 'App Name');
         $count = $service->sendWeeklyRecaps();
 
         $this->assertEquals(1, $count); // Only user1 had activity

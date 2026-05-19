@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Controller\Api;
 use App\Controller\Api\TriviaController;
 use App\Repository\TriviaQuestionRepository;
 use App\Service\GamificationService;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +21,7 @@ class TriviaControllerTest extends TestCase
 
         $repo = $this->createMock(TriviaQuestionRepository::class);
         $gam = $this->createMock(GamificationService::class);
+        $em = $this->createMock(EntityManagerInterface::class);
 
         $request = new Request([], [], [], [], [], [], 'invalid json');
 
@@ -28,7 +30,7 @@ class TriviaControllerTest extends TestCase
              ->with(0)
              ->willReturn(null);
 
-        $response = $controller->check($request, $repo, $gam);
+        $response = $controller->check($request, $repo, $gam, $em);
 
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('{"error":"Invalid question"}', $response->getContent());
@@ -42,6 +44,7 @@ class TriviaControllerTest extends TestCase
 
         $repo = $this->createMock(TriviaQuestionRepository::class);
         $gam = $this->createMock(GamificationService::class);
+        $em = $this->createMock(EntityManagerInterface::class);
 
         $request = new Request([], [], [], [], [], [], json_encode(['id' => 999]));
 
@@ -50,7 +53,7 @@ class TriviaControllerTest extends TestCase
              ->with(999)
              ->willReturn(null);
 
-        $response = $controller->check($request, $repo, $gam);
+        $response = $controller->check($request, $repo, $gam, $em);
 
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('{"error":"Invalid question"}', $response->getContent());

@@ -30,7 +30,8 @@ class BrevoApiTest extends TestCase
             '123',
             'test',
             $this->logger,
-            $this->settingRepository
+            $this->settingRepository,
+            'App Name'
         );
     }
 
