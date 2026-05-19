@@ -12,6 +12,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NotificationService
 {
@@ -20,6 +21,7 @@ class NotificationService
         private MailerInterface $mailer,
         private UrlGeneratorInterface $router,
         private LoggerInterface $logger,
+        private TranslatorInterface $translator,
         #[Autowire('%default_from_email%')] private string $senderEmail,
         #[Autowire('%default_from_name%')] private string $senderName,
     ) {
@@ -45,6 +47,32 @@ class NotificationService
     public function addNotification(User $user, string $title, string $message, ?string $link = null): void
     {
         $this->createAndSendNotification($message, $title, $user, $link);
+    }
+
+    /**
+     * Add a notification using translation keys so the message is rendered in the
+     * reader's locale at display time rather than the sender's locale at save time.
+     */
+    public function addTranslatableNotification(
+        User $user,
+        string $titleKey,
+        string $messageKey,
+        array $params = [],
+        ?string $link = null
+    ): void {
+        $notification = new Notification();
+        $notification->setUser($user);
+        $notification->setTitleKey($titleKey);
+        $notification->setMessageKey($messageKey);
+        $notification->setTranslationParams($params);
+        // Keep a translated copy in the legacy fields so email delivery and any
+        // consumer that hasn't been updated still has something readable.
+        $notification->setTitle($this->translator->trans($titleKey, $params));
+        $notification->setMessage($this->translator->trans($messageKey, $params));
+        $notification->setLink($link);
+        $this->entityManager->persist($notification);
+        $this->entityManager->flush();
+        $this->sendNotification($notification, $user);
     }
 
     public function flush(): void

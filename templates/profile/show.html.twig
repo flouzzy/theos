@@ -72,7 +72,7 @@
         <twig:StatCard value="{{ stats.enrolled }}" label="{{ 'Courses taken' | trans }}" />
         <twig:StatCard value="{{ stats.completed }}" label="{{ 'Courses finished' | trans }}" />
         <twig:StatCard value="{{ stats.hours }}h" label="{{ 'Hours of learning' | trans }}" />
-        <twig:StatCard value="{{ stats.notes }}" label="{{ 'Notes prises' | trans }}" />
+        <twig:StatCard value="{{ stats.notes }}" label="{{ 'Notes taken' | trans }}" />
         <twig:StatCard value="{{ stats.xp }}" label="XP" />
         <twig:StatCard value="{{ stats.streak }}" label="{{ 'Streak' | trans }}">
             <twig:block name="icon">
@@ -150,7 +150,7 @@
              {% if app.user and app.user.id == user.id %}
             <details>
                 <summary class="text-sm text-primary cursor-pointer hover:underline list-none font-medium">
-                    + {{ 'Ajouter un projet' | trans }}
+                    + {{ 'Add a project' | trans }}
                 </summary>
                 <form action="{{ path('profile_add_portfolio') }}" method="POST" class="mt-4 space-y-3 bg-muted/30 p-4 rounded-lg">
                     <input type="hidden" name="_token" value="{{ csrf_token('add_portfolio') }}">

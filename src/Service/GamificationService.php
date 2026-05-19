@@ -71,10 +71,11 @@ class GamificationService
             if (!$overtakenUser instanceof User) {
                 continue;
             }
-            $this->notificationService->addNotification(
+            $this->notificationService->addTranslatableNotification(
                 $overtakenUser,
-                "📊 Classement mis à jour",
-                sprintf("Oh non ! %s vient de te doubler au classement. Reprends l'avantage maintenant !", $user->getFullname()),
+                '📊 Leaderboard updated',
+                "Oh no! %fullname% just overtook you on the leaderboard. Take back the lead now!",
+                ['%fullname%' => $user->getFullname()],
                 $this->urlGenerator->generate('leaderboard_index', [], UrlGeneratorInterface::ABSOLUTE_URL)
             );
         }
