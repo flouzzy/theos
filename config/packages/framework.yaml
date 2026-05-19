@@ -18,6 +18,7 @@ framework:
     handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
     cookie_secure: auto
     cookie_samesite: lax
+    cookie_httponly: true
     save_path: "%kernel.project_dir%/var/sessions/%kernel.environment%"
 
   #esi: true
