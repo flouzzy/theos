@@ -72,47 +72,49 @@
     </a>
 
     {# ── Secondary Section ── #}
-    {% if forceExpanded %}
-        <div class="mt-4 mb-2 px-3">
-            <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{ 'Tools' | trans }}</span>
-        </div>
-    {% else %}
-        <div x-show="desktopSidebarOpen" x-transition.opacity class="mt-4 mb-2 px-3">
-            <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{ 'Tools' | trans }}</span>
-        </div>
+    {% if app.user and app.user.cohorts is not empty %}
+        {% if forceExpanded %}
+            <div class="mt-4 mb-2 px-3">
+                <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{ 'Tools' | trans }}</span>
+            </div>
+        {% else %}
+            <div x-show="desktopSidebarOpen" x-transition.opacity class="mt-4 mb-2 px-3">
+                <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{ 'Tools' | trans }}</span>
+            </div>
+        {% endif %}
+
+        {# Calendrier #}
+        {% set isActive = currentRoute starts with 'calendar' %}
+        <a href="{{ path('calendar_index') }}"
+           class="group flex items-center py-2 rounded-xl text-sm font-medium transition-all duration-200 {{ isActive ? 'text-primary' ~ (forceExpanded ? ' bg-primary/10' : '') : 'text-muted-foreground hover:bg-muted hover:text-foreground' }} {{ forceExpanded ? 'gap-3 px-3 justify-start' : '' }}"
+           {% if not forceExpanded %}:class="desktopSidebarOpen ? 'gap-3 px-3 justify-start{% if isActive %} bg-primary/10{% endif %}' : 'gap-0 px-2 justify-center'"{% endif %}>
+           <div class="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg transition-colors {{ isActive ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
+                <twig:ux:icon name="lucide:calendar" class="w-5 h-5" />
+           </div>
+            {% if forceExpanded %}
+                <span class="whitespace-nowrap">{{ 'Calendar' | trans }}</span>
+            {% else %}
+                <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Calendar' | trans }}</span>
+            {% endif %}
+        </a>
+
+        {# Évaluations #}
+        {% set isActive = currentRoute starts with 'evaluation' %}
+        <a href="{{ path('evaluation_index') }}"
+           class="group flex items-center py-2 rounded-xl text-sm font-medium transition-all duration-200 {{ isActive ? 'text-primary' ~ (forceExpanded ? ' bg-primary/10' : '') : 'text-muted-foreground hover:bg-muted hover:text-foreground' }} {{ forceExpanded ? 'gap-3 px-3 justify-start' : '' }}"
+           {% if not forceExpanded %}:class="desktopSidebarOpen ? 'gap-3 px-3 justify-start{% if isActive %} bg-primary/10{% endif %}' : 'gap-0 px-2 justify-center'"{% endif %}>
+           <div class="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg transition-colors {{ isActive ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+           </div>
+            {% if forceExpanded %}
+                <span class="whitespace-nowrap">{{ 'Evaluations' | trans }}</span>
+            {% else %}
+                <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Evaluations' | trans }}</span>
+            {% endif %}
+        </a>
     {% endif %}
-
-    {# Calendrier #}
-    {% set isActive = currentRoute starts with 'calendar' %}
-    <a href="{{ path('calendar_index') }}"
-       class="group flex items-center py-2 rounded-xl text-sm font-medium transition-all duration-200 {{ isActive ? 'text-primary' ~ (forceExpanded ? ' bg-primary/10' : '') : 'text-muted-foreground hover:bg-muted hover:text-foreground' }} {{ forceExpanded ? 'gap-3 px-3 justify-start' : '' }}"
-       {% if not forceExpanded %}:class="desktopSidebarOpen ? 'gap-3 px-3 justify-start{% if isActive %} bg-primary/10{% endif %}' : 'gap-0 px-2 justify-center'"{% endif %}>
-       <div class="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg transition-colors {{ isActive ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
-            <twig:ux:icon name="lucide:calendar" class="w-5 h-5" />
-       </div>
-        {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Calendar' | trans }}</span>
-        {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Calendar' | trans }}</span>
-        {% endif %}
-    </a>
-
-    {# Évaluations #}
-    {% set isActive = currentRoute starts with 'evaluation' %}
-    <a href="{{ path('evaluation_index') }}"
-       class="group flex items-center py-2 rounded-xl text-sm font-medium transition-all duration-200 {{ isActive ? 'text-primary' ~ (forceExpanded ? ' bg-primary/10' : '') : 'text-muted-foreground hover:bg-muted hover:text-foreground' }} {{ forceExpanded ? 'gap-3 px-3 justify-start' : '' }}"
-       {% if not forceExpanded %}:class="desktopSidebarOpen ? 'gap-3 px-3 justify-start{% if isActive %} bg-primary/10{% endif %}' : 'gap-0 px-2 justify-center'"{% endif %}>
-       <div class="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg transition-colors {{ isActive ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-transparent group-hover:bg-muted' }}">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-            </svg>
-       </div>
-        {% if forceExpanded %}
-            <span class="whitespace-nowrap">{{ 'Evaluations' | trans }}</span>
-        {% else %}
-            <span x-show="desktopSidebarOpen" x-transition.opacity class="whitespace-nowrap">{{ 'Evaluations' | trans }}</span>
-        {% endif %}
-    </a>
 
     {# Notifications #}
     {% set isActive = currentRoute starts with 'notification' %}

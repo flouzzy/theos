@@ -3,51 +3,55 @@
 namespace App\DataFixtures;
 
 use App\Entity\Course;
-use App\Repository\UserRepository;
+use App\Entity\Module;
+use App\Entity\Lesson;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CourseFixtures extends Fixture
 {
-    public const COURSE_REFERENCE = 'course';
-    public function __construct(private EntityManagerInterface $manager, private UserRepository $userRepository, private UserPasswordHasherInterface $passwordHasher)
-    {
-    }
     public function load(ObjectManager $manager): void
     {
-        // Admin courses
-        for ($index = 0; $index < 10; $index++) {
-            # Create 5 courses
-            $newCourse = $this->create($index, $this->getReference(AppFixtures::ADMIN_USER_REFERENCE, \App\Entity\User::class));
-            $this->manager->persist($newCourse);
+        $courses = [
+            'La Divinité de Jésus' => [
+                'Fondements bibliques' => ['L\'annonce dans l\'AT', 'Les déclarations de Jésus', 'Le témoignage de Jean'],
+                'Les implications théologiques' => ['L\'incarnation', 'Le salut par la divinité', 'La médiation'],
+                'Jésus dans l\'histoire' => ['Les Pères de l\'Église', 'Le Concile de Nicée', 'Jésus aujourd\'hui'],
+            ],
+            'Comment bien gérer ses finances' => [
+                'Principes de base' => ['Le budget personnel', 'Épargner intelligemment', 'Gérer ses dettes'],
+                'Investissement et foi' => ['La vision biblique de l\'argent', 'La générosité', 'Investir avec sagesse'],
+                'Planification long terme' => ['La retraite', 'La transmission', 'La liberté financière'],
+            ],
+            'L\'art de vaincre la peur' => [
+                'Comprendre la peur' => ['Les origines de la peur', 'Peurs saines et peurs nuisibles', 'La biologie de l\'anxiété'],
+                'La perspective spirituelle' => ['Le courage dans les Écritures', 'La paix de Dieu', 'La prière face à l\'inquiétude'],
+                'Application pratique' => ['Techniques de respiration', 'Exposer ses peurs', 'La confiance en soi'],
+            ],
+        ];
 
-            $this->addReference(CourseFixtures::COURSE_REFERENCE . $index, $newCourse);
+        foreach ($courses as $courseTitle => $modulesData) {
+            $course = new Course();
+            $course->setTitle($courseTitle);
+            $course->setDescription('Parcours d\'apprentissage sur ' . $courseTitle);
+            $manager->persist($course);
+
+            foreach ($modulesData as $moduleTitle => $lessonsData) {
+                $module = new Module();
+                $module->setTitle($moduleTitle);
+                $module->setCourse($course);
+                $manager->persist($module);
+
+                foreach ($lessonsData as $lessonTitle) {
+                    $lesson = new Lesson();
+                    $lesson->setTitle($lessonTitle);
+                    $lesson->setContent('Contenu détaillé de la leçon : ' . $lessonTitle);
+                    $lesson->setModule($module);
+                    $manager->persist($lesson);
+                }
+            }
         }
 
-        // Simple users course
-        for ($index = 10; $index < 20; $index++) {
-            # Create 5 courses
-            $newCourse = $this->create($index, $this->getReference(AppFixtures::SIMPLE_USER_REFERENCE . random_int(0, 4), \App\Entity\User::class));
-            $this->manager->persist($newCourse);
-
-            $this->addReference(CourseFixtures::COURSE_REFERENCE . $index, $newCourse);
-        }
-
-        $this->manager->flush();
-    }
-
-    private function create(int $index, $author)
-    {
-        $title = 'Course n°' . $index;
-        $course = new Course;
-        $course->setTitle($title);
-        $course->setDescription(AppFixtures::LOREM_IPSUM);
-        $course->setAuthor($author);
-        $course->setStatus('published');
-        $course->setVisibility($index % 3 === 0 ? \App\Entity\Enum\CourseVisibilityEnum::RESTRICTED : \App\Entity\Enum\CourseVisibilityEnum::PUBLIC);
-        $course->setItemOrder($index);
-        return $course;
+        $manager->flush();
     }
 }

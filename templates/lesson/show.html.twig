@@ -354,22 +354,22 @@
             {{ component('NoteManager', { lessonId: currentLesson.id }) }}
         </div>
     </div>
-</div>
+    
+    {# Floating Actions #}
+    <div class="fixed bottom-6 right-24 z-50">
+        <button @click="showNotes = !showNotes" class="h-14 w-14 rounded-full bg-yellow-500 text-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-4 focus:ring-yellow-500/30" title="{{ 'My Notes' | trans }}">
+            <twig:ux:icon name="lucide:pencil-line" class="w-7 h-7" />
+        </button>
+    </div>
 
-{# Floating Actions #}
-<div class="fixed bottom-6 right-24 z-50">
-    <button @click="showNotes = !showNotes" class="h-14 w-14 rounded-full bg-yellow-500 text-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform focus:outline-none focus:ring-4 focus:ring-yellow-500/30" title="{{ 'My Notes' | trans }}">
-        <twig:ux:icon name="lucide:pencil-line" class="w-7 h-7" />
-    </button>
-</div>
-
-{# Mobile Sidebar Toggle (Floating, bottom left or top left) #}
-<div class="lg:hidden fixed bottom-6 left-6 z-50">
-     <button @click="showSyllabus = !showSyllabus" class="h-12 w-12 rounded-full bg-background border border-border text-foreground shadow-lg flex items-center justify-center" :class="showSyllabus ? 'hidden' : ''">
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-        </svg>
-    </button>
+    {# Mobile Sidebar Toggle (Floating, bottom left or top left) #}
+    <div class="lg:hidden fixed bottom-6 left-6 z-50">
+         <button @click="showSyllabus = !showSyllabus" class="h-12 w-12 rounded-full bg-background border border-border text-foreground shadow-lg flex items-center justify-center" :class="showSyllabus ? 'hidden' : ''">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+        </button>
+    </div>
 </div>
 {% endblock %}
 
