@@ -25,8 +25,12 @@ class TeamController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Récupérer les équipes possédées par le manager
-        $teams = $teamRepository->findBy(['owner' => $user]);
+        // Récupérer les équipes (soit les équipes possédées par le manager, soit toutes si admin)
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $teams = $teamRepository->findAll();
+        } else {
+            $teams = $teamRepository->findBy(['owner' => $user]);
+        }
 
         $allMembers = [];
         foreach ($teams as $team) {

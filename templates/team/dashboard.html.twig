@@ -6,6 +6,13 @@
 {% block content %}
 <div class="space-y-8">
     
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-serif font-bold text-foreground">Gestion d'équipe</h1>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="#" class="btn btn-primary">{{ 'Créer une équipe' | trans }}</a>
+        {% endif %}
+    </div>
+
     {% if teamsData is empty %}
         <div class="bg-card rounded-2xl p-12 text-center border-2 border-dashed border-border shadow-sm">
             <h2 class="text-2xl font-serif font-bold mb-4">{{ 'No team found' | trans }}</h2>
