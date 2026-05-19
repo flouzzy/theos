@@ -91,6 +91,12 @@ This project is licensed under the MIT License.
 
 Developed by **Le Rocher** team.
 
+## Contributeurs
+
+<a href="https://github.com/flouzzy/theos/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=PROPRIÉTAIRE/DÉPÔT" />
+</a>
+
 ---
 
 **Need help?** Check our [Troubleshooting Guide](docs/troubleshooting.md) or open an issue on GitHub.
