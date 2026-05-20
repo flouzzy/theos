@@ -9,15 +9,21 @@ use App\Entity\Calendar;
 
 class CalendarExportService
 {
+    public function __construct(
+        private string $appName,
+        private string $appUrl
+    ) {}
+
     public function generateIcsForEvent(Event $event): string
     {
         $utc = new \DateTimeZone('UTC');
+        $appHost = parse_url($this->appUrl, PHP_URL_HOST) ?? 'localhost';
         $ics = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//Le Rocher Academie//Calendar Export//FR',
+            sprintf('PRODID:-//%s//Calendar Export//FR', $this->appName),
             'BEGIN:VEVENT',
-            'UID:' . uniqid() . '@academie.lerocher.fr',
+            sprintf('UID:%s@%s', uniqid(), $appHost),
             'DTSTAMP:' . gmdate('Ymd\THis\Z'),
             'SUMMARY:' . $this->escapeString($event->getTitle()),
             'DTSTART:' . $event->getStartAt()->setTimezone($utc)->format('Ymd\THis\Z'),
@@ -40,16 +46,17 @@ class CalendarExportService
     public function generateIcsForCalendar(Calendar $calendar): string
     {
         $utc = new \DateTimeZone('UTC');
+        $appHost = parse_url($this->appUrl, PHP_URL_HOST) ?? 'localhost';
         $ics = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//Le Rocher Academie//Calendar Export//FR',
+            sprintf('PRODID:-//%s//Calendar Export//FR', $this->appName),
             'X-WR-CALNAME:' . $this->escapeString($calendar->getTitle() ?? 'Calendrier'),
         ];
 
         foreach ($calendar->getEvents() as $event) {
             $ics[] = 'BEGIN:VEVENT';
-            $ics[] = 'UID:' . $event->getId() . '@academie.lerocher.fr';
+            $ics[] = sprintf('UID:%s@%s', $event->getId(), $appHost);
             $ics[] = 'DTSTAMP:' . gmdate('Ymd\THis\Z');
             $ics[] = 'SUMMARY:' . $this->escapeString($event->getTitle());
             $ics[] = 'DTSTART:' . $event->getStartAt()->setTimezone($utc)->format('Ymd\THis\Z');
@@ -81,7 +88,7 @@ class CalendarExportService
         $params = [
             'text' => $event->getTitle(),
             'dates' => $this->formatDateRange($event),
-            'details' => 'Événement de l\'Académie Le Rocher',
+            'details' => sprintf('Événement de %s', $this->appName),
             'location' => $event->getLocation(),
             'sf' => 'true',
             'output' => 'xml'
@@ -97,7 +104,7 @@ class CalendarExportService
             'subject' => $event->getTitle(),
             'startdt' => $event->getStartAt()->format('Y-m-d\TH:i:s'),
             'enddt' => $event->getEndAt() ? $event->getEndAt()->format('Y-m-d\TH:i:s') : $event->getStartAt()->modify('+1 hour')->format('Y-m-d\TH:i:s'),
-            'body' => 'Événement de l\'Académie Le Rocher',
+            'body' => sprintf('Événement de %s', $this->appName),
             'location' => $event->getLocation()
         ];
 

@@ -12,6 +12,10 @@ twig:
     # the value is the service's id
     app_notification: '@App\Repository\NotificationRepository'
     premium_access: '%env(bool:PREMIUM_ACCESS)%'
+    app_name: '%env(APP_NAME)%'
+    app_short_name: '%env(APP_SHORT_NAME)%'
+    app_company: '%env(APP_COMPANY)%'
+    app_url: '%env(APP_URL)%'
 
 when@test:
   twig:

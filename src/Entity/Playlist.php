@@ -16,11 +16,11 @@ class Playlist
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private string $title;
+    private string $title = '';
 
     #[ORM\ManyToOne(inversedBy: 'playlists')]
     #[ORM\JoinColumn(nullable: false)]
-    private User $owner;
+    private ?User $owner = null;
 
     #[ORM\ManyToMany(targetEntity: Lesson::class)]
     private Collection $lessons;
@@ -30,8 +30,8 @@ class Playlist
     public function getId(): ?int { return $this->id; }
     public function getTitle(): string { return $this->title; }
     public function setTitle(string $title): static { $this->title = $title; return $this; }
-    public function getOwner(): User { return $this->owner; }
-    public function setOwner(User $owner): static { $this->owner = $owner; return $this; }
+    public function getOwner(): ?User { return $this->owner; }
+    public function setOwner(?User $owner): static { $this->owner = $owner; return $this; }
     public function getLessons(): Collection { return $this->lessons; }
     public function addLesson(Lesson $lesson): static { if (!$this->lessons->contains($lesson)) $this->lessons->add($lesson); return $this; }
 }

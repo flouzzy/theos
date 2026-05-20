@@ -14,6 +14,10 @@ parameters:
   brevo_subject: "%env(BREVO_SUBJECT)%"
   default_from_email: "%env(DEFAULT_FROM_EMAIL)%"
   default_from_name: "%env(DEFAULT_FROM_NAME)%"
+  app_name: "%env(APP_NAME)%"
+  app_short_name: "%env(APP_SHORT_NAME)%"
+  app_company: "%env(APP_COMPANY)%"
+  app_url: "%env(APP_URL)%"
 
 services:
   # default configuration for services in *this* file
@@ -29,6 +33,10 @@ services:
       string $kernelEnvironment: "%kernel.environment%"
       string $defaultFromEmail: "%default_from_email%"
       string $defaultFromName: "%default_from_name%"
+      string $appName: "%app_name%"
+      string $appShortName: "%app_short_name%"
+      string $appCompany: "%app_company%"
+      string $appUrl: "%app_url%"
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name

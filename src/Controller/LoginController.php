@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 class LoginController extends AbstractController
 {
     #[Route('/login/magic-request', name: 'request_magic_link', methods: ['POST'])]
-    public function requestMagicLink(Request $request, EntityManagerInterface $entityManager, SendMail $sendMail): Response
+    public function requestMagicLink(Request $request, EntityManagerInterface $entityManager, SendMail $sendMail, string $defaultFromEmail): Response
     {
         $email = $request->getPayload()->getString('email');
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
@@ -31,7 +31,7 @@ class LoginController extends AbstractController
             $url = $this->generateUrl('login_magic_link', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
 
             $sendMail->send(
-                'no-reply@academie.lerocher.fr',
+                $defaultFromEmail,
                 $email,
                 'Lien de connexion magique',
                 'emails/magic_link.html.twig',
@@ -50,7 +50,7 @@ class LoginController extends AbstractController
         UserAuthenticatorInterface $authenticator,
         FormLoginAuthenticator $formAuthenticator,
         Request $request
-    ): Response {
+    ): ?Response {
         $user = $entityManager->getRepository(User::class)->findOneBy(['loginToken' => $token]);
 
         if (!$user || !$user->isLoginTokenValid()) {

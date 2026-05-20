@@ -20,7 +20,7 @@ class CalendarExportServiceTest extends TestCase
         $event->method('getEndAt')->willReturn(new \DateTimeImmutable('2026-03-11 12:00:00'));
         $event->method('getLocation')->willReturn('Online');
 
-        $service = new CalendarExportService();
+        $service = new CalendarExportService('App Name', 'https://example.com');
         $ics = $service->generateIcsForEvent($event);
 
         $this->assertStringContainsString('BEGIN:VCALENDAR', $ics);
@@ -41,7 +41,7 @@ class CalendarExportServiceTest extends TestCase
         $calendar->method('getTitle')->willReturn('My Calendar');
         $calendar->method('getEvents')->willReturn(new ArrayCollection([$event]));
 
-        $service = new CalendarExportService();
+        $service = new CalendarExportService('App Name', 'https://example.com');
         $ics = $service->generateIcsForCalendar($calendar);
 
         $this->assertStringContainsString('X-WR-CALNAME:My Calendar', $ics);
@@ -56,7 +56,7 @@ class CalendarExportServiceTest extends TestCase
         $event->method('getEndAt')->willReturn(new \DateTimeImmutable('2026-03-11 12:00:00'));
         $event->method('getLocation')->willReturn('Paris');
 
-        $service = new CalendarExportService();
+        $service = new CalendarExportService('App Name', 'https://example.com');
         $url = $service->generateGoogleUrl($event);
 
         $this->assertStringContainsString('google.com/calendar', $url);
@@ -73,7 +73,7 @@ class CalendarExportServiceTest extends TestCase
         $event->method('getEndAt')->willReturn(new \DateTimeImmutable('2026-03-11 12:00:00'));
         $event->method('getLocation')->willReturn('Paris');
 
-        $service = new CalendarExportService();
+        $service = new CalendarExportService('App Name', 'https://example.com');
         $url = $service->generateOutlookUrl($event);
 
         $this->assertStringContainsString('outlook.live.com', $url);

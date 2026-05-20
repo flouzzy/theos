@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class SiteSettingController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(SiteSettingRepository $siteSettingRepository, EntityManagerInterface $em): Response
+    public function index(SiteSettingRepository $siteSettingRepository, EntityManagerInterface $em, string $appName): Response
     {
         // Créer le paramètre par défaut s'il n'existe pas encore
         $coachPrompt = $siteSettingRepository->findOneBy(['name' => 'COACH_PROMPT']);
@@ -24,7 +24,7 @@ class SiteSettingController extends AbstractController
             $coachPrompt = new SiteSetting();
             $coachPrompt->setName('COACH_PROMPT');
             $coachPrompt->setDescription('Prompt système utilisé par le Coach IA');
-            $coachPrompt->setValue("Tu es un coach pédagogique francophone travaillant pour Le Rocher Académie, une école de théologie. Ton rôle est d'encourager l'étudiant, de l'aider dans sa réflexion spirituelle et académique de façon concise et conviviale. Ne donne pas de réponses longues (> 100 mots par message) sauf si c'est très technique ou théologique. Utilise des emojis de temps en temps.");
+            $coachPrompt->setValue(sprintf("Tu es un coach pédagogique francophone travaillant pour %s, une école de théologie. Ton rôle est d'encourager l'étudiant, de l'aider dans sa réflexion spirituelle et académique de façon concise et conviviale. Ne donne pas de réponses longues (> 100 mots par message) sauf si c'est très technique ou théologique. Utilise des emojis de temps en temps.", $appName));
             $em->persist($coachPrompt);
             $em->flush();
         }

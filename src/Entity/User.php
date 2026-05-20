@@ -307,8 +307,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: SkillEndorsement::class, orphanRemoval: true)]
     private Collection $receivedEndorsements;
 
+    public function getReceivedEndorsements(): Collection { return $this->receivedEndorsements; }
+
     #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'members')]
     private Collection $teams;
+
+    public function getTeams(): Collection { return $this->teams; }
 
     /**
      * @var Collection<int, Bonus>
@@ -366,7 +370,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\PreUpdate]
     public function updateUserDetails(): void
     {
-        if ($this->firstname || $this->lastname) {
+        if ($this->firstname !== null || $this->lastname !== null) {
             $this->fullname = $this->lastname . ' ' . $this->firstname;
         }
     }
@@ -387,7 +391,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\PrePersist]
     public function setUserDetails(): void
     {
-        if ($this->fullname) {
+        if ($this->fullname !== null) {
             $details = preg_split('/\s+/', trim($this->fullname));
             if (false !== $details) {
                 $this->lastname = $this->lastname ?? $details[0];
@@ -1474,6 +1478,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(options: ['default' => 0])]
     private int $weeklyGoalHours = 0;
 
+    public function getWeeklyGoalHours(): int { return $this->weeklyGoalHours; }
+    public function setWeeklyGoalHours(int $weeklyGoalHours): static { $this->weeklyGoalHours = $weeklyGoalHours; return $this; }
+
     #[ORM\Column(options: ['default' => false])]
     private bool $isBootcampMode = false;
 
@@ -1634,16 +1641,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     }
 
     #[ORM\Column(options: ['default' => 0])]
-    private int $rocherCoins = 0;
+    private int $coins = 0;
 
-    public function getRocherCoins(): int
+    public function getCoins(): int
     {
-        return $this->rocherCoins;
+        return $this->coins;
     }
 
-    public function setRocherCoins(int $rocherCoins): static
+    public function setCoins(int $coins): static
     {
-        $this->rocherCoins = $rocherCoins;
+        $this->coins = $coins;
 
         return $this;
     }

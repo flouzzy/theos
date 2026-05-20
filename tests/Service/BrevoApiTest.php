@@ -38,7 +38,8 @@ class BrevoApiTest extends TestCase
             '1,2',
             'prod', // Use prod to bypass environment check
             $this->logger,
-            $this->settingRepository
+            $this->settingRepository,
+            'App Name'
         );
     }
 

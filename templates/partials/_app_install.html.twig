@@ -1,5 +1,5 @@
 {#
-  PWA Install CTA — Le Rocher Académie
+  PWA Install CTA — {{ app_name }}
   - Android/Chrome : banner discret en bas
   - iOS/Safari     : modal avec instructions visuelles
   Géré par `pwa_controller.js`
@@ -48,7 +48,7 @@
     <div class="p-6 text-center">
       <img src="{{ asset('images/favicon/apple-touch-icon.png') }}" alt="App icon"
            class="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-md" />
-      <h2 id="pwa-ios-title" class="text-lg font-bold text-slate-900 mb-1">{{ 'Install Le Rocher Académie' | trans }}</h2>
+      <h2 id="pwa-ios-title" class="text-lg font-bold text-slate-900 mb-1">{{ 'Install %app_name%' | trans({'%app_name%': app_name}) }}</h2>
       <p class="text-sm text-slate-500 mb-6">{{ 'Add the app to your home screen for quick access, even offline.' | trans }}</p>
 
       {# Étapes visuelles #}

@@ -11,7 +11,8 @@ class WebhookService
 {
     public function __construct(
         private HttpClientInterface $httpClient,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private string $appName
     ) {}
 
     public function sendDiscordNotification(string $url, string $message): void
@@ -20,7 +21,7 @@ class WebhookService
             $this->httpClient->request('POST', $url, [
                 'json' => [
                     'content' => $message,
-                    'username' => 'Le Rocher Académie',
+                    'username' => $this->appName,
                 ],
             ]);
         } catch (\Exception $e) {

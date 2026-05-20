@@ -20,7 +20,7 @@ class WebhookServiceTest extends TestCase
     {
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->webhookService = new WebhookService($this->httpClient, $this->logger);
+        $this->webhookService = new WebhookService($this->httpClient, $this->logger, 'App Name');
     }
 
     public function testSendDiscordNotificationSuccess(): void
@@ -33,7 +33,7 @@ class WebhookServiceTest extends TestCase
             ->with('POST', $url, [
                 'json' => [
                     'content' => $message,
-                    'username' => 'Le Rocher Académie',
+                    'username' => 'App Name',
                 ],
             ]);
 

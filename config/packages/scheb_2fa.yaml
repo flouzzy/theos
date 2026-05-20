@@ -2,8 +2,8 @@
 scheb_two_factor:
     totp:
         enabled: true
-        server_name: "Le Rocher Academie"
-        issuer: "Le Rocher Academie"
+        server_name: "%env(APP_NAME)%"
+        issuer: "%env(APP_NAME)%"
         template: 'security/2fa_form.html.twig'
 
     security_tokens:
