@@ -11,6 +11,8 @@ use Exception;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
 class BrevoApi
 {
     private Api\ContactsApi $apiContact;
@@ -18,15 +20,15 @@ class BrevoApi
     private Client $httpClient;
 
     public function __construct(
-        private string $brevoApiKey,
-        private string $brevoFromName,
-        private string $brevoFromEmail,
-        private string $brevoSubject,
-        private string $brevoListId,
-        private string $kernelEnvironment,
+        #[Autowire(env: 'SYMFONY_BREVO_API_KEY')] private string $brevoApiKey,
+        #[Autowire(env: 'BREVO_FROM_NAME')] private string $brevoFromName,
+        #[Autowire(env: 'BREVO_FROM_EMAIL')] private string $brevoFromEmail,
+        #[Autowire(env: 'BREVO_SUBJECT')] private string $brevoSubject,
+        #[Autowire(env: 'BREVO_LIST_ID')] private string $brevoListId,
+        #[Autowire(param: 'kernel.environment')] private string $kernelEnvironment,
         private LoggerInterface $logger,
         private SettingRepository $settingRepository,
-        private string $appName
+        #[Autowire(env: 'APP_NAME')] private string $appName
     ) {
         $config = BrevoClient\Configuration::getDefaultConfiguration()->setApiKey('api-key', $this->brevoApiKey);
 
