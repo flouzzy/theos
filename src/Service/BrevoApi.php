@@ -20,7 +20,7 @@ class BrevoApi
     private Client $httpClient;
 
     public function __construct(
-        #[Autowire(env: 'SYMFONY_BREVO_API_KEY')] private string $brevoApiKey,
+        #[Autowire(env: 'BREVO_API_KEY')] private string $brevoApiKey,
         #[Autowire(env: 'BREVO_FROM_NAME')] private string $brevoFromName,
         #[Autowire(env: 'BREVO_FROM_EMAIL')] private string $brevoFromEmail,
         #[Autowire(env: 'BREVO_SUBJECT')] private string $brevoSubject,

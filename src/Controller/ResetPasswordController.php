@@ -32,8 +32,8 @@ class ResetPasswordController extends AbstractController
         private ResetPasswordHelperInterface $resetPasswordHelper,
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
-        #[Autowire('%default_from_email%')] private string $senderEmail,
-        #[Autowire('%default_from_name%')] private string $senderName,
+        #[Autowire(env: 'DEFAULT_FROM_EMAIL')] private string $senderEmail,
+        #[Autowire(env: 'DEFAULT_FROM_NAME')] private string $senderName,
     ) {
     }
 
