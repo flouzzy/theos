@@ -29,3 +29,16 @@ En développement sur `https://localhost:8096`, le Service Worker peut échouer 
 - **Base de données:** Données migrées depuis MySQL natif (3306) vers Docker MySQL (3307).
 - **Nginx:** `academie.lerocher.fr` pointe désormais vers le container Docker sur le port 8095.
 
+## 🔑 Variables d'Environnement & Secrets (Production)
+Pour éviter les conflits avec les variables système du VPS (comme `MAILER_DSN` héritée du shell), suivez ces règles :
+- **Préfixe Unique :** Utilisez le préfixe `SYMFONY_` pour les variables sensibles dans `.env.local` (ex: `SYMFONY_MAILER_DSN`).
+- **Mapping Docker :** Mappez ces variables dans `compose.prod.yaml` vers les noms attendus par Symfony (ex: `MAILER_DSN: ${SYMFONY_MAILER_DSN}`).
+- **Injection Idiomatique :** Utilisez l'attribut PHP `#[Autowire(env: 'VAR_NAME')]` dans les constructeurs pour injecter ces paramètres.
+- **Cache Radical :** En cas de changement de variable non pris en compte, supprimez physiquement le cache : `rm -rf var/cache/prod/*`.
+
+## 📧 Messagerie & Délivrabilité (Brevo)
+- **Transport :** Utilise l'API Brevo via `brevo+api://`.
+- **Expéditeur :** L'adresse `DEFAULT_FROM_EMAIL` doit être validée dans Brevo (actuellement `academie@lerocher.fr`).
+- **Background :** Le service `worker` doit posséder la même configuration environnementale que le service `php` pour traiter les emails `async`.
+- **Debug :** Utilisez `bin/console mailer:test <email> -vvv` pour voir les requêtes HTTP réelles vers l'API Brevo.
+
