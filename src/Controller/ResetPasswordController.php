@@ -24,6 +24,7 @@ use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
 #[Route('/reset-password', priority: 3)]
+/** @psalm-suppress PropertyNotSetInConstructor */
 class ResetPasswordController extends AbstractController
 {
     use ResetPasswordControllerTrait;
@@ -53,7 +54,8 @@ class ResetPasswordController extends AbstractController
             return $this->processSendingPasswordResetEmail(
                 $form->get('email')->getData(),
                 $mailer,
-                $translator
+                $translator,
+                $request->getLocale()
             );
         }
 
@@ -85,7 +87,7 @@ class ResetPasswordController extends AbstractController
     #[Route('/reset/{token}', name: 'reset_password')]
     public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ?string $token = null): Response
     {
-        if ($token) {
+        if (null !== $token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
             // loaded in a browser and potentially leaking the token to 3rd party JavaScript.
             $this->storeTokenInSession($token);
@@ -142,7 +144,7 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer, TranslatorInterface $translator): RedirectResponse
+    private function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer, TranslatorInterface $translator, string $locale): RedirectResponse
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
             'email' => $emailFormData,
@@ -162,8 +164,9 @@ class ResetPasswordController extends AbstractController
         $email = (new TemplatedEmail())
             ->from(new Address($this->senderEmail, $this->senderName))
             ->to((string) $user->getEmail())
-            ->subject($translator->trans('Your password reset request'))
+            ->subject($translator->trans('Your password reset request', [], null, $locale))
             ->htmlTemplate('reset_password/email.html.twig')
+            ->locale($locale)
             ->context([
                 'resetToken' => $resetToken,
             ]);
