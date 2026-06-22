@@ -28,7 +28,7 @@ services:
       - "${THEOS_HTTPS_PORT:-8096}:443/udp"
     networks:
       - default
-      - database-management-net
+      - ai_net
 
   worker:
     image: ${IMAGES_PREFIX:-}app-php
@@ -51,7 +51,7 @@ services:
       - redis
     networks:
       - default
-      - database-management-net
+      - ai_net
 
   # Mercure is installed as a Caddy module, prevent Flex from installing it
   ###> symfony/mercure-bundle ###
@@ -91,4 +91,6 @@ volumes:
 networks:
   default:
   database-management-net:
+    external: true
+  ai_net:
     external: true

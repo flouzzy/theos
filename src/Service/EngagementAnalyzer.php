@@ -19,52 +19,20 @@ class EngagementAnalyzer
     public function __construct(
         private CompletionRepository $completionRepository,
         private EvaluationRepository $evaluationRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private \App\Service\AI\AgentManager $agentManager,
     ) {}
 
     /**
      * Analyse l'engagement d'un utilisateur et retourne un score (0-100).
      * Plus le score est élevé, plus l'utilisateur est "à risque".
+     *
+     * Désormais propulsé par le modèle de Machine Learning RandomForest d'AiHub.
      */
     public function calculateRiskScore(User $user, Cohort $cohort, ?array $prefetchedEvaluations = null, ?int $prefetchedCompletionsCount = null): int
     {
-        $riskScore = 0;
-
-        // 1. Inactivité (40% du score)
-        $lastConnection = $user->getLastConnectionAt();
-        if ($lastConnection) {
-            $daysSinceLastConnection = (new \DateTimeImmutable())->diff($lastConnection)->days;
-            if ($daysSinceLastConnection >= self::INACTIVITY_THRESHOLD_DAYS) {
-                $riskScore += min(40, ($daysSinceLastConnection - self::INACTIVITY_THRESHOLD_DAYS) * 5 + 20);
-            }
-        } else {
-            $riskScore += 40; // Jamais connecté
-        }
-
-        // 2. Performance académique (30% du score)
-        $evaluations = $prefetchedEvaluations ?? $this->evaluationRepository->findBy(['user' => $user, 'cohort' => $cohort], ['createdAt' => 'DESC'], 5);
-        if (count($evaluations) > 0) {
-            $avgScore = array_sum(array_map(fn($e) => $e->getScore(), $evaluations)) / count($evaluations);
-            if ($avgScore < self::SCORE_THRESHOLD) {
-                $riskScore += 30;
-            } elseif ($avgScore < 14) {
-                $riskScore += 15;
-            }
-        }
-
-        // 3. Progression (30% du score)
-        $completionsCount = $prefetchedCompletionsCount ?? $this->completionRepository->countByUserAndCohort($user, $cohort);
-        // On suppose qu'un cours moyen a 20 leçons (à affiner si on a le total réel)
-        $estimatedTotalLessons = 20; 
-        $completionRate = ($completionsCount / $estimatedTotalLessons) * 100;
-        
-        if ($completionRate < 20) {
-            $riskScore += 30;
-        } elseif ($completionRate < 50) {
-            $riskScore += 15;
-        }
-
-        return min(100, $riskScore);
+        $prediction = $this->agentManager->predictStudentChurn($user);
+        return (int) (round($prediction['churn_probability'] * 100));
     }
 
     /**
