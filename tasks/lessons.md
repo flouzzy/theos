@@ -65,17 +65,14 @@
 * **Mistake:** Automated PHPStan fixes on Entities broke Doctrine mappings (ManyToMany).
 * **Correction:** Reverted risky Entity changes and focused on fixing Controllers and Services which are safer and more critical for Level 8.
 
-## 2026-05-23 - Email & Environment Configuration - Production Hardening
-* **Mistake 1:** The production environment was using `mailer:1025` (dev) because host environment variables overrode `.env` files.
-* **Mistake 2:** `DEFAULT_FROM_EMAIL` was pointing to `@example.org`, leading to deliverability issues with Brevo.
-* **Mistake 3:** The `worker` service in `compose.prod.yaml` lacked the necessary environment variables to process emails correctly in the background.
-* **Correction:** 
-    1. Implemented a unique prefixing strategy in `.env.local` (e.g., `SYMFONY_MAILER_DSN`) and mapped them in `compose.prod.yaml` to avoid host variable collisions.
-    2. Updated `ResetPasswordController` and services to use `#[Autowire(env: '...')]` for robust and idiomatic parameter injection.
-    3. Synchronized `php` and `worker` services in `compose.prod.yaml` to ensure consistent background processing.
-    4. Performed a physical purge of `var/cache/prod/` to ensure fresh environment variable loading.
-* **Rule 1:** Always use unique prefixes for application environment variables on shared hosts to prevent collision with system-level variables.
-* **Rule 2:** Ensure background workers have the exact same environment configuration as the web server for services involving messaging (Messenger).
-* **Rule 3:** Prefer PHP attributes `#[Autowire(env: 'VAR_NAME')]` over `services.yaml` binds for clearer and more maintainable dependency injection.
-* **Rule 4:** When environment variables seem stuck, perform a physical deletion of the cache (`rm -rf var/cache/prod/*`) as `cache:clear` might not reload the environment state.
-* **Testing:** Use `bin/console mailer:test` with `-vvv` to inspect real-time transport logs and confirm the active DSN and HTTP response codes (e.g., 201 for Brevo).
+## 2026-03-11 - SSO & OAuth2 Integration
+* **Feature:** Implemented SSO via Google and LinkedIn using `knpuniversity/oauth2-client-bundle`.
+* **Technical:** Discovered that the modern namespace for the bundle is `KnpU\OAuth2ClientBundle` and not `KnpUniversity`.
+* **Security:** Configured `custom_authenticator` in `security.yaml` to allow multiple authentication methods (Form + Social).
+* **Entity:** Added `googleId` and `linkedinId` to the `User` entity to link social accounts.
+
+## 2026-06-03 - Port Conflicts & Caddy SERVER_NAME Configuration (502 Bad Gateway)
+* **Mistake:** Deploying `theos` with default `dev` settings in `.env.local` caused it to bind to port `8195` (HTTP) and `3308` (MySQL), which collided with the active `academie` project's ports. Additionally, the production `SERVER_NAME` in `compose.prod.yaml` was hardcoded to `http://academie.lerocher.fr` instead of `theos.lerocher.fr`.
+* **Correction:** Set `APP_ENV=prod`, `THEOS_HTTP_PORT=8295`, `THEOS_HTTPS_PORT=8296`, and `PUB_MYSQL_PORT=3309` in `.env.local` to run in production and avoid port conflicts. Corrected `SERVER_NAME` in `compose.yaml` and `compose.prod.yaml` to route requests for `theos.lerocher.fr`.
+* **Rule:** On multi-tenant VPS setups, always assign unique host ports to each Docker project's containers, and ensure that `SERVER_NAME` configurations match the actual site domain to prevent routing/Caddy errors.
+
