@@ -65,10 +65,13 @@ class NotificationService
         $notification->setTitleKey($titleKey);
         $notification->setMessageKey($messageKey);
         $notification->setTranslationParams($params);
+
+        $locale = method_exists($user, 'getLocale') && $user->getLocale() ? $user->getLocale() : 'fr';
+
         // Keep a translated copy in the legacy fields so email delivery and any
         // consumer that hasn't been updated still has something readable.
-        $notification->setTitle($this->translator->trans($titleKey, $params));
-        $notification->setMessage($this->translator->trans($messageKey, $params));
+        $notification->setTitle($this->translator->trans($titleKey, $params, null, $locale));
+        $notification->setMessage($this->translator->trans($messageKey, $params, null, $locale));
         $notification->setLink($link);
         $this->entityManager->persist($notification);
         $this->entityManager->flush();
@@ -94,10 +97,13 @@ class NotificationService
             return;
         }
 
+        $locale = method_exists($user, 'getLocale') && $user->getLocale() ? $user->getLocale() : 'fr';
+
         $email = (new TemplatedEmail())
             ->from(new Address($this->senderEmail, $this->senderName))
             ->to($userEmail)
             ->subject($notification->getTitle() ?? 'Notification')
+            ->locale($locale)
             // path of the Twig template to render
             ->htmlTemplate('notification/email.html.twig')
             ->context([

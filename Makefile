@@ -259,8 +259,9 @@ deploy:
 	@echo "🚀 Deploying in PROD environment..."
 	git pull
 	$(MAKE) build ENV=prod
+	@echo "🔍 Running database migrations on a temporary container to validate..."
+	$(DK_COMPOSE) run --rm php bin/console doctrine:migrations:migrate --no-interaction
 	$(MAKE) up ENV=prod
-	$(MAKE) db-migrate ENV=prod
 
 prod-deploy:
 	@echo "🚀 Starting Production Deployment..."
