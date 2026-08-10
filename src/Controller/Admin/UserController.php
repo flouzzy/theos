@@ -98,7 +98,9 @@ class UserController extends AbstractController
         User $user,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
-        SendMail $sendMail
+        SendMail $sendMail,
+        string $appName = 'Le Rocher Académie',
+        string $defaultFromEmail = 'academie@lerocher.fr'
     ): Response {
         if ($request->isMethod('POST')) {
             $submittedToken = (string) $request->request->get('_token');
@@ -128,10 +130,12 @@ class UserController extends AbstractController
                     $loginUrl = 'https://academie.lerocher.fr/login';
                 }
 
+                $subject = sprintf('Votre nouveau mot de passe pour %s', $appName);
+
                 $sendMail->send(
-                    'academie@lerocher.fr',
+                    $defaultFromEmail,
                     $user->getEmail(),
-                    'Votre nouveau mot de passe pour l\'Académie Le Rocher',
+                    $subject,
                     'emails/admin_reset_password.html.twig',
                     [
                         'user' => $user,
