@@ -82,6 +82,9 @@
                                 <twig:Button as="a" href="{{ path('admin_user_show', {'id': user.id}) }}" variant="ghost" size="icon-sm" title="{{ 'Voir' | trans }}">
                                     <twig:ux:icon name="lucide:eye" class="w-4 h-4" />
                                 </twig:Button>
+                                <twig:Button as="a" href="{{ path('admin_user_reset_password', {'id': user.id}) }}" variant="outline" size="icon-sm" title="{{ 'Réinitialiser le mot de passe' | trans }}" class="text-amber-600 border-amber-200 hover:bg-amber-50">
+                                    <twig:ux:icon name="lucide:key-round" class="w-4 h-4" />
+                                </twig:Button>
                                 <twig:Button as="a" href="{{ path('admin_user_edit', {'id': user.id}) }}" variant="outline" size="icon-sm" title="{{ 'Modifier' | trans }}">
                                     <twig:ux:icon name="lucide:pencil" class="w-4 h-4 text-slate-600" />
                                 </twig:Button>

@@ -96,6 +96,10 @@
                         <twig:ux:icon name="lucide:pencil" class="w-4 h-4 mr-2" />
                         {{ 'Modifier le profil' | trans }}
                     </twig:Button>
+                    <twig:Button as="a" href="{{ path('admin_user_reset_password', {'id': user.id}) }}" variant="outline" class="w-full bg-white text-amber-700 border-amber-300 hover:bg-amber-50">
+                        <twig:ux:icon name="lucide:key-round" class="w-4 h-4 mr-2 text-amber-600" />
+                        {{ 'Réinitialiser le mot de passe' | trans }}
+                    </twig:Button>
                 </div>
             </div>
 

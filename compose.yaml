@@ -26,6 +26,9 @@ services:
       - "${THEOS_HTTP_PORT:-8095}:80"
       - "${THEOS_HTTPS_PORT:-8096}:443"
       - "${THEOS_HTTPS_PORT:-8096}:443/udp"
+    depends_on:
+      - database
+      - redis
     networks:
       - default
       - ai_net
@@ -60,6 +63,7 @@ services:
   ###> doctrine/doctrine-bundle ###
   database:
     image: mysql:${MYSQL_VERSION:-8.0}
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${MYSQL_DB:-app}
       # You should definitely change the password in production
